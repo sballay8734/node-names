@@ -95,8 +95,6 @@ export default function TabOneScreen() {
       {
         name: "Les Miserables",
         type: "graph",
-        legendHoverLink: false,
-        layout: "none",
         data: mockData.nodes,
         links: mockData.links,
         categories: mockData.categories,
