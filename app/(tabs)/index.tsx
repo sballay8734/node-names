@@ -1,5 +1,8 @@
 // Choose your preferred renderer
-import SkiaChart, { SVGRenderer } from "@wuba/react-native-echarts/skiaChart";
+import SkiaChart, {
+  SVGRenderer,
+  SkiaChartProps,
+} from "@wuba/react-native-echarts/skiaChart";
 import * as echarts from "echarts/core";
 import { useRef, useEffect } from "react";
 import { GraphChart } from "echarts/charts";
@@ -11,6 +14,8 @@ import {
   LegendComponent,
 } from "echarts/components";
 import mockData from "../../data/mockData.json";
+import { EChartOption } from "echarts/lib/echarts";
+import { GraphSeriesOption, SeriesOption } from "echarts/types/dist/shared";
 
 // Register extensions
 echarts.use([
@@ -47,62 +52,75 @@ function ChartComponent({ option }: any) {
 
   // Choose your preferred chart component
   // return <SkiaChart ref={chartRef} />;
-  return <SkiaChart style={{ backgroundColor: "white" }} ref={chartRef} />;
+  return <SkiaChart ref={chartRef} />;
 }
 
 // !TODO: Chart seems to have invisible box around it and you can't click and drag if you don't click in the box. You should be able to press and drag anywhere on the screen
 
 // Component usage
 export default function TabOneScreen() {
+  // !TODO: Everything seems to work EXCEPT THE TEXT COLOR????
+  // DOCS: https://echarts.apache.org/v4/en/option.html#title
+
+  // TODO: TYPE THIS "option"
   const option = {
     title: {
+      show: true,
       text: "Les Miserables",
       subtext: "Default layout",
-      top: "bottom",
+      top: "top",
       left: "right",
-    },
-    tooltip: {},
-    legend: [
-      {
-        // selectedMode: "single",
-        data: mockData.categories.map(function (a) {
-          return a.name;
-        }),
+      textStyle: {
+        color: "#fff",
+        fontSize: 20,
       },
-    ],
-    textStyle: { color: "#000000" },
+      backgroundColor: "red",
+      borderWidth: 2,
+      borderColor: "yellow",
+    },
+    // label: {
+    //   show: true,
+    //   position: "inside",
+    //   color: "#fff",
+    //   distance: 5,
+    //   fontStyle: "normal",
+    //   backgroundColor: "yellow",
+    //   fontFamily: "sans-serif",
+    //   fontSize: 12,
+    //   formatter: "{b}",
+    // },
+    animationDuration: 1500,
+    animationEasingUpdate: "quinticInOut",
     series: [
       {
+        name: "Les Miserables",
         type: "graph",
+        legendHoverLink: false,
         layout: "none",
-        // symbolSize: 20,
+        data: mockData.nodes,
+        links: mockData.links,
+        categories: mockData.categories,
         roam: true,
+        symbol: "circle",
+        focusNodeAdjacency: true,
         label: {
           show: true,
           position: "right",
           formatter: "{b}",
-        },
-        labelLayout: {
-          hideOverlap: true,
-        },
-        scaleLimit: {
-          min: 0.4,
-          max: 2,
+          color: "red",
+          backgroundColor: "yellow",
+          fontStyle: "normal",
+          fontSize: 12,
         },
         lineStyle: {
           color: "source",
+          curveness: 0.3,
         },
-        edgeSymbol: ["circle"],
-        edgeSymbolSize: [4, 4],
-        edgeLabel: {
-          fontSize: 20,
-        },
-        data: mockData.nodes,
-        links: mockData.links,
-        categories: mockData.categories,
-        force: {
-          repulsion: 500,
-          edgeLength: 100,
+        emphasis: {
+          label: { show: true },
+          lineStyle: {
+            width: 10,
+          },
         },
       },
     ],

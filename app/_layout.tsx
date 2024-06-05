@@ -63,3 +63,9 @@ function RootLayoutNav() {
 }
 
 // !TODO: You probably actually want this graph :https://echarts.apache.org/examples/en/editor.html?c=graph-label-overlap but use this one for testing: https://echarts.apache.org/examples/en/editor.html?c=graph-force
+
+// TODO: Make sure to also include ability to add photos, description, social media links, phone, email, etc... "John's friends boyfriend. Remember him? Can't remember blah blah blah..." -- You'd never find that person in contacts but could use NodeNames to find them pretty easily.
+
+// TODO: Do you add the ability for people to create their own relationships and then people can just import them IF THEY CHOOSE?
+
+// TODO: Set up ESLINT
