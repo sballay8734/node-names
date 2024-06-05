@@ -109,7 +109,7 @@ export default function TabOneScreen() {
           color: "red",
           backgroundColor: "yellow",
           fontStyle: "normal",
-          fontSize: 12,
+          fontSize: 4,
         },
         lineStyle: {
           color: "source",
