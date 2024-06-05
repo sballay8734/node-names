@@ -102,7 +102,6 @@ export default function TabOneScreen() {
         categories: mockData.categories,
         roam: true,
         symbol: "circle",
-        focusNodeAdjacency: true,
         label: {
           show: true,
           position: "right",
@@ -121,6 +120,7 @@ export default function TabOneScreen() {
           lineStyle: {
             width: 10,
           },
+          focus: "adjacency",
         },
       },
     ],
