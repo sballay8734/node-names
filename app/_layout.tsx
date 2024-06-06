@@ -63,9 +63,9 @@ function RootLayoutNav() {
   );
 }
 
-// REMEMBER: d3-scale, d3-array, d3-interpolate, and d3-format DON'T interact with the DOM
+// REMEMBER: MOST D3 modules (like d3-scale, d3-array, d3-interpolate, and d3-format) DON'T interact with the DOM
 
-// REMEMBER:  d3-selection, d3-transition, and d3-axis do manipulate the DOM, which competes with React’s virtual DOM. In these cases, you can attach a ref to an element and pass it to D3 in a useEffect hook.
+// REMEMBER: Some DO though. d3-selection, d3-transition, and d3-axis do manipulate the DOM, which competes with React’s virtual DOM. In these cases, you can attach a ref to an element and pass it to D3 in a useEffect hook.
 
 // DOCS: https://d3js.org/getting-started#d3-in-react
 
