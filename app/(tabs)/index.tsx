@@ -1,24 +1,28 @@
-import React, { useEffect, useRef } from "react";
-import { Canvas, Circle, Group, Text } from "@shopify/react-native-skia";
-import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Pressable, Text } from "react-native";
 import * as d3 from "d3";
+import Circles from "@/components/ChartElements/Circles";
+import { generateDataset } from "@/data/testDataset";
 
 // TODO: Need to type "data" properly (d3 types)
 function ForceGraph({ data }: any) {}
 
+type Point = [number, number];
+type Data = number[][];
+
 const Index = () => {
-  const width = 256;
-  const height = 256;
-  const r = width * 0.33;
+  // TODO: Need to type useState here
+  const [dataset, setDataset] = useState<Data>(generateDataset());
+
   return (
     <View style={styles.container}>
-      <Canvas style={{ width, height }}>
-        <Group blendMode="multiply">
-          <Circle cx={r} cy={r} r={r} color="cyan" />
-          <Circle cx={width - r} cy={r} r={r} color="magenta" />
-          <Circle cx={width / 2} cy={width - r} r={r} color="yellow" />
-        </Group>
-      </Canvas>
+      <Circles dataset={dataset} />
+      <Pressable
+        style={styles.button}
+        onPress={() => setDataset(generateDataset())}
+      >
+        <Text style={styles.text}>Generate New Data</Text>
+      </Pressable>
     </View>
   );
 };
@@ -30,6 +34,22 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "black",
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
   },
 });
 
