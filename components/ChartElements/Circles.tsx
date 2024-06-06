@@ -1,6 +1,4 @@
-import { generateDataset } from "@/data/testDataset";
-import { useState } from "react";
-import Svg, { Circle, Rect } from "react-native-svg";
+import Svg, { Circle } from "react-native-svg";
 
 interface CircleProps {
   cx: string;
@@ -11,9 +9,7 @@ interface CircleProps {
   fill: string; // could be determined by group or by user
 }
 
-type Point = [number, number];
-
-interface Data {
+export interface Data {
   dataset: number[][];
 }
 
