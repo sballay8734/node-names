@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Canvas, Circle, Group, Text } from "@shopify/react-native-skia";
 import { View, StyleSheet } from "react-native";
+import * as d3 from "d3";
+
+// TODO: Need to type "data" properly (d3 types)
+function ForceGraph({ data }: any) {}
 
 const Index = () => {
   const width = 256;
