@@ -63,7 +63,15 @@ function RootLayoutNav() {
   );
 }
 
-// !TODO: You should be able to create everything you need with Skia. But D3 might speed up the process if it's easy to implement and actively maintained.
+// REMEMBER: d3-scale, d3-array, d3-interpolate, and d3-format DON'T interact with the DOM
+
+// REMEMBER:  d3-selection, d3-transition, and d3-axis do manipulate the DOM, which competes with React’s virtual DOM. In these cases, you can attach a ref to an element and pass it to D3 in a useEffect hook.
+
+// DOCS: https://d3js.org/getting-started#d3-in-react
+
+// !TODO: USE D3 for the MATH side of things!
+
+// !TODO: You should be able to create everything you need with Skia. But D3 should help alot with the math
 
 // TODO: Make sure to also include ability to add photos, description, social media links, phone, email, etc... "John's friends boyfriend. Remember him? Can't remember blah blah blah..." -- You'd never find that person in contacts but could use NodeNames to find them pretty easily.
 
