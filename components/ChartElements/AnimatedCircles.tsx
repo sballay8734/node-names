@@ -16,21 +16,19 @@ export default function AnimatedCircles({ dataset }: Data) {
       }}
     >
       {dataset.map(([x, y], index) => (
-        <>
-          <Circle
-            key={index}
-            cx={x * 3}
-            cy={y * 3}
-            r={6}
-            color={"#52aba3"}
-            strokeWidth={2.5}
-            opacity={1}
-          />
-          {/* REVIEW: vvv I think you need this vvv */}
-          {/* <GestureDetector gesture={gesture}>
+        <Circle
+          key={index}
+          cx={x * 3}
+          cy={y * 3}
+          r={6}
+          color={"#52aba3"}
+          strokeWidth={2.5}
+          opacity={1}
+        />
+        /* REVIEW: vvv I think you need this vvv */
+        /* <GestureDetector gesture={gesture}>
             <Animated.View style={style} />
-          </GestureDetector> */}
-        </>
+          </GestureDetector> */
       ))}
     </Canvas>
   );
