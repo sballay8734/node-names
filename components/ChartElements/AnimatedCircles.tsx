@@ -1,7 +1,5 @@
 import { Data } from "./Circles";
 import { Canvas, Circle } from "@shopify/react-native-skia";
-import { GestureDetector, Gesture } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
 
 export default function AnimatedCircles({ dataset }: Data) {
   return (

@@ -4,6 +4,8 @@ import * as d3 from "d3";
 import Circles from "@/components/ChartElements/Circles";
 import { generateDataset } from "@/data/testDataset";
 import AnimatedCircles from "@/components/ChartElements/AnimatedCircles";
+import { TestComp } from "@/components/ChartElements/TestComp";
+import { useSpring, animated } from "@react-spring/native";
 
 // TODO: Need to type "data" properly (d3 types)
 function ForceGraph({ data }: any) {}
@@ -15,10 +17,21 @@ const Index = () => {
   // TODO: Need to type useState here
   const [dataset, setDataset] = useState<Data>(generateDataset());
 
+  // **************************** YESSSSSSSSS *********************************
+  const props = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+    config: { duration: 3000 },
+  });
+
   return (
     <View style={styles.container}>
-      <Circles dataset={dataset} />
+      {/* <Circles dataset={dataset} /> */}
+      <animated.View style={{ ...props, flexGrow: 1 }}>
+        <Text style={{ color: "white", fontSize: 20 }}>Hello World!</Text>
+      </animated.View>
       <AnimatedCircles dataset={dataset} />
+      <TestComp />
       <Pressable
         style={styles.button}
         onPress={() => setDataset(generateDataset())}
