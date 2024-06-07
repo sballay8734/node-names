@@ -3,6 +3,7 @@ import { View, StyleSheet, Pressable, Text } from "react-native";
 import * as d3 from "d3";
 import Circles from "@/components/ChartElements/Circles";
 import { generateDataset } from "@/data/testDataset";
+import AnimatedCircles from "@/components/ChartElements/AnimatedCircles";
 
 // TODO: Need to type "data" properly (d3 types)
 function ForceGraph({ data }: any) {}
@@ -17,6 +18,7 @@ const Index = () => {
   return (
     <View style={styles.container}>
       <Circles dataset={dataset} />
+      <AnimatedCircles dataset={dataset} />
       <Pressable
         style={styles.button}
         onPress={() => setDataset(generateDataset())}

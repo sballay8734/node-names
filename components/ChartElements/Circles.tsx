@@ -1,4 +1,4 @@
-import Svg, { Circle } from "react-native-svg";
+import { Canvas, Circle } from "@shopify/react-native-skia";
 
 interface CircleProps {
   cx: string;
@@ -15,24 +15,28 @@ export interface Data {
 
 export default function Circles({ dataset }: Data) {
   return (
-    <Svg
-      height="50%"
-      width="100%"
-      viewBox="0 0 100 100"
-      style={{ backgroundColor: "#2e2323" }}
+    <Canvas
+      style={{
+        flex: 1,
+        backgroundColor: "#452b2b",
+        height: "50%",
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {dataset.map(([x, y], i) => (
         <Circle
           key={i}
-          cx={x}
-          cy={y}
-          r="4"
-          stroke=""
-          strokeWidth="2.5"
-          fill="#a84c4c"
+          cx={x * 3}
+          cy={y * 3}
+          r={6}
+          color="#a84c4c" // fill color of circle
+          strokeWidth={2.5}
+          opacity={1}
         />
       ))}
-    </Svg>
+    </Canvas>
   );
 }
 
