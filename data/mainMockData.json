@@ -6,23 +6,93 @@
       "firstName": "Shawn",
       "lastName": "Ballay",
       "group": null,
-      "links": {
-        "source": 0,
-        "target": 1
-      }
+      "sex": "male"
     },
     {
-      "id": 0,
+      "id": 1,
       "rootNode": false,
       "firstName": "Aaron",
       "lastName": "Mackenzie",
-      "group": null,
-      "links": {
-        "source": 0,
-        "target": 1
-      }
+      "group": "Friends",
+      "sex": "male"
+    },
+    {
+      "id": 2,
+      "rootNode": false,
+      "firstName": "Donnie",
+      "lastName": "Irons",
+      "group": "Friends",
+      "sex": "male"
+    },
+    {
+      "id": 3,
+      "rootNode": false,
+      "firstName": "Steve",
+      "lastName": "Smith",
+      "group": "Friends",
+      "sex": "male"
+    },
+    {
+      "id": 4,
+      "rootNode": false,
+      "firstName": "Dan",
+      "lastName": "George",
+      "group": "Friends",
+      "sex": "male"
+    },
+    {
+      "id": 5,
+      "rootNode": false,
+      "firstName": "Katie",
+      "lastName": "Larson",
+      "group": "Friends",
+      "sex": "female"
+    },
+    {
+      "id": 6,
+      "rootNode": false,
+      "firstName": "Morgan",
+      "lastName": "George",
+      "group": "Friends",
+      "sex": "female"
     }
   ],
-  "links": [],
+  "links": [
+    {
+      "source": 0,
+      "target": 1,
+      "type": "Friend"
+    },
+    {
+      "source": 0,
+      "target": 2,
+      "type": "Friend"
+    },
+    {
+      "source": 0,
+      "target": 3,
+      "type": "Friend"
+    },
+    {
+      "source": 0,
+      "target": 4,
+      "type": "Friend"
+    },
+    {
+      "source": 4,
+      "target": 5,
+      "type": "Partner"
+    },
+    {
+      "source": 4,
+      "target": 6,
+      "type": "child"
+    },
+    {
+      "source": 5,
+      "target": 6,
+      "type": "child"
+    }
+  ],
   "groups": []
 }

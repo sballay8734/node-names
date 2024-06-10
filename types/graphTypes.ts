@@ -1,8 +1,9 @@
 type DefaultGroup = "Friends" | "Work" | "Family"; // subcategories?
 
 type Link = {
-  source: string; // id of user
+  source: string | string[]; // id of user
   target: string; // id of linked person
+  type: string; // child, partner, friend
 };
 
 // each node is a person
@@ -15,9 +16,9 @@ interface Node {
 
   group: string | null; // they can create their own groups
 
-  // symbolSize: number; based on number of connections
+  sex: "male" | "female";
 
-  links: Link[];
+  // symbolSize: number; based on number of connections
 
   // x = center on screen initially (Also always have a button in top left to navigate to root node)
   // y = center on screen initially
