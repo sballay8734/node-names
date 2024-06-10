@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "rootNode": true,
+      "firstName": "Shawn",
+      "lastName": "Ballay",
+      "group": null,
+      "links": {
+        "source": 0,
+        "target": 1
+      }
+    },
+    {
+      "id": 0,
+      "rootNode": false,
+      "firstName": "Aaron",
+      "lastName": "Mackenzie",
+      "group": null,
+      "links": {
+        "source": 0,
+        "target": 1
+      }
+    }
+  ],
+  "links": [],
+  "groups": []
+}

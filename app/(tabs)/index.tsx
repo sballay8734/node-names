@@ -6,9 +6,8 @@ import { generateDataset } from "@/data/testDataset";
 import AnimatedCircles from "@/components/ChartElements/AnimatedCircles";
 import { TestComp } from "@/components/ChartElements/TestComp";
 import { useSpring, animated } from "@react-spring/native";
-
-// TODO: Need to type "data" properly (d3 types)
-function ForceGraph({ data }: any) {}
+import graphData from "../../data/miserables.json";
+import ForceGraph from "@/components/ChartElements/ForceGraph";
 
 type Point = [number, number];
 type Data = number[][];
@@ -27,11 +26,12 @@ const Index = () => {
   return (
     <View style={styles.container}>
       {/* <Circles dataset={dataset} /> */}
-      <animated.View style={{ ...props, flexGrow: 1 }}>
+      {/* <animated.View style={{ ...props, flexGrow: 1 }}>
         <Text style={{ color: "white", fontSize: 20 }}>Hello World!</Text>
       </animated.View>
       <AnimatedCircles dataset={dataset} />
-      <TestComp />
+      <TestComp /> */}
+      <ForceGraph dataset={graphData} />
       <Pressable
         style={styles.button}
         onPress={() => setDataset(generateDataset())}
@@ -53,11 +53,15 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
+    marginBottom: 10,
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: "black",
+    opacity: 0.9,
   },
   text: {
     fontSize: 16,
