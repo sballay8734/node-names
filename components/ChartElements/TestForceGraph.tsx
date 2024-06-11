@@ -22,11 +22,11 @@ interface GraphData {
 export default function TestForceGraph({ dataset }: GraphData) {
   const fontStyle = {
     fontFamily: "SpaceMono",
-    fontSize: 24,
+    fontSize: 100,
+    color: "#000000",
   } as const;
 
   const font = matchFont(fontStyle);
-  console.log(font);
 
   // get height and width to position nodes
   const windowWidth = Dimensions.get("window").width;
@@ -84,17 +84,18 @@ export default function TestForceGraph({ dataset }: GraphData) {
           <Circle
             cx={node.x}
             cy={node.y}
-            r={node.connections === 0 ? 5 : 5 * node.connections}
+            r={node.connections === 0 ? 7 : 7 * node.connections}
             color="#fff"
             strokeWidth={1.5}
           />
           <Text
-            color={Skia.Color("red")}
+            color={Skia.Color("black")}
             x={node.x}
             y={node.y}
             text={node.firstName}
             font={font}
             strokeWidth={2}
+            style={"fill"}
           />
         </Group>
       ))}
