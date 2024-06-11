@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import {
   Canvas,
   Circle,
@@ -19,15 +20,20 @@ interface GraphData {
   };
 }
 
+// !TODO: Had many problems trying to use fonts already loaded by expo.
+// REVIEW: This is a workaround that allows you to move forward vvvvvvvvvvvvvvv
+const fontFamily = Platform.select({ ios: "Helvetica", default: "serif" });
+
+const fontStyle = {
+  fontFamily,
+  fontSize: 10,
+  fontWeight: "500",
+} as const;
+
+const font = matchFont(fontStyle);
+// REVIEW: WORKAROUND ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 export default function TestForceGraph({ dataset }: GraphData) {
-  const fontStyle = {
-    fontFamily: "SpaceMono",
-    fontSize: 100,
-    color: "#000000",
-  } as const;
-
-  const font = matchFont(fontStyle);
-
   // get height and width to position nodes
   const windowWidth = Dimensions.get("window").width;
 
@@ -78,29 +84,42 @@ export default function TestForceGraph({ dataset }: GraphData) {
 
         return null;
       })}
-      {nodes.map((node, index) => (
-        // each child should have a key?
-        <Group key={`node-${index}`}>
-          <Circle
-            cx={node.x}
-            cy={node.y}
-            r={node.connections === 0 ? 7 : 7 * node.connections}
-            color="#fff"
-            strokeWidth={1.5}
-          />
-          <Text
-            color={Skia.Color("black")}
-            x={node.x}
-            y={node.y}
-            text={node.firstName}
-            font={font}
-            strokeWidth={2}
-            style={"fill"}
-          />
-        </Group>
-      ))}
+      {nodes.map((node, index) => {
+        if (index === 0) {
+          console.log("NODES:", node.x, node.y);
+          console.log("FONT SIZE:", font.getSize());
+          console.log(
+            "TEXT X:",
+            node.x - font.measureText(node.firstName).width / 2,
+          );
+          console.log("TEXT Y:", node.y + font.getSize() / 4);
+        }
+        return (
+          <Group key={`node-${index}`}>
+            <Circle
+              cx={node.x}
+              cy={node.y}
+              r={node.connections === 0 ? 7 : 7 * node.connections}
+              color="#171717"
+              strokeWidth={1.5}
+            />
+            <Text
+              color={"#ffffff"}
+              x={node.x - font.measureText(node.firstName).width / 2} // Center the text horizontally
+              // mTODO: vv This is NOT the exact center but close enough for now
+              y={node.y + font.getSize() / 4}
+              text={node.firstName}
+              font={font}
+              strokeWidth={2}
+              style={"fill"}
+            />
+          </Group>
+        );
+      })}
     </Canvas>
   );
 }
 
 // !TODO: Need to add ability to scroll around
+// !TODO: Font size should scale based on circle size
+// !TODO: Names shouldn't show at all if the circles are too small

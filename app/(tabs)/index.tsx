@@ -4,7 +4,6 @@ import * as d3 from "d3";
 import Circles from "@/components/ChartElements/Circles";
 import { generateDataset } from "@/data/testDataset";
 import AnimatedCircles from "@/components/ChartElements/AnimatedCircles";
-import { TestComp } from "@/components/ChartElements/TestComp";
 import { useSpring, animated } from "@react-spring/native";
 import graphData from "../../data/miserables.json";
 import ForceGraph from "@/components/ChartElements/ForceGraph";
@@ -32,7 +31,6 @@ const Index = () => {
         <Text style={{ color: "white", fontSize: 20 }}>Hello World!</Text>
       </animated.View>
       <AnimatedCircles dataset={dataset} />
-      <TestComp /> */}
       {/* <ForceGraph dataset={graphData} /> */}
       <TestForceGraph dataset={mainMockData} />
       <Pressable
