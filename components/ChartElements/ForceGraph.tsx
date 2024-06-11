@@ -29,7 +29,7 @@ export default function ForceGraph({ dataset }: Data) {
 
   const nodes = dataset.nodes.map((node, index) => ({
     ...node,
-    x: Math.random() * windowWidth, // Replace with your desired x coordinate calculation
+    x: Math.random() * windowWidth,
     y: Math.random() * windowHeight,
   }));
 

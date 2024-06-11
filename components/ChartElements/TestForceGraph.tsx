@@ -1,13 +1,14 @@
 import {
   Canvas,
   Circle,
+  Group,
   Path,
   Skia,
+  Text,
   matchFont,
-  useFonts,
 } from "@shopify/react-native-skia";
 import * as d3 from "d3";
-import { Dimensions, View, Text } from "react-native";
+import { Dimensions } from "react-native";
 // import { Data } from "./Circles";
 import { NodePerson, NodeLink } from "@/types/graphTypes";
 
@@ -19,21 +20,13 @@ interface GraphData {
 }
 
 export default function TestForceGraph({ dataset }: GraphData) {
-  // const customFontMgr = useFonts({
-  //   SpaceMono: [require("../../assets/fonts/SpaceMono-Regular.ttf")],
-  // });
+  const fontStyle = {
+    fontFamily: "SpaceMono",
+    fontSize: 24,
+  } as const;
 
-  // if (!customFontMgr) {
-  //   return null;
-  // }
-
-  // const fontStyle = {
-  //   fontFamily: "SpaceMono",
-  //   fontWeight: "bold",
-  //   fontSize: 16,
-  // } as const;
-
-  // const font = matchFont(fontStyle, customFontMgr);
+  const font = matchFont(fontStyle);
+  console.log(font);
 
   // get height and width to position nodes
   const windowWidth = Dimensions.get("window").width;
@@ -86,15 +79,24 @@ export default function TestForceGraph({ dataset }: GraphData) {
         return null;
       })}
       {nodes.map((node, index) => (
-        <Circle
-          key={`node-${index}`}
-          cx={node.x}
-          cy={node.y}
-          r={node.connections === 0 ? 5 : 5 * node.connections}
-          color="#fff"
-          strokeWidth={1.5}
-        />
-        // <Text x={node.x} y={node.y} text={node.firstName} />
+        // each child should have a key?
+        <Group key={`node-${index}`}>
+          <Circle
+            cx={node.x}
+            cy={node.y}
+            r={node.connections === 0 ? 5 : 5 * node.connections}
+            color="#fff"
+            strokeWidth={1.5}
+          />
+          <Text
+            color={Skia.Color("red")}
+            x={node.x}
+            y={node.y}
+            text={node.firstName}
+            font={font}
+            strokeWidth={2}
+          />
+        </Group>
       ))}
     </Canvas>
   );
