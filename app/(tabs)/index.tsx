@@ -8,6 +8,8 @@ import { TestComp } from "@/components/ChartElements/TestComp";
 import { useSpring, animated } from "@react-spring/native";
 import graphData from "../../data/miserables.json";
 import ForceGraph from "@/components/ChartElements/ForceGraph";
+import TestForceGraph from "@/components/ChartElements/TestForceGraph";
+import mainMockData from "../../data/mainMockData.json";
 
 type Point = [number, number];
 type Data = number[][];
@@ -31,7 +33,8 @@ const Index = () => {
       </animated.View>
       <AnimatedCircles dataset={dataset} />
       <TestComp /> */}
-      <ForceGraph dataset={graphData} />
+      {/* <ForceGraph dataset={graphData} /> */}
+      <TestForceGraph dataset={mainMockData} />
       <Pressable
         style={styles.button}
         onPress={() => setDataset(generateDataset())}
