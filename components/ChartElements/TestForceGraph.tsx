@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -15,13 +15,23 @@ import {
 import * as d3 from "d3";
 import { Dimensions } from "react-native";
 import { NodePerson, NodeLink } from "@/types/graphTypes";
-import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import {
+  GestureDetector,
+  Gesture,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 
 interface GraphData {
   dataset: {
     nodes: NodePerson[];
     links: NodeLink[];
   };
+}
+
+interface ProcessedNode extends NodePerson {
+  x: number;
+  y: number;
+  connections: number;
 }
 
 // mTODO: These should not be hard coded like this
@@ -57,7 +67,7 @@ export default function TestForceGraph({ dataset }: GraphData) {
   const centerX = windowWidth / 2;
   const centerY = windowHeight / 2;
 
-  const nodes = dataset.nodes.map((node, index) => ({
+  const nodes: ProcessedNode[] = dataset.nodes.map((node, index) => ({
     ...node,
     x: node.rootNode
       ? centerX
@@ -72,6 +82,7 @@ export default function TestForceGraph({ dataset }: GraphData) {
   const scale = useSharedValue(1);
   const startScale = useSharedValue(0);
 
+  // Pinch Gesture
   const pinch = Gesture.Pinch()
     .onStart(() => {
       startScale.value = scale.value;
@@ -124,7 +135,7 @@ export default function TestForceGraph({ dataset }: GraphData) {
 
             return null;
           })}
-          {nodes.map((node, index) => {
+          {/* {nodes.map((node, index) => {
             return (
               <Group key={`node-${index}`}>
                 <Circle
@@ -137,7 +148,7 @@ export default function TestForceGraph({ dataset }: GraphData) {
                 <Text
                   color={"#ffffff"}
                   x={node.x - font.measureText(node.firstName).width / 2}
-                  // mTODO: vv This is NOT the exact center but close enough for now
+                  // mTODO: vv This is NOT exact center close enough for now
                   y={node.y + font.getSize() / 4}
                   text={node.firstName}
                   font={font}
@@ -146,7 +157,7 @@ export default function TestForceGraph({ dataset }: GraphData) {
                 />
               </Group>
             );
-          })}
+          })} */}
         </Canvas>
       </Animated.View>
     </GestureDetector>
@@ -156,6 +167,7 @@ export default function TestForceGraph({ dataset }: GraphData) {
 // !TODO: Need to add ability to scroll around
 // !TODO: Font size should scale based on circle size
 // !TODO: Names shouldn't show at all if the circles are too small
+// !TODO: Keep in mind that GestureDetector is not compatible with the Animated API, nor with Reanimated 1. FROM DOCS
 
 const styles = StyleSheet.create({
   container: {
