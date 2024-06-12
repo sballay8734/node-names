@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { StyleSheet, Pressable, Text } from "react-native";
 import * as d3 from "d3";
 import { generateDataset } from "@/data/testDataset";
