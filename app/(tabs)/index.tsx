@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable, Text } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { StyleSheet, Pressable, Text } from "react-native";
 import * as d3 from "d3";
-import Circles from "@/components/ChartElements/Circles";
 import { generateDataset } from "@/data/testDataset";
-import AnimatedCircles from "@/components/ChartElements/AnimatedCircles";
-import { useSpring, animated } from "@react-spring/native";
-import graphData from "../../data/miserables.json";
-import ForceGraph from "@/components/ChartElements/ForceGraph";
+import { useSpring } from "@react-spring/native";
 import TestForceGraph from "@/components/ChartElements/TestForceGraph";
 import mainMockData from "../../data/mainMockData.json";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-type Point = [number, number];
 type Data = number[][];
 
 const Index = () => {
-  // TODO: Need to type useState here
+  // TODO: This just triggers a reload of TestForceGraph
   const [dataset, setDataset] = useState<Data>(generateDataset());
 
   // **************************** YESSSSSSSSS *********************************
@@ -25,13 +22,7 @@ const Index = () => {
   });
 
   return (
-    <View style={styles.container}>
-      {/* <Circles dataset={dataset} /> */}
-      {/* <animated.View style={{ ...props, flexGrow: 1 }}>
-        <Text style={{ color: "white", fontSize: 20 }}>Hello World!</Text>
-      </animated.View>
-      <AnimatedCircles dataset={dataset} />
-      {/* <ForceGraph dataset={graphData} /> */}
+    <GestureHandlerRootView style={styles.container}>
       <TestForceGraph dataset={mainMockData} />
       <Pressable
         style={styles.button}
@@ -39,17 +30,16 @@ const Index = () => {
       >
         <Text style={styles.text}>Generate New Data</Text>
       </Pressable>
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#452b2b",
   },
   button: {
     alignItems: "center",
