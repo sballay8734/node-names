@@ -1,25 +1,12 @@
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import {
-  Canvas,
-  Circle,
-  Group,
-  Path,
-  Skia,
-  Text,
-  matchFont,
-} from "@shopify/react-native-skia";
-import * as d3 from "d3";
+import { Canvas, Path, Skia, matchFont } from "@shopify/react-native-skia";
 import { Dimensions } from "react-native";
 import { NodePerson, NodeLink } from "@/types/graphTypes";
-import {
-  GestureDetector,
-  Gesture,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
+import { GestureDetector, Gesture } from "react-native-gesture-handler";
 
 interface GraphData {
   dataset: {

@@ -1,8 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-type Data = number[][];
-
 const Index = () => {
   return (
     <View style={styles.container}>
