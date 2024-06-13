@@ -23,3 +23,5 @@ const styles = StyleSheet.create({
 });
 
 export default Index;
+
+// NOTE: You may need to include reanimated in plugins (but it may also already be included with expo)
