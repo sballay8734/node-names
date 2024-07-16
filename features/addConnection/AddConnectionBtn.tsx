@@ -1,7 +1,7 @@
 import { View, Text } from "@/components/Themed";
 import { Pressable } from "react-native";
 
-export default function AddLinkBtn(): React.JSX.Element {
+export default function AddConnectionBtn(): React.JSX.Element {
   return (
     <View
       style={{
@@ -25,6 +25,7 @@ export default function AddLinkBtn(): React.JSX.Element {
           alignSelf: "center",
           marginBottom: 3,
         }}
+        onPress={() => alert("Are you sure you want to add a connection to...")}
       >
         <Text style={{ fontSize: 30 }}>+</Text>
       </Pressable>

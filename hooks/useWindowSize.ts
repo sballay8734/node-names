@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dimensions, ScaledSize } from "react-native";
 
-interface WindowSize {
+export interface WindowSize {
   width: number;
   height: number;
   windowCenterX: number;

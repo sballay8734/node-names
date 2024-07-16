@@ -1,62 +1,37 @@
 import React from "react";
-import { Platform, StyleSheet, View } from "react-native";
-import {
-  Canvas,
-  Circle,
-  Group,
-  matchFont,
-  Text as SkiaText,
-} from "@shopify/react-native-skia";
+import { StyleSheet } from "react-native";
+import { Canvas, Text as SkiaText } from "@shopify/react-native-skia";
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
 import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
-import AddLinkBtn from "@/features/addLink/addLinkBtn";
-import Node from "@/features/nodes/Node";
-import { regNodeRad, rootNodeRad } from "@/constants/nodes";
+import AddConnectionBtn from "@/features/addConnection/AddConnectionBtn";
+import Node from "@/features/graph/Node";
+import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
+import RootNode from "@/features/graph/RootNode";
+import { INode } from "@/features/graph/types/graphTypes";
+import MultiSelectToggle from "@/features/multiselect/MultiSelectToggle";
 
-interface Node {
-  id: number;
-  rootNode: boolean;
-  firstName: string;
-  lastName: string;
-  group: string | null;
-  sex: string;
-}
-
-const nodes: Node[] = testNodes.nodes;
+const nodes: INode[] = testNodes.nodes;
 
 const Index = () => {
   const windowSize = useWindowSize();
 
   const totalNodes = nodes.length - 1;
 
-  // !TODO: Custom fonts from EXPO are NOT working vvvvv
-  // const fontFamily = Platform.select({ ios: "SpaceMono", default: "serif" });
-
-  // Font config ***************************************************************
-  const fontFamily = Platform.select({ ios: "Helvetica", default: "serif" });
-
-  // TODO: Font size should be based on node width
-  const fontStyle = {
-    fontFamily,
-    fontSize: 12,
-  };
-  const font = matchFont(fontStyle);
-
   function getYValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * rootNodeRad + windowSize.windowCenterY;
+    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
   }
 
   function getXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * rootNodeRad + windowSize.windowCenterX;
+    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
   }
 
   const nodePositions = nodes.map((node, index) => {
@@ -81,34 +56,18 @@ const Index = () => {
         {nodes.map((node, index) => {
           if (node.rootNode) {
             return (
-              <Group key={node.id}>
-                <Circle
-                  color={"red"}
-                  cx={windowSize.windowCenterX}
-                  cy={windowSize.windowCenterY}
-                  r={rootNodeRad / 2}
-                />
-                <SkiaText
-                  color={"black"}
-                  x={
-                    windowSize.windowCenterX -
-                    font.measureText(node.firstName).width / 2
-                  }
-                  // mTODO: vv This is NOT exact center close enough for now
-                  y={
-                    windowSize.windowCenterY +
-                    font.measureText(node.firstName).height / 2 / 2
-                  }
-                  text={node.firstName}
-                  font={font}
-                  strokeWidth={2}
-                  style={"fill"}
-                />
-              </Group>
+              <RootNode node={node} windowSize={windowSize} key={node.id} />
             );
           } else {
-            // !TODO: WORKING HERE TO MOVE NODE RENDREING LOGIC
-            return <Node node={node} index={index} totalNodes={totalNodes} />;
+            return (
+              <Node
+                node={node}
+                index={index}
+                totalNodes={totalNodes}
+                windowSize={windowSize}
+                key={node.id}
+              />
+            );
           }
         })}
       </Canvas>
@@ -116,7 +75,9 @@ const Index = () => {
       {/* GESTURE DETECTORS ************************************************ */}
       {nodes.map((node, index) => {
         const { x, y } = nodePositions[index];
-        const radius = node.rootNode ? rootNodeRad / 2 : regNodeRad / 2;
+        const radius = node.rootNode
+          ? ROOT_NODE_RADIUS / 2
+          : REG_NODE_RADIUS / 2;
 
         const detectorStyle: any = {
           position: "absolute",
@@ -145,7 +106,8 @@ const Index = () => {
           </GestureDetector>
         );
       })}
-      <AddLinkBtn />
+      <MultiSelectToggle />
+      <AddConnectionBtn />
     </GestureHandlerRootView>
   );
 };
