@@ -33,12 +33,12 @@ export default function RootNode({
   return (
     <Group>
       <Circle
-        color={"red"}
+        // color={"red"}
         cx={windowSize.windowCenterX}
         cy={windowSize.windowCenterY}
         r={ROOT_NODE_RADIUS / 2}
       />
-      <SkiaText
+      {/* <SkiaText
         color={"black"}
         x={
           windowSize.windowCenterX - font.measureText(node.firstName).width / 2
@@ -52,7 +52,7 @@ export default function RootNode({
         font={font}
         strokeWidth={2}
         style={"fill"}
-      />
+      /> */}
     </Group>
   );
 }

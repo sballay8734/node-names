@@ -16,6 +16,7 @@ import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import MultiSelectToggle from "@/features/multiselect/MultiSelectToggle";
+import NodeTapDetector from "@/features/graph/NodeTapDetector";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -34,13 +35,13 @@ const Index = () => {
     return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
   }
 
-  const nodePositions = nodes.map((node, index) => {
+  function getNodePosition(node: INode, index: number) {
     if (node.rootNode) {
       return { x: windowSize.windowCenterX, y: windowSize.windowCenterY };
     } else {
       return { x: getXValue(index), y: getYValue(index) };
     }
-  });
+  }
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -49,7 +50,7 @@ const Index = () => {
           flex: 1,
           height: "100%",
           width: "100%",
-          backgroundColor: "green",
+          backgroundColor: "#121212",
         }}
       >
         {/* NODES ********************************************************** */}
@@ -74,38 +75,13 @@ const Index = () => {
 
       {/* GESTURE DETECTORS ************************************************ */}
       {nodes.map((node, index) => {
-        const { x, y } = nodePositions[index];
-        const radius = node.rootNode
-          ? ROOT_NODE_RADIUS / 2
-          : REG_NODE_RADIUS / 2;
-
-        const detectorStyle: any = {
-          position: "absolute",
-          backgroudColor: "red",
-          top: -radius,
-          left: -radius,
-          width: radius * 2,
-          height: radius * 2,
-          transform: [{ translateX: x }, { translateY: y }],
-        };
-
-        const gesture = Gesture.Tap().onStart(() => {
-          console.log(`Tapped node ${node.firstName}`);
-        });
-
+        const { x, y } = getNodePosition(node, index);
         return (
-          <GestureDetector key={node.id} gesture={gesture}>
-            <Animated.View
-              style={{
-                ...detectorStyle,
-                // backgroundColor: "red",
-                opacity: 0.5,
-                borderRadius: 100, // full (to make circle)
-              }}
-            />
-          </GestureDetector>
+          <NodeTapDetector key={node.id} node={node} nodePosition={{ x, y }} />
         );
       })}
+
+      {/* MultiSelect and AddConnectionBtn ******************************** */}
       <MultiSelectToggle />
       <AddConnectionBtn />
     </GestureHandlerRootView>
@@ -125,4 +101,5 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// NOTE: You may need to include reanimated in plugins (but it may also already be included with expo)
+// TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
+// mTODO: Change "rootNode" to "isRootNode"
