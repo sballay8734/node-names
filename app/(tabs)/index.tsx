@@ -16,6 +16,7 @@ import {
 import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import AddLinkBtn from "@/features/addLink/addLinkBtn";
 
 interface Node {
   id: number;
@@ -164,7 +165,7 @@ const Index = () => {
             <Animated.View
               style={{
                 ...detectorStyle,
-                backgroundColor: "red",
+                // backgroundColor: "red",
                 opacity: 0.5,
                 borderRadius: 100, // full (to make circle)
               }}
@@ -172,6 +173,7 @@ const Index = () => {
           </GestureDetector>
         );
       })}
+      <AddLinkBtn />
     </GestureHandlerRootView>
   );
 };
