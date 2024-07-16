@@ -17,6 +17,8 @@ import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import AddLinkBtn from "@/features/addLink/addLinkBtn";
+import Node from "@/features/nodes/Node";
+import { regNodeRad, rootNodeRad } from "@/constants/nodes";
 
 interface Node {
   id: number;
@@ -29,11 +31,11 @@ interface Node {
 
 const nodes: Node[] = testNodes.nodes;
 
-const rootRad = 100;
-const regRad = 50;
-
 const Index = () => {
   const windowSize = useWindowSize();
+
+  const totalNodes = nodes.length - 1;
+
   // !TODO: Custom fonts from EXPO are NOT working vvvvv
   // const fontFamily = Platform.select({ ios: "SpaceMono", default: "serif" });
 
@@ -47,18 +49,14 @@ const Index = () => {
   };
   const font = matchFont(fontStyle);
 
-  // Node position config ******************************************************
-  const totalNodes = nodes.length - 1;
-
-  // word circle around root node
   function getYValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * rootRad + windowSize.windowCenterY;
+    return Math.sin(angle) * rootNodeRad + windowSize.windowCenterY;
   }
 
   function getXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * rootRad + windowSize.windowCenterX;
+    return Math.cos(angle) * rootNodeRad + windowSize.windowCenterX;
   }
 
   const nodePositions = nodes.map((node, index) => {
@@ -67,11 +65,6 @@ const Index = () => {
     } else {
       return { x: getXValue(index), y: getYValue(index) };
     }
-  });
-
-  // Node Touch Config  ********************************************************
-  const tap = Gesture.Tap().onStart(() => {
-    console.log("tap");
   });
 
   return (
@@ -93,7 +86,7 @@ const Index = () => {
                   color={"red"}
                   cx={windowSize.windowCenterX}
                   cy={windowSize.windowCenterY}
-                  r={rootRad / 2}
+                  r={rootNodeRad / 2}
                 />
                 <SkiaText
                   color={"black"}
@@ -114,29 +107,8 @@ const Index = () => {
               </Group>
             );
           } else {
-            return (
-              <Group key={node.id} style={"fill"}>
-                <Circle
-                  color={"blue"}
-                  cx={getXValue(index)}
-                  cy={getYValue(index)}
-                  r={regRad / 2}
-                />
-                <SkiaText
-                  x={
-                    getXValue(index) -
-                    font.measureText(node.firstName).width / 2
-                  }
-                  y={
-                    getYValue(index) +
-                    font.measureText(node.firstName).height / 2 / 2
-                  }
-                  text={node.firstName}
-                  font={font}
-                  style={"fill"}
-                />
-              </Group>
-            );
+            // !TODO: WORKING HERE TO MOVE NODE RENDREING LOGIC
+            return <Node node={node} index={index} totalNodes={totalNodes} />;
           }
         })}
       </Canvas>
@@ -144,7 +116,7 @@ const Index = () => {
       {/* GESTURE DETECTORS ************************************************ */}
       {nodes.map((node, index) => {
         const { x, y } = nodePositions[index];
-        const radius = node.rootNode ? rootRad / 2 : regRad / 2;
+        const radius = node.rootNode ? rootNodeRad / 2 : regNodeRad / 2;
 
         const detectorStyle: any = {
           position: "absolute",
