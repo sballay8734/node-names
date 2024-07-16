@@ -55,6 +55,14 @@
       "lastName": "George",
       "group": "Friends",
       "sex": "female"
+    },
+    {
+      "id": 7,
+      "rootNode": false,
+      "firstName": "Jason",
+      "lastName": "Canter",
+      "group": "Friends",
+      "sex": "male"
     }
   ],
   "links": [
