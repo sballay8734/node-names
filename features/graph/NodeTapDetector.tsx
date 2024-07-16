@@ -17,10 +17,17 @@ import {
 interface Props {
   node: INode;
   nodePosition: { x: number; y: number };
+  selectedNode: INode | null;
+  handleNodeSelect: (node: INode) => void;
 }
 
-export default function NodeTapDetector({ node, nodePosition }: Props) {
-  const pressed = useSharedValue<boolean>(false);
+export default function NodeTapDetector({
+  node,
+  nodePosition,
+  selectedNode,
+  handleNodeSelect,
+}: Props) {
+  const pressed = selectedNode?.id === node.id;
 
   const { x, y } = nodePosition;
   const radius = node.rootNode ? ROOT_NODE_RADIUS / 2 : REG_NODE_RADIUS / 2;
@@ -49,23 +56,22 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     flexDirection: "row",
   };
 
-  const tap = Gesture.Tap().onStart(() => {
-    pressed.value = !pressed.value;
-  });
+  // !TODO: Remove runOnJS if possible when changing to redux
+  const tap = Gesture.Tap()
+    .onStart(() => {
+      // console.log(selectedNode, handleNodeSelect);
+      handleNodeSelect(node);
+      // pressed.value = !pressed.value;
+    })
+    .runOnJS(true);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    borderColor: withTiming(
-      pressed.value ? activeBorderColor : inactiveBorderColor,
-      {
-        duration: 100,
-      },
-    ),
-    backgroundColor: withTiming(
-      pressed.value ? activeBgColor : inactiveBgColor,
-      {
-        duration: 100,
-      },
-    ),
+    borderColor: withTiming(pressed ? activeBorderColor : inactiveBorderColor, {
+      duration: 100,
+    }),
+    backgroundColor: withTiming(pressed ? activeBgColor : inactiveBgColor, {
+      duration: 100,
+    }),
   }));
 
   // TODO: Calc font size based on name length and circle size

@@ -1,18 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { Canvas, Text as SkiaText } from "@shopify/react-native-skia";
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
 import AddConnectionBtn from "@/features/addConnection/AddConnectionBtn";
 import Node from "@/features/graph/Node";
-import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
+import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import MultiSelectToggle from "@/features/multiselect/MultiSelectToggle";
@@ -21,6 +16,8 @@ import NodeTapDetector from "@/features/graph/NodeTapDetector";
 const nodes: INode[] = testNodes.nodes;
 
 const Index = () => {
+  const [selectedNode, setSelectedNode] = useState<INode | null>(null);
+
   const windowSize = useWindowSize();
 
   const totalNodes = nodes.length - 1;
@@ -40,6 +37,15 @@ const Index = () => {
       return { x: windowSize.windowCenterX, y: windowSize.windowCenterY };
     } else {
       return { x: getXValue(index), y: getYValue(index) };
+    }
+  }
+
+  // TODO: Handle this logic in redux (It currently re-renders ALL nodes)
+  function handleNodeSelect(node: INode) {
+    if (selectedNode?.id === node.id) {
+      setSelectedNode(null);
+    } else {
+      setSelectedNode(node);
     }
   }
 
@@ -77,13 +83,19 @@ const Index = () => {
       {nodes.map((node, index) => {
         const { x, y } = getNodePosition(node, index);
         return (
-          <NodeTapDetector key={node.id} node={node} nodePosition={{ x, y }} />
+          <NodeTapDetector
+            key={node.id}
+            node={node}
+            nodePosition={{ x, y }}
+            selectedNode={selectedNode}
+            handleNodeSelect={handleNodeSelect}
+          />
         );
       })}
 
       {/* MultiSelect and AddConnectionBtn ******************************** */}
       <MultiSelectToggle />
-      <AddConnectionBtn />
+      <AddConnectionBtn selectedNode={selectedNode} />
     </GestureHandlerRootView>
   );
 };

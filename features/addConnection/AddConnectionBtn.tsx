@@ -2,10 +2,27 @@ import { Pressable } from "react-native";
 
 import { View, Text } from "@/components/Themed";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { INode } from "../graph/types/graphTypes";
 
-export default function AddConnectionBtn(): React.JSX.Element {
+interface Props {
+  selectedNode: INode | null;
+}
+
+export default function AddConnectionBtn({
+  selectedNode,
+}: Props): React.JSX.Element {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (selectedNode) {
+      setIsEnabled(true);
+    } else {
+      setIsEnabled(false);
+    }
+  }, [selectedNode]);
+
+  console.log("FROM BTN:", selectedNode);
 
   return (
     <View
