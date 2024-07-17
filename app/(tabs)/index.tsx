@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
 import Node from "@/features/graph/Node";
-import { ROOT_NODE_RADIUS } from "@/constants/nodes";
+import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
@@ -37,6 +37,23 @@ const Index = () => {
     }
   }
 
+  function getEdgePoint(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    radius: number,
+  ) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const ratio = radius / distance;
+    return {
+      x: x1 + dx * ratio,
+      y: y1 + dy * ratio,
+    };
+  }
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <Canvas
@@ -54,15 +71,16 @@ const Index = () => {
           if (!node.rootNode) {
             const { x: x1, y: y1 } = getNodePosition(node, index);
             const { x: x2, y: y2 } = getNodePosition(nodes[0], 0);
+            const start = getEdgePoint(x1, y1, x2, y2, REG_NODE_RADIUS);
+            const end = getEdgePoint(x2, y2, x1, y1, ROOT_NODE_RADIUS);
             return (
               <Line
                 key={`line-${node.id}`}
-                p1={{ x: x1, y: y1 }}
-                p2={{ x: x2, y: y2 }}
-                color="#232e3a"
-                style="stroke"
+                p1={start}
+                p2={end}
+                color="#222d38"
+                style="fill"
                 strokeWidth={2}
-                strokeCap={"round"}
               />
             );
           }
@@ -76,7 +94,6 @@ const Index = () => {
           } else {
             return (
               <Node
-                node={node}
                 index={index}
                 totalNodes={totalNodes}
                 windowSize={windowSize}
@@ -124,6 +141,7 @@ export default Index;
 // !TODO: FIRST FOR WED.
 // !TODO: "add button" that pops up options based on what is selected
 // !TODO: remove "group" and "add" btns and put them in add dialog
+// !TODO: View toggle (group View - zooms out, node view - zooms in)
 // Add connection, create connection, link nodes, create group, group selected nodes, etc...
 // TODO: use custom icon for btn
 // TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector

@@ -50,8 +50,10 @@ export function usePopoverOptions() {
       return [POPOVER_OPTIONS[0], POPOVER_OPTIONS[1]];
     } else if (selectedCount === 1) {
       return [POPOVER_OPTIONS[2], POPOVER_OPTIONS[3]];
-    } else {
+    } else if (selectedCount === 2) {
       return [POPOVER_OPTIONS[4], POPOVER_OPTIONS[5]];
+    } else {
+      return [POPOVER_OPTIONS[5]];
     }
   };
 

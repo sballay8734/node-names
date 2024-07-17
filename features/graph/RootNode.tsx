@@ -1,12 +1,6 @@
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { WindowSize } from "@/hooks/useWindowSize";
-import {
-  Circle,
-  Group,
-  matchFont,
-  Text as SkiaText,
-} from "@shopify/react-native-skia";
-import { Platform } from "react-native";
+import { Circle, Group } from "@shopify/react-native-skia";
 import { INode } from "./types/graphTypes";
 
 interface Props {
@@ -16,20 +10,7 @@ interface Props {
 
 // CONSTANTS ******************************************************************
 
-export default function RootNode({
-  node,
-  windowSize,
-}: Props): React.JSX.Element {
-  // Font config ***************************************************************
-  const fontFamily = Platform.select({ ios: "Helvetica", default: "serif" });
-
-  // TODO: Font size should be based on node width
-  const fontStyle = {
-    fontFamily,
-    fontSize: 12,
-  };
-  const font = matchFont(fontStyle);
-
+export default function RootNode({ windowSize }: Props): React.JSX.Element {
   return (
     <Group>
       <Circle

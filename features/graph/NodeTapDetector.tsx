@@ -16,6 +16,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
 import { RootState } from "@/store/store";
 
+const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
+
 interface Props {
   node: INode;
   nodePosition: { x: number; y: number };
@@ -118,7 +120,8 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor: "#4c55b7",
+              backgroundColor:
+                NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
               borderRadius: 100,
             },
             animatedTextStyles,
@@ -147,6 +150,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               width: "100%",
               fontSize: calcFontSize(node),
               color: "white",
+              fontWeight: node.rootNode ? "600" : "400",
             }}
           >
             {node.rootNode ? "ME" : node.firstName}
