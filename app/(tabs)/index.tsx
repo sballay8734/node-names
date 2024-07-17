@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
-import AddConnectionBtn from "@/features/addConnection/AddConnectionBtn";
+import AddConnectionBtn from "@/features/manageSelections/AddConnectionBtn";
 import Node from "@/features/graph/Node";
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import RootNode from "@/features/graph/RootNode";

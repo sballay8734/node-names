@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import ManageConnectionsReducer from "../features/addConnection/redux/manageConnections";
+import ManageSelectionsReducer from "../features/manageSelections/redux/manageSelections";
 
 export const store = configureStore({
   reducer: {
-    connections: ManageConnectionsReducer,
+    selections: ManageSelectionsReducer,
   },
 });
 
