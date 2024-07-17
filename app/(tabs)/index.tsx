@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 import { Canvas } from "@shopify/react-native-skia";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -11,6 +11,7 @@ import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import Popover from "@/features/manageSelections/Popover";
+import { Image } from "expo-image";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -39,12 +40,17 @@ const Index = () => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <ImageBackground
+        source={require("../../assets/images/bgImg.jpeg")}
+        style={styles.image}
+      />
       <Canvas
         style={{
           flex: 1,
           height: "100%",
           width: "100%",
-          backgroundColor: "#121212",
+          // backgroundColor: "#121212",
+          backgroundColor: "transparent",
         }}
       >
         {/* NODES ********************************************************** */}
@@ -88,7 +94,14 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#212121",
+    backgroundColor: "transparent",
+  },
+  image: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    justifyContent: "center",
   },
 });
 

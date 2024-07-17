@@ -38,21 +38,6 @@ export default function RootNode({
         cy={windowSize.windowCenterY}
         r={ROOT_NODE_RADIUS / 2}
       />
-      {/* <SkiaText
-        color={"black"}
-        x={
-          windowSize.windowCenterX - font.measureText(node.firstName).width / 2
-        }
-        // mTODO: vv This is NOT exact center close enough for now
-        y={
-          windowSize.windowCenterY +
-          font.measureText(node.firstName).height / 2 / 2
-        }
-        text={node.firstName}
-        font={font}
-        strokeWidth={2}
-        style={"fill"}
-      /> */}
     </Group>
   );
 }
