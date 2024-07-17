@@ -78,7 +78,7 @@ const Index = () => {
                 key={`line-${node.id}`}
                 p1={start}
                 p2={end}
-                color="#222d38"
+                color={node.firstName.length < 6 ? "#222d38" : "#a2aeba"}
                 style="fill"
                 strokeWidth={2}
               />

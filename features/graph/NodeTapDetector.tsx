@@ -161,4 +161,4 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   );
 }
 
-// !TODO: You should ONLY be able to select multiple if in multiselect mode (I think)
+// !TODO: Link should also be highlighted when a node is selected
