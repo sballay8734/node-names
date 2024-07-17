@@ -13,7 +13,10 @@ import {
   ROOT_NODE_RADIUS,
 } from "@/constants/nodes";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
+import {
+  handleNodeSelect,
+  hidePopover,
+} from "../manageSelections/redux/manageSelections";
 import { RootState } from "@/store/store";
 
 interface Props {
@@ -61,6 +64,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   const tap = Gesture.Tap()
     .onStart(() => {
       dispatch(handleNodeSelect(node));
+      // dispatch(hidePopover());
     })
     .runOnJS(true);
 

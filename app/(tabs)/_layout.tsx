@@ -12,16 +12,12 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 import { handlePopover } from "@/features/manageSelections/redux/manageSelections";
-import { RootState } from "@/store/store";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const dispatch = useAppDispatch();
-  const selectedNodes = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
-  );
 
   return (
     <Tabs
@@ -77,7 +73,7 @@ export default function TabLayout() {
                 flex: 1,
                 alignItems: "center",
                 justifyContent: "center",
-                top: -20,
+                top: -25,
               }}
             />
           ),
