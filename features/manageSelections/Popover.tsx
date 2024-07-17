@@ -1,32 +1,12 @@
 import { View } from "@/components/Themed";
 import CPressable from "@/components/CustomNativeComponents/CPressable";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-
-// REMOVE: just for testing vvvv
-const testOptions: { text: string; icon: React.ReactNode }[] = [
-  {
-    text: "Add New Connection",
-    icon: (
-      <MaterialCommunityIcons name="connection" size={18} color="#170038" />
-    ),
-  },
-  {
-    text: "Create New Group",
-    icon: <MaterialIcons name="group-add" size={18} color="#170038" />,
-  },
-  {
-    text: "Group Current Selections",
-    icon: <MaterialIcons name="group-work" size={18} color="#170038" />,
-  },
-  {
-    text: "Link Selections",
-    icon: <MaterialIcons name="link" size={18} color="#170038" />,
-  },
-];
+import { usePopoverOptions } from "./utils/determineOptions";
 
 export default function Popover(): React.JSX.Element {
+  const popoverOptions = usePopoverOptions();
+
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
   );
@@ -51,7 +31,7 @@ export default function Popover(): React.JSX.Element {
         pointerEvents: isVisible ? "auto" : "none",
       }}
     >
-      {testOptions.map((option) => {
+      {popoverOptions.map((option) => {
         return (
           <CPressable
             key={option.text}

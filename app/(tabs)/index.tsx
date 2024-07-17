@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet } from "react-native";
-import { Canvas, Text as SkiaText } from "@shopify/react-native-skia";
+import { Canvas } from "@shopify/react-native-skia";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import testNodes from "../../data/mainMockData.json";
@@ -15,8 +15,6 @@ import Popover from "@/features/manageSelections/Popover";
 const nodes: INode[] = testNodes.nodes;
 
 const Index = () => {
-  const [selectedNodes, setSelectedNodes] = useState<INode[]>([]);
-
   const windowSize = useWindowSize();
 
   const totalNodes = nodes.length - 1;
@@ -37,23 +35,6 @@ const Index = () => {
     } else {
       return { x: getXValue(index), y: getYValue(index) };
     }
-  }
-
-  // TODO: Handle this logic in redux (It currently re-renders ALL nodes)
-  function handleNodeSelect(node: INode) {
-    setSelectedNodes((prevSelectedNodes) => {
-      const nodeIndex = prevSelectedNodes.findIndex(
-        (selectedNode) => selectedNode.id === node.id,
-      );
-
-      if (nodeIndex > -1) {
-        // Node is already in the array, remove it
-        return prevSelectedNodes.filter((_, index) => index !== nodeIndex);
-      } else {
-        // Node is not in the array, add it
-        return [...prevSelectedNodes, node];
-      }
-    });
   }
 
   return (

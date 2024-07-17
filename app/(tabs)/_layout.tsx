@@ -15,7 +15,6 @@ import {
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { handlePopover } from "@/features/manageSelections/redux/manageSelections";
 import { RootState } from "@/store/store";
-import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -71,7 +70,7 @@ export default function TabLayout() {
             <FontAwesome6
               name="circle-plus"
               size={72}
-              color={selectedNodes.length === 0 ? "#382a1c" : "#e0ae6c"}
+              color={"#e0ae6c"}
               style={{
                 position: "absolute",
                 display: "flex",
@@ -91,7 +90,6 @@ export default function TabLayout() {
                 flex: 1,
                 alignItems: "center",
                 justifyContent: "center",
-                pointerEvents: selectedNodes.length === 0 ? "none" : "auto",
               }}
             />
           ),
