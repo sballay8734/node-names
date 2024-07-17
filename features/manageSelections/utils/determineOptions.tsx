@@ -5,23 +5,23 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 export const POPOVER_OPTIONS: { text: string; icon: React.ReactNode }[] = [
   // selected nodes === 0 *****************************************************
   {
-    text: "Create A New Node",
+    text: "Create a new node",
     icon: <MaterialIcons name="person-add-alt-1" size={18} color="#170038" />,
   },
   {
-    text: "Create A New Group",
+    text: "Create a new group",
     icon: <MaterialIcons name="group-add" size={18} color="#170038" />,
   },
 
   // selected nodes === 1 (CONNECT TO CURRENT NODE) ****************************
   {
-    text: "Connect A New Node",
+    text: "Connect to a new node",
     icon: (
       <MaterialCommunityIcons name="connection" size={18} color="#170038" />
     ),
   },
   {
-    text: "Connect A New Group",
+    text: "Connect to a new group",
     icon: (
       <MaterialCommunityIcons name="connection" size={18} color="#170038" />
     ),
@@ -29,11 +29,11 @@ export const POPOVER_OPTIONS: { text: string; icon: React.ReactNode }[] = [
 
   // selected nodes > 1 ********************************************************
   {
-    text: "Connect Selected Nodes",
+    text: "Connect selected nodes",
     icon: <MaterialIcons name="link" size={18} color="#170038" />,
   },
   {
-    text: "Create Group From Selection",
+    text: "Create group from selection",
     icon: <MaterialIcons name="group-work" size={18} color="#170038" />,
   },
 ];

@@ -25,11 +25,11 @@ interface Props {
 
 export default function NodeTapDetector({ node, nodePosition }: Props) {
   const dispatch = useAppDispatch();
-  const selectedNodes = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
+  const selectedNode = useAppSelector((state: RootState) =>
+    state.selections.selectedNodes.find((n) => node.id === n.id),
   );
 
-  const pressed = selectedNodes.find((n) => node.id === n.id);
+  const pressed = selectedNode;
 
   const { x, y } = nodePosition;
   const radius = node.rootNode ? ROOT_NODE_RADIUS / 2 : REG_NODE_RADIUS / 2;
@@ -77,7 +77,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   }));
 
   const animatedTextStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(pressed ? 1 : 0.4, {
+    opacity: withTiming(pressed ? 1 : 0.3, {
       duration: 100,
     }),
   }));
