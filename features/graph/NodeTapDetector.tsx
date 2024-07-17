@@ -1,7 +1,6 @@
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
-  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { ViewStyle } from "react-native";
@@ -13,21 +12,28 @@ import {
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/constants/nodes";
+import { INodeWSelect } from "@/app/(tabs)";
 
 interface Props {
   node: INode;
   nodePosition: { x: number; y: number };
-  selectedNode: INode | null;
+  nodeStates: INodeWSelect | null;
+  isMultiMode: boolean;
+  multiModeNodes: INode[];
   handleNodeSelect: (node: INode) => void;
 }
 
 export default function NodeTapDetector({
   node,
   nodePosition,
-  selectedNode,
+  nodeStates,
+  isMultiMode,
+  multiModeNodes,
   handleNodeSelect,
 }: Props) {
-  const pressed = selectedNode?.id === node.id;
+  const pressed = isMultiMode
+    ? multiModeNodes.some((n) => n.id === node.id)
+    : nodeStates?.[node.id]?.isSelected || false;
 
   const { x, y } = nodePosition;
   const radius = node.rootNode ? ROOT_NODE_RADIUS / 2 : REG_NODE_RADIUS / 2;
@@ -57,6 +63,7 @@ export default function NodeTapDetector({
   };
 
   // !TODO: Remove runOnJS if possible when changing to redux
+  // REVIEW: runOnJS is necessary here but not performant
   const tap = Gesture.Tap()
     .onStart(() => {
       // console.log(selectedNode, handleNodeSelect);

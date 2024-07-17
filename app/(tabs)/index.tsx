@@ -15,8 +15,22 @@ import NodeTapDetector from "@/features/graph/NodeTapDetector";
 
 const nodes: INode[] = testNodes.nodes;
 
+export interface INodeWSelect {
+  [nodeId: string]: {
+    id: number;
+    rootNode: boolean;
+    firstName: string;
+    lastName: string;
+    group: string | null;
+    sex: string;
+    isSelected: boolean;
+  };
+}
+
 const Index = () => {
-  const [selectedNode, setSelectedNode] = useState<INode | null>(null);
+  const [nodeStates, setNodeStates] = useState<INodeWSelect | null>(null);
+  const [isMultiMode, setIsMultiMode] = useState<boolean>(false);
+  const [multiModeNodes, setMultiModeNodes] = useState<INode[]>([]);
 
   const windowSize = useWindowSize();
 
@@ -42,12 +56,58 @@ const Index = () => {
 
   // TODO: Handle this logic in redux (It currently re-renders ALL nodes)
   function handleNodeSelect(node: INode) {
-    if (selectedNode?.id === node.id) {
-      setSelectedNode(null);
+    if (isMultiMode) {
+      setMultiModeNodes((prevNodes) => {
+        const nodeIndex = prevNodes.findIndex((n) => n.id === node.id);
+        if (nodeIndex > -1) {
+          // Node is already selected, remove it
+          return prevNodes.filter((n) => n.id !== node.id);
+        } else {
+          // Node is not selected, add it
+          return [...prevNodes, node];
+        }
+      });
     } else {
-      setSelectedNode(node);
+      setNodeStates((prevState) => {
+        if (prevState === null || prevState[node.id]?.isSelected) {
+          // If no node is selected or the clicked node is already selected, toggle it
+          return {
+            [node.id]: {
+              ...node,
+              isSelected: prevState === null || !prevState[node.id]?.isSelected,
+            },
+          };
+        } else {
+          // If another node is selected, deselect it and select the clicked node
+          return { [node.id]: { ...node, isSelected: true } };
+        }
+      });
     }
   }
+
+  const toggleMultiSelectMode = () => {
+    setIsMultiMode((prevMode) => {
+      if (prevMode) {
+        // Turning off multi-mode
+        setNodeStates(null);
+        setMultiModeNodes([]);
+      } else {
+        // Turning on multi-mode
+        if (nodeStates) {
+          const selectedNode = Object.values(nodeStates).find(
+            (node) => node.isSelected,
+          );
+          if (selectedNode) {
+            setMultiModeNodes([selectedNode]);
+          }
+        }
+        setNodeStates(null);
+      }
+      return !prevMode;
+    });
+  };
+
+  console.log(multiModeNodes);
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -87,15 +147,20 @@ const Index = () => {
             key={node.id}
             node={node}
             nodePosition={{ x, y }}
-            selectedNode={selectedNode}
+            nodeStates={nodeStates}
+            isMultiMode={isMultiMode}
+            multiModeNodes={multiModeNodes}
             handleNodeSelect={handleNodeSelect}
           />
         );
       })}
 
       {/* MultiSelect and AddConnectionBtn ******************************** */}
-      <MultiSelectToggle />
-      <AddConnectionBtn selectedNode={selectedNode} />
+      <MultiSelectToggle
+        isMultiMode={isMultiMode}
+        toggleMultiSelectMode={toggleMultiSelectMode}
+      />
+      <AddConnectionBtn nodeStates={nodeStates} isMultiMode={isMultiMode} />
     </GestureHandlerRootView>
   );
 };
@@ -113,5 +178,7 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: FIRST FOR WED. REFACTOR ALL THIS GARBAGE
+// TODO: Add CreateGroupBtn for multimode (Should just replace or change the icon of the AddConnectionBtn)
 // TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
 // mTODO: Change "rootNode" to "isRootNode"

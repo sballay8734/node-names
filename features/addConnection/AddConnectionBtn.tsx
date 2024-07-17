@@ -1,35 +1,36 @@
 import { Pressable } from "react-native";
 
-import { View, Text } from "@/components/Themed";
+import { View } from "@/components/Themed";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useEffect, useState } from "react";
-import { INode } from "../graph/types/graphTypes";
+import { INodeWSelect } from "@/app/(tabs)";
 
 interface Props {
-  selectedNode: INode | null;
+  nodeStates: INodeWSelect | null;
+  isMultiMode: boolean;
 }
 
 export default function AddConnectionBtn({
-  selectedNode,
+  nodeStates,
+  isMultiMode,
 }: Props): React.JSX.Element {
-  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const isEnabled =
+    !isMultiMode && nodeStates !== null && Object.keys(nodeStates).length === 1;
 
-  useEffect(() => {
-    if (selectedNode) {
-      setIsEnabled(true);
-    } else {
-      setIsEnabled(false);
+  const handlePress = () => {
+    if (nodeStates) {
+      const selectedNode = Object.values(nodeStates)[0];
+      alert(
+        `Are you sure you want to add a connection to ${selectedNode.firstName} ${selectedNode.lastName}?`,
+      );
     }
-  }, [selectedNode]);
-
-  console.log("FROM BTN:", selectedNode);
+  };
 
   return (
     <View
       style={{
         position: "absolute",
-        bottom: 10,
-        right: 10,
+        bottom: 85,
+        right: 15,
         height: 60,
         width: 60,
         backgroundColor: "pink",
@@ -37,7 +38,8 @@ export default function AddConnectionBtn({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 100,
-        opacity: isEnabled ? 1 : 0.5,
+        // mTODO: Animate the opacity vvvv
+        opacity: isEnabled ? 1 : 0,
         pointerEvents: isEnabled ? "auto" : "none",
       }}
     >
@@ -48,7 +50,7 @@ export default function AddConnectionBtn({
           justifyContent: "center",
           alignSelf: "center",
         }}
-        onPress={() => alert("Are you sure you want to add a connection to...")}
+        onPress={handlePress}
       >
         <Ionicons name="add" size={30} color="black" />
       </Pressable>
@@ -56,5 +58,5 @@ export default function AddConnectionBtn({
   );
 }
 
-// !TODO: Should be greyed out if no node is selected
+// !TODO: If only one node is selected in multimode, addLinkBtn should still be visible
 // TODO: use custom icon for btn
