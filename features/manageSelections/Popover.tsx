@@ -37,7 +37,7 @@ export default function Popover(): React.JSX.Element {
             key={option.text}
             icon={option.icon}
             containerStyles={{
-              height: 40,
+              height: 44,
               backgroundColor: "grey",
               display: "flex",
               flexDirection: "row",

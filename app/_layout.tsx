@@ -69,7 +69,7 @@ function RootLayoutNav() {
             source={image}
             style={styles.image}
             // background image opacity
-            imageStyle={{ opacity: 0.2 }}
+            imageStyle={{ opacity: 0.1 }}
           >
             <Stack>
               <Stack.Screen

@@ -161,4 +161,5 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   );
 }
 
-// !TODO: Link should also be highlighted when a node is selected
+// TODO: Link should also be highlighted when a node is selected
+// TODO: Need option to connect to an existing node if node has no connections (it was just created)
