@@ -47,7 +47,7 @@ export default function Node({
   return (
     <Group>
       <Circle
-        // color={"#8f97eb"}
+        color={"transparent"}
         cx={getXValue(index)}
         cy={getYValue(index)}
         r={REG_NODE_RADIUS / 2}

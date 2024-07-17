@@ -33,7 +33,7 @@ export default function RootNode({
   return (
     <Group>
       <Circle
-        // color={"red"}
+        color={"transparent"}
         cx={windowSize.windowCenterX}
         cy={windowSize.windowCenterY}
         r={ROOT_NODE_RADIUS / 2}

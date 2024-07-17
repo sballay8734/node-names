@@ -1,6 +1,6 @@
 import React from "react";
-import { ImageBackground, StyleSheet } from "react-native";
-import { Canvas } from "@shopify/react-native-skia";
+import { StyleSheet } from "react-native";
+import { Canvas, Line, Paint } from "@shopify/react-native-skia";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import testNodes from "../../data/mainMockData.json";
@@ -11,7 +11,6 @@ import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import Popover from "@/features/manageSelections/Popover";
-import { Image } from "expo-image";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -40,19 +39,34 @@ const Index = () => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/images/bgImg.jpeg")}
-        style={styles.image}
-      />
       <Canvas
         style={{
           flex: 1,
           height: "100%",
           width: "100%",
           // backgroundColor: "#121212",
-          backgroundColor: "transparent",
+          backgroundColor: "transparent", // svg background color (above GHR)
         }}
       >
+        {/* REMOVE: sudo links added just to test colors */}
+        {/* LINKS ********************************************************** */}
+        {nodes.map((node, index) => {
+          if (!node.rootNode) {
+            const { x: x1, y: y1 } = getNodePosition(node, index);
+            const { x: x2, y: y2 } = getNodePosition(nodes[0], 0);
+            return (
+              <Line
+                key={`line-${node.id}`}
+                p1={{ x: x1, y: y1 }}
+                p2={{ x: x2, y: y2 }}
+                color="#232e3a"
+                style="stroke"
+                strokeWidth={2}
+                strokeCap={"round"}
+              />
+            );
+          }
+        })}
         {/* NODES ********************************************************** */}
         {nodes.map((node, index) => {
           if (node.rootNode) {
@@ -94,7 +108,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "transparent",
+    backgroundColor: "transparent", // svg wrapper (below Canvas)
   },
   image: {
     flex: 1,

@@ -9,10 +9,17 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { ImageBackground, StyleSheet, Image } from "react-native";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
+import { View } from "@/components/Themed";
+
+// !TODO: need to load assets at build time
+const image = {
+  uri: "https://w0.peakpx.com/wallpaper/13/889/HD-wallpaper-space-light-dark-deep-galaxy.jpg",
+};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,14 +64,48 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Provider store={store}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
+        <View style={{ flex: 1, flexDirection: "column" }}>
+          <ImageBackground
+            source={image}
+            style={styles.image}
+            // background image opacity
+            imageStyle={{ opacity: 0.2 }}
+          >
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: "transparent" },
+                }}
+              />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            </Stack>
+          </ImageBackground>
+        </View>
       </Provider>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
+  text: {
+    color: "white",
+    fontSize: 42,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "#000000a0",
+  },
+});
 
 // REMEMBER: MOST D3 modules (like d3-scale, d3-array, d3-interpolate, and d3-format) DON'T interact with the DOM
 

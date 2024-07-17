@@ -28,7 +28,7 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "black",
+          backgroundColor: "black", // tab bar background
           overflow: "visible",
           paddingTop: 0,
           paddingBottom: 0,
@@ -113,6 +113,7 @@ export default function TabLayout() {
   );
 }
 
+// !TODO: need to load assets (imgs) at build time
 // TODO: transition the color of the btn
 // TODO: Change add icon to skinnier plus sign
 // TODO: Add glow to add btn
