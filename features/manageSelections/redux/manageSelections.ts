@@ -1,14 +1,17 @@
+import { INode } from "@/features/graph/types/graphTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 // Define a type for the slice state
 interface ManageSelectionsState {
-  value: number;
+  popoverIsShown: boolean;
+  selectedNodes: INode[];
 }
 
 // Define the initial state using that type
 const initialState: ManageSelectionsState = {
-  value: 0,
+  popoverIsShown: false,
+  selectedNodes: [],
 };
 
 export const ManageSelectionsSlice = createSlice({
@@ -16,20 +19,39 @@ export const ManageSelectionsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    // use this to toggle ******************************************************
+    handlePopover: (state) => {
+      state.popoverIsShown = !state.popoverIsShown;
     },
-    decrement: (state) => {
-      state.value -= 1;
+    // use these for other actions *********************************************
+    showPopover: (state) => {
+      state.popoverIsShown = true;
     },
-    // Use the PayloadAction type to declare the contents of `action.payload`
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
+    hidePopover: (state) => {
+      state.popoverIsShown = false;
+    },
+
+    // SELECTION MANAGEMENT ****************************************************
+    handleNodeSelect: (state, action: PayloadAction<INode>) => {
+      const clickedNode = action.payload;
+      const nodeIndex = state.selectedNodes.findIndex(
+        (node) => node.id === clickedNode.id,
+      );
+
+      // if we found it, it's already in array so this click should remove it
+      if (nodeIndex > -1) {
+        state.selectedNodes = state.selectedNodes.filter(
+          (node) => node.id !== clickedNode.id,
+        );
+      } else {
+        // if we didn't find it, then just add it to the array
+        state.selectedNodes = [...state.selectedNodes, clickedNode];
+      }
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } =
+export const { handlePopover, showPopover, hidePopover, handleNodeSelect } =
   ManageSelectionsSlice.actions;
 
 export default ManageSelectionsSlice.reducer;

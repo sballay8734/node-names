@@ -5,14 +5,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import testNodes from "../../data/mainMockData.json";
 import useWindowSize from "@/hooks/useWindowSize";
-import AddConnectionBtn from "@/features/manageSelections/AddConnectionBtn";
 import Node from "@/features/graph/Node";
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
-import { View } from "@/components/Themed";
-import AddGroupBtn from "@/features/addGroup/AddGroupBtn";
+import Popover from "@/features/manageSelections/Popover";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -92,33 +90,12 @@ const Index = () => {
       {nodes.map((node, index) => {
         const { x, y } = getNodePosition(node, index);
         return (
-          <NodeTapDetector
-            key={node.id}
-            node={node}
-            nodePosition={{ x, y }}
-            selectedNodes={selectedNodes}
-            handleNodeSelect={handleNodeSelect}
-          />
+          <NodeTapDetector key={node.id} node={node} nodePosition={{ x, y }} />
         );
       })}
 
-      {/* MultiSelect and AddConnectionBtn ******************************** */}
-      <View
-        style={{
-          position: "absolute",
-          bottom: 8,
-          right: 8,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "transparent",
-          gap: 8,
-        }}
-      >
-        <AddGroupBtn selectedNodes={selectedNodes} />
-        <AddConnectionBtn selectedNodes={selectedNodes} />
-      </View>
+      {/* Popover Options ******************************** */}
+      <Popover />
     </GestureHandlerRootView>
   );
 };

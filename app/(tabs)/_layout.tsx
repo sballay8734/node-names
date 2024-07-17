@@ -1,21 +1,28 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Pressable, TouchableOpacity } from "react-native";
+import { Tabs } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 import {
   Entypo,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { handlePopover } from "@/features/manageSelections/redux/manageSelections";
+import { RootState } from "@/store/store";
+import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const dispatch = useAppDispatch();
+  const selectedNodes = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes,
+  );
 
   return (
     <Tabs
@@ -61,14 +68,16 @@ export default function TabLayout() {
         options={{
           title: "Add",
           tabBarIcon: ({ color }) => (
-            <Ionicons
-              name="add-circle"
+            <FontAwesome6
+              name="circle-plus"
               size={72}
-              color={color}
+              color={selectedNodes.length === 0 ? "#382a1c" : "#e0ae6c"}
               style={{
-                // paddingTop: 5,
-                // marginBottom: "auto",
                 position: "absolute",
+                display: "flex",
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
                 top: -20,
               }}
             />
@@ -76,11 +85,13 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <TouchableOpacity
               {...props}
-              onPress={() => alert("ADD STUFF")}
+              activeOpacity={0.8}
+              onPress={() => dispatch(handlePopover())}
               style={{
                 flex: 1,
                 alignItems: "center",
                 justifyContent: "center",
+                pointerEvents: selectedNodes.length === 0 ? "none" : "auto",
               }}
             />
           ),
@@ -108,5 +119,6 @@ export default function TabLayout() {
   );
 }
 
+// TODO: transition the color of the btn
 // TODO: Change add icon to skinnier plus sign
 // TODO: Add glow to add btn

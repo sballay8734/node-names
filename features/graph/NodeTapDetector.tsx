@@ -12,20 +12,21 @@ import {
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/constants/nodes";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
+import { RootState } from "@/store/store";
 
 interface Props {
   node: INode;
   nodePosition: { x: number; y: number };
-  selectedNodes: INode[];
-  handleNodeSelect: (node: INode) => void;
 }
 
-export default function NodeTapDetector({
-  node,
-  nodePosition,
-  selectedNodes,
-  handleNodeSelect,
-}: Props) {
+export default function NodeTapDetector({ node, nodePosition }: Props) {
+  const dispatch = useAppDispatch();
+  const selectedNodes = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes,
+  );
+
   const pressed = selectedNodes.find((n) => node.id === n.id);
 
   const { x, y } = nodePosition;
@@ -59,9 +60,7 @@ export default function NodeTapDetector({
   // REVIEW: runOnJS is necessary here but not performant
   const tap = Gesture.Tap()
     .onStart(() => {
-      // console.log(selectedNode, handleNodeSelect);
-      handleNodeSelect(node);
-      // pressed.value = !pressed.value;
+      dispatch(handleNodeSelect(node));
     })
     .runOnJS(true);
 

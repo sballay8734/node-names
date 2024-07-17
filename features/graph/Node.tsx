@@ -52,13 +52,6 @@ export default function Node({
         cy={getYValue(index)}
         r={REG_NODE_RADIUS / 2}
       />
-      {/* <SkiaText
-        x={getXValue(index) - font.measureText(node.firstName).width / 2}
-        y={getYValue(index) + font.measureText(node.firstName).height / 2 / 2}
-        text={node.firstName}
-        font={font}
-        style={"fill"}
-      /> */}
     </Group>
   );
 }
