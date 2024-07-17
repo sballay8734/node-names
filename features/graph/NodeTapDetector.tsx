@@ -12,28 +12,21 @@ import {
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/constants/nodes";
-import { INodeWSelect } from "@/app/(tabs)";
 
 interface Props {
   node: INode;
   nodePosition: { x: number; y: number };
-  nodeStates: INodeWSelect | null;
-  isMultiMode: boolean;
-  multiModeNodes: INode[];
+  selectedNodes: INode[];
   handleNodeSelect: (node: INode) => void;
 }
 
 export default function NodeTapDetector({
   node,
   nodePosition,
-  nodeStates,
-  isMultiMode,
-  multiModeNodes,
+  selectedNodes,
   handleNodeSelect,
 }: Props) {
-  const pressed = isMultiMode
-    ? multiModeNodes.some((n) => n.id === node.id)
-    : nodeStates?.[node.id]?.isSelected || false;
+  const pressed = selectedNodes.find((n) => node.id === n.id);
 
   const { x, y } = nodePosition;
   const radius = node.rootNode ? ROOT_NODE_RADIUS / 2 : REG_NODE_RADIUS / 2;

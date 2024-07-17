@@ -4,19 +4,18 @@ import { View } from "@/components/Themed";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { INode } from "../graph/types/graphTypes";
 import { Text } from "@/components/Themed";
-import { FontAwesome6 } from "@expo/vector-icons";
 
 interface Props {
   selectedNodes: INode[];
 }
 
-export default function AddConnectionBtn({
+export default function AddGroupBtn({
   selectedNodes,
 }: Props): React.JSX.Element {
   const isEnabled = selectedNodes.length >= 1;
 
   const handlePress = () => {
-    alert(`Add connection ${selectedNodes.length} ppl`);
+    alert(`${isEnabled}`);
   };
 
   return (
@@ -45,15 +44,12 @@ export default function AddConnectionBtn({
         }}
         onPress={handlePress}
       >
-        <Text style={{ color: "black", fontSize: 10 }}>
-          {selectedNodes.length >= 2 ? "Link Nodes" : "Add Connection"}
-        </Text>
-        {selectedNodes.length >= 2 ? (
-          <FontAwesome6 name="link" size={12} color="black" />
-        ) : (
-          <Ionicons name="add-circle-outline" size={14} color="black" />
-        )}
+        <Text style={{ color: "black", fontSize: 10 }}>Group</Text>
+        <Ionicons name="add-circle-outline" size={14} color="black" />
       </Pressable>
     </View>
   );
 }
+
+// !TODO: If only one node is selected in multimode, addLinkBtn should still be visible
+// TODO: use custom icon for btn
