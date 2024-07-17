@@ -178,7 +178,9 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FIRST FOR WED. REFACTOR ALL THIS GARBAGE
+// !TODO: FIRST FOR WED.
+// !TODO: SHOULD BE MULTISELECT BY DEFAULT AND JUST REPLACE + button
+// !TODO: REFACTOR ALL THIS GARBAGE
 // TODO: Add CreateGroupBtn for multimode (Should just replace or change the icon of the AddConnectionBtn)
 // TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
 // mTODO: Change "rootNode" to "isRootNode"
