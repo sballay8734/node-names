@@ -139,9 +139,12 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FIRST FOR WED.
-// !TODO: "add button" that pops up options based on what is selected
-// !TODO: remove "group" and "add" btns and put them in add dialog
+// !TODO: FIRST FOR THURS. ****************************************************
+// 1. configure canvas to be scrollable and test with extra nodes
+// 2. Assume everyone starts with only the root node and build from there
+// 2a. Based on 2, start with connecting a new node to the root and creating a node NOT connected to the root WITH LINKS
+// 3. After 2a, work on grouping logic
+
 // !TODO: View toggle (group View - zooms out, node view - zooms in)
 // Add connection, create connection, link nodes, create group, group selected nodes, etc...
 // TODO: use custom icon for btn
