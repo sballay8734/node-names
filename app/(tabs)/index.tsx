@@ -1,6 +1,7 @@
-import { Canvas, Group, Line } from "@shopify/react-native-skia";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { Canvas, Group } from "@shopify/react-native-skia";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -8,19 +9,17 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { Text } from "@/components/Themed";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/constants/graph";
-import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
+import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import Node from "@/features/graph/Node";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
+import RecenterBtn from "@/features/graph/RecenterBtn";
 import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import Popover from "@/features/manageSelections/Popover";
 import useWindowSize from "@/hooks/useWindowSize";
 
 import testNodes from "../../data/mainMockData.json";
-import RecenterBtn from "@/features/graph/RecenterBtn";
-import { FontAwesome6 } from "@expo/vector-icons";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -34,10 +33,10 @@ const Index = () => {
   const MIN_SCALE = 0.3;
   const MAX_SCALE = 5;
 
-  const MIN_X = -500;
-  const MAX_X = 500;
-  const MIN_Y = -500;
-  const MAX_Y = 500;
+  const MIN_X = -500 * scale.value;
+  const MAX_X = 500 * scale.value;
+  const MIN_Y = -500 * scale.value;
+  const MAX_Y = 500 * scale.value;
 
   const totalNodes = nodes.length - 1;
 
@@ -175,21 +174,25 @@ const Index = () => {
 
 const styles = StyleSheet.create({
   green: {
-    // flex: 1,
     height: "100%",
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent", // svg wrapper (below Canvas)
+    // borderWidth: 2,
+    // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   red: {
-    // flex: 1,
+    // borderWidth: 2,
+    borderColor: "red",
+    display: "flex",
     height: "100%",
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "transparent",
-    // backgroundColor: "rgba(1, 1, 1, 0.5)", // svg wrapper (below Canvas)
+    // backgroundColor: "transparent",
+    backgroundColor: "rgba(70, 70, 70, 0.5)", // svg wrapper (below Canvas)
+    // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   image: {
     flex: 1,

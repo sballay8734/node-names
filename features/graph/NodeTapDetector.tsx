@@ -57,6 +57,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     borderWidth: NODE_BORDER_WIDTH,
     opacity: 1,
     borderRadius: 100, // full (to make circle)
+    borderColor: "transparent",
 
     display: "flex",
     alignItems: "center",
@@ -110,8 +111,8 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
       return {
         inactiveBgColor: "transparent",
         activeBgColor: "#66dfe8",
-        inactiveBorderColor: "#121212",
-        activeBorderColor: "#888cae",
+        inactiveBorderColor: "transparent",
+        activeBorderColor: "#16d9a5",
       };
     }
   }
@@ -126,9 +127,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor: node.rootNode
-                ? "#0d0d0d"
-                : NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
+              backgroundColor: node.rootNode ? "#0d0d0d" : "#099671",
               borderRadius: 100,
             },
             !node.rootNode && animatedTextStyles,
