@@ -1,3 +1,4 @@
+import { AntDesign } from "@expo/vector-icons";
 import { Pressable, PressableProps, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -5,9 +6,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { Text, View } from "@/components/Themed";
-import { AntDesign } from "@expo/vector-icons";
+import { View } from "@/components/Themed";
 import { useAppDispatch } from "@/hooks/reduxHooks";
+
 import { handlePopover } from "./redux/manageSelections";
 
 interface Props extends PressableProps {

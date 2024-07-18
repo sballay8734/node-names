@@ -1,6 +1,7 @@
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 export const POPOVER_OPTIONS: { text: string; icon: React.ReactNode }[] = [
   // selected nodes === 0 *****************************************************

@@ -1,7 +1,7 @@
-import { ROOT_NODE_RADIUS } from "@/constants/nodes";
-import { REG_NODE_RADIUS } from "@/constants/nodes";
-import { WindowSize } from "@/hooks/useWindowSize";
 import { Circle, Group } from "@shopify/react-native-skia";
+
+import { ROOT_NODE_RADIUS, REG_NODE_RADIUS } from "@/constants/nodes";
+import { WindowSize } from "@/hooks/useWindowSize";
 
 interface Props {
   index: number;

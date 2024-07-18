@@ -1,16 +1,17 @@
+import { Canvas, Line } from "@shopify/react-native-skia";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Canvas, Line, Paint } from "@shopify/react-native-skia";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import testNodes from "../../data/mainMockData.json";
-import useWindowSize from "@/hooks/useWindowSize";
-import Node from "@/features/graph/Node";
 import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
+import Node from "@/features/graph/Node";
+import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
-import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import Popover from "@/features/manageSelections/Popover";
+import useWindowSize from "@/hooks/useWindowSize";
+
+import testNodes from "../../data/mainMockData.json";
 
 const nodes: INode[] = testNodes.nodes;
 

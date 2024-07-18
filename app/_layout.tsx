@@ -9,12 +9,12 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { ImageBackground, StyleSheet, Image } from "react-native";
-
-import { useColorScheme } from "@/components/useColorScheme";
+import { ImageBackground, StyleSheet } from "react-native";
 import { Provider } from "react-redux";
-import { store } from "@/store/store";
+
 import { View } from "@/components/Themed";
+import { useColorScheme } from "@/components/useColorScheme";
+import { store } from "@/store/store";
 
 // !TODO: need to load assets at build time
 const image = {

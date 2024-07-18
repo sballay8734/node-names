@@ -1,9 +1,9 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable } from "react-native";
 
-import { View } from "@/components/Themed";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { View, Text } from "@/components/Themed";
+
 import { INode } from "../graph/types/graphTypes";
-import { Text } from "@/components/Themed";
 
 interface Props {
   selectedNodes: INode[];

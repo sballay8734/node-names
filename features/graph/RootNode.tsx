@@ -1,6 +1,8 @@
+import { Circle, Group } from "@shopify/react-native-skia";
+
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { WindowSize } from "@/hooks/useWindowSize";
-import { Circle, Group } from "@shopify/react-native-skia";
+
 import { INode } from "./types/graphTypes";
 
 interface Props {

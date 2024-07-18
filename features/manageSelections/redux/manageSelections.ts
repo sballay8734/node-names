@@ -1,6 +1,7 @@
-import { INode } from "@/features/graph/types/graphTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+
+import { INode } from "@/features/graph/types/graphTypes";
 
 // Define a type for the slice state
 interface ManageSelectionsState {

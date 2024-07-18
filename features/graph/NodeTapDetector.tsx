@@ -1,20 +1,22 @@
+import { ImageBackground, ViewStyle, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { ImageBackground, ViewStyle, StyleSheet } from "react-native";
 
 import { Text } from "@/components/Themed";
-import { INode } from "./types/graphTypes";
 import {
   NODE_BORDER_WIDTH,
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/constants/nodes";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
 import { RootState } from "@/store/store";
+
+import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
+
+import { INode } from "./types/graphTypes";
 
 const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 

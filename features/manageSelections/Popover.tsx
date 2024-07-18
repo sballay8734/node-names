@@ -1,7 +1,8 @@
-import { View } from "@/components/Themed";
 import CPressable from "@/components/CustomNativeComponents/CPressable";
+import { View } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+
 import { usePopoverOptions } from "./utils/determineOptions";
 
 export default function Popover(): React.JSX.Element {

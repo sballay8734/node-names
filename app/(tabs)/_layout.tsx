@@ -1,19 +1,18 @@
-import React from "react";
-import { Tabs } from "expo-router";
-import { TouchableOpacity } from "react-native";
-
-import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { FontAwesome6 } from "@expo/vector-icons";
-
 import {
+  FontAwesome6,
   Entypo,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useAppDispatch } from "@/hooks/reduxHooks";
+import { Tabs } from "expo-router";
+import React from "react";
+import { TouchableOpacity } from "react-native";
+
+import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
 import { handlePopover } from "@/features/manageSelections/redux/manageSelections";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
