@@ -4,6 +4,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import {
+  Easing,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -29,10 +30,17 @@ const INITIAL_SCALE = 0.4;
 const Index = () => {
   const windowSize = useWindowSize();
 
-  const scale = useSharedValue(INITIAL_SCALE); // CHANGE BACK TO 1
+  const scale = useSharedValue(INITIAL_SCALE);
+  const origin = useSharedValue({
+    x: windowSize.windowCenterX / scale.value,
+    y: windowSize.windowCenterY / scale.value,
+  });
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(1);
+
+  const screenCenterX = windowSize.windowCenterX / scale.value;
+  const screenCenterY = windowSize.windowCenterX / scale.value;
 
   const totalNodes = nodes.length - 1;
 
@@ -74,6 +82,9 @@ const Index = () => {
   });
 
   const pinch = Gesture.Pinch()
+    // .onStart((e) => {
+    //   origin.value = { x: screenCenterX, y: screenCenterY };
+    // })
     .onChange((e) => {
       const newScale = Math.min(
         Math.max(scale.value * e.scale, MIN_SCALE),
@@ -97,10 +108,19 @@ const Index = () => {
   );
 
   function handleCenter() {
-    translateX.value = withTiming(0, { duration: 200 });
-    translateY.value = withTiming(0, { duration: 200 });
-    lastScale.value = withTiming(1, { duration: 200 });
-    scale.value = withTiming(INITIAL_SCALE, { duration: 200 });
+    translateX.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.bezier(0, 0.95, 0.55, 1),
+    });
+    translateY.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.bezier(0, 0.95, 0.55, 1),
+    });
+    lastScale.value = withTiming(1, { duration: 500 });
+    scale.value = withTiming(INITIAL_SCALE, {
+      duration: 500,
+      easing: Easing.bezier(0, 0.95, 0.55, 1),
+    });
   }
 
   return (
