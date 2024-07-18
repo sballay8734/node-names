@@ -18,7 +18,7 @@ import { store } from "@/store/store";
 
 // !TODO: need to load assets at build time
 const image = {
-  uri: "https://w0.peakpx.com/wallpaper/13/889/HD-wallpaper-space-light-dark-deep-galaxy.jpg",
+  uri: "https://t3.ftcdn.net/jpg/05/65/45/28/360_F_565452844_RWPHGhFeZ3DnvI7421hLq4JwFNcxpHS7.jpg",
 };
 
 export {
@@ -64,12 +64,18 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Provider store={store}>
-        <View style={{ flex: 1, flexDirection: "column" }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            backgroundColor: "transparent",
+          }}
+        >
           <ImageBackground
             source={image}
             style={styles.image}
             // background image opacity
-            imageStyle={{ opacity: 0.1 }}
+            imageStyle={{ opacity: 0.2 }}
           >
             <Stack>
               <Stack.Screen
@@ -97,13 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-  },
-  text: {
-    color: "white",
-    fontSize: 42,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "#000000a0",
+    backgroundColor: "black",
   },
 });
 

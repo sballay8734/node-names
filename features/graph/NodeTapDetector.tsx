@@ -139,7 +139,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               source={image}
               style={styles.image}
               borderRadius={100}
-              // background image opacity
+              // node background image opacity
               // TODO: opacity here vvvv is not animated
               imageStyle={{ opacity: pressed ? 1 : 0.3 }}
             />
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: "bold",
     textAlign: "center",
-    backgroundColor: "#000000a0",
+    backgroundColor: "transparent",
   },
 });
 
