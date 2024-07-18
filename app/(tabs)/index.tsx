@@ -208,6 +208,7 @@ export default Index;
 
 // !TODO: FIRST FOR FRI. ****************************************************
 // 1. YOU NEED THIS: https://shopify.github.io/react-native-skia/docs/animations/gestures (REVIEW ELEMENT TRACKING)
+// I think you need Canvas within a view (overflow hidden), but the Gesturehandler on the view changes the position and scale of the nodes (so nodes outside of the screen will move more towards the center and appear smaller when zooming out.)
 // 1. only show centering btn if root node is off screen (out of bounds)
 
 // !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
