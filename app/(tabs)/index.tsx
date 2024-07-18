@@ -201,6 +201,8 @@ export default Index;
 // !TODO: FIRST FOR FRI. ****************************************************
 // 1. You're CLOSE but not quite -- LOOK HERE (https://github.com/wcandillon/can-it-be-done-in-react-native/blob/master/bonuses/sticker-app/src/GestureHandler.tsx)
 
+// START HERE THOUGH!! (https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/handling-gestures)
+
 // reduce velocity of pinch gesture
 
 // 1. YOU NEED TO ADD TAP DETECTORS BACK SOMEHOW!!
