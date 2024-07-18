@@ -15,6 +15,16 @@ import { Provider } from "react-redux";
 import { View } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import { store } from "@/store/store";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+} from "react-native-reanimated";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 
 // !TODO: need to load assets at build time
 const image = {
@@ -64,31 +74,35 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Provider store={store}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "column",
-            backgroundColor: "transparent",
-          }}
-        >
-          <ImageBackground
-            source={image}
-            style={styles.image}
-            // background image opacity
-            imageStyle={{ opacity: 0.2 }}
+        <GestureHandlerRootView style={styles.container}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              backgroundColor: "transparent",
+            }}
           >
-            <Stack>
-              <Stack.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: "transparent" },
-                }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            </Stack>
-          </ImageBackground>
-        </View>
+            <ImageBackground
+              source={image}
+              style={styles.image}
+              imageStyle={{ opacity: 0.2 }}
+            >
+              <Stack>
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: "transparent" },
+                  }}
+                />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: "modal" }}
+                />
+              </Stack>
+            </ImageBackground>
+          </View>
+        </GestureHandlerRootView>
       </Provider>
     </ThemeProvider>
   );
@@ -98,10 +112,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    backgroundColor: "transparent",
   },
   image: {
     flex: 1,
-    resizeMode: "cover",
+    // height: 1000,
+    // width: 1000,
+    // resizeMode: "contain",
     justifyContent: "center",
     backgroundColor: "black",
   },

@@ -1,12 +1,16 @@
 import { Canvas, Group, Line } from "@shopify/react-native-skia";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
-import { useSharedValue, withDecay } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+} from "react-native-reanimated";
 
 import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import Node from "@/features/graph/Node";
@@ -22,9 +26,11 @@ const nodes: INode[] = testNodes.nodes;
 
 const Index = () => {
   const windowSize = useWindowSize();
-  const leftBoundary = 0;
-  const rightBoundary = windowSize.width;
-  const translateX = useSharedValue(windowSize.width / 2);
+
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
 
   const totalNodes = nodes.length - 1;
 
@@ -66,80 +72,110 @@ const Index = () => {
   const pan = Gesture.Pan()
     .onChange((e) => {
       translateX.value += e.changeX;
-      console.log("CHANGE");
+      translateY.value += e.changeY;
     })
     .onEnd((e) => {
       translateX.value = withDecay({
         velocity: e.velocityX,
-        clamp: [leftBoundary - windowSize.width, 0],
+        clamp: [-1000, 1000],
+      });
+      translateY.value = withDecay({
+        velocity: e.velocityY,
+        clamp: [-1000, 1000],
       });
     });
 
+  const pinch = Gesture.Pinch()
+    .onChange((e) => {
+      scale.value = savedScale.value * e.scale;
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+    });
+
+  const composed = Gesture.Simultaneous(pan, pinch);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scale: scale.value },
+    ],
+  }));
+
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <GestureDetector gesture={pan}>
-        <Canvas
-          style={{
-            flex: 1,
-            height: "100%",
-            width: "100%",
-            // backgroundColor: "#121212",
-            backgroundColor: "transparent", // svg background color (above GHR)
-          }}
-        >
-          <Group>
-            {/* REMOVE: sudo links added just to test colors */}
-            {/* LINKS ********************************************************** */}
-            {nodes.map((node, index) => {
-              if (!node.rootNode) {
-                const { x: x1, y: y1 } = getNodePosition(node, index);
-                const { x: x2, y: y2 } = getNodePosition(nodes[0], 0);
-                const start = getEdgePoint(x1, y1, x2, y2, REG_NODE_RADIUS);
-                const end = getEdgePoint(x2, y2, x1, y1, ROOT_NODE_RADIUS);
-                return (
-                  <Line
-                    key={`line-${node.id}`}
-                    p1={start}
-                    p2={end}
-                    color={node.firstName.length < 6 ? "#222d38" : "#a2aeba"}
-                    style="fill"
-                    strokeWidth={2}
-                  />
-                );
-              }
-            })}
-            {/* NODES ********************************************************** */}
-            {nodes.map((node, index) => {
-              if (node.rootNode) {
-                return (
-                  <RootNode node={node} windowSize={windowSize} key={node.id} />
-                );
-              } else {
-                return (
-                  <Node
-                    index={index}
-                    totalNodes={totalNodes}
-                    windowSize={windowSize}
-                    key={node.id}
-                  />
-                );
-              }
-            })}
-          </Group>
-        </Canvas>
+    <View style={styles.container}>
+      <GestureDetector gesture={composed}>
+        <Animated.View style={[styles.container, animatedStyle]}>
+          <Canvas
+            style={{
+              flex: 1,
+              height: "100%",
+              width: "100%",
+              // backgroundColor: "#121212",
+              backgroundColor: "red", // svg background color (above GHR)
+              opacity: 0.3,
+            }}
+          >
+            <Group>
+              {/* REMOVE: sudo links added just to test colors */}
+              {/* LINKS ******************************************************** */}
+              {nodes.map((node, index) => {
+                if (!node.rootNode) {
+                  const { x: x1, y: y1 } = getNodePosition(node, index);
+                  const { x: x2, y: y2 } = getNodePosition(nodes[0], 0);
+                  const start = getEdgePoint(x1, y1, x2, y2, REG_NODE_RADIUS);
+                  const end = getEdgePoint(x2, y2, x1, y1, ROOT_NODE_RADIUS);
+                  return (
+                    <Line
+                      key={`line-${node.id}`}
+                      p1={start}
+                      p2={end}
+                      color={node.firstName.length < 6 ? "#222d38" : "#a2aeba"}
+                      style="fill"
+                      strokeWidth={2}
+                    />
+                  );
+                }
+              })}
+              {/* NODES ******************************************************** */}
+              {nodes.map((node, index) => {
+                if (node.rootNode) {
+                  return (
+                    <RootNode
+                      node={node}
+                      windowSize={windowSize}
+                      key={node.id}
+                    />
+                  );
+                } else {
+                  return (
+                    <Node
+                      index={index}
+                      totalNodes={totalNodes}
+                      windowSize={windowSize}
+                      key={node.id}
+                    />
+                  );
+                }
+              })}
+            </Group>
+          </Canvas>
+          {/* Touch Responders ************************************************* */}
+          {nodes.map((node, index) => {
+            const { x, y } = getNodePosition(node, index);
+            return (
+              <NodeTapDetector
+                key={node.id}
+                node={node}
+                nodePosition={{ x, y }}
+              />
+            );
+          })}
+        </Animated.View>
       </GestureDetector>
-
-      {/* GESTURE DETECTORS ************************************************ */}
-      {nodes.map((node, index) => {
-        const { x, y } = getNodePosition(node, index);
-        return (
-          <NodeTapDetector key={node.id} node={node} nodePosition={{ x, y }} />
-        );
-      })}
-
-      {/* Popover Options ******************************** */}
       <Popover />
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
