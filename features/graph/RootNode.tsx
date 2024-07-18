@@ -14,7 +14,7 @@ export default function RootNode({ windowSize }: Props): React.JSX.Element {
   return (
     <Group>
       <Circle
-        color={"transparent"}
+        color={"black"}
         cx={windowSize.windowCenterX}
         cy={windowSize.windowCenterY}
         r={ROOT_NODE_RADIUS / 2}

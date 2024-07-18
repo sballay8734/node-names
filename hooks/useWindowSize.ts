@@ -15,7 +15,7 @@ export default function useWindowSize() {
       width,
       height,
       windowCenterX: width / 2,
-      windowCenterY: height / 2.3,
+      windowCenterY: height / 2.1,
     };
   });
 

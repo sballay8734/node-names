@@ -3,7 +3,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { ViewStyle } from "react-native";
+import { ImageBackground, ViewStyle, StyleSheet } from "react-native";
 
 import { Text } from "@/components/Themed";
 import { INode } from "./types/graphTypes";
@@ -22,6 +22,10 @@ interface Props {
   node: INode;
   nodePosition: { x: number; y: number };
 }
+
+const image = {
+  uri: "https://sa1s3optim.patientpop.com/assets/images/provider/photos/2735132.jpeg",
+};
 
 export default function NodeTapDetector({ node, nodePosition }: Props) {
   const dispatch = useAppDispatch();
@@ -77,7 +81,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   }));
 
   const animatedTextStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(pressed ? 1 : 0.3, {
+    opacity: withTiming(pressed ? 1 : 0.4, {
       duration: 100,
     }),
   }));
@@ -120,13 +124,25 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor:
-                NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
+              backgroundColor: node.rootNode
+                ? "#0d0d0d"
+                : NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)],
               borderRadius: 100,
             },
-            animatedTextStyles,
+            !node.rootNode && animatedTextStyles,
           ]}
-        ></Animated.View>
+        >
+          {node.rootNode && (
+            <ImageBackground
+              source={image}
+              style={styles.image}
+              borderRadius={100}
+              // background image opacity
+              // TODO: opacity here vvvv is not animated
+              imageStyle={{ opacity: pressed ? 1 : 0.3 }}
+            />
+          )}
+        </Animated.View>
 
         {/* Text View */}
         <Animated.View
@@ -139,9 +155,9 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               paddingVertical: 2,
               backgroundColor: "#1e2152",
               borderWidth: 1,
-              borderColor: pressed ? "#232e3a" : "transparent",
+              borderColor: pressed || node.rootNode ? "#232e3a" : "transparent",
             },
-            animatedTextStyles,
+            !node.rootNode && animatedTextStyles,
           ]}
         >
           <Text
@@ -160,6 +176,25 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     </GestureDetector>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
+  text: {
+    color: "white",
+    fontSize: 42,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "#000000a0",
+  },
+});
 
+// TODO: Rootnode should be icon, others should not
 // TODO: Link should also be highlighted when a node is selected
 // TODO: Need option to connect to an existing node if node has no connections (it was just created)
