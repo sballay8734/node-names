@@ -1,17 +1,15 @@
 import { Canvas, Group, Line } from "@shopify/react-native-skia";
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withDecay,
+  withTiming,
 } from "react-native-reanimated";
 
+import { Text } from "@/components/Themed";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/constants/graph";
 import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import Node from "@/features/graph/Node";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
@@ -31,6 +29,13 @@ const Index = () => {
   const savedScale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  const MIN_SCALE = 0.3;
+  const MAX_SCALE = 5;
+
+  const MIN_X = -500;
+  const MAX_X = 500;
+  const MIN_Y = -500;
+  const MAX_Y = 500;
 
   const totalNodes = nodes.length - 1;
 
@@ -52,42 +57,42 @@ const Index = () => {
     }
   }
 
-  function getEdgePoint(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    radius: number,
-  ) {
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const ratio = radius / distance;
-    return {
-      x: x1 + dx * ratio,
-      y: y1 + dy * ratio,
-    };
+  // !TODO: THIS IS NOT EXACT. NEED TO TRACE ISSUE AND REFACTOR ALL THIS *******
+  function getTRYValue(index: number) {
+    const angle = (index / totalNodes) * 2 * Math.PI;
+    return Math.sin(angle) * ROOT_NODE_RADIUS + CANVAS_HEIGHT / 4.93;
   }
 
-  const pan = Gesture.Pan()
-    .onChange((e) => {
-      translateX.value += e.changeX;
-      translateY.value += e.changeY;
-    })
-    .onEnd((e) => {
-      translateX.value = withDecay({
-        velocity: e.velocityX,
-        clamp: [-1000, 1000],
-      });
-      translateY.value = withDecay({
-        velocity: e.velocityY,
-        clamp: [-1000, 1000],
-      });
-    });
+  // !TODO: REFACTOR ***********************************************************
+  function getTRXValue(index: number) {
+    const angle = (index / totalNodes) * 2 * Math.PI;
+    return Math.cos(angle) * ROOT_NODE_RADIUS + CANVAS_WIDTH / 2;
+  }
+  // !TODO: REFACTOR ***********************************************************
+  function getTouchResponderPosition(node: INode, index: number) {
+    if (node.rootNode) {
+      return { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 4.93 };
+    } else {
+      return { x: getTRXValue(index), y: getTRYValue(index) };
+    }
+  }
+
+  const pan = Gesture.Pan().onChange((e) => {
+    // Clamp the new translation values within the defined limits
+    translateX.value = Math.min(
+      Math.max(translateX.value + e.changeX, MIN_X),
+      MAX_X,
+    );
+    translateY.value = Math.min(
+      Math.max(translateY.value + e.changeY, MIN_Y),
+      MAX_Y,
+    );
+  });
 
   const pinch = Gesture.Pinch()
     .onChange((e) => {
-      scale.value = savedScale.value * e.scale;
+      const newScale = savedScale.value * e.scale;
+      scale.value = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
     })
     .onEnd(() => {
       savedScale.value = scale.value;
@@ -103,65 +108,42 @@ const Index = () => {
     ],
   }));
 
+  // !TODO: Animate this movement **********************************************
+  function handleCenterOnRoot() {
+    translateX.value = withTiming(0, { duration: 200 });
+    translateY.value = withTiming(0, { duration: 200 });
+    scale.value = withTiming(1, { duration: 200 });
+    savedScale.value = 1;
+  }
+
   return (
-    <View style={styles.container}>
-      <GestureDetector gesture={composed}>
-        <Animated.View style={[styles.container, animatedStyle]}>
+    <GestureDetector gesture={composed}>
+      <View style={styles.green}>
+        <Animated.View style={[styles.red, animatedStyle]}>
           <Canvas
             style={{
               flex: 1,
-              height: "100%",
-              width: "100%",
+              height: CANVAS_HEIGHT,
+              width: CANVAS_WIDTH,
               // backgroundColor: "#121212",
-              backgroundColor: "red", // svg background color (above GHR)
+              backgroundColor: "transparent", // svg background color (above GHR)
               opacity: 0.3,
             }}
           >
             <Group>
-              {/* REMOVE: sudo links added just to test colors */}
-              {/* LINKS ******************************************************** */}
+              {/* NODES **************************************************** */}
               {nodes.map((node, index) => {
-                if (!node.rootNode) {
-                  const { x: x1, y: y1 } = getNodePosition(node, index);
-                  const { x: x2, y: y2 } = getNodePosition(nodes[0], 0);
-                  const start = getEdgePoint(x1, y1, x2, y2, REG_NODE_RADIUS);
-                  const end = getEdgePoint(x2, y2, x1, y1, ROOT_NODE_RADIUS);
-                  return (
-                    <Line
-                      key={`line-${node.id}`}
-                      p1={start}
-                      p2={end}
-                      color={node.firstName.length < 6 ? "#222d38" : "#a2aeba"}
-                      style="fill"
-                      strokeWidth={2}
-                    />
-                  );
-                }
-              })}
-              {/* NODES ******************************************************** */}
-              {nodes.map((node, index) => {
+                const { x, y } = getTouchResponderPosition(node, index);
+
                 if (node.rootNode) {
-                  return (
-                    <RootNode
-                      node={node}
-                      windowSize={windowSize}
-                      key={node.id}
-                    />
-                  );
+                  return <RootNode nodePosition={{ x, y }} key={node.id} />;
                 } else {
-                  return (
-                    <Node
-                      index={index}
-                      totalNodes={totalNodes}
-                      windowSize={windowSize}
-                      key={node.id}
-                    />
-                  );
+                  return <Node nodePosition={{ x, y }} key={node.id} />;
                 }
               })}
             </Group>
           </Canvas>
-          {/* Touch Responders ************************************************* */}
+          {/* Touch Responders ********************************************* */}
           {nodes.map((node, index) => {
             const { x, y } = getNodePosition(node, index);
             return (
@@ -173,20 +155,47 @@ const Index = () => {
             );
           })}
         </Animated.View>
-      </GestureDetector>
-      <Popover />
-    </View>
+        <Popover />
+        <Pressable
+          onPress={handleCenterOnRoot}
+          style={{
+            position: "absolute",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            bottom: 10,
+            left: 10,
+            height: 50,
+            width: 50,
+            borderRadius: 100,
+            backgroundColor: "green",
+          }}
+        >
+          <Text>^</Text>
+        </Pressable>
+      </View>
+    </GestureDetector>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  green: {
     // flex: 1,
     height: "100%",
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent", // svg wrapper (below Canvas)
+  },
+  red: {
+    // flex: 1,
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    // backgroundColor: "rgba(1, 1, 1, 0.5)", // svg wrapper (below Canvas)
   },
   image: {
     flex: 1,

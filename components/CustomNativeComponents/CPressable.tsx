@@ -8,7 +8,7 @@ import Animated, {
 import { Text, View } from "../Themed";
 
 interface Props {
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | boolean;
   text?: string;
   containerStyles?: ViewStyle;
   textStyles?: TextStyle;
@@ -44,16 +44,18 @@ export default function CPressable({
       onPressOut={handlePressOut}
       style={[containerStyles, animatedStyles]}
     >
-      <View
-        style={{
-          backgroundColor: "#845fba",
-          borderRadius: 100,
-          padding: 5,
-          borderWidth: 1,
-        }}
-      >
-        {icon}
-      </View>
+      {icon && (
+        <View
+          style={{
+            backgroundColor: "#845fba",
+            borderRadius: 100,
+            padding: 5,
+            borderWidth: 1,
+          }}
+        >
+          {icon}
+        </View>
+      )}
       <Text style={textStyles}>{text}</Text>
     </AnimatedPressable>
   );

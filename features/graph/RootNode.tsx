@@ -3,24 +3,16 @@ import { Circle, Group } from "@shopify/react-native-skia";
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { WindowSize } from "@/hooks/useWindowSize";
 
-import { INode } from "./types/graphTypes";
-
 interface Props {
-  node: INode;
-  windowSize: WindowSize;
+  nodePosition: { x: number; y: number };
 }
 
-// CONSTANTS ******************************************************************
+export default function RootNode({ nodePosition }: Props): React.JSX.Element {
+  const { x, y } = nodePosition;
 
-export default function RootNode({ windowSize }: Props): React.JSX.Element {
   return (
     <Group>
-      <Circle
-        color={"black"}
-        cx={windowSize.windowCenterX}
-        cy={windowSize.windowCenterY}
-        r={ROOT_NODE_RADIUS / 2}
-      />
+      <Circle color={"transparent"} cx={x} cy={y} r={ROOT_NODE_RADIUS / 2} />
     </Group>
   );
 }

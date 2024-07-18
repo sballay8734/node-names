@@ -1,38 +1,16 @@
 import { Circle, Group } from "@shopify/react-native-skia";
 
-import { ROOT_NODE_RADIUS, REG_NODE_RADIUS } from "@/constants/nodes";
-import { WindowSize } from "@/hooks/useWindowSize";
+import { REG_NODE_RADIUS } from "@/constants/nodes";
 
 interface Props {
-  index: number;
-  totalNodes: number;
-  windowSize: WindowSize;
+  nodePosition: { x: number; y: number };
 }
 
-export default function Node({
-  index,
-  totalNodes,
-  windowSize,
-}: Props): React.JSX.Element {
-  // word circle around root node
-  function getYValue(index: number) {
-    const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
-  }
-
-  function getXValue(index: number) {
-    const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
-  }
-
+export default function Node({ nodePosition }: Props): React.JSX.Element {
+  const { x, y } = nodePosition;
   return (
     <Group>
-      <Circle
-        color={"transparent"}
-        cx={getXValue(index)}
-        cy={getYValue(index)}
-        r={REG_NODE_RADIUS / 2}
-      />
+      <Circle color={"transparent"} cx={x} cy={y} r={REG_NODE_RADIUS / 2} />
     </Group>
   );
 }
