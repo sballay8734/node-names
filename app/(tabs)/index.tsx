@@ -9,7 +9,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/constants/graph";
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import Node from "@/features/graph/Node";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
@@ -61,18 +60,18 @@ const Index = () => {
   // !TODO: THIS IS NOT EXACT. NEED TO TRACE ISSUE AND REFACTOR ALL THIS *******
   function getTRYValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * ROOT_NODE_RADIUS + CANVAS_HEIGHT / 4.93;
+    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
   }
 
   // !TODO: REFACTOR ***********************************************************
   function getTRXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * ROOT_NODE_RADIUS + CANVAS_WIDTH / 2;
+    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
   }
   // !TODO: REFACTOR ***********************************************************
   function getTouchResponderPosition(node: INode, index: number) {
     if (node.rootNode) {
-      return { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 4.93 };
+      return { x: windowSize.windowCenterX, y: windowSize.windowCenterY };
     } else {
       return { x: getTRXValue(index), y: getTRYValue(index) };
     }
@@ -121,16 +120,7 @@ const Index = () => {
     <GestureDetector gesture={composed}>
       <View style={styles.green}>
         <Animated.View style={[styles.red, animatedStyle]}>
-          <Canvas
-            style={{
-              flex: 1,
-              height: CANVAS_HEIGHT,
-              width: CANVAS_WIDTH,
-              // backgroundColor: "#121212",
-              backgroundColor: "transparent", // svg background color (above GHR)
-              opacity: 0.3,
-            }}
-          >
+          <Canvas style={styles.canvas}>
             <Group>
               {/* NODES **************************************************** */}
               {nodes.map((node, index) => {
@@ -166,7 +156,7 @@ const Index = () => {
             />
           }
           handleCenter={handleCenter}
-        ></RecenterBtn>
+        />
       </View>
     </GestureDetector>
   );
@@ -178,28 +168,28 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "transparent", // svg wrapper (below Canvas)
+    backgroundColor: "rgba(0,255,17,0.2)", // svg wrapper (below Canvas)
     // borderWidth: 2,
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   red: {
-    // borderWidth: 2,
-    borderColor: "red",
-    display: "flex",
     height: "100%",
     width: "100%",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
     // backgroundColor: "transparent",
-    backgroundColor: "rgba(70, 70, 70, 0.5)", // svg wrapper (below Canvas)
+    backgroundColor: "rgba(255, 0, 0, 0.3)", // svg wrapper (below Canvas)
+    // borderWidth: 2,
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
-  image: {
+  canvas: {
     flex: 1,
-    width: "100%",
     height: "100%",
-    resizeMode: "cover",
-    justifyContent: "center",
+    width: "100%",
+    // backgroundColor: "#121212",
+    backgroundColor: "rgba(0, 4, 255, 0.5)", // BLUE
+    opacity: 0.3,
   },
 });
 
