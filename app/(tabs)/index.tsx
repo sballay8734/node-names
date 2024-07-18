@@ -3,8 +3,7 @@ import { Canvas, Group } from "@shopify/react-native-skia";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
+import {
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -23,138 +22,114 @@ import testNodes from "../../data/mainMockData.json";
 
 const nodes: INode[] = testNodes.nodes;
 
+const MIN_SCALE = 0.1;
+const MAX_SCALE = 3;
+const INITIAL_SCALE = 0.4;
+
 const Index = () => {
   const windowSize = useWindowSize();
 
-  const scale = useSharedValue(1);
-  const savedScale = useSharedValue(1);
+  const scale = useSharedValue(INITIAL_SCALE); // CHANGE BACK TO 1
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
-  const MIN_SCALE = 0.3;
-  const MAX_SCALE = 5;
-
-  const MIN_X = -500;
-  const MAX_X = 500;
-  const MIN_Y = -500;
-  const MAX_Y = 500;
+  const lastScale = useSharedValue(1);
 
   const totalNodes = nodes.length - 1;
-
-  function getYValue(index: number) {
-    const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
-  }
-
-  function getXValue(index: number) {
-    const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
-  }
-
-  function getNodePosition(node: INode, index: number) {
-    if (node.rootNode) {
-      return { x: windowSize.windowCenterX, y: windowSize.windowCenterY };
-    } else {
-      return { x: getXValue(index), y: getYValue(index) };
-    }
-  }
 
   // !TODO: THIS IS NOT EXACT. NEED TO TRACE ISSUE AND REFACTOR ALL THIS *******
   function getTRYValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
+    return (
+      Math.sin(angle) * ROOT_NODE_RADIUS +
+      windowSize.windowCenterY / scale.value
+    );
   }
 
   // !TODO: REFACTOR ***********************************************************
   function getTRXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
+    return (
+      Math.cos(angle) * ROOT_NODE_RADIUS +
+      windowSize.windowCenterX / scale.value
+    );
   }
   // !TODO: REFACTOR ***********************************************************
   function getTouchResponderPosition(node: INode, index: number) {
     if (node.rootNode) {
-      return { x: windowSize.windowCenterX, y: windowSize.windowCenterY };
+      return {
+        x: windowSize.windowCenterX / scale.value,
+        y: windowSize.windowCenterY / scale.value,
+      };
     } else {
-      return { x: getTRXValue(index), y: getTRYValue(index) };
+      return {
+        x: getTRXValue(index),
+        y: getTRYValue(index),
+      };
     }
   }
 
   const pan = Gesture.Pan().onChange((e) => {
-    translateX.value = Math.min(
-      Math.max(translateX.value + e.changeX / scale.value, MIN_X),
-      MAX_X,
-    );
-    translateY.value = Math.min(
-      Math.max(translateY.value + e.changeY / scale.value, MIN_Y),
-      MAX_Y,
-    );
+    translateX.value += e.changeX;
+    translateY.value += e.changeY;
   });
 
   const pinch = Gesture.Pinch()
     .onChange((e) => {
-      const newScale = savedScale.value * e.scale;
-      scale.value = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
+      const newScale = Math.min(
+        Math.max(scale.value * e.scale, MIN_SCALE),
+        MAX_SCALE,
+      );
+      scale.value = newScale;
     })
     .onEnd(() => {
-      savedScale.value = scale.value;
+      lastScale.value = scale.value;
     });
 
   const composed = Gesture.Simultaneous(pan, pinch);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
+  const transform = useDerivedValue(
+    () => [
       { translateX: translateX.value },
       { translateY: translateY.value },
       { scale: scale.value },
     ],
-  }));
+    [translateX, translateY, scale],
+  );
 
-  // !TODO: Animate this movement **********************************************
   function handleCenter() {
     translateX.value = withTiming(0, { duration: 200 });
     translateY.value = withTiming(0, { duration: 200 });
-    scale.value = withTiming(1, { duration: 200 });
-    savedScale.value = 1;
+    lastScale.value = withTiming(1, { duration: 200 });
+    scale.value = withTiming(INITIAL_SCALE, { duration: 200 });
   }
-
-  // const transform = useDerivedValue(() => {
-  //   console.log("CHANGING...");
-  //   return [
-  //     {
-  //       translateX: translateX.value,
-  //       translateY: translateY.value,
-  //       scale: scale.value,
-  //     },
-  //   ];
-  // }, [translateX, translateY, scale]);
 
   return (
     <GestureDetector gesture={composed}>
-      <View style={styles.green}>
-        <Animated.View style={[styles.red, animatedStyle]}>
-          <Canvas style={styles.canvas}>
-            {/* NODES **************************************************** */}
+      <View style={styles.red}>
+        <Canvas style={{ flex: 1 }}>
+          {/* NODES **************************************************** */}
+          <Group transform={transform}>
             {nodes.map((node, index) => {
               const { x, y } = getTouchResponderPosition(node, index);
-
               if (node.rootNode) {
                 return <RootNode nodePosition={{ x, y }} key={node.id} />;
               } else {
                 return <Node nodePosition={{ x, y }} key={node.id} />;
               }
             })}
-          </Canvas>
-          {/* Touch Responders ********************************************* */}
-          {nodes.map((node, index) => {
-            const { x, y } = getNodePosition(node, index);
-            return (
-              <NodeTapDetector
-                key={node.id}
-                node={node}
-                nodePosition={{ x, y }}
-              />
-            );
-          })}
-        </Animated.View>
+          </Group>
+        </Canvas>
+        {/* Touch Responders ********************************************* */}
+        {/* {nodes.map((node, index) => {
+          const { x, y } = getNodePosition(node, index);
+          return (
+            <NodeTapDetector
+              key={node.id}
+              node={node}
+              nodePosition={{ x, y }}
+            />
+          );
+        })} */}
         <Popover />
         <RecenterBtn
           icon={
@@ -182,23 +157,20 @@ const styles = StyleSheet.create({
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   red: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: "transparent",
-    backgroundColor: "rgba(255, 0, 0, 0.3)", // svg wrapper (below Canvas)
-    // overflow: "hidden",
-    // borderWidth: 2,
+    flex: 1,
+    // height: "100%",
+    // width: "100%",
+    // display: "flex",
+    // alignItems: "center",
+    // justifyContent: "center",
+    backgroundColor: "rgba(255, 0, 0, 0.1)", // svg wrapper (below Canvas)
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   canvas: {
     flex: 1,
-    height: "100%",
-    width: "100%",
-    overflow: "hidden",
-    // backgroundColor: "#121212",
+    // height: "100%",
+    // width: "100%",
+    // overflow: "hidden",
     backgroundColor: "rgba(0, 4, 255, 0.5)", // BLUE
     opacity: 0.3,
   },
@@ -207,13 +179,16 @@ const styles = StyleSheet.create({
 export default Index;
 
 // !TODO: FIRST FOR FRI. ****************************************************
-// 1. YOU NEED THIS: https://shopify.github.io/react-native-skia/docs/animations/gestures (REVIEW ELEMENT TRACKING)
-// I think you need Canvas within a view (overflow hidden), but the Gesturehandler on the view changes the position and scale of the nodes (so nodes outside of the screen will move more towards the center and appear smaller when zooming out.)
+// 1. You're CLOSE but not quite -- LOOK HERE (https://github.com/wcandillon/can-it-be-done-in-react-native/blob/master/bonuses/sticker-app/src/GestureHandler.tsx)
+
+// reduce velocity of pinch gesture
+
+// 1. YOU NEED TO ADD TAP DETECTORS BACK SOMEHOW!!
+
 // 1. only show centering btn if root node is off screen (out of bounds)
 
 // !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
 
-// 1a. CURRENTLY the bigger the scale, the less you can pan // !TODO: SO, you need to fix this. BE CAREFUL)
 // 2. Assume everyone starts with only the root node and build from there
 // 2a. Based on 2, start with connecting a new node to the root and creating a node NOT connected to the root WITH LINKS
 // 3. After 2a, work on grouping logic

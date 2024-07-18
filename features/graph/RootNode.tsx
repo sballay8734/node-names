@@ -12,7 +12,7 @@ export default function RootNode({ nodePosition }: Props): React.JSX.Element {
 
   return (
     <Group>
-      <Circle color={"transparent"} cx={x} cy={y} r={ROOT_NODE_RADIUS / 2} />
+      <Circle color={"purple"} cx={x} cy={y} r={ROOT_NODE_RADIUS / 2} />
     </Group>
   );
 }
