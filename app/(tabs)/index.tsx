@@ -19,6 +19,8 @@ import Popover from "@/features/manageSelections/Popover";
 import useWindowSize from "@/hooks/useWindowSize";
 
 import testNodes from "../../data/mainMockData.json";
+import RecenterBtn from "@/features/graph/RecenterBtn";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -109,7 +111,7 @@ const Index = () => {
   }));
 
   // !TODO: Animate this movement **********************************************
-  function handleCenterOnRoot() {
+  function handleCenter() {
     translateX.value = withTiming(0, { duration: 200 });
     translateY.value = withTiming(0, { duration: 200 });
     scale.value = withTiming(1, { duration: 200 });
@@ -156,24 +158,16 @@ const Index = () => {
           })}
         </Animated.View>
         <Popover />
-        <Pressable
-          onPress={handleCenterOnRoot}
-          style={{
-            position: "absolute",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            bottom: 10,
-            left: 10,
-            height: 50,
-            width: 50,
-            borderRadius: 100,
-            backgroundColor: "green",
-          }}
-        >
-          <Text>^</Text>
-        </Pressable>
+        <RecenterBtn
+          icon={
+            <FontAwesome6
+              name="down-left-and-up-right-to-center"
+              size={24}
+              color="black"
+            />
+          }
+          handleCenter={handleCenter}
+        ></RecenterBtn>
       </View>
     </GestureDetector>
   );
@@ -208,8 +202,12 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FIRST FOR THURS. ****************************************************
-// 1. configure canvas to be scrollable and test with extra nodes
+// !TODO: FIRST FOR FRI. ****************************************************
+// 1. only show centering btn if root node is off screen (out of bounds)
+
+// !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
+
+// 1a. CURRENTLY the bigger the scale, the less you can pan // !TODO: SO, you need to fix this. BE CAREFUL)
 // 2. Assume everyone starts with only the root node and build from there
 // 2a. Based on 2, start with connecting a new node to the root and creating a node NOT connected to the root WITH LINKS
 // 3. After 2a, work on grouping logic
@@ -217,5 +215,6 @@ export default Index;
 // !TODO: View toggle (group View - zooms out, node view - zooms in)
 // Add connection, create connection, link nodes, create group, group selected nodes, etc...
 // TODO: use custom icon for btn
+// TODO: Recenter button should be an arrow that ALWAYS points towards root (so you'll need to animate the rotation)
 // TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
 // mTODO: Change "rootNode" to "isRootNode"
