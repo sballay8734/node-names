@@ -5,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
@@ -32,10 +33,10 @@ const Index = () => {
   const MIN_SCALE = 0.3;
   const MAX_SCALE = 5;
 
-  const MIN_X = -500 * scale.value;
-  const MAX_X = 500 * scale.value;
-  const MIN_Y = -500 * scale.value;
-  const MAX_Y = 500 * scale.value;
+  const MIN_X = -500;
+  const MAX_X = 500;
+  const MIN_Y = -500;
+  const MAX_Y = 500;
 
   const totalNodes = nodes.length - 1;
 
@@ -78,13 +79,12 @@ const Index = () => {
   }
 
   const pan = Gesture.Pan().onChange((e) => {
-    // Clamp the new translation values within the defined limits
     translateX.value = Math.min(
-      Math.max(translateX.value + e.changeX, MIN_X),
+      Math.max(translateX.value + e.changeX / scale.value, MIN_X),
       MAX_X,
     );
     translateY.value = Math.min(
-      Math.max(translateY.value + e.changeY, MIN_Y),
+      Math.max(translateY.value + e.changeY / scale.value, MIN_Y),
       MAX_Y,
     );
   });
@@ -116,23 +116,32 @@ const Index = () => {
     savedScale.value = 1;
   }
 
+  // const transform = useDerivedValue(() => {
+  //   console.log("CHANGING...");
+  //   return [
+  //     {
+  //       translateX: translateX.value,
+  //       translateY: translateY.value,
+  //       scale: scale.value,
+  //     },
+  //   ];
+  // }, [translateX, translateY, scale]);
+
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.green}>
         <Animated.View style={[styles.red, animatedStyle]}>
           <Canvas style={styles.canvas}>
-            <Group>
-              {/* NODES **************************************************** */}
-              {nodes.map((node, index) => {
-                const { x, y } = getTouchResponderPosition(node, index);
+            {/* NODES **************************************************** */}
+            {nodes.map((node, index) => {
+              const { x, y } = getTouchResponderPosition(node, index);
 
-                if (node.rootNode) {
-                  return <RootNode nodePosition={{ x, y }} key={node.id} />;
-                } else {
-                  return <Node nodePosition={{ x, y }} key={node.id} />;
-                }
-              })}
-            </Group>
+              if (node.rootNode) {
+                return <RootNode nodePosition={{ x, y }} key={node.id} />;
+              } else {
+                return <Node nodePosition={{ x, y }} key={node.id} />;
+              }
+            })}
           </Canvas>
           {/* Touch Responders ********************************************* */}
           {nodes.map((node, index) => {
@@ -180,6 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // backgroundColor: "transparent",
     backgroundColor: "rgba(255, 0, 0, 0.3)", // svg wrapper (below Canvas)
+    // overflow: "hidden",
     // borderWidth: 2,
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
@@ -187,6 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     width: "100%",
+    overflow: "hidden",
     // backgroundColor: "#121212",
     backgroundColor: "rgba(0, 4, 255, 0.5)", // BLUE
     opacity: 0.3,
@@ -196,6 +207,7 @@ const styles = StyleSheet.create({
 export default Index;
 
 // !TODO: FIRST FOR FRI. ****************************************************
+// 1. YOU NEED THIS: https://shopify.github.io/react-native-skia/docs/animations/gestures (REVIEW ELEMENT TRACKING)
 // 1. only show centering btn if root node is off screen (out of bounds)
 
 // !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!

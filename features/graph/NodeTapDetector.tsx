@@ -51,6 +51,8 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     position: "absolute",
     top: -radius,
     left: -radius,
+    // width: radius * 2,
+    // height: radius * 2,
     width: radius * 2,
     height: radius * 2,
     transform: [{ translateX: x }, { translateY: y }],
