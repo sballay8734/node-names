@@ -4,13 +4,13 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
-  useAnimatedProps,
   useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
+import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
 import Node from "@/features/graph/Node";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RecenterBtn from "@/features/graph/RecenterBtn";
@@ -27,18 +27,28 @@ const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
 const INITIAL_SCALE = 0.4;
 
+const ARROW_BTN_LEFT = 10;
+const ARROW_BTN_BTM = 10;
+
 const Index = () => {
   const windowSize = useWindowSize();
 
   const scale = useSharedValue(INITIAL_SCALE);
   // origin = point on Group directly under center point on Canvas
   const origin = useSharedValue({
-    x: windowSize.windowCenterX / scale.value,
-    y: windowSize.windowCenterY / scale.value,
+    x: windowSize.windowCenterX,
+    y: windowSize.windowCenterY,
   });
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
-  const lastScale = useSharedValue(1);
+  const lastScale = useSharedValue(INITIAL_SCALE);
+
+  const scaleChange = useDerivedValue(() => scale.value / INITIAL_SCALE);
+
+  const ARROW_BTN_CENTER = {
+    x: ARROW_BTN_LEFT + ARROW_BTN_RADIUS, // Left margin AND CENTER of button
+    y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
+  };
 
   const totalNodes = nodes.length - 1;
 
@@ -51,7 +61,7 @@ const Index = () => {
     );
   }
 
-  // Calculate X value of node within the group
+  // Calculate X value of node within the group save
   function calcNodeXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
     return (
@@ -79,6 +89,8 @@ const Index = () => {
     translateY.value += e.changeY;
   });
 
+  console.log("ORIGIN:", origin.value);
+
   const pinch = Gesture.Pinch()
     // Calc the point on the group that is under the center point on the canvas
     .onStart((e) => {
@@ -93,14 +105,23 @@ const Index = () => {
         MAX_SCALE,
       );
 
+      console.log("NEW SCALE:", newScale);
+
       const focalX = origin.value.x * newScale;
       const focalY = origin.value.y * newScale;
+
+      console.log("FOCALS:", focalX, focalY);
+      console.log("ORIGIN IN:", origin.value);
 
       // Adjust the translation values to keep the group centered
       translateX.value = windowSize.windowCenterX - focalX;
       translateY.value = windowSize.windowCenterY - focalY;
 
       scale.value = newScale;
+
+      // console.log("transX:", translateX.value);
+      // console.log("transY:", translateY.value);
+      // console.log("ORIGIN:", origin.value, scale.value);
     })
     .onEnd(() => {
       lastScale.value = scale.value;
@@ -108,14 +129,11 @@ const Index = () => {
 
   const composed = Gesture.Race(pan, pinch);
 
-  const transform = useDerivedValue(
-    () => [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: scale.value },
-    ],
-    [translateX, translateY, scale],
-  );
+  const transform = useDerivedValue(() => [
+    { translateX: translateX.value },
+    { translateY: translateY.value },
+    { scale: scale.value },
+  ]);
 
   function handleCenter() {
     translateX.value = withTiming(0, {
@@ -133,18 +151,31 @@ const Index = () => {
     });
   }
 
-  const animatedProps = useDerivedValue(() => {
+  const arrowData = useDerivedValue(() => {
+    const rootNodePos = {
+      x: windowSize.windowCenterX + translateX.value,
+      y: windowSize.windowCenterY + translateY.value,
+    };
+
+    // Calculate the differences in x and y coordinates
+    const dx = rootNodePos.x - ARROW_BTN_CENTER.x;
+    const dy = rootNodePos.y - ARROW_BTN_CENTER.y;
+
+    // Calculate the angle in radians
+    const angle = Math.atan2(dy, dx);
+
+    // Convert the angle to degrees
+    const angleInDegrees = (angle * 180) / Math.PI;
+
     return {
-      translateX: translateX.value,
-      translateY: translateY.value,
-      scale: scale.value,
+      transform: [{ rotate: `${angleInDegrees}deg` }],
     };
   });
 
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
-        <Canvas style={{ flex: 1 }}>
+        <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
           {/* NODES **************************************************** */}
           <Group transform={transform}>
             {nodes.map((node, index) => {
@@ -172,14 +203,7 @@ const Index = () => {
           })}
         </Animated.View>
         <Popover />
-        <RecenterBtn
-          handleCenter={handleCenter}
-          rootNodePos={{
-            x: windowSize.windowCenterX / scale.value,
-            y: windowSize.windowCenterY / scale.value,
-          }}
-          animatedProps={animatedProps.value}
-        />
+        <RecenterBtn handleCenter={handleCenter} arrowData={arrowData} />
       </View>
     </GestureDetector>
   );
@@ -210,6 +234,7 @@ export default Index;
 // 1. only show centering btn if root node is off screen (out of bounds)
 // SEE HERE FOR #1 (https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/animating-styles-and-props)
 
+// !TODO: DOUBLE CHECK THAT NODES ARE ALIGNED
 // !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
 
 // 2. Assume everyone starts with only the root node and build from there
@@ -218,7 +243,9 @@ export default Index;
 
 // !TODO: View toggle (group View - zooms out, node view - zooms in)
 // Add connection, create connection, link nodes, create group, group selected nodes, etc...
+
 // TODO: use custom icon for btn
 // TODO: Recenter button should be an arrow that ALWAYS points towards root (so you'll need to animate the rotation)
 // TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
+// mTODO: Pinch Center doesn't quite align with RootNode center
 // mTODO: Change "rootNode" to "isRootNode"

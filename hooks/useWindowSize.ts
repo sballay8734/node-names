@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Dimensions, ScaledSize } from "react-native";
 
+import { TAB_BAR_HEIGHT } from "@/constants/styles";
+
 export interface WindowSize {
   width: number;
   height: number;
@@ -11,11 +13,13 @@ export interface WindowSize {
 export default function useWindowSize() {
   const [windowSize, setWindowSize] = useState<WindowSize>(() => {
     const { width, height } = Dimensions.get("window");
+    const adjHeight = height - TAB_BAR_HEIGHT;
+
     return {
       width,
       height,
       windowCenterX: width / 2,
-      windowCenterY: height / 2.1,
+      windowCenterY: adjHeight / 2,
     };
   });
 
