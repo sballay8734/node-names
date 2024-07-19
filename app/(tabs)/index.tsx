@@ -1,5 +1,5 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import { Canvas, Group } from "@shopify/react-native-skia";
+import { Canvas, Circle, Group } from "@shopify/react-native-skia";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -38,9 +38,6 @@ const Index = () => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(1);
-
-  const screenCenterX = windowSize.windowCenterX / scale.value;
-  const screenCenterY = windowSize.windowCenterX / scale.value;
 
   const totalNodes = nodes.length - 1;
 
@@ -82,14 +79,26 @@ const Index = () => {
   });
 
   const pinch = Gesture.Pinch()
-    // .onStart((e) => {
-    //   origin.value = { x: screenCenterX, y: screenCenterY };
-    // })
+    // Calc the point on the group that is under the center point on the canvas
+    .onStart((e) => {
+      origin.value = {
+        x: (windowSize.windowCenterX - translateX.value) / scale.value,
+        y: (windowSize.windowCenterY - translateY.value) / scale.value,
+      };
+    })
     .onChange((e) => {
       const newScale = Math.min(
         Math.max(scale.value * e.scale, MIN_SCALE),
         MAX_SCALE,
       );
+
+      const focalX = origin.value.x * newScale;
+      const focalY = origin.value.y * newScale;
+
+      // Adjust the translation values to keep the group centered
+      translateX.value = windowSize.windowCenterX - focalX;
+      translateY.value = windowSize.windowCenterY - focalY;
+
       scale.value = newScale;
     })
     .onEnd(() => {
@@ -110,16 +119,16 @@ const Index = () => {
   function handleCenter() {
     translateX.value = withTiming(0, {
       duration: 500,
-      easing: Easing.bezier(0, 0.95, 0.55, 1),
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
     translateY.value = withTiming(0, {
       duration: 500,
-      easing: Easing.bezier(0, 0.95, 0.55, 1),
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
     lastScale.value = withTiming(1, { duration: 500 });
     scale.value = withTiming(INITIAL_SCALE, {
       duration: 500,
-      easing: Easing.bezier(0, 0.95, 0.55, 1),
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
   }
 
@@ -199,11 +208,6 @@ const styles = StyleSheet.create({
 export default Index;
 
 // !TODO: FIRST FOR FRI. ****************************************************
-// 1. You're CLOSE but not quite -- LOOK HERE (https://github.com/wcandillon/can-it-be-done-in-react-native/blob/master/bonuses/sticker-app/src/GestureHandler.tsx)
-
-// START HERE THOUGH!! (https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/handling-gestures)
-
-// reduce velocity of pinch gesture
 
 // 1. YOU NEED TO ADD TAP DETECTORS BACK SOMEHOW!!
 

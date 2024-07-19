@@ -9,6 +9,7 @@ interface Props {
 
 export default function RootNode({ nodePosition }: Props): React.JSX.Element {
   const { x, y } = nodePosition;
+  console.log("ROOT-XY:", x, y);
 
   return (
     <Group>
