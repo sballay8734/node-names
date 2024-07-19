@@ -1,10 +1,10 @@
-import { FontAwesome6 } from "@expo/vector-icons";
-import { Canvas, Circle, Group } from "@shopify/react-native-skia";
+import { Canvas, Group } from "@shopify/react-native-skia";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import {
+import Animated, {
   Easing,
+  useAnimatedProps,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -31,6 +31,7 @@ const Index = () => {
   const windowSize = useWindowSize();
 
   const scale = useSharedValue(INITIAL_SCALE);
+  // origin = point on Group directly under center point on Canvas
   const origin = useSharedValue({
     x: windowSize.windowCenterX / scale.value,
     y: windowSize.windowCenterY / scale.value,
@@ -41,8 +42,8 @@ const Index = () => {
 
   const totalNodes = nodes.length - 1;
 
-  // !TODO: THIS IS NOT EXACT. NEED TO TRACE ISSUE AND REFACTOR ALL THIS *******
-  function getTRYValue(index: number) {
+  // Calculate Y value of node within the group
+  function calcNodeYValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
     return (
       Math.sin(angle) * ROOT_NODE_RADIUS +
@@ -50,16 +51,16 @@ const Index = () => {
     );
   }
 
-  // !TODO: REFACTOR ***********************************************************
-  function getTRXValue(index: number) {
+  // Calculate X value of node within the group
+  function calcNodeXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
     return (
       Math.cos(angle) * ROOT_NODE_RADIUS +
       windowSize.windowCenterX / scale.value
     );
   }
-  // !TODO: REFACTOR ***********************************************************
-  function getTouchResponderPosition(node: INode, index: number) {
+
+  function getNodePosition(node: INode, index: number) {
     if (node.rootNode) {
       return {
         x: windowSize.windowCenterX / scale.value,
@@ -67,8 +68,8 @@ const Index = () => {
       };
     } else {
       return {
-        x: getTRXValue(index),
-        y: getTRYValue(index),
+        x: calcNodeXValue(index),
+        y: calcNodeYValue(index),
       };
     }
   }
@@ -105,7 +106,7 @@ const Index = () => {
       lastScale.value = scale.value;
     });
 
-  const composed = Gesture.Simultaneous(pan, pinch);
+  const composed = Gesture.Race(pan, pinch);
 
   const transform = useDerivedValue(
     () => [
@@ -132,14 +133,22 @@ const Index = () => {
     });
   }
 
+  const animatedProps = useDerivedValue(() => {
+    return {
+      translateX: translateX.value,
+      translateY: translateY.value,
+      scale: scale.value,
+    };
+  });
+
   return (
     <GestureDetector gesture={composed}>
-      <View style={styles.red}>
+      <View style={styles.canvasWrapper}>
         <Canvas style={{ flex: 1 }}>
           {/* NODES **************************************************** */}
           <Group transform={transform}>
             {nodes.map((node, index) => {
-              const { x, y } = getTouchResponderPosition(node, index);
+              const { x, y } = getNodePosition(node, index);
               if (node.rootNode) {
                 return <RootNode nodePosition={{ x, y }} key={node.id} />;
               } else {
@@ -149,26 +158,27 @@ const Index = () => {
           </Group>
         </Canvas>
         {/* Touch Responders ********************************************* */}
-        {/* {nodes.map((node, index) => {
-          const { x, y } = getNodePosition(node, index);
-          return (
-            <NodeTapDetector
-              key={node.id}
-              node={node}
-              nodePosition={{ x, y }}
-            />
-          );
-        })} */}
+        <Animated.View style={{ ...styles.tapWrapper, transform }}>
+          {nodes.map((node, index) => {
+            const { x, y } = getNodePosition(node, index);
+
+            return (
+              <NodeTapDetector
+                key={node.id}
+                node={node}
+                nodePosition={{ x, y }}
+              />
+            );
+          })}
+        </Animated.View>
         <Popover />
         <RecenterBtn
-          icon={
-            <FontAwesome6
-              name="down-left-and-up-right-to-center"
-              size={24}
-              color="black"
-            />
-          }
           handleCenter={handleCenter}
+          rootNodePos={{
+            x: windowSize.windowCenterX / scale.value,
+            y: windowSize.windowCenterY / scale.value,
+          }}
+          animatedProps={animatedProps.value}
         />
       </View>
     </GestureDetector>
@@ -176,42 +186,29 @@ const Index = () => {
 };
 
 const styles = StyleSheet.create({
-  green: {
-    height: "100%",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,255,17,0.2)", // svg wrapper (below Canvas)
-    // borderWidth: 2,
-    // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
-  },
-  red: {
+  canvasWrapper: {
     flex: 1,
-    // height: "100%",
-    // width: "100%",
-    // display: "flex",
-    // alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: "rgba(255, 0, 0, 0.1)", // svg wrapper (below Canvas)
+    backgroundColor: "rgba(255, 0, 0, 0)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   canvas: {
     flex: 1,
-    // height: "100%",
-    // width: "100%",
-    // overflow: "hidden",
     backgroundColor: "rgba(0, 4, 255, 0.5)", // BLUE
     opacity: 0.3,
+  },
+  tapWrapper: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    flex: 1,
   },
 });
 
 export default Index;
 
 // !TODO: FIRST FOR FRI. ****************************************************
-
-// 1. YOU NEED TO ADD TAP DETECTORS BACK SOMEHOW!!
-
 // 1. only show centering btn if root node is off screen (out of bounds)
+// SEE HERE FOR #1 (https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/animating-styles-and-props)
 
 // !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
 

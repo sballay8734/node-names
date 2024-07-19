@@ -1,28 +1,29 @@
-import { Pressable, TextStyle, ViewStyle } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-import { View, Text } from "@/components/Themed";
+import { View } from "@/components/Themed";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface Props {
-  icon?: React.ReactNode | boolean;
-  text?: string;
-  containerStyles?: ViewStyle;
-  textStyles?: TextStyle;
   handleCenter: () => void;
+  rootNodePos: { x: number; y: number };
+  animatedProps: {
+    translateX: number;
+    translateY: number;
+    scale: number;
+  };
 }
 
 export default function RecenterBtn({
-  icon,
-  text,
-  containerStyles,
-  textStyles,
   handleCenter,
+  rootNodePos,
+  animatedProps,
 }: Props): React.JSX.Element {
   const isPressed = useSharedValue<boolean>(false);
 
@@ -31,6 +32,17 @@ export default function RecenterBtn({
       duration: 100,
     }),
   }));
+
+  const arrowStyle = useAnimatedStyle(() => {
+    const { translateX = 0, translateY = 0, scale = 1 } = animatedProps;
+    const dx = rootNodePos.x - -translateX / scale;
+    const dy = rootNodePos.y - -translateY / scale;
+    const angle = Math.atan2(dy, dx);
+
+    return {
+      transform: [{ rotate: `${angle}rad` }],
+    };
+  });
 
   function handlePressIn() {
     isPressed.value = true;
@@ -62,7 +74,25 @@ export default function RecenterBtn({
         animatedStyles,
       ]}
     >
-      <Text style={{ ...textStyles, color: "black", fontSize: 20 }}>^</Text>
+      <View style={styles.buttonContent}>
+        <Animated.View style={[styles.arrow, arrowStyle]}>
+          <FontAwesome5 name="location-arrow" size={18} color="black" />
+        </Animated.View>
+      </View>
     </AnimatedPressable>
   );
 }
+
+const styles = StyleSheet.create({
+  buttonContent: {
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  arrow: {
+    width: 20,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

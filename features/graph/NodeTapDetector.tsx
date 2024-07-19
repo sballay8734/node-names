@@ -36,9 +36,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   );
 
   const pressed = selectedNode;
-
   const { x, y } = nodePosition;
-  const radius = node.rootNode ? ROOT_NODE_RADIUS / 2 : REG_NODE_RADIUS / 2;
 
   const {
     inactiveBgColor,
@@ -47,28 +45,25 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     activeBorderColor,
   } = getColors(node);
 
-  const detectorStyle: ViewStyle = {
+  // !TODO: This needs to be refactored but DOES work
+  const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    top: -radius,
-    left: -radius,
-    // width: radius * 2,
-    // height: radius * 2,
-    width: radius * 2,
-    height: radius * 2,
-    transform: [{ translateX: x }, { translateY: y }],
+    left: node.rootNode ? x - ROOT_NODE_RADIUS / 2 : x - ROOT_NODE_RADIUS / 4,
+    top: node.rootNode ? y - ROOT_NODE_RADIUS / 2 : y - ROOT_NODE_RADIUS / 4,
+    width: node.rootNode ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    height: node.rootNode ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+
+    // MY STUFF
     borderWidth: NODE_BORDER_WIDTH,
     opacity: 1,
-    borderRadius: 100, // full (to make circle)
+    borderRadius: 100,
     borderColor: "transparent",
-
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-  };
+  }));
 
-  // !TODO: Remove runOnJS if possible when changing to redux
-  // REVIEW: runOnJS is necessary here but not performant
   const tap = Gesture.Tap()
     .onStart(() => {
       dispatch(handleNodeSelect(node));
@@ -121,7 +116,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
 
   return (
     <GestureDetector key={node.id} gesture={tap}>
-      <Animated.View style={[detectorStyle, animatedStyles]}>
+      <Animated.View style={[animatedStyle, animatedStyles]}>
         {/* Trans BG VIEW */}
         <Animated.View
           style={[
