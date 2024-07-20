@@ -43,8 +43,6 @@ const Index = () => {
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
 
-  const scaleChange = useDerivedValue(() => scale.value / INITIAL_SCALE);
-
   const ARROW_BTN_CENTER = {
     x: ARROW_BTN_LEFT + ARROW_BTN_RADIUS, // Left margin AND CENTER of button
     y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
@@ -55,26 +53,20 @@ const Index = () => {
   // Calculate Y value of node within the group
   function calcNodeYValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return (
-      Math.sin(angle) * ROOT_NODE_RADIUS +
-      windowSize.windowCenterY / scale.value
-    );
+    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
   }
 
   // Calculate X value of node within the group save
   function calcNodeXValue(index: number) {
     const angle = (index / totalNodes) * 2 * Math.PI;
-    return (
-      Math.cos(angle) * ROOT_NODE_RADIUS +
-      windowSize.windowCenterX / scale.value
-    );
+    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
   }
 
   function getNodePosition(node: INode, index: number) {
     if (node.rootNode) {
       return {
-        x: windowSize.windowCenterX / scale.value,
-        y: windowSize.windowCenterY / scale.value,
+        x: windowSize.windowCenterX,
+        y: windowSize.windowCenterY,
       };
     } else {
       return {
@@ -87,17 +79,21 @@ const Index = () => {
   const pan = Gesture.Pan().onChange((e) => {
     translateX.value += e.changeX;
     translateY.value += e.changeY;
+
+    console.log(translateX.value, translateY.value);
   });
 
   console.log("ORIGIN:", origin.value);
 
   const pinch = Gesture.Pinch()
-    // Calc the point on the group that is under the center point on the canvas
+    // Calc the point on the group that is under the center point on the canva
     .onStart((e) => {
       origin.value = {
-        x: (windowSize.windowCenterX - translateX.value) / scale.value,
-        y: (windowSize.windowCenterY - translateY.value) / scale.value,
+        x: windowSize.windowCenterX - translateX.value,
+        y: windowSize.windowCenterY - translateY.value,
       };
+
+      console.log("START ORIGIN:", origin.value);
     })
     .onChange((e) => {
       const newScale = Math.min(
@@ -105,23 +101,7 @@ const Index = () => {
         MAX_SCALE,
       );
 
-      console.log("NEW SCALE:", newScale);
-
-      const focalX = origin.value.x * newScale;
-      const focalY = origin.value.y * newScale;
-
-      console.log("FOCALS:", focalX, focalY);
-      console.log("ORIGIN IN:", origin.value);
-
-      // Adjust the translation values to keep the group centered
-      translateX.value = windowSize.windowCenterX - focalX;
-      translateY.value = windowSize.windowCenterY - focalY;
-
       scale.value = newScale;
-
-      // console.log("transX:", translateX.value);
-      // console.log("transY:", translateY.value);
-      // console.log("ORIGIN:", origin.value, scale.value);
     })
     .onEnd(() => {
       lastScale.value = scale.value;
@@ -222,6 +202,8 @@ const styles = StyleSheet.create({
   },
   tapWrapper: {
     position: "absolute",
+    width: "100%",
+    height: "100%",
     top: 0,
     left: 0,
     flex: 1,

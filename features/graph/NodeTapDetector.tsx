@@ -45,11 +45,14 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     activeBorderColor,
   } = getColors(node);
 
-  // !TODO: This needs to be refactored but DOES work
+  console.log("NODE:", node.id, x, y);
+
+  // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    left: node.rootNode ? x - ROOT_NODE_RADIUS / 2 : x - ROOT_NODE_RADIUS / 4,
-    top: node.rootNode ? y - ROOT_NODE_RADIUS / 2 : y - ROOT_NODE_RADIUS / 4,
+    top: node.rootNode ? y - ROOT_NODE_RADIUS / 2 : y - REG_NODE_RADIUS / 2,
+    left: node.rootNode ? x - ROOT_NODE_RADIUS / 2 : x - REG_NODE_RADIUS / 2,
+    // transform: [{ translateX: x }, { translateY: y }],
     width: node.rootNode ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
     height: node.rootNode ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
 
