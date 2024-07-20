@@ -21,6 +21,7 @@ import { supabase } from "@/supabase";
 // import { Canvas, Group } from "@shopify/react-native-skia";
 
 import testNodes from "../../data/mainMockData.json";
+import useDbData from "@/hooks/useDbData";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -51,16 +52,10 @@ const Index = () => {
 
   const totalNodes = nodes.length - 1;
 
-  async function getPeople() {
-    const { data, error } = await supabase.from("people").select("*");
-
-    if (data) {
-      console.log(data);
-    } else {
-      console.log("ERROR");
-    }
-  }
-  getPeople();
+  const { people, connections, groups } = useDbData();
+  console.log("PEOPLE: ", people);
+  console.log("CONNECTIONS: ", connections);
+  console.log("GROUPS: ", groups);
 
   // Calculate Y value of node within the group
   function calcNodeYValue(index: number) {
