@@ -14,16 +14,16 @@ import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RecenterBtn from "@/features/graph/RecenterBtn";
 import { INode } from "@/features/graph/types/graphTypes";
 import Popover from "@/features/manageSelections/Popover";
+import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
-import { supabase } from "@/supabase";
+import { positionNodes } from "@/utils/positionGraphElements";
 // import Node from "@/features/graph/Node";
 // import RootNode from "@/features/graph/RootNode";
 // import { Canvas, Group } from "@shopify/react-native-skia";
 
 import testNodes from "../../data/mainMockData.json";
-import useDbData from "@/hooks/useDbData";
 
-const nodes: INode[] = testNodes.nodes;
+const oldNodes: INode[] = testNodes.nodes;
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
@@ -50,12 +50,18 @@ const Index = () => {
     y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
   };
 
-  const totalNodes = nodes.length - 1;
+  const totalNodes = oldNodes.length - 1;
 
-  const { people, connections, groups } = useDbData();
-  console.log("PEOPLE: ", people);
-  console.log("CONNECTIONS: ", connections);
-  console.log("GROUPS: ", groups);
+  // !TODO: vvvvvvvvvvvvvvvvvv CURRENT WORKING AREA vvvvvvvvvvvvvvvvvvvvvvv
+
+  const { people, connections, groups, error } = useDbData();
+
+  let peopleNodes;
+  if (people) {
+    peopleNodes = positionNodes(people, windowSize);
+  }
+
+  // !TODO: ^^^^^^^^^^^^^^^^^^^ CURRENT WORKING AREA ^^^^^^^^^^^^^^^^^^^^^^^
 
   // Calculate Y value of node within the group
   function calcNodeYValue(index: number) {
@@ -208,7 +214,8 @@ const Index = () => {
         <Animated.View
           style={{ ...styles.tapWrapper, transform: tapTransform }}
         >
-          {nodes.map((node, index) => {
+          {/* OLD MAP */}
+          {/* {oldNodes.map((node, index) => {
             const { x, y } = getNodePosition(node, index);
 
             return (
@@ -218,7 +225,20 @@ const Index = () => {
                 nodePosition={{ x, y }}
               />
             );
-          })}
+          })} */}
+
+          {peopleNodes &&
+            peopleNodes.map((node, index) => {
+              const { nodeX, nodeY } = node;
+
+              return (
+                <NodeTapDetector
+                  key={node.id}
+                  node={node}
+                  nodePosition={{ x: nodeX, y: nodeY }}
+                />
+              );
+            })}
         </Animated.View>
         <Popover />
         <RecenterBtn

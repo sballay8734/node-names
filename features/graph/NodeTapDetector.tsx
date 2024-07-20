@@ -13,15 +13,15 @@ import {
 } from "@/constants/nodes";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { PositionedPersonNode } from "@/utils/positionGraphElements";
 
 import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
-
-import { INode } from "./types/graphTypes";
 
 const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 
 interface Props {
-  node: INode;
+  // node: PositionedPersonNode;
+  node: PositionedPersonNode;
   nodePosition: { x: number; y: number };
 }
 
@@ -48,11 +48,11 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    top: node.rootNode ? y - ROOT_NODE_RADIUS / 2 : y - REG_NODE_RADIUS / 2,
-    left: node.rootNode ? x - ROOT_NODE_RADIUS / 2 : x - REG_NODE_RADIUS / 2,
+    top: node.isRoot ? y - ROOT_NODE_RADIUS / 2 : y - REG_NODE_RADIUS / 2,
+    left: node.isRoot ? x - ROOT_NODE_RADIUS / 2 : x - REG_NODE_RADIUS / 2,
     // transform: [{ translateX: x }, { translateY: y }],
-    width: node.rootNode ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
-    height: node.rootNode ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    width: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    height: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
 
     // MY STUFF
     borderWidth: NODE_BORDER_WIDTH,
@@ -89,16 +89,16 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
 
   // TODO: Calc font size based on name length and circle size
   // THIS IS JUST A QUICK WORKAROUND
-  function calcFontSize(node: INode) {
-    if (node.rootNode) {
+  function calcFontSize(node: PositionedPersonNode) {
+    if (node.isRoot) {
       return 18;
     } else {
-      return 12 - node.firstName.length / 2;
+      return 12 - node.first_name.length / 2;
     }
   }
 
-  function getColors(node: INode) {
-    if (node.rootNode) {
+  function getColors(node: PositionedPersonNode) {
+    if (node.isRoot) {
       return {
         inactiveBgColor: "transparent",
         activeBgColor: "#66e889",
@@ -125,13 +125,13 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor: node.rootNode ? "#0d0d0d" : "#099671",
+              backgroundColor: node.isRoot ? "#0d0d0d" : "#099671",
               borderRadius: 100,
             },
-            !node.rootNode && animatedTextStyles,
+            !node.isRoot && animatedTextStyles,
           ]}
         >
-          {node.rootNode && (
+          {node.isRoot && (
             <ImageBackground
               source={image}
               style={styles.image}
@@ -148,15 +148,15 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
           style={[
             {
               position: "absolute",
-              bottom: node.rootNode ? -10 : -5,
+              bottom: node.isRoot ? -10 : -5,
               borderRadius: 2,
               paddingHorizontal: 6,
               paddingVertical: 2,
               backgroundColor: "#1e2152",
               borderWidth: 1,
-              borderColor: pressed || node.rootNode ? "#232e3a" : "transparent",
+              borderColor: pressed || node.isRoot ? "#232e3a" : "transparent",
             },
-            !node.rootNode && animatedTextStyles,
+            !node.isRoot && animatedTextStyles,
           ]}
         >
           <Text
@@ -165,10 +165,10 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
               width: "100%",
               fontSize: calcFontSize(node),
               color: "white",
-              fontWeight: node.rootNode ? "600" : "400",
+              fontWeight: node.isRoot ? "600" : "400",
             }}
           >
-            {node.rootNode ? "ME" : node.firstName}
+            {node.isRoot ? "ME" : node.first_name}
           </Text>
         </Animated.View>
       </Animated.View>

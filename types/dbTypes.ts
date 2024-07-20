@@ -136,6 +136,7 @@ export type Database = {
           first_name: string;
           group_id: number | null;
           id: number;
+          isRoot: boolean | null;
           last_name: string | null;
           maiden_name: string | null;
           phonetic_name: string | null;
@@ -146,6 +147,7 @@ export type Database = {
           first_name: string;
           group_id?: number | null;
           id?: number;
+          isRoot?: boolean | null;
           last_name?: string | null;
           maiden_name?: string | null;
           phonetic_name?: string | null;
@@ -156,6 +158,7 @@ export type Database = {
           first_name?: string;
           group_id?: number | null;
           id?: number;
+          isRoot?: boolean | null;
           last_name?: string | null;
           maiden_name?: string | null;
           phonetic_name?: string | null;
