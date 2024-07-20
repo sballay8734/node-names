@@ -8,23 +8,13 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import "react-native-reanimated";
 import { ImageBackground, StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
 import { View } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import { store } from "@/store/store";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDecay,
-} from "react-native-reanimated";
-import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
 
 // !TODO: need to load assets at build time
 const image = {

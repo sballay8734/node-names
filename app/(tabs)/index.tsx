@@ -250,19 +250,21 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FIRST FOR FRI. ****************************************************
-// 1. only show centering btn if root node is off screen (out of bounds)
-// SEE HERE FOR #1 (https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/animating-styles-and-props)
+// !TODO: FIRST FOR SAT. ****************************************************
+// NOTE: What if, instead of parents being two separate nodes, they are counted as one with both parents data tracked within the node. When disconnecting the nodes, just create two new nodes from each parents data. This will allow you to avoid using complex d3 logic to calculate links as all nodes will have only one parent.
+// NOTE: (OR, maybe you can just create "Levi" as a child of both Aaron AND Rachel and just programatically alter how those nodes are displayed. Think - "if (node has spouse)" or "if (node has child)"
+// REVIEW: so maybe an "isChild" property which just marks if the node is a biological child of the parent (also "isSpouse", "isSignificantOther", etc...)
+
+// 1. Start Link logic (Restructure data shape if necessary)
+// 2. Work all "Add Btn" functionality
+// 2. Assume everyone starts with only the root node and build from there
+// 2a. Based on 2, start with connecting a new node to the root - and creating a node NOT connected to the root WITH LINKS
+// 3. After 2a, work on grouping logic
 
 // !TODO: DOUBLE CHECK THAT NODES ARE ALIGNED
 // !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
 
-// 2. Assume everyone starts with only the root node and build from there
-// 2a. Based on 2, start with connecting a new node to the root and creating a node NOT connected to the root WITH LINKS
-// 3. After 2a, work on grouping logic
-
-// !TODO: View toggle (group View - zooms out, node view - zooms in)
-// Add connection, create connection, link nodes, create group, group selected nodes, etc...
+// !TODO: How to handle spouse groups (do you put Rachel in friends? She IS your friend but she is better categorized as aarons wife). When grouping your friends you probably also want their spouses to be in the group also
 
 // TODO: use custom icon for btn
 // TODO: Recenter button should be an arrow that ALWAYS points towards root (so you'll need to animate the rotation)
@@ -270,3 +272,23 @@ export default Index;
 // mTODO: You shouldn't have to do ROOT_NODE_RADIUS / 2 anywhere
 // mTODO: Pinch Center doesn't quite align with RootNode center
 // mTODO: Change "rootNode" to "isRootNode"
+// mTODO: Eventually change arrow in bottom left to a compass (SEE INSP Folder)
+
+// IDEAS ***********************************************************************
+// 1. Quizzes on specific groups/people/ etc..
+// 2. How to handle halfbrothers-cousins-divorces-etc...
+// 3. Groups within groups within groups
+// 4. Spouses should be connected with a special "frame" around them
+// 5. Clicking the middle of the frame will select both (to add children), but clicking on individuals still works
+// 6. Different frames for Spouses/Dating
+// 7. Selecting whole groups should provide the option to add an "Encompassing Group" or "Internal Group"
+// 8. Different Views - "Group View" would zoom out, hide individual names, and show group names instead. "Node View" would zoom in and show individual names and hide group names/color fills
+// 9. Search functionality by group/individual/ etc..
+
+// Unique OBJECT/PEOPLE PROPERTIES
+// NOTE: All in the spirit of being a better friend/person/coworker
+// 1. "Gift Ideas" - ability to create a list of gift ideas for each person
+// 2. "Phonetic Pronunciation" - For people with names whose pronuciation isn't clear.
+
+// Possible App Names **********************************************************
+// LifeLink, KinKeeper, something with "Web"?, "KinConnect"
