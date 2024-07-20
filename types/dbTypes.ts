@@ -23,7 +23,7 @@
 //   parentGroupId: number | null;
 // }
 
-type RelationshipType =
+export type RelationshipType =
   | "friend"
   | "spouse"
   | "parent_child_biological"
@@ -48,7 +48,7 @@ type RelationshipType =
   | "family_friend"
   | "acquaintance";
 
-type Sex = "male" | "female" | "other";
+export type Sex = "male" | "female" | "other";
 
 // SUPABASE STUFF BELOW *******************************************************
 export type Json =

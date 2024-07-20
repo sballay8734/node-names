@@ -13,7 +13,10 @@ import {
 } from "@/constants/nodes";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { PositionedPersonNode } from "@/utils/positionGraphElements";
+import {
+  PositionedPerson,
+  PositionedPersonNode,
+} from "@/utils/positionGraphElements";
 
 import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
 
@@ -21,7 +24,7 @@ const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 
 interface Props {
   // node: PositionedPersonNode;
-  node: PositionedPersonNode;
+  node: PositionedPerson;
   nodePosition: { x: number; y: number };
 }
 
@@ -89,7 +92,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
 
   // TODO: Calc font size based on name length and circle size
   // THIS IS JUST A QUICK WORKAROUND
-  function calcFontSize(node: PositionedPersonNode) {
+  function calcFontSize(node: PositionedPerson) {
     if (node.isRoot) {
       return 18;
     } else {
@@ -97,7 +100,7 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     }
   }
 
-  function getColors(node: PositionedPersonNode) {
+  function getColors(node: PositionedPerson) {
     if (node.isRoot) {
       return {
         inactiveBgColor: "transparent",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { ROOT_NODE_RADIUS } from "@/constants/nodes";
+import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RecenterBtn from "@/features/graph/RecenterBtn";
@@ -16,12 +16,17 @@ import { INode } from "@/features/graph/types/graphTypes";
 import Popover from "@/features/manageSelections/Popover";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
-import { positionNodes } from "@/utils/positionGraphElements";
+import {
+  calculatePositions,
+  PositionedLink,
+  PositionedPerson,
+} from "@/utils/positionGraphElements";
 // import Node from "@/features/graph/Node";
 // import RootNode from "@/features/graph/RootNode";
 // import { Canvas, Group } from "@shopify/react-native-skia";
 
 import testNodes from "../../data/mainMockData.json";
+import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
 
 const oldNodes: INode[] = testNodes.nodes;
 
@@ -34,6 +39,12 @@ const ARROW_BTN_BTM = 10;
 
 const Index = () => {
   const windowSize = useWindowSize();
+  const [finalizedPeople, setFinalizedPeople] = useState<
+    PositionedPerson[] | null
+  >(null);
+  const [finalizedLinks, setFinalizedLinks] = useState<PositionedLink[] | null>(
+    null,
+  );
 
   const scale = useSharedValue(INITIAL_SCALE);
   // origin = point on Group directly under center point on Canvas
@@ -56,10 +67,17 @@ const Index = () => {
 
   const { people, connections, groups, error } = useDbData();
 
-  let peopleNodes;
-  if (people) {
-    peopleNodes = positionNodes(people, windowSize);
-  }
+  useEffect(() => {
+    if (!finalizedPeople && people && connections) {
+      const { nodes, links } = calculatePositions(
+        people,
+        connections,
+        windowSize,
+      );
+      setFinalizedPeople(nodes);
+      setFinalizedLinks(links);
+    }
+  }, [finalizedPeople, people, windowSize, connections]);
 
   // !TODO: ^^^^^^^^^^^^^^^^^^^ CURRENT WORKING AREA ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -128,12 +146,11 @@ const Index = () => {
     { scale: scale.value },
   ]);
 
-  // NOTE: DON'T DELETE
-  // const svgTransform = useDerivedValue(() => [
-  //   { translateX: translateX.value },
-  //   { translateY: translateY.value },
-  //   { scale: scale.value },
-  // ]);
+  const svgTransform = useDerivedValue(() => [
+    { translateX: translateX.value },
+    { translateY: translateY.value },
+    { scale: scale.value },
+  ]);
 
   const arrowData = useDerivedValue(() => {
     const rootNodePos = {
@@ -171,8 +188,6 @@ const Index = () => {
     return shown;
   });
 
-  console.log(showArrow);
-
   function handleCenter() {
     translateX.value = withTiming(0, {
       duration: 500,
@@ -192,52 +207,74 @@ const Index = () => {
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
-        {/* !TODO: THESE NODES MAY NOT BE NEEDED vvvvvvvvvvvvvvvvvvvvvvv */}
-        {/* <Canvas style={{ flex: 1, backgroundColor: "transparent" }}> */}
-        {/* NODES **************************************************** */}
-        {/* <Group
+        <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
+          {/* Links ******************************************************** */}
+          <Group
             origin={{ x: origin.value.x, y: origin.value.y }}
             transform={svgTransform}
           >
-            {nodes.map((node, index) => {
-              const { x, y } = getNodePosition(node, index);
-              if (node.rootNode) {
-                return <RootNode nodePosition={{ x, y }} key={node.id} />;
-              } else {
-                return <Node nodePosition={{ x, y }} key={node.id} />;
-              }
-            })}
+            {finalizedLinks &&
+              finalizedPeople &&
+              finalizedLinks.map((link) => {
+                const sourceNode = finalizedPeople.find(
+                  (node) => node.id === link.person_1_id,
+                );
+                const targetNode = finalizedPeople.find(
+                  (node) => node.id === link.person_2_id,
+                );
+
+                if (
+                  sourceNode &&
+                  targetNode &&
+                  sourceNode.x &&
+                  sourceNode.y &&
+                  targetNode.x &&
+                  targetNode.y
+                ) {
+                  return (
+                    <Line
+                      key={`${link.person_1_id}-${link.person_2_id}`}
+                      p1={{
+                        x: sourceNode.x,
+                        y: sourceNode.y,
+                      }}
+                      p2={{ x: targetNode.x, y: targetNode.y }}
+                      color="transparent" // Adjust color as needed
+                      style="stroke"
+                      strokeWidth={1} // Adjust thickness as needed
+                    >
+                      <Paint
+                        color="#1c1c24"
+                        strokeWidth={2}
+                        style="stroke"
+                        strokeCap="round"
+                      />
+                    </Line>
+                  );
+                }
+                return null;
+              })}
           </Group>
-        </Canvas> */}
-        {/* !TODO: THESE NODES MAY NOT BE NEEDED ^^^^^^^^^^^^^^^^^^^^^^ */}
+        </Canvas>
         {/* Touch Responders ********************************************* */}
         <Animated.View
           style={{ ...styles.tapWrapper, transform: tapTransform }}
         >
-          {/* OLD MAP */}
-          {/* {oldNodes.map((node, index) => {
-            const { x, y } = getNodePosition(node, index);
+          {finalizedPeople &&
+            finalizedPeople.map((node) => {
+              const { x, y } = node;
 
-            return (
-              <NodeTapDetector
-                key={node.id}
-                node={node}
-                nodePosition={{ x, y }}
-              />
-            );
-          })} */}
-
-          {peopleNodes &&
-            peopleNodes.map((node, index) => {
-              const { nodeX, nodeY } = node;
-
-              return (
-                <NodeTapDetector
-                  key={node.id}
-                  node={node}
-                  nodePosition={{ x: nodeX, y: nodeY }}
-                />
-              );
+              if (x && y) {
+                return (
+                  <NodeTapDetector
+                    key={node.id}
+                    node={node}
+                    nodePosition={{ x, y }}
+                  />
+                );
+              } else {
+                return null;
+              }
             })}
         </Animated.View>
         <Popover />
@@ -274,12 +311,13 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FIRST FOR SAT. ****************************************************
-// NOTE: What if, instead of parents being two separate nodes, they are counted as one with both parents data tracked within the node. When disconnecting the nodes, just create two new nodes from each parents data. This will allow you to avoid using complex d3 logic to calculate links as all nodes will have only one parent.
-// NOTE: (OR, maybe you can just create "Levi" as a child of both Aaron AND Rachel and just programatically alter how those nodes are displayed. Think - "if (node has spouse)" or "if (node has child)"
-// REVIEW: so maybe an "isChild" property which just marks if the node is a biological child of the parent (also "isSpouse", "isSignificantOther", etc...)
+// FIRST FOR WED. ****************************************************
+// !TODO: MAJOR - using pan gesture, then making change to file and saving file causes links to shift (NOT GOOD) FIX THIS FIRST!!!!!
 
-// 1. Start Link logic (Restructure data shape if necessary)
+// !TODO: MAJOR: YOU DON'T NEED TO DO .find() when mapping through links. The links already contain the needed data
+
+// TODO: Links should attach to edge of circle and not the center
+
 // 2. Work all "Add Btn" functionality
 // 2. Assume everyone starts with only the root node and build from there
 // 2a. Based on 2, start with connecting a new node to the root - and creating a node NOT connected to the root WITH LINKS
