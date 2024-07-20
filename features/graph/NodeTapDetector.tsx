@@ -45,8 +45,6 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
     activeBorderColor,
   } = getColors(node);
 
-  console.log("NODE:", node.id, x, y);
-
   // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",

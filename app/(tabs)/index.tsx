@@ -79,8 +79,10 @@ const Index = () => {
   const pan = Gesture.Pan().onChange((e) => {
     translateX.value += e.changeX;
     translateY.value += e.changeY;
-
-    console.log(translateX.value, translateY.value);
+    origin.value = {
+      x: e.changeX,
+      y: e.changeY,
+    };
   });
 
   console.log("ORIGIN:", origin.value);
@@ -93,7 +95,7 @@ const Index = () => {
         y: windowSize.windowCenterY - translateY.value,
       };
 
-      console.log("START ORIGIN:", origin.value);
+      // console.log("START ORIGIN:", origin.value);
     })
     .onChange((e) => {
       const newScale = Math.min(
@@ -109,11 +111,19 @@ const Index = () => {
 
   const composed = Gesture.Race(pan, pinch);
 
-  const transform = useDerivedValue(() => [
+  const tapTransform = useDerivedValue(() => [
     { translateX: translateX.value },
     { translateY: translateY.value },
     { scale: scale.value },
   ]);
+
+  const svgTransform = useDerivedValue(() => [
+    { translateX: translateX.value },
+    { translateY: translateY.value },
+    { scale: scale.value },
+  ]);
+
+  console.log(svgTransform.value);
 
   function handleCenter() {
     translateX.value = withTiming(0, {
@@ -155,9 +165,13 @@ const Index = () => {
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
-        <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
-          {/* NODES **************************************************** */}
-          <Group transform={transform}>
+        {/* !TODO: THESE NODES MAY NOT BE NEEDED vvvvvvvvvvvvvvvvvvvvvvv */}
+        {/* <Canvas style={{ flex: 1, backgroundColor: "transparent" }}> */}
+        {/* NODES **************************************************** */}
+        {/* <Group
+            origin={{ x: origin.value.x, y: origin.value.y }}
+            transform={svgTransform}
+          >
             {nodes.map((node, index) => {
               const { x, y } = getNodePosition(node, index);
               if (node.rootNode) {
@@ -167,9 +181,12 @@ const Index = () => {
               }
             })}
           </Group>
-        </Canvas>
+        </Canvas> */}
+        {/* !TODO: THESE NODES MAY NOT BE NEEDED ^^^^^^^^^^^^^^^^^^^^^^ */}
         {/* Touch Responders ********************************************* */}
-        <Animated.View style={{ ...styles.tapWrapper, transform }}>
+        <Animated.View
+          style={{ ...styles.tapWrapper, transform: tapTransform }}
+        >
           {nodes.map((node, index) => {
             const { x, y } = getNodePosition(node, index);
 
@@ -229,5 +246,6 @@ export default Index;
 // TODO: use custom icon for btn
 // TODO: Recenter button should be an arrow that ALWAYS points towards root (so you'll need to animate the rotation)
 // TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
+// mTODO: You shouldn't have to do ROOT_NODE_RADIUS / 2 anywhere
 // mTODO: Pinch Center doesn't quite align with RootNode center
 // mTODO: Change "rootNode" to "isRootNode"
