@@ -3,8 +3,6 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
-  useAnimatedProps,
-  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -17,12 +15,12 @@ import RecenterBtn from "@/features/graph/RecenterBtn";
 import { INode } from "@/features/graph/types/graphTypes";
 import Popover from "@/features/manageSelections/Popover";
 import useWindowSize from "@/hooks/useWindowSize";
+import { supabase } from "@/supabase";
 // import Node from "@/features/graph/Node";
 // import RootNode from "@/features/graph/RootNode";
 // import { Canvas, Group } from "@shopify/react-native-skia";
 
 import testNodes from "../../data/mainMockData.json";
-import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -52,6 +50,17 @@ const Index = () => {
   };
 
   const totalNodes = nodes.length - 1;
+
+  async function getPeople() {
+    const { data, error } = await supabase.from("people").select("*");
+
+    if (data) {
+      console.log(data);
+    } else {
+      console.log("ERROR");
+    }
+  }
+  getPeople();
 
   // Calculate Y value of node within the group
   function calcNodeYValue(index: number) {
@@ -273,6 +282,7 @@ export default Index;
 // mTODO: Pinch Center doesn't quite align with RootNode center
 // mTODO: Change "rootNode" to "isRootNode"
 // mTODO: Eventually change arrow in bottom left to a compass (SEE INSP Folder)
+// !TODO: MAJOR: You MUST move .env variables EAS build when official releasing. env variables with PUBLIC are ONLY for development
 
 // IDEAS ***********************************************************************
 // 1. Quizzes on specific groups/people/ etc..
