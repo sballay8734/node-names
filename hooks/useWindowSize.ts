@@ -40,3 +40,5 @@ export default function useWindowSize() {
 
   return windowSize;
 }
+
+// !TODO: There are no bugs but you should have (a need to) set the height to "adjHeight" instead using the adjHeight in the windowCenterY calculation. There are a few things that get screwed up though if you make that change so you need to make sure the postion of all the nodes are correct and that the arrow correctly points after eventually changing this

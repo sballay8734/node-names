@@ -17,11 +17,12 @@ export default function Popover(): React.JSX.Element {
       style={{
         position: "absolute",
         bottom: 25,
-        width: "90%",
+        width: "60%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        alignSelf: "center",
         backgroundColor: "transparent",
         height: "auto",
         zIndex: 1000,
@@ -46,7 +47,7 @@ export default function Popover(): React.JSX.Element {
               alignItems: "center",
               justifyContent: "flex-start",
               paddingHorizontal: 6,
-              width: "70%",
+              width: "100%",
               borderRadius: 100,
             }}
             textStyles={{ color: "black" }}

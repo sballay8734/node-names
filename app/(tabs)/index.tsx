@@ -1,9 +1,10 @@
-import { Canvas, Group } from "@shopify/react-native-skia";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
+  useAnimatedProps,
+  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -11,15 +12,17 @@ import Animated, {
 
 import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
-import Node from "@/features/graph/Node";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RecenterBtn from "@/features/graph/RecenterBtn";
-import RootNode from "@/features/graph/RootNode";
 import { INode } from "@/features/graph/types/graphTypes";
 import Popover from "@/features/manageSelections/Popover";
 import useWindowSize from "@/hooks/useWindowSize";
+// import Node from "@/features/graph/Node";
+// import RootNode from "@/features/graph/RootNode";
+// import { Canvas, Group } from "@shopify/react-native-skia";
 
 import testNodes from "../../data/mainMockData.json";
+import { opacity } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 const nodes: INode[] = testNodes.nodes;
 
@@ -85,8 +88,6 @@ const Index = () => {
     };
   });
 
-  console.log("ORIGIN:", origin.value);
-
   const pinch = Gesture.Pinch()
     // Calc the point on the group that is under the center point on the canva
     .onStart((e) => {
@@ -117,29 +118,12 @@ const Index = () => {
     { scale: scale.value },
   ]);
 
-  const svgTransform = useDerivedValue(() => [
-    { translateX: translateX.value },
-    { translateY: translateY.value },
-    { scale: scale.value },
-  ]);
-
-  console.log(svgTransform.value);
-
-  function handleCenter() {
-    translateX.value = withTiming(0, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    translateY.value = withTiming(0, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    lastScale.value = withTiming(1, { duration: 500 });
-    scale.value = withTiming(INITIAL_SCALE, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-  }
+  // NOTE: DON'T DELETE
+  // const svgTransform = useDerivedValue(() => [
+  //   { translateX: translateX.value },
+  //   { translateY: translateY.value },
+  //   { scale: scale.value },
+  // ]);
 
   const arrowData = useDerivedValue(() => {
     const rootNodePos = {
@@ -161,6 +145,39 @@ const Index = () => {
       transform: [{ rotate: `${angleInDegrees}deg` }],
     };
   });
+
+  const showArrow = useDerivedValue(() => {
+    // check if rootNode is on screen
+    let shown: boolean = false;
+    if (
+      windowSize.windowCenterX - Math.abs(translateX.value) < 0 ||
+      windowSize.windowCenterY - Math.abs(translateY.value) < 0
+    ) {
+      shown = true;
+    } else {
+      shown = false;
+    }
+
+    return shown;
+  });
+
+  console.log(showArrow);
+
+  function handleCenter() {
+    translateX.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+    translateY.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+    lastScale.value = withTiming(1, { duration: 500 });
+    scale.value = withTiming(INITIAL_SCALE, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+  }
 
   return (
     <GestureDetector gesture={composed}>
@@ -200,7 +217,11 @@ const Index = () => {
           })}
         </Animated.View>
         <Popover />
-        <RecenterBtn handleCenter={handleCenter} arrowData={arrowData} />
+        <RecenterBtn
+          handleCenter={handleCenter}
+          arrowData={arrowData}
+          showArrow={showArrow}
+        />
       </View>
     </GestureDetector>
   );
