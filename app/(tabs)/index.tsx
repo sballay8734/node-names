@@ -20,9 +20,8 @@ import {
   FinalizedLink,
   PositionedPerson,
 } from "@/utils/positionGraphElements";
-// import Node from "@/features/graph/Node";
-// import RootNode from "@/features/graph/RootNode";
-// import { Canvas, Group } from "@shopify/react-native-skia";
+import { useAppSelector } from "@/hooks/reduxHooks";
+import { RootState } from "@/store/store";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
@@ -55,8 +54,6 @@ const Index = () => {
     y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
   };
 
-  // !TODO: vvvvvvvvvvvvvvvvvv CURRENT WORKING AREA vvvvvvvvvvvvvvvvvvvvvvv
-
   const { people, connections, groups, error } = useDbData();
 
   useEffect(() => {
@@ -70,8 +67,6 @@ const Index = () => {
       setFinalizedLinks(links as FinalizedLink[]);
     }
   }, [finalizedPeople, people, windowSize, connections]);
-
-  // !TODO: ^^^^^^^^^^^^^^^^^^^ CURRENT WORKING AREA ^^^^^^^^^^^^^^^^^^^^^^^
 
   const pan = Gesture.Pan().onChange((e) => {
     translateX.value += e.changeX;
@@ -156,12 +151,6 @@ const Index = () => {
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
   }
-
-  console.log("SCALE:", scale);
-  console.log("ORIGIN:", origin);
-  console.log("TRANSLATEX:", translateX.value);
-  console.log("TRANSLATEY:", translateY.value);
-  console.log(lastScale);
 
   return (
     <GestureDetector gesture={composed}>
@@ -259,7 +248,11 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR WED. ****************************************************
-// !TODO: MAJOR - Pinch gesture should use focalX and focalY
+// !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
+
+// !TODO: Refactor idea, render the links on each node ONLY on a source node. (So your node component could be something like "if (node is source node" -> render link to the target. You need a way to add links without re-rendering everysingle node + link)
+
+// !TODO: MAJOR - Pinch gesture should use focalX and focalY (TEST ON ACTUAL PHONE - EXPO GO)
 
 // TODO: Links should attach to edge of circle and not the center
 

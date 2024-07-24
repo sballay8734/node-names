@@ -49,10 +49,27 @@ export const ManageSelectionsSlice = createSlice({
         state.selectedNodes = [...state.selectedNodes, clickedNode];
       }
     },
+
+    // LINK MANAGEMENT/CREATION
+    // creates a single, unconnected node
+    handleCreateNewNode: (state) => {
+      console.log(`Creating New Node...`);
+    },
+
+    // creates a new link & node FROM currently selected node
+    handleConnectToNewNode: (state, action) => {
+      console.log("STARTING");
+    },
   },
 });
 
-export const { handlePopover, showPopover, hidePopover, handleNodeSelect } =
-  ManageSelectionsSlice.actions;
+export const {
+  handlePopover,
+  showPopover,
+  hidePopover,
+  handleNodeSelect,
+  handleConnectToNewNode,
+  handleCreateNewNode,
+} = ManageSelectionsSlice.actions;
 
 export default ManageSelectionsSlice.reducer;

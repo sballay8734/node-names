@@ -3,7 +3,10 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
-export const POPOVER_OPTIONS: { text: string; icon: React.ReactNode }[] = [
+export const POPOVER_OPTIONS: {
+  text: string;
+  icon: React.ReactNode;
+}[] = [
   // selected nodes === 0 *****************************************************
   {
     text: "Create a new node",

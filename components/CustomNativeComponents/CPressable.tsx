@@ -6,12 +6,14 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Text, View } from "../Themed";
+import { Dispatch } from "@reduxjs/toolkit";
 
 interface Props {
   icon?: React.ReactNode | boolean;
   text?: string;
   containerStyles?: ViewStyle;
   textStyles?: TextStyle;
+  onPress?: () => void;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -21,11 +23,12 @@ export default function CPressable({
   text,
   containerStyles,
   textStyles,
+  onPress,
 }: Props): React.JSX.Element {
   const isPressed = useSharedValue<boolean>(false);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(isPressed.value ? "#FFE04B" : "#B58DF1", {
+    backgroundColor: withTiming(isPressed.value ? "#7448b5" : "#B58DF1", {
       duration: 100,
     }),
   }));
@@ -40,6 +43,7 @@ export default function CPressable({
 
   return (
     <AnimatedPressable
+      onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       style={[containerStyles, animatedStyles]}

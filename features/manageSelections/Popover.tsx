@@ -2,16 +2,19 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
 
 import CPressable from "@/components/CustomNativeComponents/CPressable";
 import { View } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
+import { handleCreateNewNode } from "./redux/manageSelections";
 import { usePopoverOptions } from "./utils/determineOptions";
 
 export default function Popover(): React.JSX.Element {
   const popoverOptions = usePopoverOptions();
+  const dispatch = useDispatch();
 
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
@@ -21,6 +24,22 @@ export default function Popover(): React.JSX.Element {
     opacity: withTiming(isVisible ? 1 : 0, { duration: 150 }),
     bottom: withTiming(isVisible ? 25 : 0, { duration: 150 }),
   }));
+
+  type ActionMap = {
+    [key: string]: () => void;
+  };
+
+  const actionMap: ActionMap = {
+    "Create a new node": () => dispatch(handleCreateNewNode()),
+    "Create a new group": () => console.log("Create new group"),
+    "Connect to a new node": () => console.log("Connect to new node"),
+    "Connect to a new group": () => console.log("Connect to new group"),
+    "Connect selected nodes": () => console.log("Connect selected nodes"),
+    "Create group from selection": () =>
+      console.log("Create group from selection"),
+    "ERROR: Can only connect root to a NEW node/group": () =>
+      console.log("ERROR"),
+  };
 
   return (
     <Animated.View
@@ -49,6 +68,7 @@ export default function Popover(): React.JSX.Element {
       {popoverOptions.map((option) => {
         return (
           <CPressable
+            onPress={actionMap[option.text]}
             key={option.text}
             icon={option.icon}
             containerStyles={{
