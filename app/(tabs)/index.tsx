@@ -20,8 +20,6 @@ import {
   FinalizedLink,
   PositionedPerson,
 } from "@/utils/positionGraphElements";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { RootState } from "@/store/store";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
@@ -247,7 +245,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// FIRST FOR WED. ****************************************************
+// FIRST FOR THURS. ****************************************************
+// !TODO: CURRENTLY WORKING ON "ADDING NEW NODE" AND "CONNECTING TO NEW NODE"
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
 // !TODO: Refactor idea, render the links on each node ONLY on a source node. (So your node component could be something like "if (node is source node" -> render link to the target. You need a way to add links without re-rendering everysingle node + link)
