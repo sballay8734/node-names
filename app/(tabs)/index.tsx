@@ -1,3 +1,4 @@
+import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -26,7 +27,6 @@ import {
 // import { Canvas, Group } from "@shopify/react-native-skia";
 
 import testNodes from "../../data/mainMockData.json";
-import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
 
 const oldNodes: INode[] = testNodes.nodes;
 
@@ -117,14 +117,12 @@ const Index = () => {
   });
 
   const pinch = Gesture.Pinch()
-    // Calc the point on the group that is under the center point on the canva
+    // Calc the point on the group that is under the center point on the canvas
     .onStart((e) => {
       origin.value = {
         x: windowSize.windowCenterX - translateX.value,
         y: windowSize.windowCenterY - translateY.value,
       };
-
-      // console.log("START ORIGIN:", origin.value);
     })
     .onChange((e) => {
       const newScale = Math.min(
@@ -312,6 +310,7 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR WED. ****************************************************
+// !TODO: MAJOR - Pinch gesture should use focalX and focalY
 // !TODO: MAJOR - using pan gesture, then making change to file and saving file causes links to shift (NOT GOOD) FIX THIS FIRST!!!!!
 
 // !TODO: MAJOR: YOU DON'T NEED TO DO .find() when mapping through links. The links already contain the needed data
