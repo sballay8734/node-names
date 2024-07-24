@@ -20,6 +20,51 @@ export interface PositionedPerson extends d3.SimulationNodeDatum {
   sex: Sex;
 }
 
+export interface FinalizedLink {
+  created_at: string;
+  id: number;
+  index: number;
+  person_1_id: number;
+  person_2_id: number;
+  relationship_type: RelationshipType;
+  source: {
+    created_at: string;
+    first_name: string;
+    fx: number;
+    fy: number;
+    group_id: number | null;
+    id: number;
+    index: number;
+    isRoot: boolean;
+    last_name: string | null;
+    maiden_name: string | null;
+    phonetic_name: string | null;
+    sex: Sex;
+    vx: number;
+    vy: number;
+    x: number;
+    y: number;
+  };
+  target: {
+    created_at: string;
+    first_name: string;
+    fx: number;
+    fy: number;
+    group_id: number | null;
+    id: number;
+    index: number;
+    isRoot: boolean;
+    last_name: string | null;
+    maiden_name: string | null;
+    phonetic_name: string | null;
+    sex: Sex;
+    vx: number;
+    vy: number;
+    x: number;
+    y: number;
+  };
+}
+
 export interface PositionedLink
   extends d3.SimulationLinkDatum<PositionedPerson> {
   created_at: string;
@@ -63,7 +108,7 @@ export function calculatePositions(
   }
 
   // Create the links array that D3 force layout expects
-  const positionedLinks: PositionedLink[] = linksCopy.map((connection) => ({
+  const unpositionedLinks: PositionedLink[] = linksCopy.map((connection) => ({
     ...connection,
     source: connection.person_1_id,
     target: connection.person_2_id,
@@ -91,7 +136,7 @@ export function calculatePositions(
     .force(
       "link",
       d3
-        .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
+        .forceLink<PositionedPerson, PositionedLink>(unpositionedLinks)
         .id((d) => d.id)
         .distance((d) =>
           (d as PositionedLink).relationship_type === "spouse" ? 1 : 50,
@@ -104,7 +149,7 @@ export function calculatePositions(
   // Stop the simulation
   simulation.stop();
 
-  return { nodes: peopleCopy, links: positionedLinks };
+  return { nodes: peopleCopy, links: unpositionedLinks as FinalizedLink[] };
 }
 
 type testLink = {
@@ -149,3 +194,5 @@ type testLink = {
     y: 392.1242752158686;
   };
 };
+
+type flink = {};

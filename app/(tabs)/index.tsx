@@ -9,26 +9,20 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RecenterBtn from "@/features/graph/RecenterBtn";
-import { INode } from "@/features/graph/types/graphTypes";
 import Popover from "@/features/manageSelections/Popover";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 import {
   calculatePositions,
-  PositionedLink,
+  FinalizedLink,
   PositionedPerson,
 } from "@/utils/positionGraphElements";
 // import Node from "@/features/graph/Node";
 // import RootNode from "@/features/graph/RootNode";
 // import { Canvas, Group } from "@shopify/react-native-skia";
-
-import testNodes from "../../data/mainMockData.json";
-
-const oldNodes: INode[] = testNodes.nodes;
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
@@ -42,7 +36,7 @@ const Index = () => {
   const [finalizedPeople, setFinalizedPeople] = useState<
     PositionedPerson[] | null
   >(null);
-  const [finalizedLinks, setFinalizedLinks] = useState<PositionedLink[] | null>(
+  const [finalizedLinks, setFinalizedLinks] = useState<FinalizedLink[] | null>(
     null,
   );
 
@@ -61,8 +55,6 @@ const Index = () => {
     y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
   };
 
-  const totalNodes = oldNodes.length - 1;
-
   // !TODO: vvvvvvvvvvvvvvvvvv CURRENT WORKING AREA vvvvvvvvvvvvvvvvvvvvvvv
 
   const { people, connections, groups, error } = useDbData();
@@ -75,55 +67,18 @@ const Index = () => {
         windowSize,
       );
       setFinalizedPeople(nodes);
-      setFinalizedLinks(links);
+      setFinalizedLinks(links as FinalizedLink[]);
     }
   }, [finalizedPeople, people, windowSize, connections]);
 
   // !TODO: ^^^^^^^^^^^^^^^^^^^ CURRENT WORKING AREA ^^^^^^^^^^^^^^^^^^^^^^^
 
-  // Calculate Y value of node within the group
-  function calcNodeYValue(index: number) {
-    const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.sin(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterY;
-  }
-
-  // Calculate X value of node within the group save
-  function calcNodeXValue(index: number) {
-    const angle = (index / totalNodes) * 2 * Math.PI;
-    return Math.cos(angle) * ROOT_NODE_RADIUS + windowSize.windowCenterX;
-  }
-
-  function getNodePosition(node: INode, index: number) {
-    if (node.rootNode) {
-      return {
-        x: windowSize.windowCenterX,
-        y: windowSize.windowCenterY,
-      };
-    } else {
-      return {
-        x: calcNodeXValue(index),
-        y: calcNodeYValue(index),
-      };
-    }
-  }
-
   const pan = Gesture.Pan().onChange((e) => {
     translateX.value += e.changeX;
     translateY.value += e.changeY;
-    origin.value = {
-      x: e.changeX,
-      y: e.changeY,
-    };
   });
 
   const pinch = Gesture.Pinch()
-    // Calc the point on the group that is under the center point on the canvas
-    .onStart((e) => {
-      origin.value = {
-        x: windowSize.windowCenterX - translateX.value,
-        y: windowSize.windowCenterY - translateY.value,
-      };
-    })
     .onChange((e) => {
       const newScale = Math.min(
         Math.max(scale.value * e.scale, MIN_SCALE),
@@ -172,7 +127,7 @@ const Index = () => {
   });
 
   const showArrow = useDerivedValue(() => {
-    // check if rootNode is on screen
+    // check if rootNode is on scre
     let shown: boolean = false;
     if (
       windowSize.windowCenterX - Math.abs(translateX.value) < 0 ||
@@ -202,41 +157,36 @@ const Index = () => {
     });
   }
 
+  console.log("SCALE:", scale);
+  console.log("ORIGIN:", origin);
+  console.log("TRANSLATEX:", translateX.value);
+  console.log("TRANSLATEY:", translateY.value);
+  console.log(lastScale);
+
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
         <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
           {/* Links ******************************************************** */}
           <Group
-            origin={{ x: origin.value.x, y: origin.value.y }}
+            origin={{
+              x: origin.value.x,
+              y: origin.value.y,
+            }}
             transform={svgTransform}
           >
             {finalizedLinks &&
               finalizedPeople &&
               finalizedLinks.map((link) => {
-                const sourceNode = finalizedPeople.find(
-                  (node) => node.id === link.person_1_id,
-                );
-                const targetNode = finalizedPeople.find(
-                  (node) => node.id === link.person_2_id,
-                );
-
-                if (
-                  sourceNode &&
-                  targetNode &&
-                  sourceNode.x &&
-                  sourceNode.y &&
-                  targetNode.x &&
-                  targetNode.y
-                ) {
+                {
                   return (
                     <Line
                       key={`${link.person_1_id}-${link.person_2_id}`}
                       p1={{
-                        x: sourceNode.x,
-                        y: sourceNode.y,
+                        x: link.source.x,
+                        y: link.source.y,
                       }}
-                      p2={{ x: targetNode.x, y: targetNode.y }}
+                      p2={{ x: link.target.x, y: link.target.y }}
                       color="transparent" // Adjust color as needed
                       style="stroke"
                       strokeWidth={1} // Adjust thickness as needed
@@ -250,11 +200,10 @@ const Index = () => {
                     </Line>
                   );
                 }
-                return null;
               })}
           </Group>
         </Canvas>
-        {/* Touch Responders ********************************************* */}
+        {/* Touch Responders ***************************************** */}
         <Animated.View
           style={{ ...styles.tapWrapper, transform: tapTransform }}
         >
@@ -311,9 +260,6 @@ export default Index;
 
 // FIRST FOR WED. ****************************************************
 // !TODO: MAJOR - Pinch gesture should use focalX and focalY
-// !TODO: MAJOR - using pan gesture, then making change to file and saving file causes links to shift (NOT GOOD) FIX THIS FIRST!!!!!
-
-// !TODO: MAJOR: YOU DON'T NEED TO DO .find() when mapping through links. The links already contain the needed data
 
 // TODO: Links should attach to edge of circle and not the center
 

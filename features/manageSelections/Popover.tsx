@@ -1,3 +1,8 @@
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+
 import CPressable from "@/components/CustomNativeComponents/CPressable";
 import { View } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
@@ -12,26 +17,34 @@ export default function Popover(): React.JSX.Element {
     (state: RootState) => state.selections.popoverIsShown,
   );
 
+  const viewStyles = useAnimatedStyle(() => ({
+    opacity: withTiming(isVisible ? 1 : 0, { duration: 150 }),
+    bottom: withTiming(isVisible ? 25 : 0, { duration: 150 }),
+  }));
+
   return (
-    <View
-      style={{
-        position: "absolute",
-        bottom: 25,
-        width: "60%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        alignSelf: "center",
-        backgroundColor: "transparent",
-        height: "auto",
-        zIndex: 1000,
-        paddingVertical: 10,
-        borderRadius: 5,
-        gap: 8,
-        opacity: isVisible ? 1 : 0,
-        pointerEvents: isVisible ? "auto" : "none",
-      }}
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          // bottom: 25,
+          width: "60%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          alignSelf: "center",
+          backgroundColor: "transparent",
+          height: "auto",
+          zIndex: 1000,
+          paddingVertical: 10,
+          borderRadius: 5,
+          gap: 8,
+          // opacity: isVisible ? 1 : 0,
+          pointerEvents: isVisible ? "auto" : "none",
+        },
+        viewStyles,
+      ]}
     >
       {popoverOptions.map((option) => {
         return (
@@ -55,8 +68,6 @@ export default function Popover(): React.JSX.Element {
           />
         );
       })}
-    </View>
+    </Animated.View>
   );
 }
-
-// !TODO: Animate each popover item in like a handheld fan
