@@ -8,18 +8,23 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
 
 import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
 import NodeTapDetector from "@/features/graph/NodeTapDetector";
 import RecenterBtn from "@/features/graph/RecenterBtn";
 import Popover from "@/features/manageSelections/Popover";
+import { setNodes } from "@/features/manageSelections/redux/manageSelections";
+import { useAppSelector } from "@/hooks/reduxHooks";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
+import { RootState } from "@/store/store";
 import {
   calculatePositions,
   FinalizedLink,
   PositionedPerson,
 } from "@/utils/positionGraphElements";
+import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
@@ -29,12 +34,14 @@ const ARROW_BTN_LEFT = 10;
 const ARROW_BTN_BTM = 10;
 
 const Index = () => {
+  const dispatch = useDispatch();
   const windowSize = useWindowSize();
-  const [finalizedPeople, setFinalizedPeople] = useState<
-    PositionedPerson[] | null
-  >(null);
   const [finalizedLinks, setFinalizedLinks] = useState<FinalizedLink[] | null>(
     null,
+  );
+
+  const finalizedPeople = useAppSelector(
+    (state: RootState) => state.selections.nodes,
   );
 
   const scale = useSharedValue(INITIAL_SCALE);
@@ -61,10 +68,10 @@ const Index = () => {
         connections,
         windowSize,
       );
-      setFinalizedPeople(nodes);
+      dispatch(setNodes([...nodes]));
       setFinalizedLinks(links as FinalizedLink[]);
     }
-  }, [finalizedPeople, people, windowSize, connections]);
+  }, [finalizedPeople, people, windowSize, connections, dispatch]);
 
   const pan = Gesture.Pan().onChange((e) => {
     translateX.value += e.changeX;
@@ -150,6 +157,11 @@ const Index = () => {
     });
   }
 
+  // !TODO: the x and y values of the node are not the most up to date versions which is why it's not working (you make a copy of the nodes instead of mutating when setting their postions)
+  function centerOnNode(node: PositionedPerson) {
+    console.log("NEED TO RESTRUCTURE TO CONFIGURE");
+  }
+
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
@@ -202,6 +214,7 @@ const Index = () => {
                 return (
                   <NodeTapDetector
                     key={node.id}
+                    centerOnNode={centerOnNode}
                     node={node}
                     nodePosition={{ x, y }}
                   />
@@ -247,9 +260,14 @@ export default Index;
 
 // FIRST FOR THURS. ****************************************************
 // !TODO: CURRENTLY WORKING ON "ADDING NEW NODE" AND "CONNECTING TO NEW NODE"
+
+// !TODO: Define the strength of each connection when the connection is created (NEED TO MODIFY LINK INTERFACE) -- SEE THIS BLOG for example of families and coloring (https://weser.io/blog/interactive-dynamic-force-directed-graphs-with-d3)
+
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
 // !TODO: Refactor idea, render the links on each node ONLY on a source node. (So your node component could be something like "if (node is source node" -> render link to the target. You need a way to add links without re-rendering everysingle node + link)
+
+// TODO: Add search bar that expands to the left like the apple Music one
 
 // !TODO: MAJOR - Pinch gesture should use focalX and focalY (TEST ON ACTUAL PHONE - EXPO GO)
 

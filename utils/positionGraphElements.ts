@@ -27,6 +27,7 @@ export interface FinalizedLink {
   person_1_id: number;
   person_2_id: number;
   relationship_type: RelationshipType;
+  strength: number;
   source: {
     created_at: string;
     first_name: string;
@@ -72,6 +73,7 @@ export interface PositionedLink
   person_1_id: number;
   person_2_id: number;
   relationship_type: RelationshipType;
+  strength: number;
 }
 
 export interface Link {
@@ -107,41 +109,61 @@ export function calculatePositions(
     (rootNode as PositionedPerson).fy = windowSize.windowCenterY;
   }
 
+  function getConnectionStrength(connection: Link) {
+    const cType = connection.relationship_type;
+    if (cType === "spouse") {
+      return 2; // Increase strength for spouses
+    } else if (
+      cType === "parent_child_biological" ||
+      cType === "parent_child_non_biological"
+    ) {
+      return 1.5; // Increase strength for parent-child
+    } else if (cType === "sibling") {
+      return 1;
+    } else return 0.5;
+  }
+
   // Create the links array that D3 force layout expects
-  const unpositionedLinks: PositionedLink[] = linksCopy.map((connection) => ({
+  const positionedLinks: PositionedLink[] = linksCopy.map((connection) => ({
     ...connection,
+    strength: getConnectionStrength(connection),
     source: connection.person_1_id,
     target: connection.person_2_id,
   }));
 
-  // Create the simulation
   const simulation = d3
     .forceSimulation<PositionedPerson, PositionedLink>(peopleCopy)
+
+    // Create space around the root node and min space around non-root nodes
     .force(
       "collision",
       d3
         .forceCollide()
-        .radius((d) => ((d as PositionedPerson).isRoot ? 200 : 50)),
+        .radius((node) => ((node as PositionedPerson).isRoot ? 300 : 25))
+        .strength(0.5), // Adjust collision strength
     )
+
+    // Center the nodes around screen center
     .force(
       "center",
       d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
     )
-    .force(
-      "charge",
-      d3
-        .forceRadial(250, windowSize.windowCenterX, windowSize.windowCenterY)
-        .strength(0.1),
-    )
+
+    // Pull linked nodes closer together
     .force(
       "link",
       d3
-        .forceLink<PositionedPerson, PositionedLink>(unpositionedLinks)
-        .id((d) => d.id)
-        .distance((d) =>
-          (d as PositionedLink).relationship_type === "spouse" ? 1 : 50,
-        ),
-    );
+        .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
+        .id((link) => link.id)
+        .distance((link) => {
+          const baseDistance = 100; // Base distance
+          return baseDistance * (1 / link.strength); // Adjust distance based on strength
+        })
+        .strength((link) => link.strength), // Adjust link strength
+    )
+
+    // Add a weak repulsion force
+    .force("charge", d3.forceManyBody().strength(-30));
 
   // Run the simulation synchronously
   simulation.tick(300);
@@ -149,5 +171,5 @@ export function calculatePositions(
   // Stop the simulation
   simulation.stop();
 
-  return { nodes: peopleCopy, links: unpositionedLinks as FinalizedLink[] };
+  return { nodes: peopleCopy, links: positionedLinks as FinalizedLink[] };
 }

@@ -26,13 +26,18 @@ interface Props {
   // node: PositionedPersonNode;
   node: PositionedPerson;
   nodePosition: { x: number; y: number };
+  centerOnNode: (node: PositionedPerson) => void;
 }
 
 const image = {
   uri: "https://sa1s3optim.patientpop.com/assets/images/provider/photos/2735132.jpeg",
 };
 
-export default function NodeTapDetector({ node, nodePosition }: Props) {
+export default function NodeTapDetector({
+  node,
+  nodePosition,
+  centerOnNode,
+}: Props) {
   const dispatch = useAppDispatch();
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
@@ -40,6 +45,13 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
 
   const pressed = selectedNode;
   const { x, y } = nodePosition;
+
+  if (node.first_name === "Levi") {
+    console.log(x, y);
+  }
+  if (node.isRoot) {
+    console.log("ROOT:", x, y);
+  }
 
   const {
     inactiveBgColor,
@@ -71,6 +83,8 @@ export default function NodeTapDetector({ node, nodePosition }: Props) {
   const tap = Gesture.Tap()
     .onStart(() => {
       dispatch(handleNodeSelect(node));
+      console.log("NODE:", node);
+      centerOnNode(node);
       // dispatch(hidePopover());
     })
     .runOnJS(true);

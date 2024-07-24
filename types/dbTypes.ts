@@ -24,16 +24,16 @@
 // }
 
 export type RelationshipType =
-  | "friend"
-  | "spouse"
-  | "parent_child_biological"
-  | "parent_child_non_biological"
-  | "grandparent_grandchild"
-  | "sibling_in_law"
-  | "parent_child_in_law"
+  | "spouse" // 1.0
+  | "parent_child_biological" // 0.9
+  | "parent_child_non_biological" // 0.9
   | "sibling"
   | "half_sibling"
   | "step_sibling"
+  | "sibling_in_law"
+  | "grandparent_grandchild"
+  | "friend"
+  | "parent_child_in_law"
   | "coworker"
   | "neighbor"
   | "romantic_partner"
@@ -42,8 +42,6 @@ export type RelationshipType =
   | "uncle_aunt"
   | "niece_nephew_by_blood"
   | "niece_nephew_by_marriage"
-  | "grandparent"
-  | "grandchild"
   | "roommate"
   | "family_friend"
   | "acquaintance";

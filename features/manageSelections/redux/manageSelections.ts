@@ -6,12 +6,14 @@ import { PositionedPerson } from "@/utils/positionGraphElements";
 // Define a type for the slice state
 interface ManageSelectionsState {
   popoverIsShown: boolean;
+  nodes: PositionedPerson[] | null;
   selectedNodes: PositionedPerson[];
 }
 
 // Define the initial state using that type
 const initialState: ManageSelectionsState = {
   popoverIsShown: false,
+  nodes: null,
   selectedNodes: [],
 };
 
@@ -30,6 +32,10 @@ export const ManageSelectionsSlice = createSlice({
     },
     hidePopover: (state) => {
       state.popoverIsShown = false;
+    },
+
+    setNodes: (state, action: PayloadAction<PositionedPerson[]>) => {
+      state.nodes = action.payload;
     },
 
     // SELECTION MANAGEMENT ****************************************************
@@ -53,7 +59,20 @@ export const ManageSelectionsSlice = createSlice({
     // LINK MANAGEMENT/CREATION
     // creates a single, unconnected node
     handleCreateNewNode: (state) => {
-      console.log(`Creating New Node...`);
+      state.nodes &&
+        state.nodes.push({
+          created_at: "blah",
+          first_name: "David",
+          group_id: null,
+          id: 328927,
+          isRoot: false,
+          last_name: "Johnson",
+          maiden_name: null,
+          phonetic_name: null,
+          sex: "male",
+          x: 250,
+          y: 250,
+        });
     },
 
     // creates a new link & node FROM currently selected node
@@ -65,6 +84,7 @@ export const ManageSelectionsSlice = createSlice({
 
 export const {
   handlePopover,
+  setNodes,
   showPopover,
   hidePopover,
   handleNodeSelect,
