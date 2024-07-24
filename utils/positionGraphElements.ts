@@ -19,6 +19,7 @@ export interface PositionedPerson extends d3.SimulationNodeDatum {
   phonetic_name: string | null;
   sex: Sex;
 }
+
 export interface PositionedLink
   extends d3.SimulationLinkDatum<PositionedPerson> {
   created_at: string;
@@ -27,6 +28,15 @@ export interface PositionedLink
   person_2_id: number;
   relationship_type: RelationshipType;
 }
+
+export interface Link {
+  created_at: string;
+  id: number;
+  person_1_id: number;
+  person_2_id: number;
+  relationship_type: RelationshipType;
+}
+
 export type SimulationResult = {
   nodes: PositionedPerson[];
   links: PositionedLink[];
@@ -41,8 +51,9 @@ export function calculatePositions(
   connections: Tables<"connections">[],
   windowSize: WindowSize,
 ): SimulationResult {
-  // Create a copy of people
+  // Create a copy of people and links
   const peopleCopy: PositionedPerson[] = people.map((p) => ({ ...p }));
+  const linksCopy: Link[] = connections.map((p) => ({ ...p }));
 
   // Find the root node and set its fixed position
   const rootNode = peopleCopy.find((p) => p.isRoot === true);
@@ -52,7 +63,7 @@ export function calculatePositions(
   }
 
   // Create the links array that D3 force layout expects
-  const links: PositionedLink[] = connections.map((connection) => ({
+  const positionedLinks: PositionedLink[] = linksCopy.map((connection) => ({
     ...connection,
     source: connection.person_1_id,
     target: connection.person_2_id,
@@ -80,7 +91,7 @@ export function calculatePositions(
     .force(
       "link",
       d3
-        .forceLink<PositionedPerson, PositionedLink>(links)
+        .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
         .id((d) => d.id)
         .distance((d) =>
           (d as PositionedLink).relationship_type === "spouse" ? 1 : 50,
@@ -93,7 +104,7 @@ export function calculatePositions(
   // Stop the simulation
   simulation.stop();
 
-  return { nodes: peopleCopy, links };
+  return { nodes: peopleCopy, links: positionedLinks };
 }
 
 type testLink = {

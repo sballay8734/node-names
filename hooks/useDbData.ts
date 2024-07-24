@@ -46,7 +46,7 @@ export default function useDbData() {
     }
 
     fetchData();
-  }, []);
+  }, [dataFetched]);
 
   return { isLoading, people, connections, groups, error };
 }
