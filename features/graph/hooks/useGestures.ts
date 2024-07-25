@@ -1,25 +1,53 @@
 import { Gesture } from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
+import { useSharedValue, withDecay } from "react-native-reanimated";
+
+import { TAB_BAR_HEIGHT } from "@/constants/styles";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
 const INITIAL_SCALE = 0.5;
+const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {
+  const windowSize = useWindowSize();
+
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
 
-  const pan = Gesture.Pan().onChange((e) => {
-    translateX.value += e.changeX;
-    translateY.value += e.changeY;
+  const focalPoint = useSharedValue({
+    x: windowSize.windowCenterX,
+    y: windowSize.windowCenterY,
   });
+
+  console.log(focalPoint);
+
+  const focalX = useSharedValue(0);
+  const focalY = useSharedValue(0);
+
+  const pan = Gesture.Pan()
+    .onChange((e) => {
+      translateX.value += e.changeX;
+      translateY.value += e.changeY;
+    })
+    .onEnd((e) => {
+      translateX.value = withDecay({
+        velocity: e.velocityX,
+        deceleration: 0.995,
+      });
+      translateY.value = withDecay({
+        velocity: e.velocityY,
+        deceleration: 0.995,
+      });
+    });
 
   const pinch = Gesture.Pinch()
     .onChange((e) => {
+      const scaleFactor = 1 + (e.scale - 1) * SCALE_SENSITIVITY;
       const newScale = Math.min(
-        Math.max(scale.value * e.scale, MIN_SCALE),
+        Math.max(lastScale.value * scaleFactor, MIN_SCALE),
         MAX_SCALE,
       );
 
@@ -31,5 +59,14 @@ export const useGestures = () => {
 
   const composed = Gesture.Race(pan, pinch);
 
-  return { composed, scale, translateX, translateY, lastScale };
+  return {
+    composed,
+    scale,
+    translateX,
+    translateY,
+    lastScale,
+    focalX,
+    focalY,
+    focalPoint,
+  };
 };

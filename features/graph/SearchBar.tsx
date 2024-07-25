@@ -56,7 +56,7 @@ export default function SearchBar(): React.JSX.Element {
   }));
 
   return (
-    <Animated.View style={[styles.container, { marginTop: insets.top }]}>
+    <Animated.View style={[styles.container, { marginTop: insets.top + 10 }]}>
       <Animated.View style={[styles.wrapper]}>
         <AnimatedInput style={[styles.input, animatedInputStyles]} />
         <AnimatedPressable
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   pressable: {
-    backgroundColor: "transparent",
+    // backgroundColor: "transparent",
     pointerEvents: "auto",
     position: "absolute",
     right: 0,

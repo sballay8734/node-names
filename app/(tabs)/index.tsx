@@ -1,7 +1,11 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import { Easing, withTiming } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
 import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
@@ -16,11 +20,21 @@ import { useTestDataLoad } from "@/hooks/useTestDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
+import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 
 const INITIAL_SCALE = 0.5;
 
 const Index = () => {
-  const { composed, scale, translateX, translateY, lastScale } = useGestures();
+  const {
+    composed,
+    scale,
+    translateX,
+    translateY,
+    lastScale,
+    focalX,
+    focalY,
+    focalPoint,
+  } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const windowSize = useWindowSize();
   // useDataLoad();
@@ -29,6 +43,20 @@ const Index = () => {
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
+
+  console.log(focalPoint.value);
+
+  const focalPointStyles = useAnimatedStyle(() => {
+    // TODO: Not sure why / 10 actually works
+    return {
+      transform: [
+        { translateX: focalPoint.value.x - ROOT_NODE_RADIUS / 10 },
+        { translateY: focalPoint.value.y - ROOT_NODE_RADIUS / 10 },
+      ],
+    };
+  });
+
+  console.log(focalPoint.value.x);
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {
@@ -39,12 +67,12 @@ const Index = () => {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
-    lastScale.value = withTiming(1, { duration: 500 });
 
     scale.value = withTiming(INITIAL_SCALE, {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
+    lastScale.value = INITIAL_SCALE;
   }
 
   function centerOnNode(node: PositionedPerson) {
@@ -59,13 +87,13 @@ const Index = () => {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
-    lastScale.value = withTiming(lastScale.value, { duration: 500 });
 
     // REVIEW: Changing from 1 to any other number takes the zoom out of sync. This works with a value of 1 but should probably be changed so users can change their default zoom when selecting a node
     scale.value = withTiming(1, {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
+    lastScale.value = 1;
   }
 
   return (
@@ -92,6 +120,9 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
+        <Animated.View
+          style={[styles.focalPoint, focalPointStyles]}
+        ></Animated.View>
       </View>
     </GestureDetector>
   );
@@ -113,12 +144,25 @@ const styles = StyleSheet.create({
     left: 0,
     flex: 1,
   },
+  focalPoint: {
+    ...StyleSheet.absoluteFillObject,
+    width: 20,
+    height: 20,
+    backgroundColor: "blue",
+    borderRadius: 100,
+  },
 });
 
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
-// TODO: Position groups equally around the circle yo
+// !TODO: REFACTOR ALL POSTIONING LOGIC AND MAP CANVAS POSTIONS TO VIEW
+
+// TODO: If a node is selected and the root is off the screen, the arrow doesn't show when saving the file
+
+// TODO: little map in bottom right/left to show where you are in relation like in civs
+
+// !TODO: Pinch should use focusX and focusY (will need to rework how you're managing scale, the LinksSvg/Canvas, etc...)
 
 // TODO: Also include groupName in Node object (not just the id)
 
@@ -129,10 +173,6 @@ export default Index;
 // TODO: Add counter for how many nodes are selected
 
 // TODO: Add "Deselect All" btn
-
-// TODO: Add search bar that expands to the left like the apple Music one
-
-// !TODO: Pinch should use focusX and focusY
 
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
