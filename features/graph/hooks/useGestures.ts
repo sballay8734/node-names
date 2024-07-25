@@ -1,28 +1,16 @@
 import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue, withDecay } from "react-native-reanimated";
 
-import { TAB_BAR_HEIGHT } from "@/constants/styles";
-import useWindowSize from "@/hooks/useWindowSize";
-
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
-const INITIAL_SCALE = 0.5;
+export const INITIAL_SCALE = 0.5;
 const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {
-  const windowSize = useWindowSize();
-
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
-
-  const focalPoint = useSharedValue({
-    x: windowSize.windowCenterX,
-    y: windowSize.windowCenterY,
-  });
-
-  console.log(focalPoint);
 
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);
@@ -67,6 +55,5 @@ export const useGestures = () => {
     lastScale,
     focalX,
     focalY,
-    focalPoint,
   };
 };

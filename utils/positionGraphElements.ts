@@ -2,6 +2,8 @@ import * as d3 from "d3";
 
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RelationshipType, Sex, Tables } from "@/types/dbTypes";
+import { centerNode } from "@/constants/nodes";
+import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
 
 export interface PositionedPersonNode extends Tables<"people"> {
   nodeX: number;
@@ -175,16 +177,27 @@ export function calcPrimaryPositions(
   primaryNodes: Tables<"people">[],
   primaryConnections: Tables<"connections">[],
   windowSize: WindowSize,
+  scale: SharedValue<number>,
 ): SimulationResult {
   // Create a copy of the primary connections & nodes
   const primaryC: Link[] = primaryConnections.map((p) => ({ ...p }));
   const primaryN: PositionedPerson[] = primaryNodes.map((n) => ({ ...n }));
 
-  // Set rootNode fixed position
+  // NOTE: x and y positions correspond to center of node NOT top left which is why you don't need to do any radius subtracting
   const rootNode = primaryN.find((p) => p.isRoot === true);
   if (rootNode) {
-    (rootNode as PositionedPerson).fx = windowSize.windowCenterX;
-    (rootNode as PositionedPerson).fy = windowSize.windowCenterY;
+    (rootNode as PositionedPerson).fx = centerNode(
+      windowSize,
+      "root",
+      "d3",
+      scale,
+    ).nodeCenterX;
+    (rootNode as PositionedPerson).fy = centerNode(
+      windowSize,
+      "root",
+      "d3",
+      scale,
+    ).nodeCenterY;
   }
 
   // ensure rootNode is always the source

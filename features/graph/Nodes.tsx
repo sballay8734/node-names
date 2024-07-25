@@ -9,6 +9,7 @@ import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
 import NodeTapDetector from "./NodeTapDetector";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   centerOnNode: (node: PositionedPerson) => void;
@@ -34,7 +35,12 @@ export default function Nodes({
   ]);
 
   return (
-    <Animated.View style={{ ...styles.tapWrapper, transform: tapTransform }}>
+    <Animated.View
+      style={{
+        ...styles.tapWrapper,
+        transform: tapTransform,
+      }}
+    >
       {finalizedNodes &&
         finalizedNodes.map((node) => {
           const { x, y } = node;

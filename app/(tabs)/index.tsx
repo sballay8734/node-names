@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
@@ -7,12 +7,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { centerNode, ROOT_NODE_RADIUS } from "@/constants/nodes";
+import { centerNode, TEST_NODE_DIM } from "@/constants/nodes";
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
 import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
-import { useGestures } from "@/features/graph/hooks/useGestures";
+import { INITIAL_SCALE, useGestures } from "@/features/graph/hooks/useGestures";
 import LinksCanvas from "@/features/graph/LinksCanvas";
 import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
@@ -24,8 +23,6 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
-const INITIAL_SCALE = 0.5;
-
 const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
@@ -33,9 +30,12 @@ const Index = () => {
   // useDataLoad();
   useTestDataLoad();
 
-  ////
-  const nodeCenter = useSharedValue(centerNode(windowSize, "non-root"));
-  ////
+  const { nodeCenterX, nodeCenterY } = centerNode(
+    windowSize,
+    "non-root",
+    "other",
+    scale,
+  );
 
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
@@ -79,14 +79,9 @@ const Index = () => {
     lastScale.value = 1;
   }
 
-  // WindowAndScreenDim = {"height": 852, "width": 393}
-
   const focalPointStyles = useAnimatedStyle(() => {
     return {
-      transform: [
-        { translateX: nodeCenter.value.nodeCenterX },
-        { translateY: nodeCenter.value.nodeCenterY },
-      ],
+      transform: [{ translateX: nodeCenterX }, { translateY: nodeCenterY }],
     };
   });
 
@@ -114,9 +109,9 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
-        <Animated.View
+        {/* <Animated.View
           style={[styles.focalPoint, focalPointStyles]}
-        ></Animated.View>
+        ></Animated.View> */}
       </View>
     </GestureDetector>
   );
@@ -127,26 +122,15 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
     backgroundColor: "rgba(255, 0, 0, 0.1)",
-    // borderWidth: 1,
-    // borderColor: "red",
-    paddingBottom: 10,
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
-  },
-  tapWrapper: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(150, 4, 255, 0.3)",
-    top: 0,
-    left: 0,
-    flex: 1,
   },
   focalPoint: {
     ...StyleSheet.absoluteFillObject,
     width: 20,
     height: 20,
-    backgroundColor: "blue",
+    backgroundColor: "yellow", // //
     borderRadius: 100,
+    opacity: 0.5,
   },
 });
 

@@ -1,7 +1,10 @@
 import { useDerivedValue } from "react-native-reanimated";
 
-import { TAB_BAR_HEIGHT } from "@/constants/styles";
+import { centerNode } from "@/constants/nodes";
+import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
 import useWindowSize from "@/hooks/useWindowSize";
+
+import { useGestures } from "./useGestures";
 
 interface Props {
   translateX: any;
@@ -10,10 +13,18 @@ interface Props {
 
 export const useArrowData = ({ translateX, translateY }: Props) => {
   const windowSize = useWindowSize();
+  const { scale } = useGestures();
+
+  // rootNode center postion
+  const { nodeCenterX, nodeCenterY } = centerNode(
+    windowSize,
+    "root",
+    "d3",
+    scale,
+  );
 
   const ARROW_BTN_LEFT = 10;
   const ARROW_BTN_BTM = 10;
-  const ARROW_BTN_RADIUS = 40;
 
   const ARROW_BTN_CENTER = {
     x: ARROW_BTN_LEFT + ARROW_BTN_RADIUS,
@@ -22,8 +33,8 @@ export const useArrowData = ({ translateX, translateY }: Props) => {
 
   const arrowData = useDerivedValue(() => {
     const rootNodePos = {
-      x: windowSize.windowCenterX + translateX.value,
-      y: windowSize.windowCenterY + translateY.value,
+      x: nodeCenterX + translateX.value,
+      y: nodeCenterY + translateY.value,
     };
 
     const dx = rootNodePos.x - ARROW_BTN_CENTER.x;
@@ -41,8 +52,8 @@ export const useArrowData = ({ translateX, translateY }: Props) => {
   const showArrow = useDerivedValue(() => {
     // returns true if x or y of root node is off the screen
     return (
-      windowSize.windowCenterX - Math.abs(translateX.value) < 0 ||
-      windowSize.windowCenterY - Math.abs(translateY.value) < 0
+      nodeCenterX - Math.abs(translateX.value) < 0 ||
+      nodeCenterY - Math.abs(translateY.value) < 0
     );
   });
 

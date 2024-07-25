@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
+import { useGestures } from "@/features/graph/hooks/useGestures";
 import {
   setLinks,
   setNodes,
@@ -16,6 +17,7 @@ import {
 export const useTestDataLoad = () => {
   const dispatch = useDispatch();
   const windowSize = useWindowSize();
+  const { scale } = useGestures();
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);
 
   const { people, connections } = useDbData();
@@ -40,6 +42,7 @@ export const useTestDataLoad = () => {
         primaryNodes,
         primaryConnections,
         windowSize,
+        scale,
       );
 
       dispatch(setNodes([...nodes]));
@@ -54,6 +57,7 @@ export const useTestDataLoad = () => {
     dispatch,
     primaryConnectionsAndNodes,
     rootNode,
+    scale,
   ]);
 
   return dataLoaded;

@@ -9,7 +9,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { View } from "@/components/Themed";
-import { ARROW_BTN_RADIUS } from "@/constants/styles";
+import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -25,6 +26,7 @@ const RecenterBtn = ({
   showArrow,
 }: Props): React.JSX.Element => {
   const isPressed = useSharedValue<boolean>(false);
+  const windowSize = useWindowSize();
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#060d0f" : "#091417", {
@@ -34,7 +36,10 @@ const RecenterBtn = ({
 
   const arrowRotate = useAnimatedStyle(() => arrowData.value);
   const arrowOpacity = useAnimatedStyle(() => ({
-    opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
+    // opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
+
+    // REMOVE: just for testing. Remove this and re-add commented code above
+    opacity: withTiming(1),
   }));
 
   const handlePressIn = () => {
