@@ -14,6 +14,7 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
+import SearchBar from "@/features/graph/SearchBar";
 
 const INITIAL_SCALE = 0.5;
 
@@ -65,8 +66,6 @@ const Index = () => {
     });
   }
 
-  console.log(selectedNodes);
-
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
@@ -76,7 +75,7 @@ const Index = () => {
           translateY={translateY}
           scale={scale}
         />
-        {/* Nodes ***************************************** */}
+        {/* Nodes ****************************************** */}
         <Nodes
           centerOnNode={centerOnNode}
           translateX={translateX}
@@ -85,6 +84,7 @@ const Index = () => {
         />
         {/* Overlays */}
         <Popover />
+        <SearchBar />
         <RecenterBtn
           centerOnRoot={centerOnRoot}
           arrowData={arrowData}
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
-// !TODO: There is some sort of bug when you do some selecting, panning, then deselect all nodes then save file (probably has to do with selectedNodes being empty after deselecting the last node)
+// !TODO: (SEEMS TO BE FIXED) There is some sort of bug when you do some selecting, panning, then deselect all nodes then save file (probably has to do with selectedNodes being empty after deselecting the last node)
 
 // !TODO: Don't center if a node is already selected
 
