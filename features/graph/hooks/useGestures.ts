@@ -12,6 +12,12 @@ export const useGestures = () => {
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
 
+  // !TODO: ALERT (You're already using origin in LinksCanvas.tsx to set initial position of Group inside canvas! IMPORTANT!!!!!!!)
+  const origin = useSharedValue({
+    x: 0,
+    y: 0,
+  });
+
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);
 

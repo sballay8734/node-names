@@ -121,14 +121,14 @@ const styles = StyleSheet.create({
   canvasWrapper: {
     flex: 1,
     position: "relative",
-    backgroundColor: "rgba(255, 0, 0, 0.1)",
+    // backgroundColor: "rgba(255, 0, 0, 0.1)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   focalPoint: {
     ...StyleSheet.absoluteFillObject,
     width: 20,
     height: 20,
-    backgroundColor: "yellow", // //
+    backgroundColor: "yellow",
     borderRadius: 100,
     opacity: 0.5,
   },
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
-// !TODO: REFACTOR ALL POSTIONING LOGIC AND MAP CANVAS POSTIONS TO VIEW
+// !TODO: FINISH FIXING PINCH GESTURE - use ORIGIN (this might be helpful - https://stackoverflow.com/questions/71591464/how-to-update-scale-focal-origin-with-react-reanimated-and-react-native-gesture)
+
+// !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
 // TODO: little map in bottom right/left to show where you are in relation like in civs
-
-// !TODO: Pinch should use focusX and focusY (will need to rework how you're managing scale, the LinksSvg/Canvas, etc...)
 
 // TODO: Also include groupName in Node object (not just the id)
 
