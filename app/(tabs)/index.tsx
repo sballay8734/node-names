@@ -141,6 +141,8 @@ export default Index;
 
 // !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
+// TODO: Groups should link together in a ball shape not a line around a circle
+
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
 // TODO: little map in bottom right/left to show where you are in relation like in civs
