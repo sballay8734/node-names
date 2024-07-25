@@ -49,6 +49,7 @@ export default function LinksCanvas({
       >
         {finalizedLinks &&
           finalizedLinks.map((link) => {
+            // console.log(link);
             {
               return (
                 <Line

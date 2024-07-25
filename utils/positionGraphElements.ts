@@ -174,12 +174,84 @@ export function calculatePositions(
   return { nodes: peopleCopy, links: positionedLinks as FinalizedLink[] };
 }
 
-// takes a TapDetector and returns is x and y value on the screen
-export function smallToBig(node: PositionedPerson, scaleFactor: number) {
-  const x = node.x! / scaleFactor;
-  const y = node.y! / scaleFactor;
+export function calcPrimaryPositions(
+  primaryNodes: Tables<"people">[],
+  primaryConnections: Tables<"connections">[],
+  windowSize: WindowSize,
+): SimulationResult {
+  // Create a copy of the primary connections & nodes
+  const primaryC: Link[] = primaryConnections.map((p) => ({ ...p }));
+  const primaryN: PositionedPerson[] = primaryNodes.map((n) => ({ ...n }));
 
-  return { x, y };
+  // Set rootNode fixed position
+  const rootNode = primaryN.find((p) => p.isRoot === true);
+  if (rootNode) {
+    (rootNode as PositionedPerson).fx = windowSize.windowCenterX;
+    (rootNode as PositionedPerson).fy = windowSize.windowCenterY;
+  }
+
+  console.log("ROOT:", rootNode);
+
+  // ensure rootNode is always the source
+  const positionedLinks: PositionedLink[] = primaryC.map((connection) => {
+    if (connection.person_2_id === rootNode?.id) {
+      // Swap source and target
+      return {
+        ...connection,
+        strength: 1,
+        source: connection.person_2_id,
+        target: connection.person_1_id,
+      };
+    }
+    return {
+      ...connection,
+      strength: 1,
+      source: connection.person_1_id,
+      target: connection.person_2_id,
+    };
+  });
+
+  const simulation = d3
+    .forceSimulation<PositionedPerson, PositionedLink>([...primaryN])
+
+    // Create space around the root node and min space around non-root nodes
+    .force(
+      "collision",
+      d3
+        .forceCollide()
+        .radius((node) => ((node as PositionedPerson).isRoot ? 300 : 25))
+        .strength(0.5), // Adjust collision strength
+    )
+
+    // Center the nodes around screen center
+    .force(
+      "center",
+      d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
+    )
+
+    // Pull linked nodes closer together
+    .force(
+      "link",
+      d3
+        .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
+        .id((link) => link.id)
+        .distance((link) => {
+          const baseDistance = 100; // Base distance
+          return baseDistance * (1 / link.strength); // Adjust distance based on strength
+        })
+        .strength((link) => link.strength), // Adjust link strength
+    )
+
+    // Add a weak repulsion force
+    .force("charge", d3.forceManyBody().strength(-30));
+
+  // Run the simulation synchronously
+  simulation.tick(300);
+
+  // Stop the simulation
+  simulation.stop();
+
+  return { nodes: primaryN, links: positionedLinks as FinalizedLink[] };
 }
 
 // !TODO: NEW STRATEGY

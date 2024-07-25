@@ -13,7 +13,7 @@ import {
 } from "@/constants/nodes";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { PositionedPerson, smallToBig } from "@/utils/positionGraphElements";
+import { PositionedPerson } from "@/utils/positionGraphElements";
 
 import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
 
@@ -92,7 +92,7 @@ export default function NodeTapDetector({
   const tap = Gesture.Tap()
     .onStart(() => {
       dispatch(handleNodeSelect(node));
-      console.log("NODE:", node);
+      // console.log("NODE:", node);
       centerOnNode(node);
       // dispatch(hidePopover());
     })

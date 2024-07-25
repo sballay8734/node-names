@@ -12,6 +12,7 @@ import RecenterBtn from "@/features/graph/RecenterBtn";
 import SearchBar from "@/features/graph/SearchBar";
 import Popover from "@/features/manageSelections/Popover";
 import { useAppSelector } from "@/hooks/reduxHooks";
+import { useTestDataLoad } from "@/hooks/useTestDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
@@ -22,7 +23,8 @@ const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const windowSize = useWindowSize();
-  useDataLoad();
+  // useDataLoad();
+  useTestDataLoad();
 
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
@@ -116,6 +118,8 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
+// TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
+
 // !TODO: (SEEMS TO BE FIXED) There is some sort of bug when you do some selecting, panning, then deselect all nodes then save file (probably has to do with selectedNodes being empty after deselecting the last node)
 
 // !TODO: Don't center if a node is already selected
