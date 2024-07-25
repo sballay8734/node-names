@@ -206,28 +206,32 @@ export function calcPrimaryPositions(
     };
   });
 
-  // custom force for clustering nodes by group_id
+  // prepare group centers
   const groupCenters: { [key: string]: { x: number; y: number } } = {};
+  const groupCount = new Set(primaryN.map((n) => n.group_id)).size;
+  let angle = 0;
+  const radius = Math.min(windowSize.width, windowSize.height) / 3;
+
   primaryN.forEach((node) => {
     if (node.group_id === null) return;
 
     if (!groupCenters[node.group_id]) {
+      // distribute group centers in a circle around the root
+      angle += (2 * Math.PI) / groupCount;
       groupCenters[node.group_id] = {
-        x: Math.random() * windowSize.width,
-        y: Math.random() * windowSize.height,
+        x: windowSize.windowCenterX + radius * Math.cos(angle),
+        y: windowSize.windowCenterY + radius * Math.sin(angle),
       };
     }
   });
 
   function clusteringForce(alpha: number) {
     primaryN.forEach((node) => {
-      if (node.group_id === null) return;
+      if (node.group_id === null || node.isRoot) return;
 
       const groupCenter = groupCenters[node.group_id];
-      if (!node.isRoot) {
-        node.vx! += (groupCenter.x - node.x!) * 1 * alpha;
-        node.vy! += (groupCenter.y - node.y!) * 1 * alpha;
-      }
+      node.vx! += (groupCenter.x - node.x!) * alpha * 0.5;
+      node.vy! += (groupCenter.y - node.y!) * alpha * 0.5;
     });
   }
 
@@ -265,7 +269,7 @@ export function calcPrimaryPositions(
     // weak repulsion force
     .force("charge", d3.forceManyBody().strength(-30))
 
-    .force("clustering", (alpha) => clusteringForce(alpha));
+    .force("clustering", clusteringForce);
 
   // Run the simulation synchronously
   simulation.tick(300);

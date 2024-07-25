@@ -77,7 +77,7 @@ const Index = () => {
           translateY={translateY}
           scale={scale}
         />
-        {/* Nodes ****************************************** */}
+        {/* Nodes ************************************** */}
         <Nodes
           centerOnNode={centerOnNode}
           translateX={translateX}
@@ -118,10 +118,11 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
-// TODO: Also include groupName in Node object (not just the id)
-// TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
+// TODO: Position groups equally around the circle yo
 
-// !TODO: (SEEMS TO BE FIXED) There is some sort of bug when you do some selecting, panning, then deselect all nodes then save file (probably has to do with selectedNodes being empty after deselecting the last node)
+// TODO: Also include groupName in Node object (not just the id)
+
+// TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
 
 // !TODO: Don't center if a node is already selected
 
@@ -131,15 +132,9 @@ export default Index;
 
 // TODO: Add search bar that expands to the left like the apple Music one
 
-// TODO: Links should attach to edge of circle and not the center
-
 // !TODO: Pinch should use focusX and focusY
 
-// !TODO: Define the strength of each connection when the connection is created (NEED TO MODIFY LINK INTERFACE) -- SEE THIS BLOG for example of families and coloring (https://weser.io/blog/interactive-dynamic-force-directed-graphs-with-d3)
-
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
-
-// !TODO: Refactor idea, render the links on each node ONLY on a source node. (So your node component could be something like "if (node is source node" -> render link to the target. You need a way to add links without re-rendering everysingle node + link)
 
 // 2. Work all "Add Btn" functionality
 // 2. Assume everyone starts with only the root node and build from there

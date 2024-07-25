@@ -56,8 +56,8 @@ export default function SearchBar(): React.JSX.Element {
   }));
 
   return (
-    <View style={[styles.container, { marginTop: insets.top }]}>
-      <View style={styles.wrapper}>
+    <Animated.View style={[styles.container, { marginTop: insets.top }]}>
+      <Animated.View style={[styles.wrapper]}>
         <AnimatedInput style={[styles.input, animatedInputStyles]} />
         <AnimatedPressable
           onPressIn={handlePressIn}
@@ -70,8 +70,8 @@ export default function SearchBar(): React.JSX.Element {
             size={20}
           />
         </AnimatedPressable>
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 }
 
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     paddingHorizontal: 20,
+    pointerEvents: "box-none",
   },
   wrapper: {
     backgroundColor: "transparent",
@@ -94,6 +95,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    pointerEvents: "box-none",
   },
   input: {
     display: "flex",
@@ -106,6 +108,7 @@ const styles = StyleSheet.create({
   },
   pressable: {
     backgroundColor: "transparent",
+    pointerEvents: "auto",
     position: "absolute",
     right: 0,
     height: "100%",
