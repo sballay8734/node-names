@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
+// TODO: Also include groupName in Node object (not just the id)
 // TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
 
 // !TODO: (SEEMS TO BE FIXED) There is some sort of bug when you do some selecting, panning, then deselect all nodes then save file (probably has to do with selectedNodes being empty after deselecting the last node)

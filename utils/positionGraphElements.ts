@@ -89,9 +89,6 @@ export type SimulationResult = {
   links: PositionedLink[];
 };
 
-// then do something here (start with links and nodes)
-export function handleGrouping(groups: Tables<"groups">[]) {}
-
 // HELPERS ********************************************************************
 export function calculatePositions(
   people: Tables<"people">[],
@@ -190,8 +187,6 @@ export function calcPrimaryPositions(
     (rootNode as PositionedPerson).fy = windowSize.windowCenterY;
   }
 
-  console.log("ROOT:", rootNode);
-
   // ensure rootNode is always the source
   const positionedLinks: PositionedLink[] = primaryC.map((connection) => {
     if (connection.person_2_id === rootNode?.id) {
@@ -211,39 +206,66 @@ export function calcPrimaryPositions(
     };
   });
 
-  const simulation = d3
-    .forceSimulation<PositionedPerson, PositionedLink>([...primaryN])
+  // custom force for clustering nodes by group_id
+  const groupCenters: { [key: string]: { x: number; y: number } } = {};
+  primaryN.forEach((node) => {
+    if (node.group_id === null) return;
 
-    // Create space around the root node and min space around non-root nodes
+    if (!groupCenters[node.group_id]) {
+      groupCenters[node.group_id] = {
+        x: Math.random() * windowSize.width,
+        y: Math.random() * windowSize.height,
+      };
+    }
+  });
+
+  function clusteringForce(alpha: number) {
+    primaryN.forEach((node) => {
+      if (node.group_id === null) return;
+
+      const groupCenter = groupCenters[node.group_id];
+      if (!node.isRoot) {
+        node.vx! += (groupCenter.x - node.x!) * 1 * alpha;
+        node.vy! += (groupCenter.y - node.y!) * 1 * alpha;
+      }
+    });
+  }
+
+  const simulation = d3
+    .forceSimulation<PositionedPerson, PositionedLink>(primaryN)
+
+    // create space around the root node and min space around non-root nodes
     .force(
       "collision",
       d3
         .forceCollide()
         .radius((node) => ((node as PositionedPerson).isRoot ? 300 : 25))
-        .strength(0.5), // Adjust collision strength
+        .strength(0.5),
     )
 
-    // Center the nodes around screen center
+    // center nodes around screen center
     .force(
       "center",
       d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
     )
 
-    // Pull linked nodes closer together
+    // pull linked nodes closer together
     .force(
       "link",
       d3
         .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
         .id((link) => link.id)
         .distance((link) => {
-          const baseDistance = 100; // Base distance
-          return baseDistance * (1 / link.strength); // Adjust distance based on strength
+          const baseDistance = 100;
+          return baseDistance * (1 / link.strength);
         })
-        .strength((link) => link.strength), // Adjust link strength
+        .strength((link) => link.strength),
     )
 
-    // Add a weak repulsion force
-    .force("charge", d3.forceManyBody().strength(-30));
+    // weak repulsion force
+    .force("charge", d3.forceManyBody().strength(-30))
+
+    .force("clustering", (alpha) => clusteringForce(alpha));
 
   // Run the simulation synchronously
   simulation.tick(300);
