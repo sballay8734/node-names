@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { centerNode, TEST_NODE_DIM } from "@/constants/nodes";
+import { centerNode } from "@/constants/nodes";
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
 import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
 import { INITIAL_SCALE, useGestures } from "@/features/graph/hooks/useGestures";
@@ -139,7 +139,7 @@ export default Index;
 // FIRST FOR THURS. ****************************************************
 // !TODO: REFACTOR ALL POSTIONING LOGIC AND MAP CANVAS POSTIONS TO VIEW
 
-// TODO: SOMETHING IS WRONG WITH ARROW IT DOESNT SHOW SOMETIMES. If a node is selected and the root is off the screen, the arrow doesn't show when saving the file
+// TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
 // TODO: little map in bottom right/left to show where you are in relation like in civs
 
