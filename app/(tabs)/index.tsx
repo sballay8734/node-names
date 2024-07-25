@@ -1,12 +1,15 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
   useAnimatedStyle,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { centerNode, ROOT_NODE_RADIUS } from "@/constants/nodes";
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
 import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
 import { useGestures } from "@/features/graph/hooks/useGestures";
@@ -20,43 +23,23 @@ import { useTestDataLoad } from "@/hooks/useTestDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
-import { ROOT_NODE_RADIUS } from "@/constants/nodes";
 
 const INITIAL_SCALE = 0.5;
 
 const Index = () => {
-  const {
-    composed,
-    scale,
-    translateX,
-    translateY,
-    lastScale,
-    focalX,
-    focalY,
-    focalPoint,
-  } = useGestures();
+  const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const windowSize = useWindowSize();
   // useDataLoad();
   useTestDataLoad();
 
+  ////
+  const nodeCenter = useSharedValue(centerNode(windowSize, "non-root"));
+  ////
+
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
-
-  console.log(focalPoint.value);
-
-  const focalPointStyles = useAnimatedStyle(() => {
-    // TODO: Not sure why / 10 actually works
-    return {
-      transform: [
-        { translateX: focalPoint.value.x - ROOT_NODE_RADIUS / 10 },
-        { translateY: focalPoint.value.y - ROOT_NODE_RADIUS / 10 },
-      ],
-    };
-  });
-
-  console.log(focalPoint.value.x);
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {
@@ -96,9 +79,20 @@ const Index = () => {
     lastScale.value = 1;
   }
 
+  // WindowAndScreenDim = {"height": 852, "width": 393}
+
+  const focalPointStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: nodeCenter.value.nodeCenterX },
+        { translateY: nodeCenter.value.nodeCenterY },
+      ],
+    };
+  });
+
   return (
     <GestureDetector gesture={composed}>
-      <View style={styles.canvasWrapper}>
+      <View style={[styles.canvasWrapper]}>
         <LinksCanvas
           windowSize={windowSize}
           translateX={translateX}
@@ -133,6 +127,9 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
     backgroundColor: "rgba(255, 0, 0, 0.1)",
+    // borderWidth: 1,
+    // borderColor: "red",
+    paddingBottom: 10,
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   tapWrapper: {
@@ -158,7 +155,7 @@ export default Index;
 // FIRST FOR THURS. ****************************************************
 // !TODO: REFACTOR ALL POSTIONING LOGIC AND MAP CANVAS POSTIONS TO VIEW
 
-// TODO: If a node is selected and the root is off the screen, the arrow doesn't show when saving the file
+// TODO: SOMETHING IS WRONG WITH ARROW IT DOESNT SHOW SOMETIMES. If a node is selected and the root is off the screen, the arrow doesn't show when saving the file
 
 // TODO: little map in bottom right/left to show where you are in relation like in civs
 

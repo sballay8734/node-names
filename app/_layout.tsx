@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import { View } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import { store } from "@/store/store";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // !TODO: need to load assets at build time
 const image = {
@@ -64,7 +65,7 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Provider store={store}>
-        <GestureHandlerRootView style={styles.container}>
+        <GestureHandlerRootView style={[styles.container]}>
           <View
             style={{
               flex: 1,
