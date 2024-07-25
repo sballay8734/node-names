@@ -9,12 +9,12 @@ import { useGestures } from "@/features/graph/hooks/useGestures";
 import LinksCanvas from "@/features/graph/LinksCanvas";
 import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
+import SearchBar from "@/features/graph/SearchBar";
 import Popover from "@/features/manageSelections/Popover";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
-import SearchBar from "@/features/graph/SearchBar";
 
 const INITIAL_SCALE = 0.5;
 

@@ -7,6 +7,7 @@ import {
 } from "@/features/manageSelections/redux/manageSelections";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
+import getPrimaryConnections from "@/utils/getPrimaryConnections";
 import {
   calculatePositions,
   FinalizedLink,
@@ -26,6 +27,16 @@ export const useDataLoad = () => {
         connections,
         windowSize,
       );
+      // !TODO: WORKING HERE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+      const rootNode = nodes.find((n) => n.isRoot === true);
+      const primaryConnections =
+        rootNode && getPrimaryConnections(rootNode, connections);
+
+      console.log("PRIMARY:", primaryConnections);
+
+      // !TODO: WORKING HERE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
       dispatch(setNodes([...nodes]));
       dispatch(setLinks(links as FinalizedLink[]));
       setDataLoaded(true);
