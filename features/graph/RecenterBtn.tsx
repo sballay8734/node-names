@@ -1,8 +1,5 @@
-import {
-  FontAwesome,
-  FontAwesome6,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
+import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   DerivedValue,
@@ -17,18 +14,17 @@ import { ARROW_BTN_RADIUS } from "@/constants/styles";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface Props {
-  handleCenter: () => void;
+  centerOnRoot: () => void;
   arrowData: DerivedValue<{ transform: { rotate: string }[] }>;
   showArrow: DerivedValue<boolean>;
 }
 
-export default function RecenterBtn({
-  handleCenter,
+const RecenterBtn = ({
+  centerOnRoot,
   arrowData,
   showArrow,
-}: Props): React.JSX.Element {
+}: Props): React.JSX.Element => {
   const isPressed = useSharedValue<boolean>(false);
-  console.log(showArrow);
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#060d0f" : "#091417", {
@@ -41,40 +37,20 @@ export default function RecenterBtn({
     opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
   }));
 
-  function handlePressIn() {
+  const handlePressIn = () => {
     isPressed.value = true;
-    handleCenter();
-  }
+    centerOnRoot();
+  };
 
-  function handlePressOut() {
+  const handlePressOut = () => {
     isPressed.value = false;
-  }
+  };
 
   return (
     <AnimatedPressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[
-        {
-          position: "absolute",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          bottom: 10,
-          left: 10,
-          height: ARROW_BTN_RADIUS * 2,
-          width: ARROW_BTN_RADIUS * 2,
-          borderRadius: 100,
-          borderColor: "#232a2b",
-          borderWidth: 1,
-          backgroundColor: "transparent",
-          // TODO: SHOULD NOT BE HARDCODED: ORIGINAL VALUE vvvv
-          transform: [{ rotate: "46deg" }],
-        },
-        animatedStyles,
-        arrowOpacity,
-      ]}
+      style={[styles.recenterButton, animatedStyles, arrowOpacity]}
     >
       <View style={styles.buttonContent}>
         <Animated.View style={[styles.arrow, arrowRotate]}>
@@ -83,9 +59,25 @@ export default function RecenterBtn({
       </View>
     </AnimatedPressable>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  recenterButton: {
+    position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    bottom: 10,
+    left: 10,
+    height: ARROW_BTN_RADIUS * 2,
+    width: ARROW_BTN_RADIUS * 2,
+    borderRadius: 100,
+    borderColor: "#232a2b",
+    borderWidth: 1,
+    backgroundColor: "transparent",
+    transform: [{ rotate: "46deg" }], // TODO: SHOULD NOT BE HARDCODED: ORIGINAL VALUE vvvv
+  },
   buttonContent: {
     backgroundColor: "transparent",
     flexDirection: "row",
@@ -99,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: Arrow isn't quite centered in the circle
+export default RecenterBtn;

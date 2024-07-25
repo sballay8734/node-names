@@ -1,12 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { PositionedPerson } from "@/utils/positionGraphElements";
+import {
+  PositionedLink,
+  PositionedPerson,
+} from "@/utils/positionGraphElements";
 
 // Define a type for the slice state
 interface ManageSelectionsState {
   popoverIsShown: boolean;
   nodes: PositionedPerson[] | null;
+  links: PositionedLink[] | null;
   selectedNodes: PositionedPerson[];
 }
 
@@ -14,6 +18,7 @@ interface ManageSelectionsState {
 const initialState: ManageSelectionsState = {
   popoverIsShown: false,
   nodes: null,
+  links: null,
   selectedNodes: [],
 };
 
@@ -36,6 +41,9 @@ export const ManageSelectionsSlice = createSlice({
 
     setNodes: (state, action: PayloadAction<PositionedPerson[]>) => {
       state.nodes = action.payload;
+    },
+    setLinks: (state, action: PayloadAction<PositionedLink[]>) => {
+      state.links = action.payload;
     },
 
     // SELECTION MANAGEMENT ****************************************************
@@ -85,6 +93,7 @@ export const ManageSelectionsSlice = createSlice({
 export const {
   handlePopover,
   setNodes,
+  setLinks,
   showPopover,
   hidePopover,
   handleNodeSelect,

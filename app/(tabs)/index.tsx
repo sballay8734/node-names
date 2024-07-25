@@ -1,149 +1,33 @@
-import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  Easing,
-  useDerivedValue,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import { useDispatch } from "react-redux";
+import { GestureDetector } from "react-native-gesture-handler";
+import { Easing, withTiming } from "react-native-reanimated";
 
-import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
-import NodeTapDetector from "@/features/graph/NodeTapDetector";
+import { useArrowData } from "@/features/graph/hooks/useArrowData";
+import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
+import { useGestures } from "@/features/graph/hooks/useGestures";
+import LinksCanvas from "@/features/graph/LinksCanvas";
+import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
 import Popover from "@/features/manageSelections/Popover";
-import { setNodes } from "@/features/manageSelections/redux/manageSelections";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import {
-  calculatePositions,
-  FinalizedLink,
-  PositionedPerson,
-} from "@/utils/positionGraphElements";
+import { PositionedPerson } from "@/utils/positionGraphElements";
 
-const MIN_SCALE = 0.1;
-const MAX_SCALE = 3;
 const INITIAL_SCALE = 0.5;
 
-const ARROW_BTN_LEFT = 10;
-const ARROW_BTN_BTM = 10;
-
 const Index = () => {
-  const dispatch = useDispatch();
+  const { composed, scale, translateX, translateY, lastScale } = useGestures();
+  const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const windowSize = useWindowSize();
-  const [finalizedLinks, setFinalizedLinks] = useState<FinalizedLink[] | null>(
-    null,
-  );
+  useDataLoad();
+
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
 
-  const finalizedPeople = useAppSelector(
-    (state: RootState) => state.selections.nodes,
-  );
-
-  const scale = useSharedValue(INITIAL_SCALE);
-  // origin = point on Group directly under center point on Canvas
-  const origin = useSharedValue({
-    x: windowSize.windowCenterX,
-    y: windowSize.windowCenterY,
-  });
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const lastScale = useSharedValue(INITIAL_SCALE);
-
-  const ARROW_BTN_CENTER = {
-    x: ARROW_BTN_LEFT + ARROW_BTN_RADIUS, // Left margin AND CENTER of button
-    y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
-  };
-
-  const { people, connections, groups, error } = useDbData();
-
-  useEffect(() => {
-    if (!finalizedPeople && people && connections) {
-      const { nodes, links } = calculatePositions(
-        people,
-        connections,
-        windowSize,
-      );
-      dispatch(setNodes([...nodes]));
-      setFinalizedLinks(links as FinalizedLink[]);
-    }
-  }, [finalizedPeople, people, windowSize, connections, dispatch]);
-
-  const pan = Gesture.Pan().onChange((e) => {
-    translateX.value += e.changeX;
-    translateY.value += e.changeY;
-  });
-
-  const pinch = Gesture.Pinch()
-    .onChange((e) => {
-      const newScale = Math.min(
-        Math.max(scale.value * e.scale, MIN_SCALE),
-        MAX_SCALE,
-      );
-
-      scale.value = newScale;
-    })
-    .onEnd(() => {
-      lastScale.value = scale.value;
-    });
-
-  const composed = Gesture.Race(pan, pinch);
-
-  const tapTransform = useDerivedValue(() => [
-    { translateX: translateX.value },
-    { translateY: translateY.value },
-    { scale: scale.value },
-  ]);
-
-  const svgTransform = useDerivedValue(() => [
-    { translateX: translateX.value },
-    { translateY: translateY.value },
-    { scale: scale.value },
-  ]);
-
-  const arrowData = useDerivedValue(() => {
-    const rootNodePos = {
-      x: windowSize.windowCenterX + translateX.value,
-      y: windowSize.windowCenterY + translateY.value,
-    };
-
-    // Calculate the differences in x and y coordinates
-    const dx = rootNodePos.x - ARROW_BTN_CENTER.x;
-    const dy = rootNodePos.y - ARROW_BTN_CENTER.y;
-
-    // Calculate the angle in radians
-    const angle = Math.atan2(dy, dx);
-
-    // Convert the angle to degrees
-    const angleInDegrees = (angle * 180) / Math.PI;
-
-    return {
-      transform: [{ rotate: `${angleInDegrees}deg` }],
-    };
-  });
-
-  const showArrow = useDerivedValue(() => {
-    // check if rootNode is on scre
-    let shown: boolean = false;
-    if (
-      windowSize.windowCenterX - Math.abs(translateX.value) < 0 ||
-      windowSize.windowCenterY - Math.abs(translateY.value) < 0
-    ) {
-      shown = true;
-    } else {
-      shown = false;
-    }
-
-    return shown;
-  });
-
-  function handleCenter() {
+  function centerOnRoot() {
     translateX.value = withTiming(0, {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
@@ -181,72 +65,28 @@ const Index = () => {
     });
   }
 
+  console.log(selectedNodes);
+
   return (
     <GestureDetector gesture={composed}>
       <View style={styles.canvasWrapper}>
-        <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
-          {/* Links ******************************************************** */}
-          <Group
-            origin={{
-              x: origin.value.x,
-              y: origin.value.y,
-            }}
-            transform={svgTransform}
-          >
-            {finalizedLinks &&
-              finalizedPeople &&
-              finalizedLinks.map((link) => {
-                {
-                  return (
-                    <Line
-                      key={`${link.person_1_id}-${link.person_2_id}`}
-                      p1={{
-                        x: link.source.x,
-                        y: link.source.y,
-                      }}
-                      p2={{ x: link.target.x, y: link.target.y }}
-                      color="transparent" // Adjust color as needed
-                      style="stroke"
-                      strokeWidth={1} // Adjust thickness as needed
-                    >
-                      <Paint
-                        // color="#1c1c24"
-                        color="#e8e2ae"
-                        strokeWidth={2}
-                        style="stroke"
-                        strokeCap="round"
-                      />
-                    </Line>
-                  );
-                }
-              })}
-          </Group>
-        </Canvas>
-        {/* Touch Responders ***************************************** */}
-        <Animated.View
-          style={{ ...styles.tapWrapper, transform: tapTransform }}
-        >
-          {finalizedPeople &&
-            finalizedPeople.map((node) => {
-              const { x, y } = node;
-
-              if (x && y) {
-                return (
-                  <NodeTapDetector
-                    key={node.id}
-                    centerOnNode={centerOnNode}
-                    node={node}
-                    nodePosition={{ x, y }}
-                  />
-                );
-              } else {
-                return null;
-              }
-            })}
-        </Animated.View>
+        <LinksCanvas
+          windowSize={windowSize}
+          translateX={translateX}
+          translateY={translateY}
+          scale={scale}
+        />
+        {/* Nodes ***************************************** */}
+        <Nodes
+          centerOnNode={centerOnNode}
+          translateX={translateX}
+          translateY={translateY}
+          scale={scale}
+        />
+        {/* Overlays */}
         <Popover />
         <RecenterBtn
-          handleCenter={handleCenter}
+          centerOnRoot={centerOnRoot}
           arrowData={arrowData}
           showArrow={showArrow}
         />
@@ -261,11 +101,6 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "rgba(255, 0, 0, 0.1)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
-  },
-  canvas: {
-    flex: 1,
-    backgroundColor: "rgba(0, 4, 255, 0.5)", // BLUE
-    opacity: 0.3,
   },
   tapWrapper: {
     position: "absolute",

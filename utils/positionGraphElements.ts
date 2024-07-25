@@ -2,7 +2,6 @@ import * as d3 from "d3";
 
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RelationshipType, Sex, Tables } from "@/types/dbTypes";
-import { REG_NODE_RADIUS } from "@/constants/nodes";
 
 export interface PositionedPersonNode extends Tables<"people"> {
   nodeX: number;
@@ -182,3 +181,10 @@ export function smallToBig(node: PositionedPerson, scaleFactor: number) {
 
   return { x, y };
 }
+
+// !TODO: NEW STRATEGY
+// 1. Get primary nodes
+// 2. Determine widget value based on # of primary nodes connections
+// 3. Group primary nodes (friends, coworkers, etc)
+// 4. Render
+// 5. On "inspect" click of primary node -> show node connection hierarchy
