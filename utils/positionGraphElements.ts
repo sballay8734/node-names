@@ -2,6 +2,7 @@ import * as d3 from "d3";
 
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RelationshipType, Sex, Tables } from "@/types/dbTypes";
+import { REG_NODE_RADIUS } from "@/constants/nodes";
 
 export interface PositionedPersonNode extends Tables<"people"> {
   nodeX: number;
@@ -172,4 +173,12 @@ export function calculatePositions(
   simulation.stop();
 
   return { nodes: peopleCopy, links: positionedLinks as FinalizedLink[] };
+}
+
+// takes a TapDetector and returns is x and y value on the screen
+export function smallToBig(node: PositionedPerson, scaleFactor: number) {
+  const x = node.x! / scaleFactor;
+  const y = node.y! / scaleFactor;
+
+  return { x, y };
 }

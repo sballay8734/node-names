@@ -13,10 +13,7 @@ import {
 } from "@/constants/nodes";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import {
-  PositionedPerson,
-  PositionedPersonNode,
-} from "@/utils/positionGraphElements";
+import { PositionedPerson, smallToBig } from "@/utils/positionGraphElements";
 
 import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
 
@@ -46,12 +43,10 @@ export default function NodeTapDetector({
   const pressed = selectedNode;
   const { x, y } = nodePosition;
 
-  if (node.first_name === "Levi") {
-    console.log(x, y);
-  }
-  if (node.isRoot) {
-    console.log("ROOT:", x, y);
-  }
+  // if (node.first_name === "Levi") {
+  //   console.log(node.x);
+  //   console.log(node.y);
+  // }
 
   const {
     inactiveBgColor,
@@ -63,11 +58,25 @@ export default function NodeTapDetector({
   // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    top: node.isRoot ? y - ROOT_NODE_RADIUS / 2 : y - REG_NODE_RADIUS / 2,
-    left: node.isRoot ? x - ROOT_NODE_RADIUS / 2 : x - REG_NODE_RADIUS / 2,
-    // transform: [{ translateX: x }, { translateY: y }],
+    // top: node.isRoot ? y - ROOT_NODE_RADIUS / 2 : y - REG_NODE_RADIUS / 2,
+    // left: node.isRoot ? x - ROOT_NODE_RADIUS / 2 : x - REG_NODE_RADIUS / 2,
     width: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
     height: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+
+    transform: [
+      {
+        translateX: node.isRoot
+          ? x - ROOT_NODE_RADIUS / 2
+          : x - REG_NODE_RADIUS / 2,
+      },
+      {
+        translateY: node.isRoot
+          ? y - ROOT_NODE_RADIUS / 2
+          : y - REG_NODE_RADIUS / 2,
+      },
+    ],
+
+    // transform: [{ translateX: 0 }, { translateY: 0 }],
 
     // MY STUFF
     borderWidth: NODE_BORDER_WIDTH,

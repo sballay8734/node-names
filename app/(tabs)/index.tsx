@@ -24,11 +24,10 @@ import {
   FinalizedLink,
   PositionedPerson,
 } from "@/utils/positionGraphElements";
-import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/nodes";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 3;
-const INITIAL_SCALE = 0.4;
+const INITIAL_SCALE = 0.5;
 
 const ARROW_BTN_LEFT = 10;
 const ARROW_BTN_BTM = 10;
@@ -38,6 +37,9 @@ const Index = () => {
   const windowSize = useWindowSize();
   const [finalizedLinks, setFinalizedLinks] = useState<FinalizedLink[] | null>(
     null,
+  );
+  const selectedNodes = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes,
   );
 
   const finalizedPeople = useAppSelector(
@@ -151,15 +153,32 @@ const Index = () => {
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
     lastScale.value = withTiming(1, { duration: 500 });
+
     scale.value = withTiming(INITIAL_SCALE, {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
   }
 
-  // !TODO: the x and y values of the node are not the most up to date versions which is why it's not working (you make a copy of the nodes instead of mutating when setting their postions)
   function centerOnNode(node: PositionedPerson) {
-    console.log("NEED TO RESTRUCTURE TO CONFIGURE");
+    // !TODO: This early return works but is wrong. Race condition with redux
+    if (selectedNodes.length >= 1) return;
+
+    translateX.value = withTiming(windowSize.windowCenterX - node.x!, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+    translateY.value = withTiming(windowSize.windowCenterY - node.y!, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+    lastScale.value = withTiming(lastScale.value, { duration: 500 });
+
+    // REVIEW: Changing from 1 to any other number takes the zoom out of sync. This works with a value of 1 but should probably be changed so users can change their default zoom when selecting a node
+    scale.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
   }
 
   return (
@@ -191,7 +210,8 @@ const Index = () => {
                       strokeWidth={1} // Adjust thickness as needed
                     >
                       <Paint
-                        color="#1c1c24"
+                        // color="#1c1c24"
+                        color="#e8e2ae"
                         strokeWidth={2}
                         style="stroke"
                         strokeCap="round"
@@ -238,7 +258,8 @@ const Index = () => {
 const styles = StyleSheet.create({
   canvasWrapper: {
     flex: 1,
-    backgroundColor: "rgba(255, 0, 0, 0)",
+    position: "relative",
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
   canvas: {
@@ -250,6 +271,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
+    backgroundColor: "rgba(150, 4, 255, 0.3)",
     top: 0,
     left: 0,
     flex: 1,
@@ -259,19 +281,25 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
-// !TODO: CURRENTLY WORKING ON "ADDING NEW NODE" AND "CONNECTING TO NEW NODE"
+// !TODO: There is some sort of bug when you do some selecting, panning, then deselect all nodes then save file (probably has to do with selectedNodes being empty after deselecting the last node)
+
+// !TODO: Don't center if a node is already selected
+
+// TODO: Add counter for how many nodes are selected
+
+// TODO: Add "Deselect All" btn
+
+// TODO: Add search bar that expands to the left like the apple Music one
+
+// TODO: Links should attach to edge of circle and not the center
+
+// !TODO: Pinch should use focusX and focusY
 
 // !TODO: Define the strength of each connection when the connection is created (NEED TO MODIFY LINK INTERFACE) -- SEE THIS BLOG for example of families and coloring (https://weser.io/blog/interactive-dynamic-force-directed-graphs-with-d3)
 
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
 // !TODO: Refactor idea, render the links on each node ONLY on a source node. (So your node component could be something like "if (node is source node" -> render link to the target. You need a way to add links without re-rendering everysingle node + link)
-
-// TODO: Add search bar that expands to the left like the apple Music one
-
-// !TODO: MAJOR - Pinch gesture should use focalX and focalY (TEST ON ACTUAL PHONE - EXPO GO)
-
-// TODO: Links should attach to edge of circle and not the center
 
 // 2. Work all "Add Btn" functionality
 // 2. Assume everyone starts with only the root node and build from there
