@@ -18,7 +18,7 @@ export function centerNode(
   scaleFactor: SharedValue<number>,
 ) {
   // NOTE: Positions calculated by d3 will already be referring to the center of the object. Items NOT calculated by d3 will need to have their radius' subtracted
-  const adjustedHeight = windowSize.height - TAB_BAR_HEIGHT;
+  const adjustedHeight = windowSize.height;
 
   if (type === "root" && from === "d3") {
     return {

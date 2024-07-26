@@ -77,14 +77,12 @@ const Index = () => {
   }
 
   const focalPointStyles = useAnimatedStyle(() => {
-    console.log("focalX:", focalX.value);
-    console.log("focalY:", focalY.value);
     return {
       transform: [
         { translateX: focalX.value },
         { translateY: focalY.value },
-        { translateX: windowSize.windowCenterX - FOCAL_POINT_RADIUS },
-        { translateY: windowSize.windowCenterY - FOCAL_POINT_RADIUS },
+        // { translateX: windowSize.windowCenterX - FOCAL_POINT_RADIUS },
+        // { translateY: windowSize.windowCenterY - FOCAL_POINT_RADIUS },
         { scale: scale.value },
       ],
     };

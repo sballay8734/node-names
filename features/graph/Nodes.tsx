@@ -9,6 +9,7 @@ import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
 import NodeTapDetector from "./NodeTapDetector";
+import { useGestures } from "./hooks/useGestures";
 
 interface Props {
   centerOnNode: (node: PositionedPerson) => void;
@@ -27,7 +28,7 @@ export default function Nodes({
     (state: RootState) => state.selections.nodes,
   );
 
-  const tapTransform = useDerivedValue(() => [
+  const transform = useDerivedValue(() => [
     { translateX: translateX.value },
     { translateY: translateY.value },
     { scale: scale.value },
@@ -37,7 +38,7 @@ export default function Nodes({
     <Animated.View
       style={{
         ...styles.tapWrapper,
-        transform: tapTransform,
+        transform: transform,
       }}
     >
       {finalizedNodes &&

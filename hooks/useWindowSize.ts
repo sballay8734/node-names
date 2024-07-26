@@ -17,7 +17,7 @@ export default function useWindowSize() {
 
     return {
       width,
-      height,
+      height: adjHeight,
       windowCenterX: width / 2,
       windowCenterY: adjHeight / 2,
     };
@@ -29,7 +29,7 @@ export default function useWindowSize() {
 
       setWindowSize({
         width: window.width,
-        height: window.height,
+        height: adjHeight,
         windowCenterX: window.width / 2,
         windowCenterY: adjHeight / 2,
       });

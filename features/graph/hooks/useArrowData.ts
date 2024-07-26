@@ -28,7 +28,7 @@ export const useArrowData = ({ translateX, translateY }: Props) => {
 
   const ARROW_BTN_CENTER = {
     x: ARROW_BTN_LEFT + ARROW_BTN_RADIUS,
-    y: windowSize.height - TAB_BAR_HEIGHT - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
+    y: windowSize.height - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
   };
 
   const arrowData = useDerivedValue(() => {

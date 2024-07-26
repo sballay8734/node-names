@@ -9,6 +9,7 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { FinalizedLink } from "@/utils/positionGraphElements";
+import { useGestures } from "./hooks/useGestures";
 
 interface Props {
   windowSize: WindowSize;
@@ -23,30 +24,22 @@ export default function LinksCanvas({
   translateY,
   scale,
 }: Props): React.JSX.Element {
+  const { origin } = useGestures();
+
   const finalizedLinks = useAppSelector(
     (state: RootState) => state.selections.links,
   );
 
-  const origin = useSharedValue({
-    x: windowSize.windowCenterX,
-    y: windowSize.windowCenterY,
-  });
-
   const svgTransform = useDerivedValue(() => [
     { translateX: translateX.value },
     { translateY: translateY.value },
+
     { scale: scale.value },
   ]);
 
   return (
     <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
-      <Group
-        origin={{
-          x: origin.value.x,
-          y: origin.value.y,
-        }}
-        transform={svgTransform}
-      >
+      <Group origin={origin} transform={svgTransform}>
         {finalizedLinks &&
           finalizedLinks.map((link) => {
             {
