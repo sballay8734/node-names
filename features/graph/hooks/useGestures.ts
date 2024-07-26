@@ -1,10 +1,12 @@
-import useWindowSize from "@/hooks/useWindowSize";
 import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue, withDecay } from "react-native-reanimated";
 
-const MIN_SCALE = 0.1;
-const MAX_SCALE = 3;
-export const INITIAL_SCALE = 0.5;
+import useWindowSize from "@/hooks/useWindowSize";
+
+const MIN_SCALE = 0.2;
+const MAX_SCALE = 4;
+// export const INITIAL_SCALE = 0.5;
+export const INITIAL_SCALE = 1;
 const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {
@@ -12,20 +14,13 @@ export const useGestures = () => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
-  const windowSize = useWindowSize();
 
-  // !TODO: ALERT (You're already using origin in LinksCanvas.tsx to set initial position of Group inside canvas! IMPORTANT!!!!!!!)
-  const origin = useSharedValue({
-    x: windowSize.windowCenterX,
-    y: windowSize.windowCenterY,
-  });
-  const testOrigin = useSharedValue({
-    x: 0,
-    y: 0,
-  });
+  const windowSize = useWindowSize();
 
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);
+  const initialFocalX = useSharedValue(0);
+  const initialFocalY = useSharedValue(0);
 
   const pan = Gesture.Pan()
     .onChange((e) => {
@@ -45,9 +40,8 @@ export const useGestures = () => {
 
   const pinch = Gesture.Pinch()
     .onStart((e) => {
-      focalX.value = e.focalX;
-      focalY.value = e.focalY;
-      console.log("WINDOW:", windowSize);
+      initialFocalX.value = e.focalX;
+      initialFocalY.value = e.focalY;
     })
     .onChange((e) => {
       const scaleFactor = 1 + (e.scale - 1) * SCALE_SENSITIVITY;
@@ -56,40 +50,24 @@ export const useGestures = () => {
         MAX_SCALE,
       );
 
-      // get point on canvas that maps to focal point
-      console.log("focalX:", focalX.value);
-      console.log("focalY:", focalY.value);
+      // only apply translation if the scale is actually changing
+      if (newScale !== scale.value) {
+        // Calculate the change in scale
+        const scaleChange = newScale / scale.value;
 
-      // GOOD!!!
-      const canvasFocalX =
-        focalX.value * newScale + (windowSize.width / 2) * newScale;
-      const canvasFocalY =
-        focalY.value * newScale + (windowSize.width / 2) * newScale;
+        // Update the scale
+        scale.value = newScale;
 
-      // !TODO: FROM HERE AND BELOW NEEDS FIXING
-      const differenceX = focalX.value - canvasFocalX;
-      const differenceY = focalY.value - canvasFocalY;
-
-      console.log("CANVAS_X:", canvasFocalX);
-      console.log("CANVAS_Y:", canvasFocalY);
-
-      console.log("DIF_X:", differenceX);
-      console.log("DIF_Y:", differenceY);
-
-      // Apply the new scale
-      scale.value = newScale;
-
-      scale.value = newScale;
-      focalX.value = e.focalX;
-      focalY.value = e.focalY;
-      translateX.value += Math.min(1, Math.abs(differenceX));
-      translateY.value += Math.min(1, Math.abs(differenceY));
+        // Adjust the translation to keep the center point fixed
+        translateX.value = translateX.value * scaleChange;
+        translateY.value = translateY.value * scaleChange;
+      }
     })
     .onEnd((e) => {
       lastScale.value = scale.value;
     });
 
-  const composed = Gesture.Race(pan, pinch);
+  const composed = Gesture.Simultaneous(pan, pinch);
 
   return {
     composed,
@@ -99,6 +77,7 @@ export const useGestures = () => {
     lastScale,
     focalX,
     focalY,
-    origin,
   };
 };
+
+// !TODO: Consider wrapping your gesture configurations with useMemo, as it will reduce the amount of work Gesture Handler has to do under the hood when updating gestures. (FROM DOCS: https://docs.swmansion.com/react-native-gesture-handler/docs/gestures/gesture)

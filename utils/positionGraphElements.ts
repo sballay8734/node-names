@@ -1,9 +1,9 @@
 import * as d3 from "d3";
+import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
 
+import { centerNode } from "@/constants/variables";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RelationshipType, Sex, Tables } from "@/types/dbTypes";
-import { centerNode } from "@/constants/nodes";
-import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
 
 export interface PositionedPersonNode extends Tables<"people"> {
   nodeX: number;
@@ -256,7 +256,7 @@ export function calcPrimaryPositions(
       "collision",
       d3
         .forceCollide()
-        .radius((node) => ((node as PositionedPerson).isRoot ? 300 : 25))
+        .radius((node) => ((node as PositionedPerson).isRoot ? 130 : 15))
         .strength(0.5),
     )
 
@@ -273,7 +273,7 @@ export function calcPrimaryPositions(
         .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
         .id((link) => link.id)
         .distance((link) => {
-          const baseDistance = 100;
+          const baseDistance = 50;
           return baseDistance * (1 / link.strength);
         })
         .strength((link) => link.strength),

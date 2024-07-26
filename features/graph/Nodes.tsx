@@ -5,11 +5,12 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
+import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
-import NodeTapDetector from "./NodeTapDetector";
 import { useGestures } from "./hooks/useGestures";
+import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
   centerOnNode: (node: PositionedPerson) => void;

@@ -9,8 +9,10 @@ import { Text } from "@/components/Themed";
 import {
   NODE_BORDER_WIDTH,
   REG_NODE_RADIUS,
+  REG_TEXT_SIZE,
   ROOT_NODE_RADIUS,
-} from "@/constants/nodes";
+  ROOT_TEXT_SIZE,
+} from "@/constants/variables";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
@@ -117,9 +119,9 @@ export default function NodeTapDetector({
   // THIS IS JUST A QUICK WORKAROUND
   function calcFontSize(node: PositionedPerson) {
     if (node.isRoot) {
-      return 18;
+      return ROOT_TEXT_SIZE;
     } else {
-      return 12 - node.first_name.length / 2;
+      return REG_TEXT_SIZE - node.first_name.length / 2;
     }
   }
 
@@ -174,10 +176,10 @@ export default function NodeTapDetector({
           style={[
             {
               position: "absolute",
-              bottom: node.isRoot ? -10 : -5,
+              bottom: node.isRoot ? -10 : -3,
               borderRadius: 2,
-              paddingHorizontal: 6,
-              paddingVertical: 2,
+              paddingHorizontal: 3,
+              paddingVertical: 1,
               backgroundColor: "#1e2152",
               borderWidth: 1,
               borderColor: pressed || node.isRoot ? "#232e3a" : "transparent",

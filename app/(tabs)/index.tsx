@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { centerNode } from "@/constants/nodes";
+import { centerNode } from "@/constants/variables";
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
 import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
 import { INITIAL_SCALE, useGestures } from "@/features/graph/hooks/useGestures";
@@ -23,7 +23,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
-const FOCAL_POINT_DIM = 20;
+const FOCAL_POINT_DIM = 40;
 const FOCAL_POINT_RADIUS = FOCAL_POINT_DIM / 2;
 
 const Index = () => {
@@ -112,9 +112,9 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
-        <Animated.View
+        {/* <Animated.View
           style={[styles.focalPoint, focalPointStyles]}
-        ></Animated.View>
+        ></Animated.View> */}
       </View>
     </GestureDetector>
   );
@@ -140,15 +140,13 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
-// !TODO: FINISH FIXING PINCH GESTURE - use ORIGIN (this might be helpful - https://stackoverflow.com/questions/71591464/how-to-update-scale-focal-origin-with-react-reanimated-and-react-native-gesture)
-
 // !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
 // TODO: Groups should link together in a ball shape not a line around a circle
 
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
-// TODO: little map in bottom right/left to show where you are in relation like in civs
+// TODO: Color nodes
 
 // TODO: Also include groupName in Node object (not just the id)
 
@@ -162,23 +160,16 @@ export default Index;
 
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
+// TODO: little map in bottom right/left to show where you are in relation like in civs
+
 // 2. Work all "Add Btn" functionality
 // 2. Assume everyone starts with only the root node and build from there
 // 2a. Based on 2, start with connecting a new node to the root - and creating a node NOT connected to the root WITH LINKS
-// 3. After 2a, work on grouping logic
-
-// !TODO: DOUBLE CHECK THAT NODES ARE ALIGNED
-// !!!!!!!!!! STOP: REFACTOR EVERYTHING BEFORE MOVING FORWARD !!!!!!!!!!
-
-// !TODO: How to handle spouse groups (do you put Rachel in friends? She IS your friend but she is better categorized as aarons wife). When grouping your friends you probably also want their spouses to be in the group also
 
 // TODO: use custom icon for btn
-// TODO: Recenter button should be an arrow that ALWAYS points towards root (so you'll need to animate the rotation)
-// TODO: Remove the group in RootNode and Node if you stick with rendering the text in the GestureDetector
-// mTODO: You shouldn't have to do ROOT_NODE_RADIUS / 2 anywhere
-// mTODO: Pinch Center doesn't quite align with RootNode center
-// mTODO: Change "rootNode" to "isRootNode"
+
 // mTODO: Eventually change arrow in bottom left to a compass (SEE INSP Folder)
+
 // !TODO: MAJOR: You MUST move .env variables EAS build when official releasing. env variables with PUBLIC are ONLY for development
 
 // IDEAS ***********************************************************************

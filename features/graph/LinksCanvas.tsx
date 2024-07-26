@@ -1,15 +1,10 @@
 import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
-import {
-  SharedValue,
-  useDerivedValue,
-  useSharedValue,
-} from "react-native-reanimated";
+import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { FinalizedLink } from "@/utils/positionGraphElements";
-import { useGestures } from "./hooks/useGestures";
 
 interface Props {
   windowSize: WindowSize;
@@ -24,8 +19,6 @@ export default function LinksCanvas({
   translateY,
   scale,
 }: Props): React.JSX.Element {
-  const { origin } = useGestures();
-
   const finalizedLinks = useAppSelector(
     (state: RootState) => state.selections.links,
   );
@@ -33,12 +26,16 @@ export default function LinksCanvas({
   const svgTransform = useDerivedValue(() => [
     { translateX: translateX.value },
     { translateY: translateY.value },
-
     { scale: scale.value },
   ]);
 
+  const origin = useDerivedValue(() => ({
+    x: windowSize.width / 2,
+    y: windowSize.height / 2,
+  }));
+
   return (
-    <Canvas style={{ flex: 1, backgroundColor: "transparent" }}>
+    <Canvas style={{ flex: 1, backgroundColor: "rgba(155, 155, 0, 0.3)" }}>
       <Group origin={origin} transform={svgTransform}>
         {finalizedLinks &&
           finalizedLinks.map((link) => {
@@ -61,7 +58,7 @@ export default function LinksCanvas({
                   <Paint
                     // color="#1c1c24"
                     color="#e8e2ae"
-                    strokeWidth={2}
+                    strokeWidth={1}
                     style="stroke"
                     strokeCap="round"
                   />
