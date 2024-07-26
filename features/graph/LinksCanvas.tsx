@@ -49,7 +49,6 @@ export default function LinksCanvas({
       >
         {finalizedLinks &&
           finalizedLinks.map((link) => {
-            // console.log(link);
             {
               return (
                 <Line
@@ -62,9 +61,9 @@ export default function LinksCanvas({
                     x: (link as FinalizedLink).target.x,
                     y: (link as FinalizedLink).target.y,
                   }}
-                  color="transparent" // Adjust color as needed
+                  color="transparent"
                   style="stroke"
-                  strokeWidth={1} // Adjust thickness as needed
+                  strokeWidth={1}
                 >
                   <Paint
                     // color="#1c1c24"

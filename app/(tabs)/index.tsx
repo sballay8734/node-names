@@ -23,19 +23,16 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
+const FOCAL_POINT_DIM = 20;
+const FOCAL_POINT_RADIUS = FOCAL_POINT_DIM / 2;
+
 const Index = () => {
-  const { composed, scale, translateX, translateY, lastScale } = useGestures();
+  const { composed, scale, translateX, translateY, lastScale, focalX, focalY } =
+    useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const windowSize = useWindowSize();
   // useDataLoad();
   useTestDataLoad();
-
-  const { nodeCenterX, nodeCenterY } = centerNode(
-    windowSize,
-    "non-root",
-    "other",
-    scale,
-  );
 
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
@@ -80,8 +77,16 @@ const Index = () => {
   }
 
   const focalPointStyles = useAnimatedStyle(() => {
+    console.log("focalX:", focalX.value);
+    console.log("focalY:", focalY.value);
     return {
-      transform: [{ translateX: nodeCenterX }, { translateY: nodeCenterY }],
+      transform: [
+        { translateX: focalX.value },
+        { translateY: focalY.value },
+        { translateX: windowSize.windowCenterX - FOCAL_POINT_RADIUS },
+        { translateY: windowSize.windowCenterY - FOCAL_POINT_RADIUS },
+        { scale: scale.value },
+      ],
     };
   });
 
@@ -109,9 +114,9 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
-        {/* <Animated.View
+        <Animated.View
           style={[styles.focalPoint, focalPointStyles]}
-        ></Animated.View> */}
+        ></Animated.View>
       </View>
     </GestureDetector>
   );
@@ -126,8 +131,8 @@ const styles = StyleSheet.create({
   },
   focalPoint: {
     ...StyleSheet.absoluteFillObject,
-    width: 20,
-    height: 20,
+    width: FOCAL_POINT_DIM,
+    height: FOCAL_POINT_DIM,
     backgroundColor: "yellow",
     borderRadius: 100,
     opacity: 0.5,

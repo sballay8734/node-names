@@ -46,6 +46,8 @@ export const useGestures = () => {
       );
 
       scale.value = newScale;
+      focalX.value = e.focalX;
+      focalY.value = e.focalY;
     })
     .onEnd(() => {
       lastScale.value = scale.value;
