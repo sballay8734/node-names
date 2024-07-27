@@ -1,6 +1,6 @@
 import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
-import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { StyleSheet } from "react-native";
+import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
@@ -35,6 +35,12 @@ export default function LinksCanvas({
     y: windowSize.height / 2,
   }));
 
+  // REMOVE: "options" and function are just for testing
+  const options = [true, false];
+  function sourceIsSelected() {
+    return options[Math.floor(Math.random() * options.length)];
+  }
+
   return (
     <Canvas style={styles.canvas}>
       <Group origin={origin} transform={svgTransform}>
@@ -57,8 +63,11 @@ export default function LinksCanvas({
                   strokeWidth={1}
                 >
                   <Paint
-                    // color="#1c1c24"
-                    color="#e8e2ae"
+                    color={
+                      sourceIsSelected()
+                        ? "rgba(245, 240, 196, 1)"
+                        : "rgba(245, 240, 196, 0.05)"
+                    }
                     strokeWidth={1}
                     style="stroke"
                     strokeCap="round"

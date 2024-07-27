@@ -84,7 +84,7 @@ function RootLayoutNav() {
                   name="(tabs)"
                   options={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: "#100f1a" },
+                    contentStyle: { backgroundColor: "#0c0b0d" },
                   }}
                 />
                 <Stack.Screen

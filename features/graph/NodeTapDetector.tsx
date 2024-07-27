@@ -124,7 +124,7 @@ export default function NodeTapDetector({
       };
     } else {
       return {
-        inactiveBgColor: "#044533",
+        inactiveBgColor: "#082b21",
         activeBgColor: "#0fdba5",
         inactiveBorderColor: "transparent",
         activeBorderColor: "#16d9a5",

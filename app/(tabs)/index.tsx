@@ -13,10 +13,8 @@ import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
 import SearchBar from "@/features/graph/SearchBar";
 import Popover from "@/features/manageSelections/Popover";
-import { useAppSelector } from "@/hooks/reduxHooks";
 import { useTestDataLoad } from "@/hooks/useTestDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
-import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
 const Index = () => {
@@ -25,10 +23,6 @@ const Index = () => {
   const windowSize = useWindowSize();
   // useDataLoad();
   useTestDataLoad();
-
-  const selectedNodes = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
-  );
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {
@@ -43,11 +37,6 @@ const Index = () => {
   }
 
   function centerOnNode(node: PositionedPerson) {
-    // !TODO: This early return works but is wrong. Race condition with redux
-    if (selectedNodes.length >= 1) return;
-
-    console.log(node.x);
-
     translateX.value = withTiming(
       (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
       {
@@ -109,8 +98,12 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// FIRST FOR THURS. ****************************************************
-// !TODO: Fix "centerOnNode" and "centerOnRoot"
+// FIRST FOR SAT. ****************************************************
+// 1. write function to get all connections for a given node (you may already have this)
+// 2. Add widget to node that shows the number of connections that node has
+// 3. Work on adding/connecting/grouping nodes (+ btn)
+// 4. Add overlay over groups that fades out as you zoom in
+// 5. recenter on select should not happen if node is being deselected
 
 // !TODO: Center node's background still doesn't transition when selected
 
@@ -118,7 +111,7 @@ export default Index;
 
 // !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
-// TODO: Groups should link together in a ball shape not a line around a circle
+// !TODO: Don't center on a node if a node is already selected but DON'T put that logic in this component (if you use selectedNodes from redux ALL NODES AND LINKS WILL RERENDER EVERY TIME YOU SELECT ANY NODE)
 
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
