@@ -104,6 +104,8 @@ export default Index;
 // 3. Work on adding/connecting/grouping nodes (+ btn)
 // 4. Add overlay over groups that fades out as you zoom in
 // 5. recenter on select should not happen if node is being deselected
+// 6. Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
+// 7. WORK ON THEME AND REFACTOR STYLES THAT NEED IT (NODETAPDETECTOR)
 
 // !TODO: Center node's background still doesn't transition when selected
 
