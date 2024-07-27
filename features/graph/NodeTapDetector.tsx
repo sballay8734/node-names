@@ -45,11 +45,6 @@ export default function NodeTapDetector({
   const pressed = selectedNode;
   const { x, y } = nodePosition;
 
-  // if (node.first_name === "Levi") {
-  //   console.log(node.x);
-  //   console.log(node.y);
-  // }
-
   const {
     inactiveBgColor,
     activeBgColor,
@@ -60,8 +55,6 @@ export default function NodeTapDetector({
   // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    // top: node.isRoot ? y - ROOT_NODE_RADIUS / 2 : y - REG_NODE_RADIUS / 2,
-    // left: node.isRoot ? x - ROOT_NODE_RADIUS / 2 : x - REG_NODE_RADIUS / 2,
     width: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
     height: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
 
@@ -78,8 +71,6 @@ export default function NodeTapDetector({
       },
     ],
 
-    // transform: [{ translateX: 0 }, { translateY: 0 }],
-
     // MY STUFF
     borderWidth: NODE_BORDER_WIDTH,
     opacity: 1,
@@ -94,9 +85,7 @@ export default function NodeTapDetector({
   const tap = Gesture.Tap()
     .onStart(() => {
       dispatch(handleNodeSelect(node));
-      // console.log("NODE:", node);
       centerOnNode(node);
-      // dispatch(hidePopover());
     })
     .runOnJS(true);
 
@@ -110,7 +99,7 @@ export default function NodeTapDetector({
   }));
 
   const animatedTextStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(pressed ? 1 : 0.4, {
+    backgroundColor: withTiming(pressed ? "#172924" : "#172924", {
       duration: 100,
     }),
   }));
@@ -135,8 +124,8 @@ export default function NodeTapDetector({
       };
     } else {
       return {
-        inactiveBgColor: "transparent",
-        activeBgColor: "#66dfe8",
+        inactiveBgColor: "#044533",
+        activeBgColor: "#0fdba5",
         inactiveBorderColor: "transparent",
         activeBorderColor: "#16d9a5",
       };
@@ -153,10 +142,9 @@ export default function NodeTapDetector({
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor: node.isRoot ? "#0d0d0d" : "#099671",
+              backgroundColor: node.isRoot ? "#0d0d0d" : "transparent",
               borderRadius: 100,
             },
-            !node.isRoot && animatedTextStyles,
           ]}
         >
           {node.isRoot && (
@@ -182,7 +170,7 @@ export default function NodeTapDetector({
               paddingVertical: 1,
               backgroundColor: "#1e2152",
               borderWidth: 1,
-              borderColor: pressed || node.isRoot ? "#232e3a" : "transparent",
+              borderColor: pressed && !node.isRoot ? "#0fdba5" : "transparent",
             },
             !node.isRoot && animatedTextStyles,
           ]}
@@ -192,7 +180,7 @@ export default function NodeTapDetector({
             style={{
               width: "100%",
               fontSize: calcFontSize(node),
-              color: "white",
+              color: pressed && !node.isRoot ? "#c2ffef" : "#516e66",
               fontWeight: node.isRoot ? "600" : "400",
             }}
           >

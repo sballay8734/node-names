@@ -1,17 +1,13 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import { Easing, withTiming } from "react-native-reanimated";
 
-import { centerNode } from "@/constants/variables";
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
-import { useDataLoad } from "@/features/graph/hooks/useDataLoad";
-import { INITIAL_SCALE, useGestures } from "@/features/graph/hooks/useGestures";
+import {
+  CENTER_ON_SCALE,
+  useGestures,
+} from "@/features/graph/hooks/useGestures";
 import LinksCanvas from "@/features/graph/LinksCanvas";
 import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
@@ -23,12 +19,8 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
-const FOCAL_POINT_DIM = 40;
-const FOCAL_POINT_RADIUS = FOCAL_POINT_DIM / 2;
-
 const Index = () => {
-  const { composed, scale, translateX, translateY, lastScale, focalX, focalY } =
-    useGestures();
+  const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const windowSize = useWindowSize();
   // useDataLoad();
@@ -47,46 +39,35 @@ const Index = () => {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
-
-    scale.value = withTiming(INITIAL_SCALE, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    lastScale.value = INITIAL_SCALE;
+    lastScale.value = scale.value;
   }
 
   function centerOnNode(node: PositionedPerson) {
     // !TODO: This early return works but is wrong. Race condition with redux
     if (selectedNodes.length >= 1) return;
 
-    translateX.value = withTiming(windowSize.windowCenterX - node.x!, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    translateY.value = withTiming(windowSize.windowCenterY - node.y!, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
+    console.log(node.x);
 
-    // REVIEW: Changing from 1 to any other number takes the zoom out of sync. This works with a value of 1 but should probably be changed so users can change their default zoom when selecting a node
-    scale.value = withTiming(1, {
+    translateX.value = withTiming(
+      (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
+      {
+        duration: 500,
+        easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+      },
+    );
+    translateY.value = withTiming(
+      (windowSize.windowCenterY - node.y!) * CENTER_ON_SCALE,
+      {
+        duration: 500,
+        easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+      },
+    );
+    scale.value = withTiming(CENTER_ON_SCALE, {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
-    lastScale.value = 1;
+    lastScale.value = CENTER_ON_SCALE;
   }
-
-  const focalPointStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: focalX.value },
-        { translateY: focalY.value },
-        // { translateX: windowSize.windowCenterX - FOCAL_POINT_RADIUS },
-        // { translateY: windowSize.windowCenterY - FOCAL_POINT_RADIUS },
-        { scale: scale.value },
-      ],
-    };
-  });
 
   return (
     <GestureDetector gesture={composed}>
@@ -112,9 +93,6 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
-        {/* <Animated.View
-          style={[styles.focalPoint, focalPointStyles]}
-        ></Animated.View> */}
       </View>
     </GestureDetector>
   );
@@ -127,19 +105,17 @@ const styles = StyleSheet.create({
     // backgroundColor: "rgba(255, 0, 0, 0.1)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
-  focalPoint: {
-    ...StyleSheet.absoluteFillObject,
-    width: FOCAL_POINT_DIM,
-    height: FOCAL_POINT_DIM,
-    backgroundColor: "yellow",
-    borderRadius: 100,
-    opacity: 0.5,
-  },
 });
 
 export default Index;
 
 // FIRST FOR THURS. ****************************************************
+// !TODO: Fix "centerOnNode" and "centerOnRoot"
+
+// !TODO: Center node's background still doesn't transition when selected
+
+// !TODO: You might need to make Initial Scale much bigger. Zooming into the small nodes reveals blurry text
+
 // !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
 // TODO: Groups should link together in a ball shape not a line around a circle

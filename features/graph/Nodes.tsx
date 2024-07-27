@@ -5,11 +5,9 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
-import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
-import { useGestures } from "./hooks/useGestures";
 import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
@@ -68,7 +66,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(150, 4, 255, 0.3)",
+    // backgroundColor: "rgba(150, 4, 255, 0.3)",
     top: 0,
     left: 0,
     flex: 1,

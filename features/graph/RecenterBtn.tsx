@@ -58,7 +58,7 @@ const RecenterBtn = ({
     >
       <View style={styles.buttonContent}>
         <Animated.View style={[styles.arrow, arrowRotate]}>
-          <FontAwesome6 name="location-arrow" size={20} color="#fc4956" />
+          <FontAwesome6 name="location-arrow" size={24} color="#fc4956" />
         </Animated.View>
       </View>
     </AnimatedPressable>
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
   arrow: {
     width: 20,
     height: 20,
+    marginRight: 2,
     justifyContent: "center",
     alignItems: "center",
   },

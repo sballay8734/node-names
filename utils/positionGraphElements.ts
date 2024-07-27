@@ -256,7 +256,7 @@ export function calcPrimaryPositions(
       "collision",
       d3
         .forceCollide()
-        .radius((node) => ((node as PositionedPerson).isRoot ? 130 : 15))
+        .radius((node) => ((node as PositionedPerson).isRoot ? 50 : 15))
         .strength(0.5),
     )
 
@@ -273,7 +273,7 @@ export function calcPrimaryPositions(
         .forceLink<PositionedPerson, PositionedLink>(positionedLinks)
         .id((link) => link.id)
         .distance((link) => {
-          const baseDistance = 50;
+          const baseDistance = 150;
           return baseDistance * (1 / link.strength);
         })
         .strength((link) => link.strength),

@@ -1,5 +1,6 @@
 import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
+import { StyleSheet } from "react-native";
 
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
@@ -35,7 +36,7 @@ export default function LinksCanvas({
   }));
 
   return (
-    <Canvas style={{ flex: 1, backgroundColor: "rgba(155, 155, 0, 0.3)" }}>
+    <Canvas style={styles.canvas}>
       <Group origin={origin} transform={svgTransform}>
         {finalizedLinks &&
           finalizedLinks.map((link) => {
@@ -70,3 +71,10 @@ export default function LinksCanvas({
     </Canvas>
   );
 }
+
+const styles = StyleSheet.create({
+  canvas: {
+    flex: 1,
+    // backgroundColor: "rgba(155, 155, 0, 0.3)",
+  },
+});

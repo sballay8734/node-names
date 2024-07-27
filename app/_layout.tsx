@@ -76,14 +76,15 @@ function RootLayoutNav() {
             <ImageBackground
               source={image}
               style={styles.image}
-              imageStyle={{ opacity: 0.06 }}
+              // imageStyle={{ opacity: 0.06 }}
+              imageStyle={{ opacity: 0 }}
             >
               <Stack>
                 <Stack.Screen
                   name="(tabs)"
                   options={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: "transparent" },
+                    contentStyle: { backgroundColor: "#100f1a" },
                   }}
                 />
                 <Stack.Screen
