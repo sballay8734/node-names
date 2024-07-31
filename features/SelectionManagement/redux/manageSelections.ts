@@ -3,19 +3,19 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 import {
   PositionedLink,
-  PositionedPerson,
+  INode,
 } from "@/features/D3/utils/positionGraphElements";
 
 // Define a type for the slice state
 interface ManageSelectionsState {
-  userNodes: PositionedPerson[] | null;
+  userNodes: INode[] | null;
   userLinks: PositionedLink[] | null;
 
-  inspectedNodes: PositionedPerson[] | null;
+  inspectedNodes: INode[] | null;
   inspectedLinks: PositionedLink[] | null;
 
   popoverIsShown: boolean;
-  selectedNodes: PositionedPerson[];
+  selectedNodes: INode[];
 }
 
 // Define the initial state using that type
@@ -47,7 +47,7 @@ export const ManageSelectionsSlice = createSlice({
       state.popoverIsShown = false;
     },
 
-    setNodes: (state, action: PayloadAction<PositionedPerson[]>) => {
+    setNodes: (state, action: PayloadAction<INode[]>) => {
       state.userNodes = action.payload;
     },
     setLinks: (state, action: PayloadAction<PositionedLink[]>) => {
@@ -55,7 +55,7 @@ export const ManageSelectionsSlice = createSlice({
     },
 
     // SELECTION MANAGEMENT ****************************************************
-    handleNodeSelect: (state, action: PayloadAction<PositionedPerson>) => {
+    handleNodeSelect: (state, action: PayloadAction<INode>) => {
       const clickedNode = action.payload;
       const nodeIndex = state.selectedNodes.findIndex(
         (node) => node.id === clickedNode.id,

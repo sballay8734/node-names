@@ -1,11 +1,10 @@
+import { INode } from "@/features/D3/types/d3Types";
 import { Tables } from "@/types/dbTypes";
 
-import { PositionedPerson } from "../../D3/utils/positionGraphElements";
-
 export default function getPrimaryConnectionsAndNodes(
-  node: PositionedPerson,
+  node: INode,
   connections: Tables<"connections">[],
-  people: PositionedPerson[],
+  people: INode[],
 ) {
   // return all connections where the source OR target === input node.id
   const primaryConnections = connections.filter(

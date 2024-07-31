@@ -13,7 +13,7 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
-import { PositionedPerson } from "@/features/D3/utils/positionGraphElements";
+import { INode } from "@/features/D3/utils/positionGraphElements";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -22,10 +22,9 @@ import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelectio
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 
 interface Props {
-  // node: PositionedPersonNode;
-  node: PositionedPerson;
+  node: INode;
   nodePosition: { x: number; y: number };
-  centerOnNode: (node: PositionedPerson) => void;
+  centerOnNode: (node: INode) => void;
 }
 
 const image = {
@@ -109,7 +108,7 @@ export default function NodeTapDetector({
 
   // TODO: Calc font size based on name length and circle size
   // THIS IS JUST A QUICK WORKAROUND
-  function calcFontSize(node: PositionedPerson) {
+  function calcFontSize(node: INode) {
     if (node.isRoot) {
       return ROOT_TEXT_SIZE;
     } else {
@@ -117,7 +116,7 @@ export default function NodeTapDetector({
     }
   }
 
-  function getColors(node: PositionedPerson) {
+  function getColors(node: INode) {
     if (node.isRoot) {
       return {
         inactiveBgColor: "transparent",

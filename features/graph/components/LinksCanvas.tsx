@@ -2,7 +2,7 @@ import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
-import { FinalizedLink } from "@/features/D3/utils/positionGraphElements";
+import { ILink } from "@/features/D3/utils/positionGraphElements";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
@@ -20,7 +20,7 @@ export default function LinksCanvas({
   translateY,
   scale,
 }: Props): React.JSX.Element {
-  const finalizedLinks = useAppSelector(
+  const ILinks = useAppSelector(
     (state: RootState) => state.selections.userLinks,
   );
 
@@ -44,19 +44,19 @@ export default function LinksCanvas({
   return (
     <Canvas style={styles.canvas}>
       <Group origin={origin} transform={svgTransform}>
-        {finalizedLinks &&
-          finalizedLinks.map((link) => {
+        {ILinks &&
+          ILinks.map((link) => {
             {
               return (
                 <Line
                   key={`${link.person_1_id}-${link.person_2_id}`}
                   p1={{
-                    x: (link as FinalizedLink).source.x,
-                    y: (link as FinalizedLink).source.y,
+                    x: (link as ILink).source.x,
+                    y: (link as ILink).source.y,
                   }}
                   p2={{
-                    x: (link as FinalizedLink).target.x,
-                    y: (link as FinalizedLink).target.y,
+                    x: (link as ILink).target.x,
+                    y: (link as ILink).target.y,
                   }}
                   color="transparent"
                   style="stroke"

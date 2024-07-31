@@ -9,7 +9,7 @@ import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 import {
   calculatePositions,
-  FinalizedLink,
+  ILink,
 } from "@/features/Graph/utils/positionGraphElements";
 
 export const useDataLoad = () => {
@@ -28,7 +28,7 @@ export const useDataLoad = () => {
       );
 
       dispatch(setNodes([...nodes]));
-      dispatch(setLinks(links as FinalizedLink[]));
+      dispatch(setLinks(links as ILink[]));
       setDataLoaded(true);
     }
   }, [dataLoaded, people, windowSize, connections, dispatch]);

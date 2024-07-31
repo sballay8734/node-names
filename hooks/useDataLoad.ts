@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import {
-  calcPrimaryPositions,
-  FinalizedLink,
-} from "@/features/D3/utils/positionGraphElements";
+import { ILink } from "@/features/D3/types/d3Types";
+import { calcPrimaryPositions } from "@/features/D3/utils/positionGraphElements";
 import { useGestures } from "@/features/Graph/hooks/useGestures";
 import getPrimaryConnectionsAndNodes from "@/features/Graph/utils/getPrimaryConnections";
 import {
@@ -46,7 +44,7 @@ export const useDataLoad = () => {
       );
 
       dispatch(setNodes([...nodes]));
-      dispatch(setLinks(links as FinalizedLink[]));
+      dispatch(setLinks(links as ILink[]));
       setDataLoaded(true);
     }
   }, [

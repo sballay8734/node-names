@@ -4,14 +4,14 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 
-import { PositionedPerson } from "@/features/D3/utils/positionGraphElements";
+import { INode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
-  centerOnNode: (node: PositionedPerson) => void;
+  centerOnNode: (node: INode) => void;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   scale: SharedValue<number>;

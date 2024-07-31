@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
-import { PositionedPerson } from "@/features/D3/utils/positionGraphElements";
+import { INode } from "@/features/D3/types/d3Types";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import {
@@ -28,7 +28,7 @@ const Index = () => {
     (state: RootState) => state.selections.selectedNodes.length > 0,
   );
   const windowSize = useWindowSize();
-  // useDataLoad();
+
   useDataLoad();
 
   function centerOnRoot() {
@@ -43,7 +43,7 @@ const Index = () => {
     lastScale.value = scale.value;
   }
 
-  function centerOnNode(node: PositionedPerson) {
+  function centerOnNode(node: INode) {
     if (!nodeIsSelected) {
       translateX.value = withTiming(
         (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
