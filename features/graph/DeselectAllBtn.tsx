@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
 
-import { View } from "@/components/Themed";
+import { View, Text } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -72,7 +72,7 @@ export default function DeselectAllBtn(): React.JSX.Element {
       style={[styles.deselectBtn, inspectBtnStyles]}
     >
       <View style={styles.buttonContent}>
-        <Animated.View style={[styles.scan]}>
+        <Animated.View style={[styles.iconWrapper]}>
           <AnimatedIcon
             name="deselect"
             size={24}
@@ -80,6 +80,11 @@ export default function DeselectAllBtn(): React.JSX.Element {
           />
         </Animated.View>
       </View>
+      <Animated.View style={[styles.widget]}>
+        <Text style={{ fontWeight: "bold", fontSize: 8 }}>
+          {selectedNodeCount}
+        </Text>
+      </Animated.View>
     </AnimatedPressable>
   );
 }
@@ -105,13 +110,31 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     flexDirection: "row",
     alignItems: "center",
+    position: "relative",
   },
-  scan: {
+  iconWrapper: {
     width: 30,
     height: 30,
     justifyContent: "center",
     alignItems: "center",
   },
+  widget: {
+    position: "absolute",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "700",
+    backgroundColor: "red",
+    borderRadius: 3,
+    minHeight: 15,
+    minWidth: 15,
+    top: -3,
+    right: 0,
+  },
 });
 
+// TODO: opacity of widget should be 0 if no nodes are selected
+
 // TODO: When saving, I think selectedNodes gets reset/cleared which is why saving the file removes the btn. THIS MAY BE THE REASON FOR OTHER MINOR BUGS YOU'RE SEEING ALSO. SAVING CLEARS SOME STATE
+
+// mTODO: Press and hold will reveal menu that can take you to any selected node?

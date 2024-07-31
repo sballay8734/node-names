@@ -131,8 +131,6 @@ export default Index;
 
 // !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
-// !TODO: Don't center on a node if a node is already selected but DON'T put that logic in this component (if you use selectedNodes from redux ALL NODES AND LINKS WILL RERENDER EVERY TIME YOU SELECT ANY NODE)
-
 // TODO: See about replacing useState with useRef where possible (This likely won't be possible in many places but since ref doesn't trigger re-renders, it could help performance)
 
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
@@ -152,8 +150,6 @@ export default Index;
 // TODO: Also include groupName in Node object (not just the id)
 
 // TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
-
-// !TODO: Don't center if a node is already selected
 
 // TODO: Add counter for how many nodes are selected
 
