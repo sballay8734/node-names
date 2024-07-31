@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import {
   setLinks,
   setNodes,
-} from "@/features/manageSelections/redux/manageSelections";
+} from "@/features/SelectionManagement/redux/manageSelections";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 import {

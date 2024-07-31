@@ -8,8 +8,8 @@ import CPressable from "@/components/CustomNativeComponents/CPressable";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { handleCreateNewNode } from "./redux/manageSelections";
-import { usePopoverOptions } from "./utils/determineOptions";
+import { handleCreateNewNode } from "../SelectionManagement/redux/manageSelections";
+import { usePopoverOptions } from "../SelectionManagement/utils/determineOptions";
 
 export default function Popover(): React.JSX.Element {
   const popoverOptions = usePopoverOptions();

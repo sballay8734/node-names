@@ -3,18 +3,18 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
-import DeselectAllBtn from "@/features/graph/DeselectAllBtn";
-import { useArrowData } from "@/features/graph/hooks/useArrowData";
+import LinksCanvas from "@/features/Graph/components/LinksCanvas";
+import Nodes from "@/features/Graph/components/Nodes";
+import { useArrowData } from "@/features/Graph/hooks/useArrowData";
 import {
   CENTER_ON_SCALE,
   useGestures,
-} from "@/features/graph/hooks/useGestures";
-import InspectBtn from "@/features/graph/InspectBtn";
-import LinksCanvas from "@/features/graph/LinksCanvas";
-import Nodes from "@/features/graph/Nodes";
-import RecenterBtn from "@/features/graph/RecenterBtn";
-import SearchBar from "@/features/graph/SearchBar";
-import Popover from "@/features/manageSelections/Popover";
+} from "@/features/Graph/hooks/useGestures";
+import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
+import InspectBtn from "@/features/GraphActions/components/InspectBtn";
+import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
+import Popover from "@/features/Shared/Popover";
+import SearchBar from "@/features/Shared/SearchBar";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { useTestDataLoad } from "@/hooks/useTestDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
@@ -108,6 +108,13 @@ const styles = StyleSheet.create({
 });
 
 export default Index;
+
+// Graph
+// NodeManagement
+// SelectionManagement
+
+// UserProfile
+// UI?
 
 // FIRST FOR SAT. ****************************************************
 // 1. "InspectBtn" and "DeselectAllBtn" should appear as group. They both should not be shown if nothing is selected and InspectBtn should be faded out (but still visible) if more than one node is selected

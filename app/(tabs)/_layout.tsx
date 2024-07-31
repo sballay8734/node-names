@@ -11,7 +11,7 @@ import { TouchableOpacity } from "react-native";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-import { handlePopover } from "@/features/manageSelections/redux/manageSelections";
+import { handlePopover } from "@/features/SelectionManagement/redux/manageSelections";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 
 export default function TabLayout() {

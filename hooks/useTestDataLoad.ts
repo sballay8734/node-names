@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { useGestures } from "@/features/graph/hooks/useGestures";
+import { useGestures } from "@/features/Graph/hooks/useGestures";
 import {
   setLinks,
   setNodes,
-} from "@/features/manageSelections/redux/manageSelections";
+} from "@/features/SelectionManagement/redux/manageSelections";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 import getPrimaryConnectionsAndNodes from "@/utils/getPrimaryConnections";

@@ -3,7 +3,7 @@ import { Pressable } from "react-native";
 
 import { View, Text } from "@/components/Themed";
 
-import { INode } from "../graph/types/graphTypes";
+import { INode } from "../../Graph/types/graphTypes";
 
 interface Props {
   selectedNodes: INode[];

@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
-import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
+import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
 
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 

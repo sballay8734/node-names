@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import ManageSelectionsReducer from "../features/manageSelections/redux/manageSelections";
+import ManageSelectionsReducer from "../features/SelectionManagement/redux/manageSelections";
 
 export const store = configureStore({
   reducer: {

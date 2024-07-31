@@ -13,7 +13,7 @@ import { View, Text } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { deselectAll } from "../manageSelections/redux/manageSelections";
+import { deselectAll } from "../../SelectionManagement/redux/manageSelections";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
