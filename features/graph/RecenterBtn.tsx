@@ -10,7 +10,6 @@ import Animated, {
 
 import { View } from "@/components/Themed";
 import { ARROW_BTN_RADIUS } from "@/constants/styles";
-import useWindowSize from "@/hooks/useWindowSize";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -26,7 +25,6 @@ const RecenterBtn = ({
   showArrow,
 }: Props): React.JSX.Element => {
   const isPressed = useSharedValue<boolean>(false);
-  const windowSize = useWindowSize();
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#060d0f" : "#091417", {

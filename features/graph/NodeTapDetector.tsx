@@ -1,4 +1,4 @@
-import { ImageBackground, ViewStyle, StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -19,7 +19,7 @@ import { PositionedPerson } from "@/utils/positionGraphElements";
 
 import { handleNodeSelect } from "../manageSelections/redux/manageSelections";
 
-const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
+// const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 
 interface Props {
   // node: PositionedPersonNode;
