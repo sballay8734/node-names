@@ -11,18 +11,6 @@
 //   // phoneticName: string;
 // }
 
-// interface Connection {
-//   person1Id: number;
-//   person2Id: number;
-//   relationshipType: RelationshipType;
-// }
-
-// interface Group {
-//   id: number;
-//   name: string;
-//   parentGroupId: number | null;
-// }
-
 export type RelationshipType =
   | "spouse" // 1.0
   | "parent_child_biological" // 0.9

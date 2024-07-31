@@ -1,5 +1,6 @@
 import { RelationshipType, Sex } from "@/types/dbTypes";
 
+// MAIN TYPES *****************************************************************
 export interface INode extends d3.SimulationNodeDatum {
   created_at: string;
   first_name: string;

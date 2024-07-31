@@ -12,6 +12,11 @@ import {
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 
+// Steps to perform when data is returned
+// 1. get Root primaryConnections (Links AND Nodes)
+// 2. get primaryConnections for each primaryConnection (Links AND Nodes)
+// 2a. // !TODO: BIG QUESTION, WHERE/HOW TO STORE THE PRIMARY CONNECTIONS OF THE ROOT PRIMARY CONNECTIONS
+
 export const useDataLoad = () => {
   const dispatch = useDispatch();
   const windowSize = useWindowSize();
@@ -23,10 +28,14 @@ export const useDataLoad = () => {
   // get rootNode
   const rootNode = people && people.find((n) => n.isRoot === true);
 
+  // get primary connections for rootNode (user)
   const primaryConnectionsAndNodes =
     rootNode && connections
       ? getPrimaryConnectionsAndNodes(rootNode, connections, people)
       : null;
+
+  // get primary connections for each primary connection of root
+  const secondaryConnectionsAndNodes = null;
 
   useEffect(() => {
     if (!primaryConnectionsAndNodes) {
