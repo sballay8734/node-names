@@ -107,6 +107,8 @@ export default Index;
 // 6. Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
 // 7. WORK ON THEME AND REFACTOR STYLES THAT NEED IT (NODETAPDETECTOR)
 
+// 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
 // !TODO: Center node's background still doesn't transition when selected
 
 // !TODO: You might need to make Initial Scale much bigger. Zooming into the small nodes reveals blurry text
@@ -118,6 +120,14 @@ export default Index;
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
 // TODO: Color nodes
+
+// TODO: Add alive/dead, and preferredName property
+
+// TODO: Add widget to show how many "internal" connections each primary connection has
+
+// TODO: "Enter/ZoomIn/Magnify" btn should appear when only one node is selected and that node has "internal" connections that will allow the user to "zoom" in to that persons connections
+
+// TODO: SEPARATE PIECE OF STATE FOR SELECTED NODE and CONNECTIONS WHEN ZOOMING IN.
 
 // TODO: Also include groupName in Node object (not just the id)
 
@@ -133,15 +143,13 @@ export default Index;
 
 // TODO: little map in bottom right/left to show where you are in relation like in civs
 
-// 2. Work all "Add Btn" functionality
-// 2. Assume everyone starts with only the root node and build from there
-// 2a. Based on 2, start with connecting a new node to the root - and creating a node NOT connected to the root WITH LINKS
-
 // TODO: use custom icon for btn
 
 // mTODO: Eventually change arrow in bottom left to a compass (SEE INSP Folder)
 
 // !TODO: MAJOR: You MUST move .env variables EAS build when official releasing. env variables with PUBLIC are ONLY for development
+
+// !TODO: RE-ENABLE RLS in Supabase
 
 // IDEAS ***********************************************************************
 // 1. Quizzes on specific groups/people/ etc..
