@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
+import {
+  calcPrimaryPositions,
+  FinalizedLink,
+} from "@/features/D3/utils/positionGraphElements";
 import { useGestures } from "@/features/Graph/hooks/useGestures";
+import getPrimaryConnectionsAndNodes from "@/features/Graph/utils/getPrimaryConnections";
 import {
   setLinks,
   setNodes,
 } from "@/features/SelectionManagement/redux/manageSelections";
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
-import getPrimaryConnectionsAndNodes from "@/utils/getPrimaryConnections";
-import {
-  calcPrimaryPositions,
-  FinalizedLink,
-} from "@/utils/positionGraphElements";
 
-export const useTestDataLoad = () => {
+export const useDataLoad = () => {
   const dispatch = useDispatch();
   const windowSize = useWindowSize();
   const { scale } = useGestures();

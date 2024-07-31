@@ -3,9 +3,9 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
+import { PositionedPerson } from "@/features/D3/utils/positionGraphElements";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
-import { useArrowData } from "@/features/Graph/hooks/useArrowData";
 import {
   CENTER_ON_SCALE,
   useGestures,
@@ -13,13 +13,13 @@ import {
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
 import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
+import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
 import Popover from "@/features/Shared/Popover";
 import SearchBar from "@/features/Shared/SearchBar";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { useTestDataLoad } from "@/hooks/useTestDataLoad";
+import { useDataLoad } from "@/hooks/useDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { PositionedPerson } from "@/utils/positionGraphElements";
 
 const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
@@ -29,7 +29,7 @@ const Index = () => {
   );
   const windowSize = useWindowSize();
   // useDataLoad();
-  useTestDataLoad();
+  useDataLoad();
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {

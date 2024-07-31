@@ -10,7 +10,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import {
   calculatePositions,
   FinalizedLink,
-} from "@/utils/positionGraphElements";
+} from "@/features/Graph/utils/positionGraphElements";
 
 export const useDataLoad = () => {
   const dispatch = useDispatch();

@@ -2,10 +2,10 @@ import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
+import { FinalizedLink } from "@/features/D3/utils/positionGraphElements";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { FinalizedLink } from "@/utils/positionGraphElements";
 
 interface Props {
   windowSize: WindowSize;

@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import {
   PositionedLink,
   PositionedPerson,
-} from "@/utils/positionGraphElements";
+} from "@/features/D3/utils/positionGraphElements";
 
 // Define a type for the slice state
 interface ManageSelectionsState {

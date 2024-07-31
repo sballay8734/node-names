@@ -13,9 +13,9 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
+import { PositionedPerson } from "@/features/D3/utils/positionGraphElements";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { PositionedPerson } from "@/utils/positionGraphElements";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
 

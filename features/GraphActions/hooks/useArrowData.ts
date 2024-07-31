@@ -2,9 +2,8 @@ import { useDerivedValue } from "react-native-reanimated";
 
 import { ARROW_BTN_RADIUS } from "@/constants/styles";
 import { centerNode } from "@/constants/variables";
+import { useGestures } from "@/features/Graph/hooks/useGestures";
 import useWindowSize from "@/hooks/useWindowSize";
-
-import { useGestures } from "./useGestures";
 
 interface Props {
   translateX: any;

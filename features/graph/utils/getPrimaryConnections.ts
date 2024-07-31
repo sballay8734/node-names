@@ -1,6 +1,6 @@
 import { Tables } from "@/types/dbTypes";
 
-import { PositionedPerson } from "./positionGraphElements";
+import { PositionedPerson } from "../../D3/utils/positionGraphElements";
 
 export default function getPrimaryConnectionsAndNodes(
   node: PositionedPerson,

@@ -4,9 +4,9 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 
+import { PositionedPerson } from "@/features/D3/utils/positionGraphElements";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { PositionedPerson } from "@/utils/positionGraphElements";
 
 import NodeTapDetector from "./NodeTapDetector";
 
