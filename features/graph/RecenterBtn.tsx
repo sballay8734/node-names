@@ -28,7 +28,7 @@ const RecenterBtn = ({
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#060d0f" : "#091417", {
-      duration: 100,
+      duration: 200,
     }),
   }));
 

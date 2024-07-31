@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
+import DeselectAllBtn from "@/features/graph/DeselectAllBtn";
 import { useArrowData } from "@/features/graph/hooks/useArrowData";
 import {
   CENTER_ON_SCALE,
@@ -14,13 +15,18 @@ import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
 import SearchBar from "@/features/graph/SearchBar";
 import Popover from "@/features/manageSelections/Popover";
+import { useAppSelector } from "@/hooks/reduxHooks";
 import { useTestDataLoad } from "@/hooks/useTestDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
+import { RootState } from "@/store/store";
 import { PositionedPerson } from "@/utils/positionGraphElements";
 
 const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
+  const nodeIsSelected = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes.length > 0,
+  );
   const windowSize = useWindowSize();
   // useDataLoad();
   useTestDataLoad();
@@ -38,25 +44,27 @@ const Index = () => {
   }
 
   function centerOnNode(node: PositionedPerson) {
-    translateX.value = withTiming(
-      (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
-      {
+    if (!nodeIsSelected) {
+      translateX.value = withTiming(
+        (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
+        {
+          duration: 500,
+          easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+        },
+      );
+      translateY.value = withTiming(
+        (windowSize.windowCenterY - node.y!) * CENTER_ON_SCALE,
+        {
+          duration: 500,
+          easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+        },
+      );
+      scale.value = withTiming(CENTER_ON_SCALE, {
         duration: 500,
         easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-      },
-    );
-    translateY.value = withTiming(
-      (windowSize.windowCenterY - node.y!) * CENTER_ON_SCALE,
-      {
-        duration: 500,
-        easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-      },
-    );
-    scale.value = withTiming(CENTER_ON_SCALE, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    lastScale.value = CENTER_ON_SCALE;
+      });
+      lastScale.value = CENTER_ON_SCALE;
+    }
   }
 
   return (
@@ -68,14 +76,14 @@ const Index = () => {
           translateY={translateY}
           scale={scale}
         />
-        {/* Nodes ************************************** */}
+        {/* Nodes ********************************************************** */}
         <Nodes
           centerOnNode={centerOnNode}
           translateX={translateX}
           translateY={translateY}
           scale={scale}
         />
-        {/* Overlays */}
+        {/* Overlays && Absolute Btns ************************************** */}
         <Popover />
         <SearchBar />
         <RecenterBtn
@@ -83,8 +91,8 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
+        <DeselectAllBtn />
         <InspectBtn />
-        {/* !TODO: "Inspect" icon AND Compass should control it's own state by accessing the length of selectedNodes directly */}
       </View>
     </GestureDetector>
   );
@@ -115,6 +123,8 @@ export default Index;
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
 
+// TODO: using nodeIsSelected in index.tsx is BETTER but not perfect. You're still getting one or two re-renders that you don't want
+
 // !TODO: Center node's background still doesn't transition when selected
 
 // !TODO: You might need to make Initial Scale much bigger. Zooming into the small nodes reveals blurry text
@@ -122,6 +132,8 @@ export default Index;
 // !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
 
 // !TODO: Don't center on a node if a node is already selected but DON'T put that logic in this component (if you use selectedNodes from redux ALL NODES AND LINKS WILL RERENDER EVERY TIME YOU SELECT ANY NODE)
+
+// TODO: See about replacing useState with useRef where possible (This likely won't be possible in many places but since ref doesn't trigger re-renders, it could help performance)
 
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 

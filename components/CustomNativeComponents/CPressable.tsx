@@ -6,7 +6,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Text, View } from "../Themed";
-import { Dispatch } from "@reduxjs/toolkit";
 
 interface Props {
   icon?: React.ReactNode | boolean;
@@ -29,7 +28,7 @@ export default function CPressable({
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#7448b5" : "#B58DF1", {
-      duration: 100,
+      duration: 200,
     }),
   }));
 

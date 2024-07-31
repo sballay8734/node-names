@@ -42,7 +42,7 @@ export default function NodeTapDetector({
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
 
-  const pressed = selectedNode;
+  const isPressed = selectedNode;
   const { x, y } = nodePosition;
 
   const {
@@ -90,17 +90,20 @@ export default function NodeTapDetector({
     .runOnJS(true);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    borderColor: withTiming(pressed ? activeBorderColor : inactiveBorderColor, {
-      duration: 100,
-    }),
-    backgroundColor: withTiming(pressed ? activeBgColor : inactiveBgColor, {
-      duration: 100,
+    borderColor: withTiming(
+      isPressed ? activeBorderColor : inactiveBorderColor,
+      {
+        duration: 200,
+      },
+    ),
+    backgroundColor: withTiming(isPressed ? activeBgColor : inactiveBgColor, {
+      duration: 200,
     }),
   }));
 
   const animatedTextStyles = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(pressed ? "#172924" : "#172924", {
-      duration: 100,
+    backgroundColor: withTiming(isPressed ? "#172924" : "#172924", {
+      duration: 200,
     }),
   }));
 
@@ -154,7 +157,7 @@ export default function NodeTapDetector({
               borderRadius={100}
               // node background image opacity
               // TODO: opacity here vvvv is not animated
-              imageStyle={{ opacity: pressed ? 1 : 0.3 }}
+              imageStyle={{ opacity: isPressed ? 1 : 0.3 }}
             />
           )}
         </Animated.View>
@@ -170,7 +173,8 @@ export default function NodeTapDetector({
               paddingVertical: 1,
               backgroundColor: "#1e2152",
               borderWidth: 1,
-              borderColor: pressed && !node.isRoot ? "#0fdba5" : "transparent",
+              borderColor:
+                isPressed && !node.isRoot ? "#0fdba5" : "transparent",
             },
             !node.isRoot && animatedTextStyles,
           ]}
@@ -180,7 +184,7 @@ export default function NodeTapDetector({
             style={{
               width: "100%",
               fontSize: calcFontSize(node),
-              color: pressed && !node.isRoot ? "#c2ffef" : "#516e66",
+              color: isPressed && !node.isRoot ? "#c2ffef" : "#516e66",
               fontWeight: node.isRoot ? "600" : "400",
             }}
           >

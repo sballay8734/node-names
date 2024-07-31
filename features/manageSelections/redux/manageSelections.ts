@@ -72,6 +72,10 @@ export const ManageSelectionsSlice = createSlice({
       }
     },
 
+    deselectAll: (state) => {
+      state.selectedNodes = [];
+    },
+
     // LINK MANAGEMENT/CREATION
     // creates a single, unconnected node
     handleCreateNewNode: (state) => {
@@ -107,6 +111,7 @@ export const {
   handleNodeSelect,
   handleConnectToNewNode,
   handleCreateNewNode,
+  deselectAll,
 } = ManageSelectionsSlice.actions;
 
 export default ManageSelectionsSlice.reducer;

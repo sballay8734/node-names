@@ -1,4 +1,5 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRef } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedProps,
@@ -6,48 +7,29 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
 
 import { View } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+import { deselectAll } from "../manageSelections/redux/manageSelections";
 
-export default function InspectBtn(): React.JSX.Element {
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
+
+export default function DeselectAllBtn(): React.JSX.Element {
+  const dispatch = useDispatch();
   const isPressed = useSharedValue(false);
+  const longPressRef = useRef(false);
   const selectedNodeCount = useAppSelector(
     (state: RootState) => state.selections.selectedNodes.length,
   );
-  const rootNodeIsSelected = useAppSelector((state: RootState) => {
-    return (
-      state.selections.selectedNodes.length === 1 &&
-      state.selections.selectedNodes[0].isRoot === true
-    );
-  });
-
-  function handlePressIn() {
-    isPressed.value = true;
-  }
-
-  function handlePressOut() {
-    isPressed.value = false;
-  }
 
   const inspectBtnStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(
-        selectedNodeCount === 1 && !rootNodeIsSelected
-          ? 1
-          : selectedNodeCount === 1 && rootNodeIsSelected
-          ? 0.3
-          : selectedNodeCount > 1
-          ? 0.3
-          : 0,
-        { duration: 200 },
-      ),
-      pointerEvents:
-        selectedNodeCount === 1 && !rootNodeIsSelected ? "auto" : "none",
+      opacity: withTiming(selectedNodeCount >= 1 ? 1 : 0, { duration: 200 }),
+      pointerEvents: selectedNodeCount >= 1 ? "auto" : "none",
       backgroundColor: withTiming(
         isPressed.value ? "rgba(15,15,15,1)" : "rgba(0,0,0,1)",
         {
@@ -65,16 +47,34 @@ export default function InspectBtn(): React.JSX.Element {
     };
   });
 
+  function handlePressIn() {
+    isPressed.value = true;
+    longPressRef.current = false;
+  }
+
+  function handlePressOut() {
+    if (!longPressRef.current) {
+      dispatch(deselectAll());
+      isPressed.value = false;
+    }
+    isPressed.value = false;
+  }
+
+  function handleLongPress() {
+    longPressRef.current = true;
+  }
+
   return (
     <AnimatedPressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[styles.recenterButton, inspectBtnStyles]}
+      onLongPress={handleLongPress}
+      style={[styles.deselectBtn, inspectBtnStyles]}
     >
       <View style={styles.buttonContent}>
         <Animated.View style={[styles.scan]}>
           <AnimatedIcon
-            name="magnify-scan"
+            name="deselect"
             size={24}
             animatedProps={animatedProps}
           />
@@ -85,13 +85,13 @@ export default function InspectBtn(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  recenterButton: {
+  deselectBtn: {
     position: "absolute",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    bottom: 10,
+    bottom: 70,
     right: 10,
     // height: ARROW_BTN_RADIUS * 2,
     // width: ARROW_BTN_RADIUS * 2,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderColor: "#232a2b",
     borderWidth: 1,
-    backgroundColor: "transparent",
+    backgroundColor: "green",
   },
   buttonContent: {
     backgroundColor: "transparent",

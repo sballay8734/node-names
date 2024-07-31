@@ -20,8 +20,8 @@ export default function Popover(): React.JSX.Element {
   );
 
   const viewStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(isVisible ? 1 : 0, { duration: 150 }),
-    bottom: withTiming(isVisible ? 25 : 0, { duration: 150 }),
+    opacity: withTiming(isVisible ? 1 : 0, { duration: 200 }),
+    bottom: withTiming(isVisible ? 25 : 0, { duration: 200 }),
   }));
 
   type ActionMap = {
