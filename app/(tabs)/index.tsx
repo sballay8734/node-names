@@ -8,6 +8,7 @@ import {
   CENTER_ON_SCALE,
   useGestures,
 } from "@/features/graph/hooks/useGestures";
+import InspectBtn from "@/features/graph/InspectBtn";
 import LinksCanvas from "@/features/graph/LinksCanvas";
 import Nodes from "@/features/graph/Nodes";
 import RecenterBtn from "@/features/graph/RecenterBtn";
@@ -82,6 +83,8 @@ const Index = () => {
           arrowData={arrowData}
           showArrow={showArrow}
         />
+        <InspectBtn />
+        {/* !TODO: "Inspect" icon AND Compass should control it's own state by accessing the length of selectedNodes directly */}
       </View>
     </GestureDetector>
   );
@@ -99,6 +102,9 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR SAT. ****************************************************
+// 1. "InspectBtn" and "DeselectAllBtn" should appear as group. They both should not be shown if nothing is selected and InspectBtn should be faded out (but still visible) if more than one node is selected
+// 1a. Deselect should always be visible and when clicked, should NOT recenter to rootNode.
+
 // 1. write function to get all connections for a given node (you may already have this)
 // 2. Add widget to node that shows the number of connections that node has
 // 3. Work on adding/connecting/grouping nodes (+ btn)
@@ -118,6 +124,8 @@ export default Index;
 // !TODO: Don't center on a node if a node is already selected but DON'T put that logic in this component (if you use selectedNodes from redux ALL NODES AND LINKS WILL RERENDER EVERY TIME YOU SELECT ANY NODE)
 
 // TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
+
+// TODO: Colors of TODO icons no longer match.
 
 // TODO: Color nodes
 

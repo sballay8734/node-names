@@ -1,7 +1,7 @@
 import { useDerivedValue } from "react-native-reanimated";
 
+import { ARROW_BTN_RADIUS } from "@/constants/styles";
 import { centerNode } from "@/constants/variables";
-import { ARROW_BTN_RADIUS, TAB_BAR_HEIGHT } from "@/constants/styles";
 import useWindowSize from "@/hooks/useWindowSize";
 
 import { useGestures } from "./useGestures";

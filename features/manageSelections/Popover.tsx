@@ -5,7 +5,6 @@ import Animated, {
 import { useDispatch } from "react-redux";
 
 import CPressable from "@/components/CustomNativeComponents/CPressable";
-import { View } from "@/components/Themed";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -47,6 +46,7 @@ export default function Popover(): React.JSX.Element {
         {
           position: "absolute",
           // bottom: 25,
+          right: 10,
           width: "60%",
           display: "flex",
           flexDirection: "column",

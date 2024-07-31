@@ -8,17 +8,25 @@ import {
 
 // Define a type for the slice state
 interface ManageSelectionsState {
+  userNodes: PositionedPerson[] | null;
+  userLinks: PositionedLink[] | null;
+
+  inspectedNodes: PositionedPerson[] | null;
+  inspectedLinks: PositionedLink[] | null;
+
   popoverIsShown: boolean;
-  nodes: PositionedPerson[] | null;
-  links: PositionedLink[] | null;
   selectedNodes: PositionedPerson[];
 }
 
 // Define the initial state using that type
 const initialState: ManageSelectionsState = {
+  userNodes: null,
+  userLinks: null,
+
+  inspectedNodes: null,
+  inspectedLinks: null,
+
   popoverIsShown: false,
-  nodes: null,
-  links: null,
   selectedNodes: [],
 };
 
@@ -40,10 +48,10 @@ export const ManageSelectionsSlice = createSlice({
     },
 
     setNodes: (state, action: PayloadAction<PositionedPerson[]>) => {
-      state.nodes = action.payload;
+      state.userNodes = action.payload;
     },
     setLinks: (state, action: PayloadAction<PositionedLink[]>) => {
-      state.links = action.payload;
+      state.userLinks = action.payload;
     },
 
     // SELECTION MANAGEMENT ****************************************************
@@ -67,8 +75,8 @@ export const ManageSelectionsSlice = createSlice({
     // LINK MANAGEMENT/CREATION
     // creates a single, unconnected node
     handleCreateNewNode: (state) => {
-      state.nodes &&
-        state.nodes.push({
+      state.userNodes &&
+        state.userNodes.push({
           created_at: "blah",
           first_name: "David",
           group_id: null,

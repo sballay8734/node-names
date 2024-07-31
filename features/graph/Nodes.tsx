@@ -24,7 +24,7 @@ export default function Nodes({
   scale,
 }: Props): React.JSX.Element {
   const finalizedNodes = useAppSelector(
-    (state: RootState) => state.selections.nodes,
+    (state: RootState) => state.selections.userNodes,
   );
 
   const transform = useDerivedValue(() => [

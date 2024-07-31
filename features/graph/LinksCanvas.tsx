@@ -21,7 +21,7 @@ export default function LinksCanvas({
   scale,
 }: Props): React.JSX.Element {
   const finalizedLinks = useAppSelector(
-    (state: RootState) => state.selections.links,
+    (state: RootState) => state.selections.userLinks,
   );
 
   const svgTransform = useDerivedValue(() => [
