@@ -6,12 +6,12 @@ import Animated, {
 
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { IPositionedNode } from "@/utils/getNodePositions";
+import { PositionedNode } from "@/utils/getNodePositions";
 
 import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
-  centerOnNode: (node: IPositionedNode) => void;
+  centerOnNode: (node: PositionedNode) => void;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   scale: SharedValue<number>;

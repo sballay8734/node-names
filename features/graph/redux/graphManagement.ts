@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { IPositionedLink, IPositionedNode } from "@/utils/getNodePositions";
+import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 
 export interface INode2 {
   id: number;
@@ -28,11 +28,11 @@ interface ManageGraphState {
   activeRootNode: INode2 | null;
   activeRootType: "user" | "notUser";
 
-  userNodes: IPositionedNode[];
-  userLinks: IPositionedLink[];
+  userNodes: PositionedNode[];
+  userLinks: PositionedLink[];
 
-  inspectedNodes: IPositionedNode[];
-  inspectedLinks: IPositionedLink[];
+  inspectedNodes: PositionedNode[];
+  inspectedLinks: PositionedLink[];
 }
 
 const initialState: ManageGraphState = {
@@ -51,23 +51,23 @@ const ManageGraphSlice = createSlice({
   initialState,
   reducers: {
     // ROOT
-    setActiveRootNode: (state, action: PayloadAction<IPositionedNode>) => {
+    setActiveRootNode: (state, action: PayloadAction<PositionedNode>) => {
       state.activeRootNode = action.payload;
     },
 
     // USER (Will not change often)
-    setUserNodes: (state, action: PayloadAction<IPositionedNode[]>) => {
+    setUserNodes: (state, action: PayloadAction<PositionedNode[]>) => {
       state.userNodes = action.payload;
     },
-    setUserLinks: (state, action: PayloadAction<IPositionedLink[]>) => {
+    setUserLinks: (state, action: PayloadAction<PositionedLink[]>) => {
       state.userLinks = action.payload;
     },
 
     // Changes when user "inspects"
-    setInspectedNodes: (state, action: PayloadAction<IPositionedNode[]>) => {
+    setInspectedNodes: (state, action: PayloadAction<PositionedNode[]>) => {
       state.inspectedNodes = action.payload;
     },
-    setInspectedLinks: (state, action: PayloadAction<IPositionedLink[]>) => {
+    setInspectedLinks: (state, action: PayloadAction<PositionedLink[]>) => {
       state.userLinks = action.payload;
     },
   },

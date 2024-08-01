@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { View } from "@/components/Themed";
-import { useNewDataLoad } from "@/features/Graph/utils/useNewDataLoad";
+import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -31,7 +31,7 @@ export default function InspectBtn(): React.JSX.Element {
       !state.selections.selectedNodes[0].source_node_ids === true
     );
   });
-  const { updateRootId } = useNewDataLoad();
+  const { updateRootId } = useDataLoad();
 
   function handlePressIn() {
     isPressed.value = true;

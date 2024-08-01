@@ -3,6 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
+import { PositionedNode } from "@/features/D3/types/d3Types";
+import { calcNodePositions } from "@/features/D3/utils/getNodePositions";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import {
@@ -13,7 +15,8 @@ import {
   setUserLinks,
   setUserNodes,
 } from "@/features/Graph/redux/graphManagement";
-import { useNewDataLoad } from "@/features/Graph/utils/useNewDataLoad";
+import { getNthConnections } from "@/features/Graph/utils/getNthConnections";
+import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
 import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
@@ -23,8 +26,6 @@ import SearchBar from "@/features/Shared/SearchBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { calcNodePositions, IPositionedNode } from "@/utils/getNodePositions";
-import { getNthConnections } from "@/utils/getNthConnections";
 
 // REMOVE: User will be able to change this
 const tempN = 0;
@@ -41,7 +42,7 @@ const Index = () => {
   );
   const windowSize = useWindowSize();
 
-  const { people, connections } = useNewDataLoad();
+  const { people, connections } = useDataLoad();
 
   useEffect(() => {
     if (activeRootNode && people && connections) {
@@ -81,7 +82,7 @@ const Index = () => {
     lastScale.value = scale.value;
   }
 
-  function centerOnNode(node: IPositionedNode) {
+  function centerOnNode(node: PositionedNode) {
     if (!nodeIsSelected) {
       translateX.value = withTiming(
         (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,

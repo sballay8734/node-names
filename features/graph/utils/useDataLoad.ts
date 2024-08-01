@@ -8,7 +8,7 @@ import { setActiveRootNode } from "../redux/graphManagement";
 // REMOVE: Temporary until you add auth
 const tempRootId = 1;
 
-export function useNewDataLoad() {
+export function useDataLoad() {
   const dispatch = useAppDispatch();
   const [rootNodeId, setRootNodeId] = useState<number>(tempRootId);
   const { people, connections, groups, isLoading, dataFetched } = useDbData();

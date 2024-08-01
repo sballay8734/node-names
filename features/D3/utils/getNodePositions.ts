@@ -2,28 +2,19 @@ import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
 import { centerNode } from "@/constants/variables";
-import { INode2 } from "@/features/Graph/redux/graphManagement";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
 
-export interface IPositionedNode extends d3.SimulationNodeDatum, INode2 {}
-
-export interface IPositionedLink
-  extends d3.SimulationLinkDatum<IPositionedNode> {
-  created_at: string;
-  id: number;
-  relationship_type: string;
-  strength: number;
-}
+import { PositionedLink, PositionedNode } from "../types/d3Types";
 
 export function calcNodePositions(
   people: Tables<"people">[],
   connections: Tables<"connections">[],
   windowSize: WindowSize,
   scale: SharedValue<number>,
-): { nodes: IPositionedNode[]; links: IPositionedLink[] } {
+): { nodes: PositionedNode[]; links: PositionedLink[] } {
   // make copy of nodes and links
-  const positionedNodes: IPositionedNode[] = people.map((p) => ({ ...p }));
+  const positionedNodes: PositionedNode[] = people.map((p) => ({ ...p }));
   const connectionsCopy: Tables<"connections">[] = connections.map((c) => ({
     ...c,
   }));
@@ -31,13 +22,13 @@ export function calcNodePositions(
   const rootNode = positionedNodes.find((p) => !p.source_node_ids);
 
   if (rootNode) {
-    (rootNode as IPositionedNode).fx = centerNode(
+    (rootNode as PositionedNode).fx = centerNode(
       windowSize,
       "root",
       "d3",
       scale,
     ).nodeCenterX;
-    (rootNode as IPositionedNode).fy = centerNode(
+    (rootNode as PositionedNode).fy = centerNode(
       windowSize,
       "root",
       "d3",
@@ -45,7 +36,7 @@ export function calcNodePositions(
     ).nodeCenterY;
   }
 
-  const positionedLinks: IPositionedLink[] = connectionsCopy.map(
+  const positionedLinks: PositionedLink[] = connectionsCopy.map(
     (connection) => {
       const { source_node_id, target_node_id, ...rest } = connection;
       return {
@@ -77,7 +68,7 @@ export function calcNodePositions(
   });
 
   function clusteringForce(alpha: number) {
-    positionedNodes.forEach((node: IPositionedNode) => {
+    positionedNodes.forEach((node: PositionedNode) => {
       if (node.group_id === null) return;
 
       const groupCenter = groupCenters[node.group_id];
@@ -87,16 +78,14 @@ export function calcNodePositions(
   }
 
   const simulation = d3
-    .forceSimulation<IPositionedNode, IPositionedLink>(positionedNodes)
+    .forceSimulation<PositionedNode, PositionedLink>(positionedNodes)
 
     // create space around the root node and min space around non-root nodes
     .force(
       "collision",
       d3
         .forceCollide()
-        .radius((node) =>
-          !(node as IPositionedNode).source_node_ids ? 50 : 15,
-        )
+        .radius((node) => (!(node as PositionedNode).source_node_ids ? 50 : 15))
         .strength(0.5),
     )
 
@@ -110,7 +99,7 @@ export function calcNodePositions(
     .force(
       "link",
       d3
-        .forceLink<IPositionedNode, IPositionedLink>(positionedLinks)
+        .forceLink<PositionedNode, PositionedLink>(positionedLinks)
         .id((link) => link.id)
         .distance((link) => {
           const baseDistance = 150;

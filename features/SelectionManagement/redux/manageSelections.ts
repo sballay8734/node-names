@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+import { PositionedNode } from "@/features/D3/types/d3Types";
 import { RelationshipType } from "@/types/dbTypes";
-import { IPositionedNode } from "@/utils/getNodePositions";
 
 interface IConnectionsAndNodes {
   connections: {
@@ -15,7 +15,7 @@ interface IConnectionsAndNodes {
     };
   };
   nodes: {
-    [id: number]: IPositionedNode;
+    [id: number]: PositionedNode;
   };
   connectionIds: number[];
   nodeIds: number[];
@@ -26,7 +26,7 @@ interface ManageSelectionsState {
   secondaryConnections: { [nodeId: number]: IConnectionsAndNodes };
 
   popoverIsShown: boolean;
-  selectedNodes: IPositionedNode[];
+  selectedNodes: PositionedNode[];
 }
 
 // Define the initial state using that type
@@ -62,7 +62,7 @@ const ManageSelectionsSlice = createSlice({
     },
 
     // SELECTION MANAGEMENT ****************************************************
-    handleNodeSelect: (state, action: PayloadAction<IPositionedNode>) => {
+    handleNodeSelect: (state, action: PayloadAction<PositionedNode>) => {
       const clickedNode = action.payload;
       const nodeIndex = state.selectedNodes.findIndex(
         (node) => node.id === clickedNode.id,

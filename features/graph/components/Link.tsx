@@ -2,10 +2,10 @@ import { Line, Paint } from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 
-import { IPositionedLink, IPositionedNode } from "@/utils/getNodePositions";
+import { PositionedLink, PositionedNode } from "@/utils/getNodePositions";
 
 interface Props {
-  link: IPositionedLink;
+  link: PositionedLink;
   shouldShow: boolean;
 }
 
@@ -17,7 +17,7 @@ export default function Link({
 
   function isPositionedNode(
     node: any,
-  ): node is IPositionedNode & { x: number; y: number } {
+  ): node is PositionedNode & { x: number; y: number } {
     return (
       typeof node === "object" &&
       typeof node.x === "number" &&

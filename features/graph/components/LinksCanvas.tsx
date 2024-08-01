@@ -5,7 +5,7 @@ import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { IPositionedLink, IPositionedNode } from "@/utils/getNodePositions";
+import { PositionedLink, PositionedNode } from "@/utils/getNodePositions";
 
 import Link from "./Link";
 
@@ -16,7 +16,7 @@ interface Props {
   scale: SharedValue<number>;
 }
 
-function isPositionedNode(node: any): node is IPositionedNode {
+function isPositionedNode(node: any): node is PositionedNode {
   return typeof node === "object" && typeof node.id === "number";
 }
 
@@ -48,7 +48,7 @@ export default function LinksCanvas({
     <Canvas style={styles.canvas}>
       <Group origin={origin} transform={svgTransform}>
         {links &&
-          links.map((link: IPositionedLink) => {
+          links.map((link: PositionedLink) => {
             const shouldShow =
               isPositionedNode(link.source) &&
               selectedNodeId === link.source.id;

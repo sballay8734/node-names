@@ -12,9 +12,9 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
+import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { IPositionedNode } from "@/utils/getNodePositions";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
 import { INode2 } from "../redux/graphManagement";
@@ -28,7 +28,7 @@ const AnimatedBg = Animated.createAnimatedComponent(ImageBackground);
 interface Props {
   node: INode2;
   nodePosition: { x: number; y: number };
-  centerOnNode: (node: IPositionedNode) => void;
+  centerOnNode: (node: PositionedNode) => void;
 }
 
 const image = {
