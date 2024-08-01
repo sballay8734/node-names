@@ -84,7 +84,7 @@ export default function NodeTapDetector({
     ],
 
     // MY STUFF
-    borderWidth: NODE_BORDER_WIDTH,
+    borderWidth: 2,
     opacity: 1,
     borderRadius: 100,
     borderColor: "transparent",
@@ -135,14 +135,14 @@ export default function NodeTapDetector({
         inactiveBgColor: "transparent",
         activeBgColor: "#66e889",
         inactiveBorderColor: "#121212",
-        activeBorderColor: "#888cae",
+        activeBorderColor: "rgba(245, 240, 196, 1)",
       };
     } else {
       return {
         inactiveBgColor: "#082b21",
         activeBgColor: "#0fdba5",
         inactiveBorderColor: "transparent",
-        activeBorderColor: "#16d9a5",
+        activeBorderColor: "rgba(245, 240, 196, 1)",
       };
     }
   }
@@ -163,6 +163,7 @@ export default function NodeTapDetector({
               width: "100%",
               backgroundColor: node.isRoot ? "#0d0d0d" : "transparent",
               borderRadius: 100,
+              borderWidth: 1,
             },
           ]}
         >
@@ -171,6 +172,7 @@ export default function NodeTapDetector({
               source={image}
               style={[styles.image, rootImgStyles]}
               borderRadius={100}
+              // imageStyle={{ borderWidth: 2 }}
             />
           )}
         </Animated.View>
