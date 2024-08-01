@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable } from "react-native";
 
 import { View, Text } from "@/components/Themed";
-import { INode } from "@/features/D3/utils/positionGraphElements";
+import { INode } from "@/features/D3/types/d3Types";
 
 interface Props {
   selectedNodes: INode[];

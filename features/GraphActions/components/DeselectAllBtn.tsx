@@ -81,7 +81,7 @@ export default function DeselectAllBtn(): React.JSX.Element {
         </Animated.View>
       </View>
       <Animated.View style={[styles.widget]}>
-        <Text style={{ fontWeight: "bold", fontSize: 8 }}>
+        <Text style={{ fontWeight: "bold", fontSize: 9 }}>
           {selectedNodeCount}
         </Text>
       </Animated.View>
@@ -126,10 +126,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     backgroundColor: "#ba1818",
     borderRadius: 3,
-    minHeight: 15,
-    minWidth: 15,
-    top: -3,
-    right: 0,
+    minHeight: 17,
+    minWidth: 17,
+    top: -4,
+    right: -2,
   },
 });
 

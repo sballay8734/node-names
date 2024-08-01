@@ -1,11 +1,12 @@
-import { Canvas, Group, Line, Paint } from "@shopify/react-native-skia";
+import { Canvas, Group } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
-import { ILink } from "@/features/D3/utils/positionGraphElements";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
+
+import Link from "./Link";
 
 interface Props {
   windowSize: WindowSize;
@@ -21,7 +22,10 @@ export default function LinksCanvas({
   scale,
 }: Props): React.JSX.Element {
   const ILinks = useAppSelector(
-    (state: RootState) => state.selections.userLinks,
+    (state: RootState) => state.selections.primaryLinks,
+  );
+  const selectedNodeId = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes[0]?.id,
   );
 
   const svgTransform = useDerivedValue(() => [
@@ -35,46 +39,15 @@ export default function LinksCanvas({
     y: windowSize.height / 2,
   }));
 
-  // REMOVE: "options" and function are just for testing
-  const options = [true, false];
-  function sourceIsSelected() {
-    return options[Math.floor(Math.random() * options.length)];
-  }
-
   return (
     <Canvas style={styles.canvas}>
       <Group origin={origin} transform={svgTransform}>
         {ILinks &&
           ILinks.map((link) => {
-            {
-              return (
-                <Line
-                  key={`${link.person_1_id}-${link.person_2_id}`}
-                  p1={{
-                    x: (link as ILink).source.x,
-                    y: (link as ILink).source.y,
-                  }}
-                  p2={{
-                    x: (link as ILink).target.x,
-                    y: (link as ILink).target.y,
-                  }}
-                  color="transparent"
-                  style="stroke"
-                  strokeWidth={1}
-                >
-                  <Paint
-                    color={
-                      sourceIsSelected()
-                        ? "rgba(245, 240, 196, 1)"
-                        : "rgba(245, 240, 196, 0.05)"
-                    }
-                    strokeWidth={1}
-                    style="stroke"
-                    strokeCap="round"
-                  />
-                </Line>
-              );
-            }
+            const shouldShow = selectedNodeId === link.source.id;
+            return (
+              <Link key={link.index} link={link} shouldShow={shouldShow} />
+            );
           })}
       </Group>
     </Canvas>

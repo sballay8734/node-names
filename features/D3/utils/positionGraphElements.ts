@@ -89,7 +89,7 @@ export function calcPrimaryPositions(
   }
 
   const simulation = d3
-    .forceSimulation<INode, PositionedLink>(primaryN)
+    .forceSimulation<INode, ILink>(primaryN)
 
     // create space around the root node and min space around non-root nodes
     .force(

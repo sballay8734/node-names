@@ -1,18 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import {
-  PositionedLink,
-  INode,
-} from "@/features/D3/utils/positionGraphElements";
+import { INode, ILink } from "@/features/D3/types/d3Types";
+import { IConnectionsAndNodes } from "@/features/Graph/utils/getNodeConnections";
 
 // Define a type for the slice state
 interface ManageSelectionsState {
-  userNodes: INode[] | null;
-  userLinks: PositionedLink[] | null;
+  primaryNodes: INode[] | null;
+  primaryLinks: ILink[] | null;
+
+  secondaryConnections: { [nodeId: number]: IConnectionsAndNodes };
 
   inspectedNodes: INode[] | null;
-  inspectedLinks: PositionedLink[] | null;
+  inspectedLinks: ILink[] | null;
 
   popoverIsShown: boolean;
   selectedNodes: INode[];
@@ -20,8 +20,10 @@ interface ManageSelectionsState {
 
 // Define the initial state using that type
 const initialState: ManageSelectionsState = {
-  userNodes: null,
-  userLinks: null,
+  primaryNodes: null,
+  primaryLinks: null,
+
+  secondaryConnections: {},
 
   inspectedNodes: null,
   inspectedLinks: null,
@@ -30,7 +32,7 @@ const initialState: ManageSelectionsState = {
   selectedNodes: [],
 };
 
-export const ManageSelectionsSlice = createSlice({
+const ManageSelectionsSlice = createSlice({
   name: "manageSelections",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
@@ -48,10 +50,16 @@ export const ManageSelectionsSlice = createSlice({
     },
 
     setNodes: (state, action: PayloadAction<INode[]>) => {
-      state.userNodes = action.payload;
+      state.primaryNodes = action.payload;
     },
-    setLinks: (state, action: PayloadAction<PositionedLink[]>) => {
-      state.userLinks = action.payload;
+    setLinks: (state, action: PayloadAction<ILink[]>) => {
+      state.primaryLinks = action.payload;
+    },
+    setSecondary: (
+      state,
+      action: PayloadAction<{ [nodeId: number]: IConnectionsAndNodes }>,
+    ) => {
+      state.secondaryConnections = action.payload;
     },
 
     // SELECTION MANAGEMENT ****************************************************
@@ -79,8 +87,8 @@ export const ManageSelectionsSlice = createSlice({
     // LINK MANAGEMENT/CREATION
     // creates a single, unconnected node
     handleCreateNewNode: (state) => {
-      state.userNodes &&
-        state.userNodes.push({
+      state.primaryNodes &&
+        state.primaryNodes.push({
           created_at: "blah",
           first_name: "David",
           group_id: null,
@@ -112,6 +120,7 @@ export const {
   handleConnectToNewNode,
   handleCreateNewNode,
   deselectAll,
+  setSecondary,
 } = ManageSelectionsSlice.actions;
 
 export default ManageSelectionsSlice.reducer;

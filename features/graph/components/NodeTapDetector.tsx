@@ -1,6 +1,7 @@
 import { ImageBackground, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  useAnimatedProps,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
@@ -13,13 +14,17 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
-import { INode } from "@/features/D3/utils/positionGraphElements";
+import { INode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
 
+import NodeWidget from "./NodeWidget";
+
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
+
+const AnimatedBg = Animated.createAnimatedComponent(ImageBackground);
 
 interface Props {
   node: INode;
@@ -40,8 +45,16 @@ export default function NodeTapDetector({
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
+  const nodeConnectionCount = useAppSelector((state: RootState) => {
+    if (!node.isRoot && state.selections.secondaryConnections[node.id]) {
+      return state.selections.secondaryConnections[node.id].connectionIds
+        .length;
+    } else {
+      return null;
+    }
+  });
 
-  const isPressed = selectedNode;
+  const isSelected = selectedNode;
   const { x, y } = nodePosition;
 
   const {
@@ -90,18 +103,18 @@ export default function NodeTapDetector({
 
   const animatedStyles = useAnimatedStyle(() => ({
     borderColor: withTiming(
-      isPressed ? activeBorderColor : inactiveBorderColor,
+      isSelected ? activeBorderColor : inactiveBorderColor,
       {
         duration: 200,
       },
     ),
-    backgroundColor: withTiming(isPressed ? activeBgColor : inactiveBgColor, {
+    backgroundColor: withTiming(isSelected ? activeBgColor : inactiveBgColor, {
       duration: 200,
     }),
   }));
 
   const animatedTextStyles = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(isPressed ? "#172924" : "#172924", {
+    backgroundColor: withTiming(isSelected ? "#172924" : "#172924", {
       duration: 200,
     }),
   }));
@@ -134,6 +147,10 @@ export default function NodeTapDetector({
     }
   }
 
+  const rootImgStyles = useAnimatedStyle(() => ({
+    opacity: withTiming(isSelected ? 0.5 : 0.3, { duration: 200 }),
+  }));
+
   return (
     <GestureDetector key={node.id} gesture={tap}>
       <Animated.View style={[animatedStyle, animatedStyles]}>
@@ -150,13 +167,10 @@ export default function NodeTapDetector({
           ]}
         >
           {node.isRoot && (
-            <ImageBackground
+            <AnimatedBg
               source={image}
-              style={styles.image}
+              style={[styles.image, rootImgStyles]}
               borderRadius={100}
-              // node background image opacity
-              // TODO: opacity here vvvv is not animated
-              imageStyle={{ opacity: isPressed ? 1 : 0.3 }}
             />
           )}
         </Animated.View>
@@ -173,7 +187,7 @@ export default function NodeTapDetector({
               backgroundColor: "#1e2152",
               borderWidth: 1,
               borderColor:
-                isPressed && !node.isRoot ? "#0fdba5" : "transparent",
+                isSelected && !node.isRoot ? "#0fdba5" : "transparent",
             },
             !node.isRoot && animatedTextStyles,
           ]}
@@ -183,13 +197,15 @@ export default function NodeTapDetector({
             style={{
               width: "100%",
               fontSize: calcFontSize(node),
-              color: isPressed && !node.isRoot ? "#c2ffef" : "#516e66",
+              color: isSelected && !node.isRoot ? "#c2ffef" : "#516e66",
               fontWeight: node.isRoot ? "600" : "400",
             }}
           >
             {node.isRoot ? "ME" : node.first_name}
           </Text>
         </Animated.View>
+
+        <NodeWidget count={nodeConnectionCount} />
       </Animated.View>
     </GestureDetector>
   );

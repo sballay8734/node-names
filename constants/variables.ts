@@ -2,8 +2,6 @@ import { SharedValue } from "react-native-gesture-handler/lib/typescript/handler
 
 import { WindowSize } from "@/hooks/useWindowSize";
 
-import { TAB_BAR_HEIGHT } from "./styles";
-
 export const ROOT_NODE_RADIUS = 50;
 export const REG_NODE_RADIUS = 25;
 export const NODE_BORDER_WIDTH = 1;

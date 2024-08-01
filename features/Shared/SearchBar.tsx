@@ -1,5 +1,5 @@
 import { Fontisto } from "@expo/vector-icons";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput } from "react-native";
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
