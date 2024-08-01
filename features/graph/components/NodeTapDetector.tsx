@@ -44,6 +44,8 @@ export default function NodeTapDetector({
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
+
+  // !TODO: This updates ALL nodes on everychange (NOT GOOD)
   const nodeConnectionCount = useAppSelector((state: RootState) => {
     if (
       !node.source_node_ids &&
@@ -56,7 +58,7 @@ export default function NodeTapDetector({
     }
   });
 
-  console.log(nodeConnectionCount);
+  console.log("NodeConnectionCount:", nodeConnectionCount);
 
   const isSelected = selectedNode;
   const { x, y } = nodePosition;

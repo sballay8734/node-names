@@ -154,10 +154,13 @@ export default Index;
 // 3. Work on adding/connecting/grouping nodes (+ btn)
 // 4. Add overlay over groups that fades out as you zoom in
 // 5. recenter on select should not happen if node is being deselected
-// 6. Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
 // 7. WORK ON THEME AND REFACTOR STYLES THAT NEED IT (NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
+
+// !TODO: WHILE positioning the nodes, you should be grouping the families together maybe while also calculating the widgets
 
 // !TODO: Need to redo getNodeConnections function to handle widget
 
