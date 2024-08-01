@@ -4,14 +4,14 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 
-import { INode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { IPositionedNode } from "@/utils/getNodePositions";
 
 import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
-  centerOnNode: (node: INode) => void;
+  centerOnNode: (node: IPositionedNode) => void;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   scale: SharedValue<number>;
@@ -23,8 +23,8 @@ export default function Nodes({
   translateY,
   scale,
 }: Props): React.JSX.Element {
-  const finalizedNodes = useAppSelector(
-    (state: RootState) => state.selections.primaryNodes,
+  const nodes = useAppSelector(
+    (state: RootState) => state.manageGraph.userNodes,
   );
 
   const transform = useDerivedValue(() => [
@@ -40,8 +40,8 @@ export default function Nodes({
         transform: transform,
       }}
     >
-      {finalizedNodes &&
-        finalizedNodes.map((node) => {
+      {nodes &&
+        nodes.map((node) => {
           const { x, y } = node;
 
           if (x && y) {

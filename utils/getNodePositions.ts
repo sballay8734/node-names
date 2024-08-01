@@ -2,21 +2,16 @@ import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
 import { centerNode } from "@/constants/variables";
+import { INode2 } from "@/features/Graph/redux/graphManagement";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
 
-export interface IPositionedNode
-  extends Tables<"people">,
-    d3.SimulationNodeDatum {
-  vx?: number;
-  vy?: number;
-}
+export interface IPositionedNode extends d3.SimulationNodeDatum, INode2 {}
 
-interface IPositionedLink extends d3.SimulationLinkDatum<IPositionedNode> {
+export interface IPositionedLink
+  extends d3.SimulationLinkDatum<IPositionedNode> {
   created_at: string;
   id: number;
-  source_node_id: number;
-  target_node_id: number;
   relationship_type: string;
   strength: number;
 }
@@ -27,12 +22,14 @@ export function calcNodePositions(
   windowSize: WindowSize,
   scale: SharedValue<number>,
 ): { nodes: IPositionedNode[]; links: IPositionedLink[] } {
-  const peopleCopy: Tables<"people">[] = people.map((p) => ({ ...p }));
+  // make copy of nodes and links
+  const positionedNodes: IPositionedNode[] = people.map((p) => ({ ...p }));
   const connectionsCopy: Tables<"connections">[] = connections.map((c) => ({
     ...c,
   }));
 
-  const rootNode = peopleCopy.find((p) => !p.source_node_ids);
+  const rootNode = positionedNodes.find((p) => !p.source_node_ids);
+
   if (rootNode) {
     (rootNode as IPositionedNode).fx = centerNode(
       windowSize,
@@ -50,16 +47,15 @@ export function calcNodePositions(
 
   const positionedLinks: IPositionedLink[] = connectionsCopy.map(
     (connection) => {
+      const { source_node_id, target_node_id, ...rest } = connection;
       return {
-        ...connection,
+        ...rest,
         strength: 1,
         source: connection.source_node_id,
         target: connection.target_node_id,
       };
     },
   );
-
-  console.log("LINKS:", positionedLinks);
 
   // prepare group centers
   const groupCenters: { [key: string]: { x: number; y: number } } = {};
@@ -81,7 +77,7 @@ export function calcNodePositions(
   });
 
   function clusteringForce(alpha: number) {
-    people.forEach((node) => {
+    positionedNodes.forEach((node: IPositionedNode) => {
       if (node.group_id === null) return;
 
       const groupCenter = groupCenters[node.group_id];
@@ -91,7 +87,7 @@ export function calcNodePositions(
   }
 
   const simulation = d3
-    .forceSimulation<IPositionedNode, IPositionedLink>(peopleCopy)
+    .forceSimulation<IPositionedNode, IPositionedLink>(positionedNodes)
 
     // create space around the root node and min space around non-root nodes
     .force(
@@ -134,368 +130,94 @@ export function calcNodePositions(
   // Stop the simulation
   simulation.stop();
 
-  return { nodes: peopleCopy, links: positionedLinks };
+  // console.log("NODES:", positionedNodes);
+  // console.log("\n\n\n");
+  // console.log("LINKS:", positionedLinks);
+
+  return { nodes: positionedNodes, links: positionedLinks };
 }
 
-const test = [
+// REMOVE: Just for reference
+const FINAL_NODE_SHAPE = [
+  {
+    created_at: "2024-07-20T14:16:38.501838+00:00",
+    date_of_birth: "1992-02-15",
+    date_of_death: "2024-07-01",
+    first_name: "Bob",
+    gift_ideas: null,
+    group_id: 1,
+    group_name: "Friends",
+    id: 6,
+    index: 0,
+    last_name: "Johnson",
+    maiden_name: null,
+    partner_id: null,
+    partner_type: null,
+    phonetic_name: "b ah b",
+    preferred_name: null,
+    sex: "male",
+    source_node_ids: ["1"],
+    vx: -0.030938623229578712,
+    vy: -0.009819350470518967,
+    x: 251.19960707758767,
+    y: 526.793273183848,
+  },
+];
+
+const FINAL_LINK_SHAPE = [
   {
     created_at: "2024-07-20T14:09:26.741696+00:00",
     id: 1,
+    index: 0,
     relationship_type: "friend",
-    source: 1,
-    source_node_id: 1,
+    source: {
+      created_at: "2024-07-20T14:07:07.332245+00:00",
+      date_of_birth: "2000-10-01",
+      date_of_death: null,
+      first_name: "Shawn",
+      fx: 196.5,
+      fy: 386.5,
+      gift_ideas: null,
+      group_id: null,
+      group_name: null,
+      id: 1,
+      index: 13,
+      last_name: "Ballay",
+      maiden_name: null,
+      partner_id: null,
+      partner_type: null,
+      phonetic_name: "sh AW n",
+      preferred_name: null,
+      sex: "male",
+      source_node_ids: null,
+      vx: 0,
+      vy: 0,
+      x: 196.5,
+      y: 386.5,
+    },
     strength: 1,
-    target: 2,
-    target_node_id: 2,
-  },
-  {
-    created_at: "2024-07-20T14:20:22.55563+00:00",
-    id: 2,
-    relationship_type: "friend",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 3,
-    target_node_id: 3,
-  },
-  {
-    created_at: "2024-07-20T14:20:36.040121+00:00",
-    id: 3,
-    relationship_type: "friend",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 4,
-    target_node_id: 4,
-  },
-  {
-    created_at: "2024-07-20T14:21:02.655177+00:00",
-    id: 4,
-    relationship_type: "friend",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 5,
-    target_node_id: 5,
-  },
-  {
-    created_at: "2024-07-20T14:21:24.155532+00:00",
-    id: 5,
-    relationship_type: "sibling",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 6,
-    target_node_id: 6,
-  },
-  {
-    created_at: "2024-07-20T14:21:53.545954+00:00",
-    id: 6,
-    relationship_type: "coworker",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 7,
-    target_node_id: 7,
-  },
-  {
-    created_at: "2024-07-20T14:22:12.272541+00:00",
-    id: 7,
-    relationship_type: "coworker",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 8,
-    target_node_id: 8,
-  },
-  {
-    created_at: "2024-07-20T14:27:54.515567+00:00",
-    id: 8,
-    relationship_type: "spouse",
-    source: 2,
-    source_node_id: 2,
-    strength: 1,
-    target: 9,
-    target_node_id: 9,
-  },
-  {
-    created_at: "2024-07-20T14:29:05.076905+00:00",
-    id: 9,
-    relationship_type: "parent_child_biological",
-    source: 2,
-    source_node_id: 2,
-    strength: 1,
-    target: 10,
-    target_node_id: 10,
-  },
-  {
-    created_at: "2024-07-20T14:29:26.66729+00:00",
-    id: 10,
-    relationship_type: "parent_child_biological",
-    source: 9,
-    source_node_id: 9,
-    strength: 1,
-    target: 10,
-    target_node_id: 10,
-  },
-  {
-    created_at: "2024-07-20T14:31:59.74432+00:00",
-    id: 11,
-    relationship_type: "sibling",
-    source: 2,
-    source_node_id: 2,
-    strength: 1,
-    target: 11,
-    target_node_id: 11,
-  },
-  {
-    created_at: "2024-07-20T14:32:56.744166+00:00",
-    id: 12,
-    relationship_type: "spouse",
-    source: 11,
-    source_node_id: 11,
-    strength: 1,
-    target: 12,
-    target_node_id: 12,
-  },
-  {
-    created_at: "2024-07-20T14:33:21.969605+00:00",
-    id: 13,
-    relationship_type: "parent_child_biological",
-    source: 11,
-    source_node_id: 11,
-    strength: 1,
-    target: 13,
-    target_node_id: 13,
-  },
-  {
-    created_at: "2024-07-20T14:33:35.881146+00:00",
-    id: 14,
-    relationship_type: "parent_child_biological",
-    source: 12,
-    source_node_id: 12,
-    strength: 1,
-    target: 13,
-    target_node_id: 13,
-  },
-  {
-    created_at: "2024-07-20T14:35:17.465332+00:00",
-    id: 15,
-    relationship_type: "parent_child_biological",
-    source: 2,
-    source_node_id: 2,
-    strength: 1,
-    target: 14,
-    target_node_id: 14,
-  },
-  {
-    created_at: "2024-07-20T14:35:29.28415+00:00",
-    id: 16,
-    relationship_type: "parent_child_biological",
-    source: 2,
-    source_node_id: 2,
-    strength: 1,
-    target: 15,
-    target_node_id: 15,
-  },
-  {
-    created_at: "2024-07-20T14:35:41.714255+00:00",
-    id: 17,
-    relationship_type: "parent_child_biological",
-    source: 11,
-    source_node_id: 11,
-    strength: 1,
-    target: 14,
-    target_node_id: 14,
-  },
-  {
-    created_at: "2024-07-20T14:35:52.933909+00:00",
-    id: 18,
-    relationship_type: "parent_child_biological",
-    source: 11,
-    source_node_id: 11,
-    strength: 1,
-    target: 15,
-    target_node_id: 15,
-  },
-  {
-    created_at: "2024-07-20T14:36:41.567854+00:00",
-    id: 19,
-    relationship_type: "grandparent_grandchild",
-    source: 14,
-    source_node_id: 14,
-    strength: 1,
-    target: 13,
-    target_node_id: 13,
-  },
-  {
-    created_at: "2024-07-20T14:36:53.281104+00:00",
-    id: 20,
-    relationship_type: "grandparent_grandchild",
-    source: 15,
-    source_node_id: 15,
-    strength: 1,
-    target: 13,
-    target_node_id: 13,
-  },
-  {
-    created_at: "2024-07-20T14:38:57.003102+00:00",
-    id: 21,
-    relationship_type: "parent_child_in_law",
-    source: 14,
-    source_node_id: 14,
-    strength: 1,
-    target: 9,
-    target_node_id: 9,
-  },
-  {
-    created_at: "2024-07-20T14:39:06.626076+00:00",
-    id: 22,
-    relationship_type: "parent_child_in_law",
-    source: 15,
-    source_node_id: 15,
-    strength: 1,
-    target: 9,
-    target_node_id: 9,
-  },
-  {
-    created_at: "2024-07-20T14:39:20.171124+00:00",
-    id: 23,
-    relationship_type: "parent_child_in_law",
-    source: 14,
-    source_node_id: 14,
-    strength: 1,
-    target: 12,
-    target_node_id: 12,
-  },
-  {
-    created_at: "2024-07-20T14:39:29.646034+00:00",
-    id: 24,
-    relationship_type: "parent_child_in_law",
-    source: 15,
-    source_node_id: 15,
-    strength: 1,
-    target: 12,
-    target_node_id: 12,
-  },
-  {
-    created_at: "2024-07-20T14:39:52.841548+00:00",
-    id: 25,
-    relationship_type: "sibling_in_law",
-    source: 2,
-    source_node_id: 2,
-    strength: 1,
-    target: 12,
-    target_node_id: 12,
-  },
-  {
-    created_at: "2024-07-20T14:40:44.864689+00:00",
-    id: 26,
-    relationship_type: "grandparent_grandchild",
-    source: 14,
-    source_node_id: 14,
-    strength: 1,
-    target: 10,
-    target_node_id: 10,
-  },
-  {
-    created_at: "2024-07-20T14:40:54.2034+00:00",
-    id: 27,
-    relationship_type: "grandparent_grandchild",
-    source: 15,
-    source_node_id: 15,
-    strength: 1,
-    target: 10,
-    target_node_id: 10,
-  },
-  {
-    created_at: "2024-07-20T14:41:35.533862+00:00",
-    id: 28,
-    relationship_type: "niece_nephew_by_blood",
-    source: 13,
-    source_node_id: 13,
-    strength: 1,
-    target: 2,
-    target_node_id: 2,
-  },
-  {
-    created_at: "2024-07-20T14:42:59.654936+00:00",
-    id: 29,
-    relationship_type: "niece_nephew_by_marriage",
-    source: 13,
-    source_node_id: 13,
-    strength: 1,
-    target: 9,
-    target_node_id: 9,
-  },
-  {
-    created_at: "2024-07-20T14:43:41.221945+00:00",
-    id: 30,
-    relationship_type: "niece_nephew_by_blood",
-    source: 11,
-    source_node_id: 11,
-    strength: 1,
-    target: 10,
-    target_node_id: 10,
-  },
-  {
-    created_at: "2024-07-20T14:43:52.452217+00:00",
-    id: 31,
-    relationship_type: "niece_nephew_by_marriage",
-    source: 12,
-    source_node_id: 12,
-    strength: 1,
-    target: 10,
-    target_node_id: 10,
-  },
-  {
-    created_at: "2024-07-20T19:15:06.726173+00:00",
-    id: 32,
-    relationship_type: "coworker",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 17,
-    target_node_id: 17,
-  },
-  {
-    created_at: "2024-07-20T19:15:50.777921+00:00",
-    id: 34,
-    relationship_type: "coworker",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 18,
-    target_node_id: 18,
-  },
-  {
-    created_at: "2024-07-20T19:36:25.528396+00:00",
-    id: 35,
-    relationship_type: "friend",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 19,
-    target_node_id: 19,
-  },
-  {
-    created_at: "2024-07-24T22:14:14.394002+00:00",
-    id: 36,
-    relationship_type: "spouse",
-    source: 15,
-    source_node_id: 15,
-    strength: 1,
-    target: 14,
-    target_node_id: 14,
-  },
-  {
-    created_at: "2024-07-20T19:15:29.675303+00:00",
-    id: 33,
-    relationship_type: "coworker",
-    source: 1,
-    source_node_id: 1,
-    strength: 1,
-    target: 16,
-    target_node_id: 16,
+    target: {
+      created_at: "2024-07-20T14:08:06.754277+00:00",
+      date_of_birth: null,
+      date_of_death: null,
+      first_name: "Aaron",
+      gift_ideas: [Array],
+      group_id: 2,
+      group_name: "Best Friends",
+      id: 2,
+      index: 5,
+      last_name: "Mackenzie",
+      maiden_name: null,
+      partner_id: 9,
+      partner_type: "spouse",
+      phonetic_name: "Ah run",
+      preferred_name: "Amac",
+      sex: "male",
+      source_node_ids: [Array],
+      vx: -0.030801369338344584,
+      vy: -0.008040950088883529,
+      x: 112.2880757226056,
+      y: 458.6608181819479,
+    },
   },
 ];

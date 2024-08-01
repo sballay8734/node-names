@@ -12,11 +12,12 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
-import { INode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { IPositionedNode } from "@/utils/getNodePositions";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
+import { INode2 } from "../redux/graphManagement";
 
 import NodeWidget from "./NodeWidget";
 
@@ -25,9 +26,9 @@ import NodeWidget from "./NodeWidget";
 const AnimatedBg = Animated.createAnimatedComponent(ImageBackground);
 
 interface Props {
-  node: INode;
+  node: INode2;
   nodePosition: { x: number; y: number };
-  centerOnNode: (node: INode) => void;
+  centerOnNode: (node: IPositionedNode) => void;
 }
 
 const image = {
@@ -44,7 +45,10 @@ export default function NodeTapDetector({
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
   const nodeConnectionCount = useAppSelector((state: RootState) => {
-    if (!node.isRoot && state.selections.secondaryConnections[node.id]) {
+    if (
+      !node.source_node_ids &&
+      state.selections.secondaryConnections[node.id]
+    ) {
       return state.selections.secondaryConnections[node.id].connectionIds
         .length;
     } else {
@@ -65,17 +69,17 @@ export default function NodeTapDetector({
   // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    width: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
-    height: node.isRoot ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    width: !node.source_node_ids ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    height: !node.source_node_ids ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
 
     transform: [
       {
-        translateX: node.isRoot
+        translateX: !node.source_node_ids
           ? x - ROOT_NODE_RADIUS / 2
           : x - REG_NODE_RADIUS / 2,
       },
       {
-        translateY: node.isRoot
+        translateY: !node.source_node_ids
           ? y - ROOT_NODE_RADIUS / 2
           : y - REG_NODE_RADIUS / 2,
       },
@@ -119,16 +123,16 @@ export default function NodeTapDetector({
 
   // TODO: Calc font size based on name length and circle size
   // THIS IS JUST A QUICK WORKAROUND
-  function calcFontSize(node: INode) {
-    if (node.isRoot) {
+  function calcFontSize(node: INode2) {
+    if (!node.source_node_ids) {
       return ROOT_TEXT_SIZE;
     } else {
       return REG_TEXT_SIZE - node.first_name.length / 2;
     }
   }
 
-  function getColors(node: INode) {
-    if (node.isRoot) {
+  function getColors(node: INode2) {
+    if (!node.source_node_ids) {
       return {
         inactiveBgColor: "transparent",
         activeBgColor: "#66e889",
@@ -159,13 +163,15 @@ export default function NodeTapDetector({
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor: node.isRoot ? "#0d0d0d" : "transparent",
+              backgroundColor: !node.source_node_ids
+                ? "#0d0d0d"
+                : "transparent",
               borderRadius: 100,
               borderWidth: 1,
             },
           ]}
         >
-          {node.isRoot && (
+          {!node.source_node_ids && (
             <AnimatedBg
               source={image}
               style={[styles.image, rootImgStyles]}
@@ -180,16 +186,16 @@ export default function NodeTapDetector({
           style={[
             {
               position: "absolute",
-              bottom: node.isRoot ? -10 : -3,
+              bottom: !node.source_node_ids ? -10 : -3,
               borderRadius: 2,
               paddingHorizontal: 3,
               paddingVertical: 1,
               backgroundColor: "#1e2152",
               borderWidth: 1,
               borderColor:
-                isSelected && !node.isRoot ? "#0fdba5" : "transparent",
+                isSelected && node.source_node_ids ? "#0fdba5" : "transparent",
             },
-            !node.isRoot && animatedTextStyles,
+            node.source_node_ids && animatedTextStyles,
           ]}
         >
           <Text
@@ -197,11 +203,11 @@ export default function NodeTapDetector({
             style={{
               width: "100%",
               fontSize: calcFontSize(node),
-              color: isSelected && !node.isRoot ? "#c2ffef" : "#516e66",
-              fontWeight: node.isRoot ? "600" : "400",
+              color: isSelected && node.source_node_ids ? "#c2ffef" : "#516e66",
+              fontWeight: !node.source_node_ids ? "600" : "400",
             }}
           >
-            {node.isRoot ? "ME" : node.first_name}
+            {!node.source_node_ids ? "ME" : node.first_name}
           </Text>
         </Animated.View>
 

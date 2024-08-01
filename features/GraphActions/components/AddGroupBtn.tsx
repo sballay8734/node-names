@@ -2,10 +2,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable } from "react-native";
 
 import { View, Text } from "@/components/Themed";
-import { INode } from "@/features/D3/types/d3Types";
+import { IPositionedNode } from "@/utils/getNodePositions";
 
 interface Props {
-  selectedNodes: INode[];
+  selectedNodes: IPositionedNode[];
 }
 
 export default function AddGroupBtn({

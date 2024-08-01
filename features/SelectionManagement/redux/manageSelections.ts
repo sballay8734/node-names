@@ -1,32 +1,37 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { INode, ILink } from "@/features/D3/types/d3Types";
-import { IConnectionsAndNodes } from "@/features/Graph/utils/getNodeConnections";
+import { RelationshipType } from "@/types/dbTypes";
+import { IPositionedNode } from "@/utils/getNodePositions";
+
+interface IConnectionsAndNodes {
+  connections: {
+    [id: number]: {
+      id: number;
+      created_at: string;
+      person_1_id: number;
+      person_2_id: number;
+      relationship_type: RelationshipType;
+    };
+  };
+  nodes: {
+    [id: number]: IPositionedNode;
+  };
+  connectionIds: number[];
+  nodeIds: number[];
+}
 
 // Define a type for the slice state
 interface ManageSelectionsState {
-  primaryNodes: INode[] | null;
-  primaryLinks: ILink[] | null;
-
   secondaryConnections: { [nodeId: number]: IConnectionsAndNodes };
 
-  inspectedNodes: INode[] | null;
-  inspectedLinks: ILink[] | null;
-
   popoverIsShown: boolean;
-  selectedNodes: INode[];
+  selectedNodes: IPositionedNode[];
 }
 
 // Define the initial state using that type
 const initialState: ManageSelectionsState = {
-  primaryNodes: null,
-  primaryLinks: null,
-
   secondaryConnections: {},
-
-  inspectedNodes: null,
-  inspectedLinks: null,
 
   popoverIsShown: false,
   selectedNodes: [],
@@ -49,12 +54,6 @@ const ManageSelectionsSlice = createSlice({
       state.popoverIsShown = false;
     },
 
-    setNodes: (state, action: PayloadAction<INode[]>) => {
-      state.primaryNodes = action.payload;
-    },
-    setLinks: (state, action: PayloadAction<ILink[]>) => {
-      state.primaryLinks = action.payload;
-    },
     setSecondary: (
       state,
       action: PayloadAction<{ [nodeId: number]: IConnectionsAndNodes }>,
@@ -63,7 +62,7 @@ const ManageSelectionsSlice = createSlice({
     },
 
     // SELECTION MANAGEMENT ****************************************************
-    handleNodeSelect: (state, action: PayloadAction<INode>) => {
+    handleNodeSelect: (state, action: PayloadAction<IPositionedNode>) => {
       const clickedNode = action.payload;
       const nodeIndex = state.selectedNodes.findIndex(
         (node) => node.id === clickedNode.id,
@@ -85,23 +84,6 @@ const ManageSelectionsSlice = createSlice({
     },
 
     // LINK MANAGEMENT/CREATION
-    // creates a single, unconnected node
-    handleCreateNewNode: (state) => {
-      state.primaryNodes &&
-        state.primaryNodes.push({
-          created_at: "blah",
-          first_name: "David",
-          group_id: null,
-          id: 328927,
-          isRoot: false,
-          last_name: "Johnson",
-          maiden_name: null,
-          phonetic_name: null,
-          sex: "male",
-          x: 250,
-          y: 250,
-        });
-    },
 
     // creates a new link & node FROM currently selected node
     handleConnectToNewNode: (state, action) => {
@@ -112,13 +94,10 @@ const ManageSelectionsSlice = createSlice({
 
 export const {
   handlePopover,
-  setNodes,
-  setLinks,
   showPopover,
   hidePopover,
   handleNodeSelect,
   handleConnectToNewNode,
-  handleCreateNewNode,
   deselectAll,
   setSecondary,
 } = ManageSelectionsSlice.actions;

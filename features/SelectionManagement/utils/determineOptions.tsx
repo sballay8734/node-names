@@ -53,7 +53,7 @@ export function usePopoverOptions() {
     (state: RootState) => state.selections.selectedNodes,
   );
   const isRootSelected = useAppSelector((state: RootState) =>
-    state.selections.selectedNodes.find((node) => node.isRoot),
+    state.selections.selectedNodes.find((node) => !node.source_node_ids),
   );
 
   const getPopoverOptions = () => {

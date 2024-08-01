@@ -3,13 +3,16 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
-import { INode } from "@/features/D3/types/d3Types";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import {
   CENTER_ON_SCALE,
   useGestures,
 } from "@/features/Graph/hooks/useGestures";
+import {
+  setUserLinks,
+  setUserNodes,
+} from "@/features/Graph/redux/graphManagement";
 import { useNewDataLoad } from "@/features/Graph/utils/useNewDataLoad";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
@@ -17,12 +20,11 @@ import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
 import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
 import Popover from "@/features/Shared/Popover";
 import SearchBar from "@/features/Shared/SearchBar";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { useDataLoad } from "@/hooks/useDataLoad";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
+import { calcNodePositions, IPositionedNode } from "@/utils/getNodePositions";
 import { getNthConnections } from "@/utils/getNthConnections";
-import { calcNodePositions } from "@/utils/getNodePositions";
 
 // REMOVE: User will be able to change this
 const tempN = 0;
@@ -30,6 +32,7 @@ const tempN = 0;
 const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
+  const dispatch = useAppDispatch();
   const nodeIsSelected = useAppSelector(
     (state: RootState) => state.selections.selectedNodes.length > 0,
   );
@@ -38,7 +41,6 @@ const Index = () => {
   );
   const windowSize = useWindowSize();
 
-  useDataLoad();
   const { people, connections } = useNewDataLoad();
 
   useEffect(() => {
@@ -62,9 +64,10 @@ const Index = () => {
         scale,
       );
 
-      console.log(nodes, links);
+      dispatch(setUserNodes(nodes));
+      dispatch(setUserLinks(links));
     }
-  }, [activeRootNode, connections, people, scale, windowSize]);
+  }, [activeRootNode, connections, dispatch, people, scale, windowSize]);
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {
@@ -78,7 +81,7 @@ const Index = () => {
     lastScale.value = scale.value;
   }
 
-  function centerOnNode(node: INode) {
+  function centerOnNode(node: IPositionedNode) {
     if (!nodeIsSelected) {
       translateX.value = withTiming(
         (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,

@@ -4,15 +4,13 @@ import Animated, {
 } from "react-native-reanimated";
 
 import CPressable from "@/components/CustomNativeComponents/CPressable";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { handleCreateNewNode } from "../SelectionManagement/redux/manageSelections";
 import { usePopoverOptions } from "../SelectionManagement/utils/determineOptions";
 
 export default function Popover(): React.JSX.Element {
   const popoverOptions = usePopoverOptions();
-  const dispatch = useAppDispatch();
 
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
@@ -28,7 +26,7 @@ export default function Popover(): React.JSX.Element {
   };
 
   const actionMap: ActionMap = {
-    "Create a new node": () => dispatch(handleCreateNewNode()),
+    "Create a new node": () => console.log("Create new node"),
     "Create a new group": () => console.log("Create new group"),
     "Connect to a new node": () => console.log("Connect to new node"),
     "Connect to a new group": () => console.log("Connect to new group"),

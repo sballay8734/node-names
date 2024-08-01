@@ -28,7 +28,7 @@ export default function InspectBtn(): React.JSX.Element {
   const rootNodeIsSelected = useAppSelector((state: RootState) => {
     return (
       state.selections.selectedNodes.length === 1 &&
-      state.selections.selectedNodes[0].isRoot === true
+      !state.selections.selectedNodes[0].source_node_ids === true
     );
   });
   const { updateRootId } = useNewDataLoad();

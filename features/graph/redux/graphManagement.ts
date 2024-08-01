@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Sex } from "@/types/dbTypes";
+import { IPositionedLink, IPositionedNode } from "@/utils/getNodePositions";
 
 export interface INode2 {
   id: number;
@@ -28,8 +28,11 @@ interface ManageGraphState {
   activeRootNode: INode2 | null;
   activeRootType: "user" | "notUser";
 
-  userNodes: INode2[];
-  inspectedNodes: INode2[];
+  userNodes: IPositionedNode[];
+  userLinks: IPositionedLink[];
+
+  inspectedNodes: IPositionedNode[];
+  inspectedLinks: IPositionedLink[];
 }
 
 const initialState: ManageGraphState = {
@@ -37,19 +40,45 @@ const initialState: ManageGraphState = {
   activeRootType: "user",
 
   userNodes: [],
+  userLinks: [],
+
   inspectedNodes: [],
+  inspectedLinks: [],
 };
 
 const ManageGraphSlice = createSlice({
   name: "manageGraph",
   initialState,
   reducers: {
-    setActiveRootNode: (state, action: PayloadAction<INode2>) => {
+    // ROOT
+    setActiveRootNode: (state, action: PayloadAction<IPositionedNode>) => {
       state.activeRootNode = action.payload;
+    },
+
+    // USER (Will not change often)
+    setUserNodes: (state, action: PayloadAction<IPositionedNode[]>) => {
+      state.userNodes = action.payload;
+    },
+    setUserLinks: (state, action: PayloadAction<IPositionedLink[]>) => {
+      state.userLinks = action.payload;
+    },
+
+    // Changes when user "inspects"
+    setInspectedNodes: (state, action: PayloadAction<IPositionedNode[]>) => {
+      state.inspectedNodes = action.payload;
+    },
+    setInspectedLinks: (state, action: PayloadAction<IPositionedLink[]>) => {
+      state.userLinks = action.payload;
     },
   },
 });
 
-export const { setActiveRootNode } = ManageGraphSlice.actions;
+export const {
+  setActiveRootNode,
+  setUserNodes,
+  setUserLinks,
+  setInspectedNodes,
+  setInspectedLinks,
+} = ManageGraphSlice.actions;
 
 export default ManageGraphSlice.reducer;
