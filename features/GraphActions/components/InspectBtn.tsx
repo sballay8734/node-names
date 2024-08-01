@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { View } from "@/components/Themed";
-import { useNewDataLoad } from "@/features/Graph/utils/newArchitecture";
+import { useNewDataLoad } from "@/features/Graph/utils/useNewDataLoad";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 

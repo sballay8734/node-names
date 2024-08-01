@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
@@ -10,7 +10,7 @@ import {
   CENTER_ON_SCALE,
   useGestures,
 } from "@/features/Graph/hooks/useGestures";
-import { useNewDataLoad } from "@/features/Graph/utils/newArchitecture";
+import { useNewDataLoad } from "@/features/Graph/utils/useNewDataLoad";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
 import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
@@ -21,6 +21,11 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
+import { getNthConnections } from "@/utils/getNthConnections";
+import { calcNodePositions } from "@/utils/getNodePositions";
+
+// REMOVE: User will be able to change this
+const tempN = 0;
 
 const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
@@ -28,10 +33,38 @@ const Index = () => {
   const nodeIsSelected = useAppSelector(
     (state: RootState) => state.selections.selectedNodes.length > 0,
   );
+  const activeRootNode = useAppSelector(
+    (state: RootState) => state.manageGraph.activeRootNode,
+  );
   const windowSize = useWindowSize();
 
   useDataLoad();
-  useNewDataLoad();
+  const { people, connections } = useNewDataLoad();
+
+  useEffect(() => {
+    if (activeRootNode && people && connections) {
+      const nodesToShow = getNthConnections(
+        activeRootNode?.id,
+        people,
+        connections,
+        tempN,
+      );
+
+      if (!nodesToShow) return;
+
+      const { people: filteredPeople, connections: filteredConnections } =
+        nodesToShow;
+
+      const { nodes, links } = calcNodePositions(
+        filteredPeople,
+        filteredConnections,
+        windowSize,
+        scale,
+      );
+
+      console.log(nodes, links);
+    }
+  }, [activeRootNode, connections, people, scale, windowSize]);
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {

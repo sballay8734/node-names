@@ -23,7 +23,6 @@ export function calcPrimaryPositions(
   const primaryC: Link[] = primaryConnections.map((p) => ({ ...p }));
   const primaryN: INode[] = primaryNodes.map((n) => ({ ...n }));
 
-  // NOTE: x and y positions correspond to center of node NOT top left which is why you don't need to do any radius subtracting
   const rootNode = primaryN.find((p) => p.isRoot === true);
   if (rootNode) {
     (rootNode as INode).fx = centerNode(

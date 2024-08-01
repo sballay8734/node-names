@@ -39,37 +39,37 @@ export type Database = {
         Row: {
           created_at: string;
           id: number;
-          person_1_id: number;
-          person_2_id: number;
-          relationship_type: RelationshipType;
+          relationship_type: string;
+          source_node_id: number;
+          target_node_id: number;
         };
         Insert: {
           created_at?: string;
           id?: number;
-          person_1_id: number;
-          person_2_id: number;
-          relationship_type: RelationshipType;
+          relationship_type: string;
+          source_node_id: number;
+          target_node_id: number;
         };
         Update: {
           created_at?: string;
           id?: number;
-          person_1_id?: number;
-          person_2_id?: number;
-          relationship_type?: RelationshipType;
+          relationship_type?: string;
+          source_node_id?: number;
+          target_node_id?: number;
         };
         Relationships: [
           {
             foreignKeyName: "connection_person_1_id_fkey";
-            columns: ["person_1_id"];
+            columns: ["source_node_id"];
             isOneToOne: false;
-            referencedRelation: "person";
+            referencedRelation: "people";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "connection_person_2_id_fkey";
-            columns: ["person_2_id"];
+            columns: ["target_node_id"];
             isOneToOne: false;
-            referencedRelation: "person";
+            referencedRelation: "people";
             referencedColumns: ["id"];
           },
         ];
@@ -98,7 +98,7 @@ export type Database = {
             foreignKeyName: "group_parent_group_id_fkey";
             columns: ["parent_group_id"];
             isOneToOne: false;
-            referencedRelation: "group";
+            referencedRelation: "groups";
             referencedColumns: ["id"];
           },
         ];
@@ -106,43 +106,64 @@ export type Database = {
       people: {
         Row: {
           created_at: string;
+          date_of_birth: string | null;
+          date_of_death: string | null;
           first_name: string;
+          gift_ideas: string[] | null;
           group_id: number | null;
+          group_name: string | null;
           id: number;
-          isRoot: boolean | null;
           last_name: string | null;
           maiden_name: string | null;
+          partner_id: number | null;
+          partner_type: "spouse" | "dating" | "divorced" | null;
           phonetic_name: string | null;
-          sex: Sex;
+          preferred_name: string | null;
+          sex: string;
+          source_node_ids: string[] | null;
         };
         Insert: {
           created_at?: string;
+          date_of_birth?: string | null;
+          date_of_death?: string | null;
           first_name: string;
+          gift_ideas?: string[] | null;
           group_id?: number | null;
+          group_name?: string | null;
           id?: number;
-          isRoot?: boolean | null;
           last_name?: string | null;
           maiden_name?: string | null;
+          partner_id?: number | null;
+          partner_type?: string | null;
           phonetic_name?: string | null;
-          sex: Sex;
+          preferred_name?: string | null;
+          sex: string;
+          source_node_ids?: string[] | null;
         };
         Update: {
           created_at?: string;
+          date_of_birth?: string | null;
+          date_of_death?: string | null;
           first_name?: string;
+          gift_ideas?: string[] | null;
           group_id?: number | null;
+          group_name?: string | null;
           id?: number;
-          isRoot?: boolean | null;
           last_name?: string | null;
           maiden_name?: string | null;
+          partner_id?: number | null;
+          partner_type?: string | null;
           phonetic_name?: string | null;
-          sex?: Sex;
+          preferred_name?: string | null;
+          sex?: string;
+          source_node_ids?: string[] | null;
         };
         Relationships: [
           {
             foreignKeyName: "person_group_id_fkey";
             columns: ["group_id"];
             isOneToOne: false;
-            referencedRelation: "group";
+            referencedRelation: "groups";
             referencedColumns: ["id"];
           },
         ];

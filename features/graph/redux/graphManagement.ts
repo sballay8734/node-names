@@ -6,8 +6,8 @@ export interface INode2 {
   id: number;
   created_at: string;
   first_name: string;
-  sex: Sex;
-  sourceNodeIds: string[] | null; // only the userRoot will be null
+  sex: string;
+  source_node_ids: string[] | null; // only the userRoot will be null
 
   group_id: number | null;
   group_name: string | null;
@@ -16,9 +16,12 @@ export interface INode2 {
   preferred_name: string | null;
   phonetic_name: string | null;
 
-  date_of_birth: Date | null;
-  date_of_death: Date | null;
+  date_of_birth: string | null;
+  date_of_death: string | null;
   gift_ideas: string[] | null;
+
+  partner_id: number | null;
+  partner_type: "spouse" | "dating" | "divorced" | null;
 }
 
 interface ManageGraphState {
