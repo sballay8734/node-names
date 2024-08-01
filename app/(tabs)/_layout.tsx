@@ -8,29 +8,29 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
+import { useCustomTheme } from "@/components/CustomThemeContext";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
 import { handlePopover } from "@/features/SelectionManagement/redux/manageSelections";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useCustomTheme();
   const dispatch = useAppDispatch();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: theme.tabBarActiveTint,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "black", // tab bar background
+          backgroundColor: theme.bgBase, // tab bar background
           overflow: "visible",
           paddingTop: 0,
           paddingBottom: 0,
+          borderTopColor: theme.borderBase,
         },
       }}
     >
@@ -52,6 +52,7 @@ export default function TabLayout() {
         name="two"
         options={{
           title: "Tab Two",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Entypo name="heart-outlined" size={24} color={color} />
           ),
@@ -61,6 +62,7 @@ export default function TabLayout() {
         name="add"
         options={{
           title: "Add",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <FontAwesome6
               name="circle-plus"
@@ -94,6 +96,7 @@ export default function TabLayout() {
         name="three"
         options={{
           title: "Tab Three",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Entypo name="heart-outlined" size={24} color={color} />
           ),
@@ -103,6 +106,7 @@ export default function TabLayout() {
         name="four"
         options={{
           title: "Tab Four",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="settings" size={24} color={color} />
           ),

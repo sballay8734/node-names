@@ -1,19 +1,14 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { ImageBackground, StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
-import { View } from "@/components/Themed";
-import { useColorScheme } from "@/components/useColorScheme";
+import { CustomThemeProvider } from "@/components/CustomThemeContext";
+import DefTheme from "@/constants/Colors";
 import { store } from "@/store/store";
 
 // !TODO: need to load assets at build time
@@ -59,10 +54,10 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();  // detects light or dark mode
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <CustomThemeProvider theme={DefTheme}>
       <Provider store={store}>
         <GestureHandlerRootView style={[styles.container]}>
           <View
@@ -83,7 +78,7 @@ function RootLayoutNav() {
                   name="(tabs)"
                   options={{
                     headerShown: false,
-                    contentStyle: { backgroundColor: "#0c0b0d" },
+                    // contentStyle: { backgroundColor: "#0c0b0d" },
                   }}
                 />
                 <Stack.Screen
@@ -95,7 +90,7 @@ function RootLayoutNav() {
           </View>
         </GestureHandlerRootView>
       </Provider>
-    </ThemeProvider>
+    </CustomThemeProvider>
   );
 }
 

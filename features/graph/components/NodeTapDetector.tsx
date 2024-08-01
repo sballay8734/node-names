@@ -1,11 +1,10 @@
-import { ImageBackground, StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
 
-import { Text } from "@/components/Themed";
 import {
   REG_NODE_RADIUS,
   REG_TEXT_SIZE,

@@ -1,6 +1,6 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   DerivedValue,
   useAnimatedStyle,
@@ -8,7 +8,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { View } from "@/components/Themed";
 import { ARROW_BTN_RADIUS } from "@/constants/styles";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);

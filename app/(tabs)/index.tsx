@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import { Easing, withTiming } from "react-native-reanimated";
 
+import { useCustomTheme } from "@/components/CustomThemeContext";
 import { PositionedNode } from "@/features/D3/types/d3Types";
 import { calcNodePositions } from "@/features/D3/utils/getNodePositions";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
@@ -31,6 +32,7 @@ import { RootState } from "@/store/store";
 const tempN = 0;
 
 const Index = () => {
+  const theme = useCustomTheme();
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const dispatch = useAppDispatch();
@@ -108,7 +110,9 @@ const Index = () => {
 
   return (
     <GestureDetector gesture={composed}>
-      <View style={[styles.canvasWrapper]}>
+      <View
+        style={[styles.canvasWrapper, { backgroundColor: theme.bgLighter }]}
+      >
         <LinksCanvas
           windowSize={windowSize}
           translateX={translateX}

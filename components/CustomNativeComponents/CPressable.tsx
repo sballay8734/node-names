@@ -1,11 +1,9 @@
-import { Pressable, TextStyle, ViewStyle } from "react-native";
+import { Pressable, TextStyle, ViewStyle, View, Text } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-
-import { Text, View } from "../Themed";
 
 interface Props {
   icon?: React.ReactNode | boolean;

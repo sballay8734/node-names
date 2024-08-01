@@ -1,7 +1,5 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import Animated from "react-native-reanimated";
-
-import { Text } from "@/components/Themed";
 
 interface Props {
   count: number | null;

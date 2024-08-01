@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRef } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View, Text } from "react-native";
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
@@ -8,7 +8,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { View, Text } from "@/components/Themed";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 

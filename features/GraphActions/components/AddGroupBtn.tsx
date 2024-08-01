@@ -1,7 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Pressable } from "react-native";
+import { Pressable, View, Text } from "react-native";
 
-import { View, Text } from "@/components/Themed";
 import { PositionedNode } from "@/features/D3/types/d3Types";
 
 interface Props {

@@ -1,21 +1,23 @@
-const tintColorLight = "#2f95dc";
-const tintColorDark = "#fff";
+import { Theme } from "@react-navigation/native";
 
-export default {
-  light: {
-    text: "#000",
-    background: "#fff",
-    tint: tintColorLight,
-    tabIconDefault: "#ccc",
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: "#fff",
-    background: "black",
-    tint: tintColorDark,
-    tabIconDefault: "#ccc",
-    tabIconSelected: tintColorDark,
+import { ITheme } from "@/components/CustomThemeContext";
 
-    nodeLinkColor: "#232e3a",
-  },
+export type CustomTheme = ITheme & Partial<Theme>;
+
+const DefTheme: ITheme = {
+  bgBase: "rgba(13, 13, 13, 1)",
+  bgLighter: "rgba(20, 20, 20, 1)",
+  borderBase: "rgba(34, 34, 34, 1)",
+
+  btnBase: "rgba(25, 25, 25, 1)",
+  btnBasePressed: "rgba(25, 25, 25, 0.7)", // REVIEW:
+  btnBaseSelected: "rgba(48, 24, 13, 1)",
+  btnText: "rgba(68, 68, 68, 1)",
+  btnTextSelected: "rgba(245, 84, 8, 1)",
+
+  tabBarActiveTint: "#fff",
+
+  primary: "rgba(245, 84, 8, 1)",
 };
+
+export default DefTheme;
