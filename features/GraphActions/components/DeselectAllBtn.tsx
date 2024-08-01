@@ -7,10 +7,9 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useDispatch } from "react-redux";
 
 import { View, Text } from "@/components/Themed";
-import { useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { deselectAll } from "../../SelectionManagement/redux/manageSelections";
@@ -19,7 +18,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
 
 export default function DeselectAllBtn(): React.JSX.Element {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
   const selectedNodeCount = useAppSelector(

@@ -2,10 +2,9 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { useDispatch } from "react-redux";
 
 import CPressable from "@/components/CustomNativeComponents/CPressable";
-import { useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { handleCreateNewNode } from "../SelectionManagement/redux/manageSelections";
@@ -13,7 +12,7 @@ import { usePopoverOptions } from "../SelectionManagement/utils/determineOptions
 
 export default function Popover(): React.JSX.Element {
   const popoverOptions = usePopoverOptions();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,

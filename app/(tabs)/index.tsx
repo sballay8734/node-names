@@ -10,6 +10,7 @@ import {
   CENTER_ON_SCALE,
   useGestures,
 } from "@/features/Graph/hooks/useGestures";
+import { useNewDataLoad } from "@/features/Graph/utils/newArchitecture";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
 import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
@@ -30,6 +31,7 @@ const Index = () => {
   const windowSize = useWindowSize();
 
   useDataLoad();
+  useNewDataLoad();
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {
@@ -139,10 +141,6 @@ export default Index;
 // TODO: Colors of TODO icons no longer match.
 
 // TODO: Color nodes
-
-// TODO: Add alive/dead, and preferredName property
-
-// TODO: Also include groupName in Node object (not just the id)
 
 // TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
 

@@ -1,14 +1,12 @@
 import { ImageBackground, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
-  useAnimatedProps,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
 
 import { Text } from "@/components/Themed";
 import {
-  NODE_BORDER_WIDTH,
   REG_NODE_RADIUS,
   REG_TEXT_SIZE,
   ROOT_NODE_RADIUS,

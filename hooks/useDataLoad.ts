@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 import { ILink } from "@/features/D3/types/d3Types";
 import { calcPrimaryPositions } from "@/features/D3/utils/positionGraphElements";
@@ -15,8 +14,10 @@ import {
 import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
 
+import { useAppDispatch } from "./reduxHooks";
+
 export const useDataLoad = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const windowSize = useWindowSize();
   const { scale } = useGestures();
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);

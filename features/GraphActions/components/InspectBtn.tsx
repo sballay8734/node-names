@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRef } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedProps,
@@ -8,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { View } from "@/components/Themed";
+import { useNewDataLoad } from "@/features/Graph/utils/newArchitecture";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -16,6 +18,10 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
 export default function InspectBtn(): React.JSX.Element {
   const isPressed = useSharedValue(false);
+  const longPressRef = useRef(false);
+  const selectedNodes = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes,
+  );
   const selectedNodeCount = useAppSelector(
     (state: RootState) => state.selections.selectedNodes.length,
   );
@@ -25,13 +31,26 @@ export default function InspectBtn(): React.JSX.Element {
       state.selections.selectedNodes[0].isRoot === true
     );
   });
+  const { updateRootId } = useNewDataLoad();
 
   function handlePressIn() {
     isPressed.value = true;
+    longPressRef.current = false;
   }
 
   function handlePressOut() {
+    if (
+      selectedNodeCount === 1 &&
+      !rootNodeIsSelected &&
+      !longPressRef.current
+    ) {
+      updateRootId(selectedNodes[0].id);
+    }
     isPressed.value = false;
+  }
+
+  function handleLongPress() {
+    longPressRef.current = true;
   }
 
   const inspectBtnStyles = useAnimatedStyle(() => {
@@ -69,6 +88,7 @@ export default function InspectBtn(): React.JSX.Element {
     <AnimatedPressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      onLongPress={handleLongPress}
       style={[styles.recenterButton, inspectBtnStyles]}
     >
       <View style={styles.buttonContent}>

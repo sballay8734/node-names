@@ -1,16 +1,3 @@
-// interface Person {
-//   id: number;
-//   firstName: string;
-//   lastName: string | null;
-//   maidenName: string | null;
-//   groupId: number | null;
-//   sex: "male" | "female" | "other";
-
-//   // birthDate: Date;
-//   // giftIdeas: string[];
-//   // phoneticName: string;
-// }
-
 export type RelationshipType =
   | "spouse" // 1.0
   | "parent_child_biological" // 0.9
