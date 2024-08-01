@@ -2,7 +2,7 @@ import { Line, Paint } from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 
-import { PositionedLink, PositionedNode } from "@/utils/getNodePositions";
+import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 
 interface Props {
   link: PositionedLink;

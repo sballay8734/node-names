@@ -2,10 +2,10 @@ import { Canvas, Group } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
+import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 
 import Link from "./Link";
 
