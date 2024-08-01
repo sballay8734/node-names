@@ -148,18 +148,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// Graph
-// NodeManagement
-// SelectionManagement
-
-// UserProfile
-// UI?
-
 // FIRST FOR SAT. ****************************************************
-// 1. "InspectBtn" and "DeselectAllBtn" should appear as group. They both should not be shown if nothing is selected and InspectBtn should be faded out (but still visible) if more than one node is selected
-// 1a. Deselect should always be visible and when clicked, should NOT recenter to rootNode.
 
-// 1. write function to get all connections for a given node (you may already have this)
 // 2. Add widget to node that shows the number of connections that node has
 // 3. Work on adding/connecting/grouping nodes (+ btn)
 // 4. Add overlay over groups that fades out as you zoom in
@@ -168,6 +158,12 @@ export default Index;
 // 7. WORK ON THEME AND REFACTOR STYLES THAT NEED IT (NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: Need to redo getNodeConnections function to handle widget
+
+// !TODO: Nodes whose source is selected should brighten slightly to differentiate from unconnected nodes
+
+// !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
 
 // TODO: using nodeIsSelected in index.tsx is BETTER but not perfect. You're still getting one or two re-renders that you don't want
 

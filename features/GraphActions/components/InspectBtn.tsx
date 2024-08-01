@@ -44,7 +44,8 @@ export default function InspectBtn(): React.JSX.Element {
       !rootNodeIsSelected &&
       !longPressRef.current
     ) {
-      updateRootId(selectedNodes[0].id);
+      console.log("TODO: UPDATE_ROOT_ID");
+      // updateRootId(selectedNodes[0].id);
     }
     isPressed.value = false;
   }

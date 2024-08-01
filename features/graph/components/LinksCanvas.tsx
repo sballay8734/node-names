@@ -5,7 +5,7 @@ import { SharedValue, useDerivedValue } from "react-native-reanimated";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { PositionedLink, PositionedNode } from "@/utils/getNodePositions";
+import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 
 import Link from "./Link";
 
@@ -52,9 +52,7 @@ export default function LinksCanvas({
             const shouldShow =
               isPositionedNode(link.source) &&
               selectedNodeId === link.source.id;
-            return (
-              <Link key={link.index} link={link} shouldShow={shouldShow} />
-            );
+            return <Link key={link.id} link={link} shouldShow={shouldShow} />;
           })}
       </Group>
     </Canvas>

@@ -4,9 +4,9 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 
+import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { PositionedNode } from "@/utils/getNodePositions";
 
 import NodeTapDetector from "./NodeTapDetector";
 

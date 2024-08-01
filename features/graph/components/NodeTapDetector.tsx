@@ -56,6 +56,8 @@ export default function NodeTapDetector({
     }
   });
 
+  console.log(nodeConnectionCount);
+
   const isSelected = selectedNode;
   const { x, y } = nodePosition;
 

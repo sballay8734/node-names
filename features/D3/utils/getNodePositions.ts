@@ -52,7 +52,7 @@ export function calcNodePositions(
   const groupCenters: { [key: string]: { x: number; y: number } } = {};
   const groupCount = new Set(people.map((p) => p.group_id)).size;
   let angle = 0;
-  const radius = Math.min(windowSize.width, windowSize.height) / 3;
+  const radius = Math.min(windowSize.width, windowSize.height) / 2;
 
   people.forEach((node) => {
     if (node.group_id === null) return;
@@ -72,46 +72,102 @@ export function calcNodePositions(
       if (node.group_id === null) return;
 
       const groupCenter = groupCenters[node.group_id];
-      node.vx! += (groupCenter.x - node.x!) * alpha * 0.5;
-      node.vy! += (groupCenter.y - node.y!) * alpha * 0.5;
+      node.vx! += (groupCenter.x - node.x!) * alpha * 0.05;
+      node.vy! += (groupCenter.y - node.y!) * alpha * 0.05;
+    });
+  }
+
+  function familyForce(alpha: number) {
+    const families: { [famId: string]: PositionedNode[] } = {};
+    positionedNodes.forEach((node) => {
+      if (node.partner_id && node.source_node_ids) {
+        const familyId = node.partner_id || node.source_node_ids[0];
+        if (!families[familyId]) {
+          families[familyId] = [];
+        }
+        families[familyId].push(node);
+      }
+    });
+
+    Object.values(families).forEach((familyMembers) => {
+      const validFamilyMembers = familyMembers.filter(
+        (member) => member.x !== undefined && member.y !== undefined,
+      );
+      if (validFamilyMembers.length === 0) return;
+
+      const centerX = d3.mean(validFamilyMembers, (d) => d.x ?? 0) ?? 0;
+      const centerY = d3.mean(validFamilyMembers, (d) => d.y ?? 0) ?? 0;
+
+      const rootX = rootNode?.x ?? 0;
+      const rootY = rootNode?.y ?? 0;
+
+      validFamilyMembers.forEach((member) => {
+        if (member.vx === undefined) member.vx = 0;
+        if (member.vy === undefined) member.vy = 0;
+
+        const distanceToRoot = Math.sqrt(
+          Math.pow(member.x! - rootX, 2) + Math.pow(member.y! - rootY, 2),
+        );
+
+        member.vx += (centerX - (member.x ?? 0)) * alpha * 0.5;
+        member.vy += (centerY - (member.y ?? 0)) * alpha * 0.5;
+
+        // Apply additional force based on distance to root
+        member.vx += ((rootX - member.x!) / distanceToRoot) * alpha;
+        member.vy += ((rootY - member.y!) / distanceToRoot) * alpha;
+      });
     });
   }
 
   const simulation = d3
     .forceSimulation<PositionedNode, PositionedLink>(positionedNodes)
-
-    // create space around the root node and min space around non-root nodes
-    .force(
-      "collision",
-      d3
-        .forceCollide()
-        .radius((node) => (!(node as PositionedNode).source_node_ids ? 50 : 15))
-        .strength(0.5),
-    )
-
-    // center nodes around screen center
     .force(
       "center",
       d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
     )
-
-    // pull linked nodes closer together
+    .force(
+      "radial",
+      d3.forceRadial(
+        radius,
+        windowSize.windowCenterX,
+        windowSize.windowCenterY,
+      ),
+    )
+    .force(
+      "collision",
+      d3
+        .forceCollide()
+        .radius((node) => (!(node as PositionedNode).source_node_ids ? 20 : 20))
+        .strength(0.5),
+    )
     .force(
       "link",
       d3
         .forceLink<PositionedNode, PositionedLink>(positionedLinks)
         .id((link) => link.id)
-        .distance((link) => {
-          const baseDistance = 150;
-          return baseDistance * (1 / link.strength);
-        })
-        .strength((link) => link.strength),
+        .distance((link) =>
+          link.relationship_type === "spouse" ||
+          link.relationship_type === "parent_child_biological"
+            ? 15
+            : 100,
+        )
+        .strength((link) =>
+          link.relationship_type === "spouse" ||
+          link.relationship_type === "parent_child_biological"
+            ? 0.7
+            : 0.1,
+        ),
     )
-
-    // weak repulsion force
-    .force("charge", d3.forceManyBody().strength(-30))
-
-    .force("clustering", clusteringForce);
+    .force("clustering", clusteringForce)
+    .force(
+      "charge",
+      d3
+        .forceManyBody()
+        .strength((node) =>
+          !(node as PositionedNode).source_node_ids ? 100 : 20,
+        ),
+    );
+  // .force("family", familyForce);
 
   // Run the simulation synchronously
   simulation.tick(300);
