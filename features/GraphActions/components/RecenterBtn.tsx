@@ -34,9 +34,9 @@ const RecenterBtn = ({
 
   const arrowRotate = useAnimatedStyle(() => arrowData.value);
   const arrowOpacity = useAnimatedStyle(() => ({
-    // !TODO: Bugs when saving file and stuff
-    // opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
-    opacity: 1,
+    // !TODO: Bugs when saving file and stuff (might be fine - it's just local state resetting on save I think)
+    opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
+    // opacity: 1,
   }));
 
   const handlePressIn = () => {

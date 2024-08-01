@@ -132,15 +132,9 @@ export default Index;
 
 // TODO: using nodeIsSelected in index.tsx is BETTER but not perfect. You're still getting one or two re-renders that you don't want
 
-// !TODO: Center node's background still doesn't transition when selected
-
 // !TODO: You might need to make Initial Scale much bigger. Zooming into the small nodes reveals blurry text
 
-// !TODO: panning root off screen, then make change to Nodes.tsx and save the file. Then click recenter. Then click root node (links shoot off the screen. The SVG scales but the nodes do not)
-
 // TODO: See about replacing useState with useRef where possible (This likely won't be possible in many places but since ref doesn't trigger re-renders, it could help performance)
-
-// TODO: ARROW DOESN'T SHOW SOMETIMES AND IT'S DIRECTION IS NOT QUITE RIGHT when root goes off the screen on the left side and bottom right
 
 // TODO: Colors of TODO icons no longer match.
 
@@ -148,19 +142,9 @@ export default Index;
 
 // TODO: Add alive/dead, and preferredName property
 
-// TODO: Add widget to show how many "internal" connections each primary connection has
-
-// TODO: "Enter/ZoomIn/Magnify" btn should appear when only one node is selected and that node has "internal" connections that will allow the user to "zoom" in to that persons connections
-
-// TODO: SEPARATE PIECE OF STATE FOR SELECTED NODE and CONNECTIONS WHEN ZOOMING IN.
-
 // TODO: Also include groupName in Node object (not just the id)
 
 // TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
-
-// TODO: Add counter for how many nodes are selected
-
-// TODO: Add "Deselect All" btn
 
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
