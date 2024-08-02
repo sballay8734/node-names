@@ -11,11 +11,6 @@ import { CustomThemeProvider } from "@/components/CustomThemeContext";
 import DefTheme from "@/constants/Colors";
 import { store } from "@/store/store";
 
-// !TODO: need to load assets at build time
-const image = {
-  uri: "https://t3.ftcdn.net/jpg/05/65/45/28/360_F_565452844_RWPHGhFeZ3DnvI7421hLq4JwFNcxpHS7.jpg",
-};
-
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -67,26 +62,16 @@ function RootLayoutNav() {
               backgroundColor: "transparent",
             }}
           >
-            <ImageBackground
-              source={image}
-              style={styles.image}
-              // imageStyle={{ opacity: 0.06 }}
-              imageStyle={{ opacity: 0 }}
-            >
-              <Stack>
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerShown: false,
-                    // contentStyle: { backgroundColor: "#0c0b0d" },
-                  }}
-                />
-                <Stack.Screen
-                  name="modal"
-                  options={{ presentation: "modal" }}
-                />
-              </Stack>
-            </ImageBackground>
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false,
+                  // contentStyle: { backgroundColor: "#0c0b0d" },
+                }}
+              />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            </Stack>
           </View>
         </GestureHandlerRootView>
       </Provider>

@@ -18,6 +18,13 @@ const DefTheme: ITheme = {
   tabBarActiveTint: "#fff",
 
   primary: "rgba(245, 84, 8, 1)",
+
+  textPrimary: "rgba(246, 246, 246, 1)",
+  textFadedSm: "rgba(132, 132, 135, 1)",
+  textFadedMd: "rgba(73, 73, 73, 1)",
+
+  groupTitleText: "rgba(178, 178, 178, 1)",
+  groupTitleOutline: "rgba(9, 9, 9, 1)",
 };
 
 export default DefTheme;

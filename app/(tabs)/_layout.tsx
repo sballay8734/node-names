@@ -1,17 +1,17 @@
 import {
-  FontAwesome6,
   Entypo,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { useCustomTheme } from "@/components/CustomThemeContext";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { handlePopover } from "@/features/SelectionManagement/redux/manageSelections";
 import { useAppDispatch } from "@/hooks/reduxHooks";
+import PlusIcon from "@/components/PlusIcon";
 
 export default function TabLayout() {
   const theme = useCustomTheme();
@@ -64,10 +64,7 @@ export default function TabLayout() {
           title: "Add",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <FontAwesome6
-              name="circle-plus"
-              size={72}
-              color={"#e0ae6c"}
+            <View
               style={{
                 position: "absolute",
                 display: "flex",
@@ -75,8 +72,24 @@ export default function TabLayout() {
                 alignItems: "center",
                 justifyContent: "center",
                 top: -25,
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: theme.primary,
+                backgroundColor: theme.btnBaseSelected,
+                padding: 12,
+                shadowColor: theme.primary,
+                shadowOffset: {
+                  width: 0,
+                  height: 0,
+                },
+                shadowOpacity: 0.35,
+                shadowRadius: 6.0,
+
+                elevation: 24,
               }}
-            />
+            >
+              <PlusIcon color={theme.primary} size={44} />
+            </View>
           ),
           tabBarButton: (props) => (
             <TouchableOpacity

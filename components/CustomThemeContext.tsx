@@ -11,6 +11,13 @@ export interface ITheme {
   btnTextSelected: string;
   tabBarActiveTint: string;
   primary: string;
+
+  textPrimary: string;
+  textFadedSm: string;
+  textFadedMd: string;
+
+  groupTitleText: string;
+  groupTitleOutline: string;
 }
 
 const CustomThemeContext = createContext<ITheme | undefined>(undefined);
