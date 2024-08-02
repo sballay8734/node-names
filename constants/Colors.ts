@@ -6,6 +6,7 @@ export type CustomTheme = ITheme & Partial<Theme>;
 
 const DefTheme: ITheme = {
   bgBase: "rgba(13, 13, 13, 1)",
+  bgBaseTest: "rgba(9, 9, 9, 1)",
   bgLighter: "rgba(20, 20, 20, 1)",
   borderBase: "rgba(34, 34, 34, 1)",
 

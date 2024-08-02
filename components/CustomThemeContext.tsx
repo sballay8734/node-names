@@ -2,6 +2,7 @@ import React, { createContext, useContext } from "react";
 
 export interface ITheme {
   bgBase: string;
+  bgBaseTest: string;
   bgLighter: string;
   borderBase: string;
   btnBase: string;
@@ -22,7 +23,7 @@ export interface ITheme {
 
 const CustomThemeContext = createContext<ITheme | undefined>(undefined);
 
-export const TAB_BG_COLOR = "rgba(20, 20, 20, 1)";
+export const TAB_BG_COLOR = "rgba(9, 9, 9, 1)";
 
 export const CustomThemeProvider: React.FC<{
   theme: ITheme;

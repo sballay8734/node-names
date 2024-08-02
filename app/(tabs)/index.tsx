@@ -111,7 +111,7 @@ const Index = () => {
   return (
     <GestureDetector gesture={composed}>
       <View
-        style={[styles.canvasWrapper, { backgroundColor: theme.bgLighter }]}
+        style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
       >
         <LinksCanvas
           windowSize={windowSize}
