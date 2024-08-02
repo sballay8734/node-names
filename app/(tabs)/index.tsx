@@ -19,6 +19,7 @@ import {
   setUserLinks,
   setUserNodes,
 } from "@/features/Graph/redux/graphManagement";
+import { getConnectionCount } from "@/features/Graph/utils/getConnectionCount";
 import { getNthConnections } from "@/features/Graph/utils/getNthConnections";
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
@@ -30,7 +31,6 @@ import SearchBar from "@/features/Shared/SearchBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { getConnectionCount } from "@/features/Graph/utils/getConnectionCount";
 
 // REMOVE: User will be able to change this
 const tempN = 0;
@@ -178,6 +178,12 @@ export default Index;
 // 7. Refactor NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: Add "additional_info" to connection properties and when creating the connections, if the relationship is parent_child_biological, additional_info = {parent: "Joe", child: "Aaron"} OR {parent: joesId, child: aaronsId}
+
+// !TODO: THINK. You ONLY need to render a nodes' connections based on the depth. If it's the rootNode, you just render all connections PLUS the spouses && children of any of your directConnections. THIS SHOULD BE SEPARATE FROM GETTING THE COUNTS
+
+// !TODO: You also need to check out the json file and figure out a way for the target spouse to still count their spouse towards shownConnections
 
 // !TODO: Connection count should be handled by edge functions
 

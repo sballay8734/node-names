@@ -8,7 +8,7 @@ import { Tables } from "@/types/dbTypes";
 import { PositionedLink, PositionedNode } from "../types/d3Types";
 
 export interface EnhancedPerson extends Tables<"people"> {
-  totalConnections: number;
+  shownConnections: number;
   hiddenConnections: number;
 }
 
@@ -210,7 +210,7 @@ const FINAL_NODE_SHAPE = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 13,
+    shownConnections: 13,
     vx: -0.007596746870504859,
     vy: -0.007053214740906269,
     x: 271.31008730089934,
@@ -262,7 +262,7 @@ const FINAL_LINK_SHAPE = [
       preferred_name: null,
       sex: "male",
       source_node_ids: null,
-      totalConnections: 13,
+      shownConnections: 13,
       vx: 0,
       vy: 0,
       x: 196.5,
@@ -288,7 +288,7 @@ const FINAL_LINK_SHAPE = [
       preferred_name: "Amac",
       sex: "male",
       source_node_ids: [Array],
-      totalConnections: 13,
+      shownConnections: 13,
       vx: -0.012160654104310963,
       vy: -0.001841555377031525,
       x: 88.90104404779075,
@@ -316,7 +316,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "female",
     source_node_ids: ["11", "12"],
-    totalConnections: 2,
+    shownConnections: 2,
   },
   {
     created_at: "2024-07-20T14:07:07.332245+00:00",
@@ -336,7 +336,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: null,
-    totalConnections: 16,
+    shownConnections: 16,
   },
   {
     created_at: "2024-07-20T14:16:38.501838+00:00",
@@ -356,7 +356,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:13:40.640285+00:00",
@@ -376,7 +376,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T19:35:40.425788+00:00",
@@ -396,7 +396,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: "Code",
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:12:10.751453+00:00",
@@ -416,7 +416,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: "Don",
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:13:11.728096+00:00",
@@ -436,7 +436,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:25:46.090227+00:00",
@@ -456,7 +456,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "female",
     source_node_ids: ["2", "11"],
-    totalConnections: 1,
+    shownConnections: 1,
   },
   {
     created_at: "2024-07-20T14:26:16.95771+00:00",
@@ -476,7 +476,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["11"],
-    totalConnections: 1,
+    shownConnections: 1,
   },
   {
     created_at: "2024-07-20T14:34:27.214013+00:00",
@@ -496,7 +496,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "female",
     source_node_ids: ["2", "11"],
-    totalConnections: 4,
+    shownConnections: 4,
   },
   {
     created_at: "2024-07-20T14:34:08.695662+00:00",
@@ -516,7 +516,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["2", "11"],
-    totalConnections: 4,
+    shownConnections: 4,
   },
   {
     created_at: "2024-07-20T14:24:47.404169+00:00",
@@ -536,7 +536,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: "Rach",
     sex: "female",
     source_node_ids: ["2"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:08:06.754277+00:00",
@@ -556,7 +556,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: "Amac",
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 2,
+    shownConnections: 2,
   },
   {
     created_at: "2024-07-20T19:14:07.652311+00:00",
@@ -576,7 +576,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T19:13:48.184445+00:00",
@@ -596,7 +596,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "female",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T19:13:06.095934+00:00",
@@ -616,7 +616,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:18:29.73753+00:00",
@@ -636,7 +636,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "female",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:17:51.921577+00:00",
@@ -656,7 +656,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
   {
     created_at: "2024-07-20T14:25:12.091096+00:00",
@@ -676,7 +676,7 @@ const SHAPE_FROM_getConnectionCount = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["2", "9"],
-    totalConnections: 0,
+    shownConnections: 0,
   },
 ];
 

@@ -44,6 +44,7 @@ export type Database = {
           relationship_type: RelationshipType;
           source_node_id: number;
           target_node_id: number;
+          relationship_details: { child: number; parent: number };
         };
         Insert: {
           created_at?: string;
@@ -51,6 +52,7 @@ export type Database = {
           relationship_type: RelationshipType;
           source_node_id: number;
           target_node_id: number;
+          relationship_details: { child: number; parent: number };
         };
         Update: {
           created_at?: string;
@@ -58,6 +60,7 @@ export type Database = {
           relationship_type?: RelationshipType;
           source_node_id?: number;
           target_node_id?: number;
+          relationship_details: { child: number; parent: number };
         };
         Relationships: [
           {

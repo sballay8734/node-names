@@ -23,7 +23,7 @@ export interface INode2 {
   partner_id: number | null;
   partner_type: "spouse" | "dating" | "divorced" | null;
 
-  totalConnections: number;
+  shownConnections: number;
   hiddenConnections: number;
 }
 
