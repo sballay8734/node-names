@@ -53,6 +53,7 @@ const Index = () => {
   useEffect(() => {
     if (activeRootNode && people && connections) {
       // get "hidden" and total connection COUNT for ALL nodes
+      // !TODO: You can probably just SKIP getNth
       const modifiedNodes: EnhancedPerson[] = getConnectionCount(
         people,
         connections,
@@ -68,6 +69,9 @@ const Index = () => {
         connections,
         tempN,
       );
+
+      console.log("NODES_TO_SHOW:", nodesToShow?.people);
+      console.log("CON_TO_SHOW:", nodesToShow?.connections);
 
       if (!nodesToShow) return;
 
