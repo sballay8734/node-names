@@ -2,19 +2,22 @@ import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
 import { centerNode } from "@/constants/variables";
+import { EnhancedPerson } from "@/features/Graph/utils/getNthConnections";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
 
 import { PositionedLink, PositionedNode } from "../types/d3Types";
 
 export function calcNodePositions(
-  people: Tables<"people">[],
+  people: EnhancedPerson[],
   connections: Tables<"connections">[],
   windowSize: WindowSize,
   scale: SharedValue<number>,
 ): { nodes: PositionedNode[]; links: PositionedLink[] } {
   // make copy of nodes and links
-  const positionedNodes: PositionedNode[] = people.map((p) => ({ ...p }));
+  const positionedNodes: PositionedNode[] = people.map((p) => ({
+    ...p,
+  }));
   const connectionsCopy: Tables<"connections">[] = connections.map((c) => ({
     ...c,
   }));
@@ -192,6 +195,7 @@ const FINAL_NODE_SHAPE = [
     gift_ideas: null,
     group_id: 1,
     group_name: "Friends",
+    hiddenConnections: 2,
     id: 6,
     index: 0,
     last_name: "Johnson",
@@ -202,10 +206,11 @@ const FINAL_NODE_SHAPE = [
     preferred_name: null,
     sex: "male",
     source_node_ids: ["1"],
-    vx: -0.030938623229578712,
-    vy: -0.009819350470518967,
-    x: 251.19960707758767,
-    y: 526.793273183848,
+    totalConnections: 13,
+    vx: -0.007596746870504859,
+    vy: -0.007053214740906269,
+    x: 271.31008730089934,
+    y: 546.3757763060679,
   },
 ];
 
@@ -225,6 +230,7 @@ const FINAL_LINK_SHAPE = [
       gift_ideas: null,
       group_id: null,
       group_name: null,
+      hiddenConnections: 0,
       id: 1,
       index: 13,
       last_name: "Ballay",
@@ -235,6 +241,7 @@ const FINAL_LINK_SHAPE = [
       preferred_name: null,
       sex: "male",
       source_node_ids: null,
+      totalConnections: 13,
       vx: 0,
       vy: 0,
       x: 196.5,
@@ -249,6 +256,7 @@ const FINAL_LINK_SHAPE = [
       gift_ideas: [Array],
       group_id: 2,
       group_name: "Best Friends",
+      hiddenConnections: 2,
       id: 2,
       index: 5,
       last_name: "Mackenzie",
@@ -259,10 +267,11 @@ const FINAL_LINK_SHAPE = [
       preferred_name: "Amac",
       sex: "male",
       source_node_ids: [Array],
-      vx: -0.030801369338344584,
-      vy: -0.008040950088883529,
-      x: 112.2880757226056,
-      y: 458.6608181819479,
+      totalConnections: 13,
+      vx: -0.012160654104310963,
+      vy: -0.001841555377031525,
+      x: 88.90104404779075,
+      y: 338.10539867974325,
     },
   },
 ];

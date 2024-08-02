@@ -2,12 +2,12 @@ import { StyleSheet, Text } from "react-native";
 import Animated from "react-native-reanimated";
 
 interface Props {
-  count: number | null;
+  hiddenConnections: number;
 }
 
-export default function NodeWidget({ count }: Props): React.JSX.Element | null {
-  if (!count) return null;
-
+export default function NodeWidget({
+  hiddenConnections,
+}: Props): React.JSX.Element | null {
   return (
     <Animated.View style={styles.widgetWrapper}>
       <Text
@@ -18,7 +18,7 @@ export default function NodeWidget({ count }: Props): React.JSX.Element | null {
           color: "#ffffff",
         }}
       >
-        {count}
+        {hiddenConnections}
       </Text>
     </Animated.View>
   );

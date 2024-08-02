@@ -44,19 +44,6 @@ export default function NodeTapDetector({
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
 
-  // !TODO: This updates ALL nodes on everychange (NOT GOOD)
-  const nodeConnectionCount = useAppSelector((state: RootState) => {
-    if (
-      !node.source_node_ids &&
-      state.selections.secondaryConnections[node.id]
-    ) {
-      return state.selections.secondaryConnections[node.id].connectionIds
-        .length;
-    } else {
-      return null;
-    }
-  });
-
   // console.log("NodeConnectionCount:", nodeConnectionCount);
 
   const isSelected = selectedNode;
@@ -214,7 +201,7 @@ export default function NodeTapDetector({
           </Text>
         </Animated.View>
 
-        <NodeWidget count={nodeConnectionCount} />
+        <NodeWidget hiddenConnections={node.totalConnections} />
       </Animated.View>
     </GestureDetector>
   );

@@ -1,14 +1,20 @@
 import { Tables } from "@/types/dbTypes";
 
+export interface EnhancedPerson extends Tables<"people"> {
+  totalConnections: number;
+  hiddenConnections: number;
+}
+
 const getNthConnections = (
   nodeId: number,
   allPeople: Tables<"people">[],
   allConnections: Tables<"connections">[],
   n: 0 | 1 | 2 = 0,
 ): {
-  people: Tables<"people">[];
+  people: EnhancedPerson[];
   connections: Tables<"connections">[];
 } | null => {
+  // get rootNode
   const rootNode = allPeople.find((p) => !p.source_node_ids);
   if (!rootNode) return null;
 
@@ -19,39 +25,59 @@ const getNthConnections = (
   };
 
   const getSpousesAndChildren = (
-    people: Tables<"people">[],
+    person: Tables<"people">,
   ): Tables<"people">[] => {
-    return people.flatMap((person) => {
-      if (!person.partner_id) return [];
+    if (!person.partner_id) return [];
 
-      const spouse = allPeople.find((p) => p.id === person.partner_id);
-      const children = spouse
-        ? allPeople.filter(
-            (p) =>
-              p.source_node_ids?.includes(person.id.toString()) &&
-              p.source_node_ids.includes(spouse.id.toString()),
-          )
-        : [];
+    const spouse = allPeople.find((p) => p.id === person.partner_id);
+    const children = spouse
+      ? allPeople.filter(
+          (p) =>
+            p.source_node_ids?.includes(person.id.toString()) &&
+            p.source_node_ids.includes(spouse.id.toString()),
+        )
+      : [];
 
-      return [spouse, ...children].filter(Boolean) as Tables<"people">[];
-    });
+    return [spouse, ...children].filter(Boolean) as Tables<"people">[];
   };
 
-  let connectedPeople: Tables<"people">[] = [];
+  // initialize
+  let connectedPeople: EnhancedPerson[] = [];
   let sourceIds = [nodeId.toString()];
 
   for (let i = 0; i <= n; i++) {
     const newPeople = getConnectedPeople(sourceIds);
-    connectedPeople = [...connectedPeople, ...newPeople];
-    sourceIds = newPeople.map((p) => p.id.toString());
 
-    if (i === 0) {
-      const spousesAndChildren = getSpousesAndChildren(newPeople);
-      connectedPeople = [...connectedPeople, ...spousesAndChildren];
-    }
+    newPeople.forEach((person) => {
+      const spousesAndChildren = getSpousesAndChildren(person);
+      const enhancedPerson: EnhancedPerson = {
+        ...person,
+        totalConnections: newPeople.length + spousesAndChildren.length,
+        hiddenConnections: spousesAndChildren.length,
+      };
+      connectedPeople.push(enhancedPerson);
+
+      // Add spouses and children as hidden connections
+      spousesAndChildren.forEach((hiddenPerson) => {
+        const enhancedHiddenPerson: EnhancedPerson = {
+          ...hiddenPerson,
+          totalConnections: 1, // Only connected to the main person
+          hiddenConnections: 0,
+        };
+        connectedPeople.push(enhancedHiddenPerson);
+      });
+    });
+
+    sourceIds = newPeople.map((p) => p.id.toString());
   }
 
-  connectedPeople = [...new Set([...connectedPeople, rootNode])];
+  const enhancedRootNode: EnhancedPerson = {
+    ...rootNode,
+    totalConnections: connectedPeople.length,
+    hiddenConnections: 0,
+  };
+
+  connectedPeople = [...new Set([...connectedPeople, enhancedRootNode])];
 
   const connectedPeopleIds = new Set(connectedPeople.map((p) => p.id));
 

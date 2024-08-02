@@ -25,6 +25,12 @@ const DefTheme: ITheme = {
 
   groupTitleText: "rgba(178, 178, 178, 1)",
   groupTitleOutline: "rgba(9, 9, 9, 1)",
+
+  // node inactive
+
+  // node sourceIsSelected
+
+  // node isSelected
 };
 
 export default DefTheme;

@@ -152,23 +152,25 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// FIRST FOR SAT. ****************************************************
+// FIRST FOR FRI. ****************************************************
+// 0.5. FIX connection count (Currently passing total instead of hidden) AND it's not calculating correctly
+// 1. Connection count widget
+// 2. Link highlighting logic (selected a node should highlight all it's direct links)
+// 3. Connection count should be handled by edge functions
 
-// 2. Add widget to node that shows the number of connections that node has
 // 3. Work on adding/connecting/grouping nodes (+ btn)
 // 4. Add overlay over groups that fades out as you zoom in
-// 5. recenter on select should not happen if node is being deselected
-// 7. WORK ON THEME AND REFACTOR STYLES THAT NEED IT (NODETAPDETECTOR)
+// 7. Refactor NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: Connection count should be handled by edge functions
 
 // !TODO: Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
 
 // !TODO: WHILE positioning the nodes, you should be grouping the families together maybe while also calculating the widgets
 
 // !TODO: Need to redo getNodeConnections function to handle widget
-
-// !TODO: Nodes whose source is selected should brighten slightly to differentiate from unconnected nodes
 
 // !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
 
@@ -181,8 +183,6 @@ export default Index;
 // TODO: Colors of TODO icons no longer match.
 
 // TODO: Color nodes
-
-// TODO: When connecting a node to the root, the root should always default to be the source in the database (optimization)
 
 // !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
 
