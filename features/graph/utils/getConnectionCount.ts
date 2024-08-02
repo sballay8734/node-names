@@ -119,7 +119,7 @@ export function getConnectionCount(
     }
   });
 
-  console.log("TEST:", JSON.stringify(testPersonObject));
+  // console.log("TEST:", JSON.stringify(testPersonObject));
 
   return finalPeople;
 }

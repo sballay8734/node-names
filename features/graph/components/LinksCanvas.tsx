@@ -32,6 +32,15 @@ export default function LinksCanvas({
   const selectedNodeId = useAppSelector(
     (state: RootState) => state.selections.selectedNodes[0]?.id,
   );
+  const selectedNodes = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes,
+  );
+
+  function show(link: PositionedLink) {
+    const nodeIds = selectedNodes.map((n) => n.id);
+
+    return nodeIds.includes(link.source.id);
+  }
 
   const svgTransform = useDerivedValue(() => [
     { translateX: translateX.value },
@@ -49,9 +58,7 @@ export default function LinksCanvas({
       <Group origin={origin} transform={svgTransform}>
         {links &&
           links.map((link: PositionedLink) => {
-            const shouldShow =
-              isPositionedNode(link.source) &&
-              selectedNodeId === link.source.id;
+            const shouldShow = isPositionedNode(link.source) && show(link);
             return <Link key={link.id} link={link} shouldShow={shouldShow} />;
           })}
       </Group>
@@ -65,3 +72,5 @@ const styles = StyleSheet.create({
     // backgroundColor: "rgba(155, 155, 0, 0.3)",
   },
 });
+
+// !TODO: Move this shouldShow logic to the link itself because you're rendering ALL links everytime a node is selected

@@ -8,6 +8,8 @@ interface Props {
 export default function NodeWidget({
   hiddenConnections,
 }: Props): React.JSX.Element | null {
+  if (hiddenConnections === 0) return null;
+
   return (
     <Animated.View style={styles.widgetWrapper}>
       <Text

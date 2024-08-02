@@ -61,7 +61,7 @@ const Index = () => {
         activeRootNode,
       );
 
-      // get rootNode nodes and links
+      // get nodes that are going to be rendered
       const nodesToShow = getNthConnections(
         activeRootNode?.id,
         modifiedNodes,
@@ -179,13 +179,9 @@ export default Index;
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
 
-// !TODO: Add "additional_info" to connection properties and when creating the connections, if the relationship is parent_child_biological, additional_info = {parent: "Joe", child: "Aaron"} OR {parent: joesId, child: aaronsId}
-
 // !TODO: THINK. You ONLY need to render a nodes' connections based on the depth. If it's the rootNode, you just render all connections PLUS the spouses && children of any of your directConnections. THIS SHOULD BE SEPARATE FROM GETTING THE COUNTS
 
 // !TODO: You also need to check out the json file and figure out a way for the target spouse to still count their spouse towards shownConnections
-
-// !TODO: Connection count should be handled by edge functions
 
 // !TODO: Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
 
