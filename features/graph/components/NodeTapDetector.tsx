@@ -201,7 +201,7 @@ export default function NodeTapDetector({
           </Text>
         </Animated.View>
 
-        <NodeWidget hiddenConnections={node.totalConnections} />
+        <NodeWidget hiddenConnections={node.hiddenConnections} />
       </Animated.View>
     </GestureDetector>
   );

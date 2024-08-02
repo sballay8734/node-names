@@ -1,7 +1,11 @@
+export type DirectConnectionType =
+  | "spouse"
+  | "parent_child_biological"
+  | "parent_child_non_biological"
+  | "romantic_partner";
+
 export type RelationshipType =
-  | "spouse" // 1.0
-  | "parent_child_biological" // 0.9
-  | "parent_child_non_biological" // 0.9
+  | DirectConnectionType
   | "sibling"
   | "half_sibling"
   | "step_sibling"
@@ -11,8 +15,6 @@ export type RelationshipType =
   | "parent_child_in_law"
   | "coworker"
   | "neighbor"
-  | "romantic_partner"
-  | "ex_spouse"
   | "cousin"
   | "uncle_aunt"
   | "niece_nephew_by_blood"
@@ -39,21 +41,21 @@ export type Database = {
         Row: {
           created_at: string;
           id: number;
-          relationship_type: string;
+          relationship_type: RelationshipType;
           source_node_id: number;
           target_node_id: number;
         };
         Insert: {
           created_at?: string;
           id?: number;
-          relationship_type: string;
+          relationship_type: RelationshipType;
           source_node_id: number;
           target_node_id: number;
         };
         Update: {
           created_at?: string;
           id?: number;
-          relationship_type?: string;
+          relationship_type?: RelationshipType;
           source_node_id?: number;
           target_node_id?: number;
         };

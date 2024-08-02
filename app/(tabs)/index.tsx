@@ -5,7 +5,10 @@ import { Easing, withTiming } from "react-native-reanimated";
 
 import { useCustomTheme } from "@/components/CustomThemeContext";
 import { PositionedNode } from "@/features/D3/types/d3Types";
-import { calcNodePositions } from "@/features/D3/utils/getNodePositions";
+import {
+  calcNodePositions,
+  EnhancedPerson,
+} from "@/features/D3/utils/getNodePositions";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import {
@@ -27,6 +30,7 @@ import SearchBar from "@/features/Shared/SearchBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
+import { getConnectionCount } from "@/features/Graph/utils/getConnectionCount";
 
 // REMOVE: User will be able to change this
 const tempN = 0;
@@ -48,9 +52,19 @@ const Index = () => {
 
   useEffect(() => {
     if (activeRootNode && people && connections) {
+      // get "hidden" and total connection COUNT for ALL nodes
+      const modifiedNodes: EnhancedPerson[] = getConnectionCount(
+        people,
+        connections,
+        0,
+        // !TODO: This logic may have to change if userRootId is not always 1
+        activeRootNode,
+      );
+
+      // get rootNode nodes and links
       const nodesToShow = getNthConnections(
         activeRootNode?.id,
-        people,
+        modifiedNodes,
         connections,
         tempN,
       );
@@ -60,6 +74,7 @@ const Index = () => {
       const { people: filteredPeople, connections: filteredConnections } =
         nodesToShow;
 
+      // calculate position of nodes
       const { nodes, links } = calcNodePositions(
         filteredPeople,
         filteredConnections,
