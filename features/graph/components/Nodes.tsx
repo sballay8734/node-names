@@ -33,6 +33,8 @@ export default function Nodes({
     { scale: scale.value },
   ]);
 
+  // console.log("RENDERED NODES:", nodes, nodes.length);
+
   return (
     <Animated.View
       style={{

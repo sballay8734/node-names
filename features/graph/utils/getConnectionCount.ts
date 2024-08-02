@@ -48,10 +48,10 @@ export function getConnectionCount(
   }));
 
   const personObject: PersonMap = {};
-
   // REMOVE: AND ALL REFERENCES vvvv
   const testPersonObject: TestPersonMap = {};
   // REMOVE: ^^^^
+  const testNodesToShow: EnhancedPerson[] = [];
 
   allConnections.forEach((c) => {
     // REMOVE: vvvv
@@ -119,7 +119,10 @@ export function getConnectionCount(
     }
   });
 
-  console.log("TEST_OBJECT:", JSON.stringify(testPersonObject));
+  console.log("FINAL:", finalPeople, finalPeople.length);
+
+  // console.log(testNodesToShow)
+  // console.log("TEST_OBJECT:", JSON.stringify(testPersonObject));
 
   return finalPeople;
 }

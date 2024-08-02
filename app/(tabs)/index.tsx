@@ -70,8 +70,12 @@ const Index = () => {
         tempN,
       );
 
-      console.log("NODES_TO_SHOW:", nodesToShow?.people);
-      console.log("CON_TO_SHOW:", nodesToShow?.connections);
+      // console.log(
+      //   "NODES_TO_SHOW:",
+      //   nodesToShow?.people,
+      //   nodesToShow?.people.length,
+      // );
+      // console.log("CON_TO_SHOW:", nodesToShow?.connections);
 
       if (!nodesToShow) return;
 
