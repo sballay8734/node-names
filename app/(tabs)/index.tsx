@@ -154,6 +154,9 @@ export default Index;
 // FIRST FOR FRI. ****************************************************
 // 1. FIX TYPE ISSUE IN LINKSCANVAS
 // 2. Link highlighting logic (selected a node should highlight all it's direct links)
+// 3. Node highlighting logic (3 levels)
+
+// 4. Root node needs to be bigger when switching
 
 // 3. Work on adding/connecting/grouping nodes (+ btn)
 // 4. Add overlay over groups that fades out as you zoom in
