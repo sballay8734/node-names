@@ -7,7 +7,7 @@ import useDbData from "@/hooks/useDbData";
 import { setActiveRootNode } from "../redux/graphManagement";
 
 // REMOVE: Temporary until you add auth
-const tempRootId = 1;
+const tempRootId = 2;
 
 export function useDataLoad() {
   const dispatch = useAppDispatch();
@@ -18,11 +18,9 @@ export function useDataLoad() {
   let newRootNode = people?.find((p) => p.id === rootNodeId);
 
   useEffect(() => {
-    if (dataFetched && people && connections && groups) {
+    if (dataFetched && people && connections && groups && newRootNode) {
       // initial render
-      if (newRootNode) {
-        dispatch(setActiveRootNode(newRootNode as PositionedNode));
-      }
+      dispatch(setActiveRootNode(newRootNode));
     }
   }, [dataFetched, people, connections, groups, newRootNode, dispatch]);
 

@@ -51,17 +51,17 @@ const Index = () => {
     if (activeRootNode && people && connections) {
       const nodesAndConnections: {
         shownNodes: EnhancedPerson[];
-        shownConnections: Tables<"connections">[];
+        finalConnections: Tables<"connections">[];
       } = getShownNodesAndConnections(people, connections, 0, activeRootNode);
 
       if (!nodesAndConnections) return;
 
-      const { shownNodes, shownConnections } = nodesAndConnections;
+      const { shownNodes, finalConnections } = nodesAndConnections;
 
       // calculate position of nodes
       const { nodes, links } = calcNodePositions(
         shownNodes,
-        shownConnections,
+        finalConnections,
         windowSize,
         scale,
       );
@@ -152,20 +152,33 @@ const styles = StyleSheet.create({
 export default Index;
 
 // FIRST FOR FRI. ****************************************************
-// 0.5. FIX connection count (Currently passing total instead of hidden) AND it's not calculating correctly
-// 1. Connection count widget
+// 1. FIX TYPE ISSUE IN LINKSCANVAS
 // 2. Link highlighting logic (selected a node should highlight all it's direct links)
-// 3. Connection count should be handled by edge functions
 
 // 3. Work on adding/connecting/grouping nodes (+ btn)
 // 4. Add overlay over groups that fades out as you zoom in
 // 7. Refactor NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+// !TODO: YOU SHOULD NOT BE ABLE TO INSPECT A NODE THAT DOESN'T HAVE HIDDEN CONNECTIONS!!!!
+
+// !TODO: BUT, YOU STILL NEED TO FIGURE OUT WHY SOME OF THEM ARE OFF
+
+// !TODO: Why do Mackenzie, Carmen and Joe have hidden conns when Aaron is root? (Log hiddenConnections to find out) - Joe's and Carmens has to do with Grandparent/grandchild and Mackenzies has to do with niece/nephew
+
+// !TODO: Rachel should also be connected to aaron with the option to view aarons hidden connections
+
+// !TODO: It will probably be better to get full families first or something because although
+
+// !TODO: Why is Lauren connected directly to Levi when Lauren is root?
+
+// !TODO: You will likely have to adjust logic to handle hidden connections better
+
+// !TODO: Also, the activeRoot doesn't have the correct types
 
 // !TODO: DO SOME RENAMING, TESTING, ETC.. OF getShownNodesAndConnections
 
-// !TODO: Optimize above (use hashmaps where possible)
+// !TODO: !! !! !! Optimize above (use hashmaps where possible) !! !! !! !! !!
 
 // !TODO: Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
 

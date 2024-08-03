@@ -24,16 +24,17 @@ export default function InspectBtn(): React.JSX.Element {
   const selectedNodeCount = useAppSelector(
     (state: RootState) => state.selections.selectedNodes.length,
   );
-  const rootNodeIsSelected = useAppSelector((state: RootState) => {
-    return (
-      state.selections.selectedNodes.length === 1 &&
-      !state.selections.selectedNodes[0].source_node_ids === true
-    );
-  });
-
   // this will update the root and trigger a new reload of all nodes/connections
   // !TODO: You should store the userRoot somewhere so that when you switch back to the user, you don't have to run all those functions again
   const { updateRootId, newRootNode } = useDataLoad();
+
+  const rootNodeIsSelected = useAppSelector((state: RootState) => {
+    return (
+      newRootNode &&
+      state.selections.selectedNodes.length === 1 &&
+      state.selections.selectedNodes[0].id === newRootNode.id
+    );
+  });
 
   function handlePressIn() {
     isPressed.value = true;
@@ -47,7 +48,7 @@ export default function InspectBtn(): React.JSX.Element {
       !longPressRef.current
     ) {
       console.log("TODO: UPDATE_ROOT_ID");
-      // updateRootId(selectedNodes[0].id);
+      updateRootId(selectedNodes[0].id);
     }
     isPressed.value = false;
   }
@@ -138,3 +139,45 @@ const styles = StyleSheet.create({
 });
 
 // TODO: When saving, I think selectedNodes gets reset/cleared which is why saving the file removes the btn. THIS MAY BE THE REASON FOR OTHER MINOR BUGS YOU'RE SEEING ALSO. SAVING CLEARS SOME STATE
+
+const activeRoot = {
+  children_ids: ["10"],
+  created_at: "2024-07-20T14:08:06.754277+00:00",
+  date_of_birth: null,
+  date_of_death: null,
+  first_name: "Aaron",
+  gift_ideas: ["Baby thing1", "Babything2", "Workout app"],
+  group_id: 2,
+  group_name: "Best Friends",
+  id: 2,
+  last_name: "Mackenzie",
+  maiden_name: null,
+  partner_id: 9,
+  partner_type: "spouse",
+  phonetic_name: "Ah run",
+  preferred_name: "Amac",
+  sex: "male",
+  source_node_ids: ["1"],
+};
+
+const test = {
+  children_ids: ["10"],
+  created_at: "2024-07-20T14:08:06.754277+00:00",
+  date_of_birth: null,
+  date_of_death: null,
+  first_name: "Aaron",
+  gift_ideas: ["Baby thing1", "Babything2", "Workout app"],
+  group_id: 2,
+  group_name: "Best Friends",
+  hiddenConnections: 0,
+  id: 2,
+  last_name: "Mackenzie",
+  maiden_name: null,
+  partner_id: 9,
+  partner_type: "spouse",
+  phonetic_name: "Ah run",
+  preferred_name: "Amac",
+  sex: "male",
+  shownConnections: 0,
+  source_node_ids: ["1"],
+};

@@ -56,7 +56,11 @@ const ManageGraphSlice = createSlice({
   reducers: {
     // ROOT
     setActiveRootNode: (state, action: PayloadAction<PositionedNode>) => {
-      state.activeRootNode = action.payload;
+      state.activeRootNode = {
+        ...action.payload,
+        hiddenConnections: 0,
+        shownConnections: 0,
+      };
     },
 
     // USER (Will not change often)
