@@ -16,7 +16,6 @@ export function getShownNodesAndConnections(
 ): {
   shownNodes: EnhancedPerson[];
   shownConnections: Tables<"connections">[];
-  hiddenConnections: Tables<"connections">[];
 } {
   // initialze proper shape of nodes
   const peopleCopy: EnhancedPerson[] = allPeople.map((p) => ({
@@ -26,7 +25,6 @@ export function getShownNodesAndConnections(
   }));
 
   let shownConnections: Tables<"connections">[] = [];
-  const hiddenConnections: Tables<"connections">[] = [];
 
   // ROOT CONNECTIONS & ROOT TARGETS IDS ***************************************
   const { rootDirectConnections, directTargetIds } = getRootConAndIds(
@@ -65,7 +63,7 @@ export function getShownNodesAndConnections(
     ...childrenConnections,
   ];
 
-  return { shownNodes, shownConnections, hiddenConnections };
+  return { shownNodes, shownConnections };
 }
 
 // !TODO: incorporate "depth" in the function

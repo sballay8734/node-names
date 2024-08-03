@@ -52,13 +52,12 @@ const Index = () => {
       const nodesAndConnections: {
         shownNodes: EnhancedPerson[];
         shownConnections: Tables<"connections">[];
-        hiddenConnections: Tables<"connections">[];
       } = getShownNodesAndConnections(people, connections, 0, activeRootNode);
 
       if (!nodesAndConnections) return;
 
-      const { shownNodes, shownConnections, hiddenConnections } =
-        nodesAndConnections;
+      // !TODO: You can use the above function to get hidden connections/nodes also if needed
+      const { shownNodes, shownConnections } = nodesAndConnections;
 
       // calculate position of nodes
       const { nodes, links } = calcNodePositions(
