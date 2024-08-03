@@ -126,6 +126,7 @@ export type Database = {
           preferred_name: string | null;
           sex: string;
           source_node_ids: string[] | null;
+          children_ids: string[] | null;
         };
         Insert: {
           created_at?: string;
@@ -144,6 +145,7 @@ export type Database = {
           preferred_name?: string | null;
           sex: string;
           source_node_ids?: string[] | null;
+          children_ids: string[] | null;
         };
         Update: {
           created_at?: string;
@@ -162,6 +164,7 @@ export type Database = {
           preferred_name?: string | null;
           sex?: string;
           source_node_ids?: string[] | null;
+          children_ids: string[] | null;
         };
         Relationships: [
           {

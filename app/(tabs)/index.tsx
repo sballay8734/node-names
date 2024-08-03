@@ -19,8 +19,7 @@ import {
   setUserLinks,
   setUserNodes,
 } from "@/features/Graph/redux/graphManagement";
-import { getConnectionCount } from "@/features/Graph/utils/getConnectionCount";
-import { getNthConnections } from "@/features/Graph/utils/getNthConnections";
+import { getShownNodesAndConnections } from "@/features/Graph/utils/getShownNodesAndConnections";
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
@@ -31,9 +30,7 @@ import SearchBar from "@/features/Shared/SearchBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-
-// REMOVE: User will be able to change this
-const tempN = 0;
+import { Tables } from "@/types/dbTypes";
 
 const Index = () => {
   const theme = useCustomTheme();
@@ -52,40 +49,21 @@ const Index = () => {
 
   useEffect(() => {
     if (activeRootNode && people && connections) {
-      // get "hidden" and total connection COUNT for ALL nodes
-      // !TODO: You can probably just SKIP getNth
-      const modifiedNodes: EnhancedPerson[] = getConnectionCount(
-        people,
-        connections,
-        0,
-        // !TODO: This logic may have to change if userRootId is not always 1
-        activeRootNode,
-      );
+      const nodesAndConnections: {
+        shownNodes: EnhancedPerson[];
+        shownConnections: Tables<"connections">[];
+        hiddenConnections: Tables<"connections">[];
+      } = getShownNodesAndConnections(people, connections, 0, activeRootNode);
 
-      // get nodes that are going to be rendered
-      const nodesToShow = getNthConnections(
-        activeRootNode?.id,
-        modifiedNodes,
-        connections,
-        tempN,
-      );
+      if (!nodesAndConnections) return;
 
-      // console.log(
-      //   "NODES_TO_SHOW:",
-      //   nodesToShow?.people,
-      //   nodesToShow?.people.length,
-      // );
-      // console.log("CON_TO_SHOW:", nodesToShow?.connections);
-
-      if (!nodesToShow) return;
-
-      const { people: filteredPeople, connections: filteredConnections } =
-        nodesToShow;
+      const { shownNodes, shownConnections, hiddenConnections } =
+        nodesAndConnections;
 
       // calculate position of nodes
       const { nodes, links } = calcNodePositions(
-        filteredPeople,
-        filteredConnections,
+        shownNodes,
+        shownConnections,
         windowSize,
         scale,
       );
@@ -186,6 +164,8 @@ export default Index;
 // 7. Refactor NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: add childrenIds string array to db
 
 // !TODO: THINK. You ONLY need to render a nodes' connections based on the depth. If it's the rootNode, you just render all connections PLUS the spouses && children of any of your directConnections. THIS SHOULD BE SEPARATE FROM GETTING THE COUNTS
 

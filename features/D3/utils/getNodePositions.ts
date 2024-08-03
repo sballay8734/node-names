@@ -984,6 +984,14 @@ const CONNECTIONS_TO_SHOW = [
     target_node_id: 9,
   },
   {
+    created_at: "2024-07-20T14:32:56.744166+00:00",
+    id: 12,
+    relationship_details: null,
+    relationship_type: "spouse",
+    source_node_id: 11,
+    target_node_id: 12,
+  },
+  {
     created_at: "2024-07-20T19:15:06.726173+00:00",
     id: 32,
     relationship_details: null,
@@ -1008,6 +1016,14 @@ const CONNECTIONS_TO_SHOW = [
     target_node_id: 19,
   },
   {
+    created_at: "2024-07-24T22:14:14.394002+00:00",
+    id: 36,
+    relationship_details: null,
+    relationship_type: "spouse",
+    source_node_id: 15,
+    target_node_id: 14,
+  },
+  {
     created_at: "2024-07-20T19:15:29.675303+00:00",
     id: 33,
     relationship_details: null,
@@ -1030,5 +1046,21 @@ const CONNECTIONS_TO_SHOW = [
     relationship_type: "parent_child_biological",
     source_node_id: 9,
     target_node_id: 10,
+  },
+  {
+    created_at: "2024-07-20T14:33:21.969605+00:00",
+    id: 13,
+    relationship_details: { child: 13, parent: 11 },
+    relationship_type: "parent_child_biological",
+    source_node_id: 11,
+    target_node_id: 13,
+  },
+  {
+    created_at: "2024-07-20T14:33:35.881146+00:00",
+    id: 14,
+    relationship_details: { child: 13, parent: 12 },
+    relationship_type: "parent_child_biological",
+    source_node_id: 12,
+    target_node_id: 13,
   },
 ];
