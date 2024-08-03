@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import useDbData from "@/hooks/useDbData";
 
@@ -14,13 +15,13 @@ export function useDataLoad() {
   const { people, connections, groups, isLoading, dataFetched } = useDbData();
 
   // !TODO: vv This is currently searching all people in DB (not right)
-  const newRootNode = people?.find((p) => p.id === rootNodeId);
+  let newRootNode = people?.find((p) => p.id === rootNodeId);
 
   useEffect(() => {
     if (dataFetched && people && connections && groups) {
       // initial render
       if (newRootNode) {
-        dispatch(setActiveRootNode(newRootNode));
+        dispatch(setActiveRootNode(newRootNode as PositionedNode));
       }
     }
   }, [dataFetched, people, connections, groups, newRootNode, dispatch]);

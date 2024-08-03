@@ -56,7 +56,6 @@ const Index = () => {
 
       if (!nodesAndConnections) return;
 
-      // !TODO: You can use the above function to get hidden connections/nodes also if needed
       const { shownNodes, shownConnections } = nodesAndConnections;
 
       // calculate position of nodes
@@ -164,17 +163,13 @@ export default Index;
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
 
-// !TODO: add childrenIds string array to db
+// !TODO: DO SOME RENAMING, TESTING, ETC.. OF getShownNodesAndConnections
 
-// !TODO: THINK. You ONLY need to render a nodes' connections based on the depth. If it's the rootNode, you just render all connections PLUS the spouses && children of any of your directConnections. THIS SHOULD BE SEPARATE FROM GETTING THE COUNTS
-
-// !TODO: You also need to check out the json file and figure out a way for the target spouse to still count their spouse towards shownConnections
+// !TODO: Optimize above (use hashmaps where possible)
 
 // !TODO: Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
 
 // !TODO: WHILE positioning the nodes, you should be grouping the families together maybe while also calculating the widgets
-
-// !TODO: Need to redo getNodeConnections function to handle widget
 
 // !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
 

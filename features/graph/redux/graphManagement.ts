@@ -25,6 +25,7 @@ export interface INode2 {
 
   shownConnections: number;
   hiddenConnections: number;
+  children_ids: string[] | null;
 }
 
 interface ManageGraphState {

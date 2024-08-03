@@ -33,7 +33,7 @@ export default function InspectBtn(): React.JSX.Element {
 
   // this will update the root and trigger a new reload of all nodes/connections
   // !TODO: You should store the userRoot somewhere so that when you switch back to the user, you don't have to run all those functions again
-  const { updateRootId } = useDataLoad();
+  const { updateRootId, newRootNode } = useDataLoad();
 
   function handlePressIn() {
     isPressed.value = true;
