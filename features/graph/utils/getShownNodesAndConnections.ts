@@ -99,7 +99,7 @@ export function getShownNodesAndConnections(
     node.hiddenConnections = hiddenConCount;
   });
 
-  console.log(hiddenConnections);
+  // console.log(hiddenConnections);
 
   return { shownNodes, finalConnections };
 }
