@@ -39,7 +39,12 @@ export default function LinksCanvas({
   function show(link: PositionedLink) {
     const nodeIds = selectedNodes.map((n) => n.id);
 
-    return nodeIds.includes(link.source.id);
+    // type guard
+    if (typeof link.source === "object" && "id" in link.source) {
+      return nodeIds.includes(link.source.id);
+    }
+
+    return false;
   }
 
   const svgTransform = useDerivedValue(() => [

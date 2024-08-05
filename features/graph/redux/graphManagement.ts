@@ -28,6 +28,10 @@ export interface INode2 {
   children_ids: string[] | null;
 }
 
+// !TODO: Current issue is that you're calculating shown/hidden connections at run time, thus you had to alter the interfaces to make it work (not ideal)
+export interface TempTillDbFix
+  extends Omit<INode2, "shownConnections" | "hiddenConnections"> {}
+
 interface ManageGraphState {
   activeRootNode: INode2 | null;
   activeRootType: "user" | "notUser";
@@ -55,7 +59,7 @@ const ManageGraphSlice = createSlice({
   initialState,
   reducers: {
     // ROOT
-    setActiveRootNode: (state, action: PayloadAction<PositionedNode>) => {
+    setActiveRootNode: (state, action: PayloadAction<TempTillDbFix>) => {
       state.activeRootNode = {
         ...action.payload,
         hiddenConnections: 0,

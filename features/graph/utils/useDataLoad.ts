@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import useDbData from "@/hooks/useDbData";
 
 import { setActiveRootNode } from "../redux/graphManagement";
 
 // REMOVE: Temporary until you add auth
-const tempRootId = 2;
+const tempRootId = 1;
 
 export function useDataLoad() {
   const dispatch = useAppDispatch();
