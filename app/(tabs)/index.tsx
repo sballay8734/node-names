@@ -163,6 +163,9 @@ export default Index;
 // 7. Refactor NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
+
 // !TODO: YOU SHOULD NOT BE ABLE TO INSPECT A NODE THAT DOESN'T HAVE HIDDEN CONNECTIONS!!!!
 
 // !TODO: BUT, YOU STILL NEED TO FIGURE OUT WHY SOME OF THEM ARE OFF
