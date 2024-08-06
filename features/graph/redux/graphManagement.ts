@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
+import { Partner } from "@/types/dbTypes";
 
 export interface INode2 {
   id: number;
@@ -22,6 +23,7 @@ export interface INode2 {
 
   partner_id: number | null;
   partner_type: "spouse" | "dating" | "divorced" | null;
+  partner_details: Partner[] | null;
 
   shownConnections: number;
   hiddenConnections: number;

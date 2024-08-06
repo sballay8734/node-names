@@ -164,6 +164,12 @@ export default Index;
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
 
+// !TODO: Need to double check logic (you SHOULD be looping through partner details to make sure kids are connected to BOTH parents) RACHEL IS NOT CONNECTED TO LEVI
+
+// !TODO: Need to clean up types and remove columns in db that are no longer needed
+
+// !TODO: Need to add option to manually hide nodes permanently for ex's that are no longer in the picture (some people might not want to just delete them)
+
 // !TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
 
 // !TODO: YOU SHOULD NOT BE ABLE TO INSPECT A NODE THAT DOESN'T HAVE HIDDEN CONNECTIONS!!!!

@@ -2,7 +2,8 @@ export type DirectConnectionType =
   | "spouse"
   | "parent_child_biological"
   | "parent_child_non_biological"
-  | "romantic_partner";
+  | "romantic_partner"
+  | "ex_partner";
 
 export type RelationshipType =
   | DirectConnectionType
@@ -24,6 +25,12 @@ export type RelationshipType =
   | "acquaintance";
 
 export type Sex = "male" | "female" | "other";
+
+export type Partner = {
+  partner_id: number;
+  children_ids: number[] | null;
+  status: "current" | "ex";
+};
 
 // SUPABASE STUFF BELOW *******************************************************
 export type Json =
@@ -120,50 +127,56 @@ export type Database = {
           id: number;
           last_name: string | null;
           maiden_name: string | null;
-          partner_id: number | null;
-          partner_type: "spouse" | "dating" | "divorced" | null;
-          phonetic_name: string | null;
+          partner_details: Partner[] | null;
           preferred_name: string | null;
+          phonetic_name: string | null;
           sex: string;
           source_node_ids: string[] | null;
+
+          partner_id: number | null;
+          partner_type: "spouse" | "dating" | "divorced" | null;
           children_ids: string[] | null;
         };
         Insert: {
-          created_at?: string;
-          date_of_birth?: string | null;
-          date_of_death?: string | null;
+          created_at: string;
+          date_of_birth: string | null;
+          date_of_death: string | null;
           first_name: string;
-          gift_ideas?: string[] | null;
-          group_id?: number | null;
-          group_name?: string | null;
-          id?: number;
-          last_name?: string | null;
-          maiden_name?: string | null;
-          partner_id?: number | null;
-          partner_type?: string | null;
-          phonetic_name?: string | null;
-          preferred_name?: string | null;
+          gift_ideas: string[] | null;
+          group_id: number | null;
+          group_name: string | null;
+          id: number;
+          last_name: string | null;
+          maiden_name: string | null;
+          partner_details: Partner[] | null;
+          preferred_name: string | null;
+          phonetic_name: string | null;
           sex: string;
-          source_node_ids?: string[] | null;
+          source_node_ids: string[] | null;
+
+          partner_id: number | null;
+          partner_type: "spouse" | "dating" | "divorced" | null;
           children_ids: string[] | null;
         };
         Update: {
-          created_at?: string;
-          date_of_birth?: string | null;
-          date_of_death?: string | null;
-          first_name?: string;
-          gift_ideas?: string[] | null;
-          group_id?: number | null;
-          group_name?: string | null;
-          id?: number;
-          last_name?: string | null;
-          maiden_name?: string | null;
-          partner_id?: number | null;
-          partner_type?: string | null;
-          phonetic_name?: string | null;
-          preferred_name?: string | null;
-          sex?: string;
-          source_node_ids?: string[] | null;
+          created_at: string;
+          date_of_birth: string | null;
+          date_of_death: string | null;
+          first_name: string;
+          gift_ideas: string[] | null;
+          group_id: number | null;
+          group_name: string | null;
+          id: number;
+          last_name: string | null;
+          maiden_name: string | null;
+          partner_details: Partner[] | null;
+          preferred_name: string | null;
+          phonetic_name: string | null;
+          sex: string;
+          source_node_ids: string[] | null;
+
+          partner_id: number | null;
+          partner_type: "spouse" | "dating" | "divorced" | null;
           children_ids: string[] | null;
         };
         Relationships: [
