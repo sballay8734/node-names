@@ -24,6 +24,7 @@ export function useDataLoad() {
   }, [dataFetched, people, connections, groups, newRootNode, dispatch]);
 
   const updateRootId = (newRootId: number) => {
+    // TODO: Also center the screen on the root here
     setRootNodeId(newRootId);
   };
 

@@ -52,7 +52,7 @@ const Index = () => {
       const nodesAndConnections: {
         shownNodes: EnhancedPerson[];
         finalConnections: Tables<"connections">[];
-      } = getShownNodesAndConnections(people, connections, 0, activeRootNode);
+      } = getShownNodesAndConnections(people, connections, activeRootNode);
 
       if (!nodesAndConnections) return;
 
@@ -64,6 +64,7 @@ const Index = () => {
         finalConnections,
         windowSize,
         scale,
+        activeRootNode,
       );
 
       dispatch(setUserNodes(nodes));
@@ -163,6 +164,20 @@ export default Index;
 // 7. Refactor NODETAPDETECTOR)
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+
+// !TODO: FIRST: Try and get depth working at a rudimentary level
+
+// !TODO: You may need to backtrack and think about actually adding nodes from the very beginning when only the root node exists.
+
+// !TODO: NEED TO USE DEPTH (if user focused, depth = 0, else depth = 1)
+
+// !TODO: Node is not centered after inspection
+
+// !TODO: I'm not sure "deriving" connections is how I want to do it
+
+// !TODO: Optimization still needed. There is a lot of uncessary loops and checks happening
+
+// !TODO: Add back button when inside and inspected node
 
 // !TODO: Need to double check logic (you SHOULD be looping through partner details to make sure kids are connected to BOTH parents) RACHEL IS NOT CONNECTED TO LEVI
 

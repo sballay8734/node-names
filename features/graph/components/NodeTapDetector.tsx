@@ -43,6 +43,10 @@ export default function NodeTapDetector({
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
+  const rootNodeId = useAppSelector(
+    (state: RootState) =>
+      state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
+  );
 
   // console.log("NodeConnectionCount:", nodeConnectionCount);
 
@@ -59,19 +63,21 @@ export default function NodeTapDetector({
   // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    width: !node.source_node_ids ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
-    height: !node.source_node_ids ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    width: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    height: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
 
     transform: [
       {
-        translateX: !node.source_node_ids
-          ? x - ROOT_NODE_RADIUS / 2
-          : x - REG_NODE_RADIUS / 2,
+        translateX:
+          node.id === rootNodeId
+            ? x - ROOT_NODE_RADIUS / 2
+            : x - REG_NODE_RADIUS / 2,
       },
       {
-        translateY: !node.source_node_ids
-          ? y - ROOT_NODE_RADIUS / 2
-          : y - REG_NODE_RADIUS / 2,
+        translateY:
+          node.id === rootNodeId
+            ? y - ROOT_NODE_RADIUS / 2
+            : y - REG_NODE_RADIUS / 2,
       },
     ],
 
@@ -88,6 +94,7 @@ export default function NodeTapDetector({
 
   const tap = Gesture.Tap()
     .onStart(() => {
+      console.log(node);
       dispatch(handleNodeSelect(node));
       centerOnNode(node);
     })
@@ -114,7 +121,7 @@ export default function NodeTapDetector({
   // TODO: Calc font size based on name length and circle size
   // THIS IS JUST A QUICK WORKAROUND
   function calcFontSize(node: INode2) {
-    if (!node.source_node_ids) {
+    if (node.id === rootNodeId) {
       return ROOT_TEXT_SIZE;
     } else {
       return REG_TEXT_SIZE - node.first_name.length / 2;
@@ -122,7 +129,7 @@ export default function NodeTapDetector({
   }
 
   function getColors(node: INode2) {
-    if (!node.source_node_ids) {
+    if (node.id === rootNodeId) {
       return {
         inactiveBgColor: "transparent",
         activeBgColor: "#66e889",
@@ -153,15 +160,14 @@ export default function NodeTapDetector({
               position: "absolute",
               height: "100%",
               width: "100%",
-              backgroundColor: !node.source_node_ids
-                ? "#0d0d0d"
-                : "transparent",
+              backgroundColor:
+                node.id === rootNodeId ? "#0d0d0d" : "transparent",
               borderRadius: 100,
               borderWidth: 1,
             },
           ]}
         >
-          {!node.source_node_ids && (
+          {node.id === rootNodeId && (
             <AnimatedBg
               source={image}
               style={[styles.image, rootImgStyles]}
@@ -176,16 +182,18 @@ export default function NodeTapDetector({
           style={[
             {
               position: "absolute",
-              bottom: !node.source_node_ids ? -10 : -3,
+              bottom: node.id === rootNodeId ? -10 : -3,
               borderRadius: 2,
               paddingHorizontal: 3,
               paddingVertical: 1,
               backgroundColor: "#1e2152",
               borderWidth: 1,
               borderColor:
-                isSelected && node.source_node_ids ? "#0fdba5" : "transparent",
+                isSelected && node.id !== rootNodeId
+                  ? "#0fdba5"
+                  : "transparent",
             },
-            node.source_node_ids && animatedTextStyles,
+            node.id !== rootNodeId && animatedTextStyles,
           ]}
         >
           <Text
@@ -193,11 +201,12 @@ export default function NodeTapDetector({
             style={{
               width: "100%",
               fontSize: calcFontSize(node),
-              color: isSelected && node.source_node_ids ? "#c2ffef" : "#516e66",
-              fontWeight: !node.source_node_ids ? "600" : "400",
+              color:
+                isSelected && node.id !== rootNodeId ? "#c2ffef" : "#516e66",
+              fontWeight: node.id === rootNodeId ? "600" : "400",
             }}
           >
-            {!node.source_node_ids ? "ME" : node.first_name}
+            {node.id === rootNodeId ? node.first_name : node.first_name}
           </Text>
         </Animated.View>
 

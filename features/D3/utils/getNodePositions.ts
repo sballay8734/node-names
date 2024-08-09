@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
 import { centerNode } from "@/constants/variables";
+import { INode2 } from "@/features/Graph/redux/graphManagement";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
 
@@ -17,6 +18,7 @@ export function calcNodePositions(
   connections: Tables<"connections">[],
   windowSize: WindowSize,
   scale: SharedValue<number>,
+  activeRootNode: INode2,
 ): { nodes: PositionedNode[]; links: PositionedLink[] } {
   // make copy of nodes and links
   const positionedNodes: PositionedNode[] = people.map((p) => ({
@@ -26,7 +28,7 @@ export function calcNodePositions(
     ...c,
   }));
 
-  const rootNode = positionedNodes.find((p) => !p.source_node_ids);
+  const rootNode = positionedNodes.find((n) => n.id === activeRootNode.id);
 
   if (rootNode) {
     (rootNode as PositionedNode).fx = centerNode(
