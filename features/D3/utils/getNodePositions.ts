@@ -59,7 +59,9 @@ export function calcNodePositions(
 
   // prepare group centers
   const groupCenters: { [key: string]: { x: number; y: number } } = {};
-  const groupCount = new Set(people.map((p) => p.group_id)).size;
+  const groupCount = new Set(
+    people.map((p) => p.group_id).filter((i) => i !== null),
+  ).size;
   let angle = 0;
   const radius = Math.min(windowSize.width, windowSize.height) / 2;
 
@@ -80,100 +82,101 @@ export function calcNodePositions(
     positionedNodes.forEach((node: PositionedNode) => {
       if (node.group_id === null) return;
 
-      const groupCenter = groupCenters[node.group_id];
-      node.vx! += (groupCenter.x - node.x!) * alpha * 0.05;
-      node.vy! += (groupCenter.y - node.y!) * alpha * 0.05;
+      if (node.group_id === 2) {
+        // Best Friends within friends
+        const groupCenter = groupCenters[node.group_id];
+        node.vx! += (groupCenter.x - node.x!) * alpha * 0.3;
+        node.vy! += (groupCenter.y - node.y!) * alpha * 0.3;
+      } else {
+        const groupCenter = groupCenters[node.group_id];
+        node.vx! += (groupCenter.x - node.x!) * alpha * 0.05;
+        node.vy! += (groupCenter.y - node.y!) * alpha * 0.05;
+      }
     });
   }
 
-  function familyForce(alpha: number) {
-    const families: { [famId: string]: PositionedNode[] } = {};
-    positionedNodes.forEach((node) => {
-      if (node.partner_id && node.source_node_ids) {
-        const familyId = node.partner_id || node.source_node_ids[0];
-        if (!families[familyId]) {
-          families[familyId] = [];
+  const groupRadius = Math.min(windowSize.width, windowSize.height) * 0.4; // Adjust as needed
+
+  function customRadialForce(alpha: number) {
+    positionedNodes.forEach((node: PositionedNode) => {
+      if (node.group_id !== null) {
+        // For group nodes, position them at a fixed radius
+        const angle = (node.group_id / groupCount) * 2 * Math.PI;
+        const targetX =
+          windowSize.windowCenterX + groupRadius * Math.cos(angle);
+        const targetY =
+          windowSize.windowCenterY + groupRadius * Math.sin(angle);
+
+        node.vx! += (targetX - node.x!) * alpha * 0.3;
+        node.vy! += (targetY - node.y!) * alpha * 0.3;
+      } else {
+        // For other nodes, use depth_from_user
+        const nodeRadius = groupRadius * (1 + node.depth_from_user * 0.2); // Adjust multiplier as needed
+        const dx = node.x! - windowSize.windowCenterX;
+        const dy = node.y! - windowSize.windowCenterY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0) {
+          node.vx! += dx * (nodeRadius / distance - 1) * alpha;
+          node.vy! += dy * (nodeRadius / distance - 1) * alpha;
         }
-        families[familyId].push(node);
       }
-    });
-
-    Object.values(families).forEach((familyMembers) => {
-      const validFamilyMembers = familyMembers.filter(
-        (member) => member.x !== undefined && member.y !== undefined,
-      );
-      if (validFamilyMembers.length === 0) return;
-
-      const centerX = d3.mean(validFamilyMembers, (d) => d.x ?? 0) ?? 0;
-      const centerY = d3.mean(validFamilyMembers, (d) => d.y ?? 0) ?? 0;
-
-      const rootX = rootNode?.x ?? 0;
-      const rootY = rootNode?.y ?? 0;
-
-      validFamilyMembers.forEach((member) => {
-        if (member.vx === undefined) member.vx = 0;
-        if (member.vy === undefined) member.vy = 0;
-
-        const distanceToRoot = Math.sqrt(
-          Math.pow(member.x! - rootX, 2) + Math.pow(member.y! - rootY, 2),
-        );
-
-        member.vx += (centerX - (member.x ?? 0)) * alpha * 0.5;
-        member.vy += (centerY - (member.y ?? 0)) * alpha * 0.5;
-
-        // Apply additional force based on distance to root
-        member.vx += ((rootX - member.x!) / distanceToRoot) * alpha;
-        member.vy += ((rootY - member.y!) / distanceToRoot) * alpha;
-      });
     });
   }
 
   const simulation = d3
     .forceSimulation<PositionedNode, PositionedLink>(positionedNodes)
-    .force(
-      "center",
-      d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
-    )
-    .force(
-      "radial",
-      d3.forceRadial(
-        radius,
-        windowSize.windowCenterX,
-        windowSize.windowCenterY,
-      ),
-    )
+    // .force(
+    //   "center",
+    //   d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
+    // )
+    .force("customRadial", customRadialForce)
     .force(
       "collision",
       d3
         .forceCollide()
-        .radius((node) => (!(node as PositionedNode).source_node_ids ? 20 : 20))
-        .strength(0.5),
+        .radius((node) =>
+          (node as PositionedNode).id === activeRootNode.id ? 100 : 15,
+        )
+        .strength(0.3),
     )
     .force(
       "link",
       d3
         .forceLink<PositionedNode, PositionedLink>(positionedLinks)
         .id((link) => link.id)
-        .distance((link) =>
-          link.relationship_type === "spouse" ||
-          link.relationship_type === "parent_child_biological"
-            ? 15
-            : 100,
-        )
+        .distance((link) => {
+          const baseDistance =
+            link.relationship_type === "spouse"
+              ? 15
+              : link.relationship_type === "parent_child_biological"
+              ? 20
+              : 20;
+
+          // Get the maximum depth of the two nodes connected by this link
+          const maxDepth = Math.max(
+            (link.source as PositionedNode).depth_from_user || 0,
+            (link.target as PositionedNode).depth_from_user || 0,
+          );
+
+          // Increase the distance based on depth
+          return baseDistance * (1 + maxDepth * 0.9);
+        })
         .strength((link) =>
-          link.relationship_type === "spouse" ||
-          link.relationship_type === "parent_child_biological"
-            ? 0.7
+          link.relationship_type === "spouse"
+            ? 1
+            : link.relationship_type === "parent_child_biological"
+            ? 0.5
             : 0.1,
         ),
     )
-    .force("clustering", clusteringForce)
+    // .force("clustering", clusteringForce)
     .force(
       "charge",
       d3
         .forceManyBody()
         .strength((node) =>
-          !(node as PositionedNode).source_node_ids ? 100 : 20,
+          (node as PositionedNode).id === activeRootNode.id ? 100 : -20,
         ),
     );
   // .force("family", familyForce);

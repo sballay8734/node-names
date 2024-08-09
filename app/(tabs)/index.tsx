@@ -165,6 +165,10 @@ export default Index;
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
 
+// !TODO: Spouses should have a sudo node between them where links to children come out of
+
+// !TODO: zoomOne = depth 0-2, zoomTwo = depth 3-5
+
 // !TODO: Maybe add "depth_from_user" as a property
 
 // !TODO: FIRST: Try and get depth working at a rudimentary level

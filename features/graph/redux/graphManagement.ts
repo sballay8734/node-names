@@ -24,6 +24,7 @@ export interface INode2 {
   partner_id: number | null;
   partner_type: "spouse" | "dating" | "divorced" | null;
   partner_details: Partner[] | null;
+  depth_from_user: number;
 
   shownConnections: number;
   hiddenConnections: number;

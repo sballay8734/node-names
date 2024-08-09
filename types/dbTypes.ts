@@ -132,6 +132,7 @@ export type Database = {
           phonetic_name: string | null;
           sex: string;
           source_node_ids: string[] | null;
+          depth_from_user: number;
 
           partner_id: number | null;
           partner_type: "spouse" | "dating" | "divorced" | null;
@@ -153,6 +154,7 @@ export type Database = {
           phonetic_name: string | null;
           sex: string;
           source_node_ids: string[] | null;
+          depth_from_user: number;
 
           partner_id: number | null;
           partner_type: "spouse" | "dating" | "divorced" | null;
@@ -174,6 +176,7 @@ export type Database = {
           phonetic_name: string | null;
           sex: string;
           source_node_ids: string[] | null;
+          depth_from_user: number;
 
           partner_id: number | null;
           partner_type: "spouse" | "dating" | "divorced" | null;
