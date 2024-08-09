@@ -69,6 +69,8 @@ const Index = () => {
 
       dispatch(setUserNodes(nodes));
       dispatch(setUserLinks(links));
+
+      centerOnRoot();
     }
   }, [activeRootNode, connections, dispatch, people, scale, windowSize]);
 
@@ -165,6 +167,8 @@ export default Index;
 
 // 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
 
+// !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
+
 // !TODO: Spouses should have a sudo node between them where links to children come out of
 
 // !TODO: zoomOne = depth 0-2, zoomTwo = depth 3-5
@@ -172,10 +176,6 @@ export default Index;
 // !TODO: Maybe add "depth_from_user" as a property
 
 // !TODO: FIRST: Try and get depth working at a rudimentary level
-
-// !TODO: You may need to backtrack and think about actually adding nodes from the very beginning when only the root node exists.
-
-// !TODO: NEED TO USE DEPTH (if user focused, depth = 0, else depth = 1)
 
 // !TODO: Node is not centered after inspection
 
