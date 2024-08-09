@@ -18,10 +18,8 @@ export function getShownNodesAndConnections(
   shownNodes: EnhancedPerson[];
   finalConnections: Tables<"connections">[];
 } {
-  let depth = 0;
-  if (currentRootNode.id !== userId) {
-    depth = 1;
-  }
+  // 1 if userIsInspected, 2 if it's someone else
+  let depth: 1 | 2 = currentRootNode.id === userId ? 1 : 2;
 
   const formattedPeople: EnhancedPerson[] = allPeople.map((p) => {
     return {
