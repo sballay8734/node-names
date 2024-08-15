@@ -1,8 +1,5 @@
 import { StyleSheet } from "react-native";
-import Animated, {
-  SharedValue,
-  useDerivedValue,
-} from "react-native-reanimated";
+import Animated, { SharedValue } from "react-native-reanimated";
 
 import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
@@ -12,34 +9,18 @@ import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
   centerOnNode: (node: PositionedNode) => void;
-  translateX: SharedValue<number>;
-  translateY: SharedValue<number>;
-  scale: SharedValue<number>;
 }
 
-export default function Nodes({
-  centerOnNode,
-  translateX,
-  translateY,
-  scale,
-}: Props): React.JSX.Element {
+export default function Nodes({ centerOnNode }: Props): React.JSX.Element {
   const nodes = useAppSelector(
     (state: RootState) => state.manageGraph.userNodes,
   );
-
-  const transform = useDerivedValue(() => [
-    { translateX: translateX.value },
-    { translateY: translateY.value },
-    { scale: scale.value },
-  ]);
-
-  // console.log("RENDERED NODES:", nodes, nodes.length);
 
   return (
     <Animated.View
       style={{
         ...styles.tapWrapper,
-        transform: transform,
+        // transform: transform,
       }}
     >
       {nodes &&

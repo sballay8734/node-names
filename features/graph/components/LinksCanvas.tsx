@@ -11,21 +11,13 @@ import Link from "./Link";
 
 interface Props {
   windowSize: WindowSize;
-  translateX: SharedValue<number>;
-  translateY: SharedValue<number>;
-  scale: SharedValue<number>;
 }
 
 function isPositionedNode(node: any): node is PositionedNode {
   return typeof node === "object" && typeof node.id === "number";
 }
 
-export default function LinksCanvas({
-  windowSize,
-  translateX,
-  translateY,
-  scale,
-}: Props): React.JSX.Element {
+export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
   const links = useAppSelector(
     (state: RootState) => state.manageGraph.userLinks,
   );
@@ -47,11 +39,11 @@ export default function LinksCanvas({
     return false;
   }
 
-  const svgTransform = useDerivedValue(() => [
-    { translateX: translateX.value },
-    { translateY: translateY.value },
-    { scale: scale.value },
-  ]);
+  // const svgTransform = useDerivedValue(() => [
+  //   { translateX: translateX.value },
+  //   { translateY: translateY.value },
+  //   { scale: scale.value },
+  // ]);
 
   const origin = useDerivedValue(() => ({
     x: windowSize.width / 2,
@@ -60,7 +52,7 @@ export default function LinksCanvas({
 
   return (
     <Canvas style={styles.canvas}>
-      <Group origin={origin} transform={svgTransform}>
+      <Group origin={origin}>
         {links &&
           links.map((link: PositionedLink) => {
             const shouldShow = isPositionedNode(link.source) && show(link);

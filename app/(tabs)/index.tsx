@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import { Easing, withTiming } from "react-native-reanimated";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { useCustomTheme } from "@/components/CustomThemeContext";
 import { PositionedNode } from "@/features/D3/types/d3Types";
@@ -110,24 +115,31 @@ const Index = () => {
     }
   }
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { scale: scale.value },
+      ],
+    };
+  });
+
   return (
     <GestureDetector gesture={composed}>
       <View
-        style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
+        style={[
+          styles.canvasWrapper,
+          {
+            backgroundColor: theme.bgBaseTest,
+          },
+        ]}
       >
-        <LinksCanvas
-          windowSize={windowSize}
-          translateX={translateX}
-          translateY={translateY}
-          scale={scale}
-        />
-        {/* Nodes ********************************************************** */}
-        <Nodes
-          centerOnNode={centerOnNode}
-          translateX={translateX}
-          translateY={translateY}
-          scale={scale}
-        />
+        <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
+          <LinksCanvas windowSize={windowSize} />
+          {/* Nodes ********************************************************** */}
+          <Nodes centerOnNode={centerOnNode} />
+        </Animated.View>
         {/* Overlays && Absolute Btns ************************************** */}
         <Popover />
         <SearchBar />
