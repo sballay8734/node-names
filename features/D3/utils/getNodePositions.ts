@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
-import { centerNode } from "@/constants/variables";
+import { centerNode, MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
 import { INode2 } from "@/features/Graph/redux/graphManagement";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
@@ -95,7 +95,7 @@ export function calcNodePositions(
     });
   }
 
-  const groupRadius = Math.min(windowSize.width, windowSize.height) * 0.4; // Adjust as needed
+  const groupRadius = Math.min(windowSize.width, windowSize.height) * 1.5; // Adjust as needed
 
   function customRadialForce(alpha: number) {
     positionedNodes.forEach((node: PositionedNode) => {
@@ -136,7 +136,9 @@ export function calcNodePositions(
       d3
         .forceCollide()
         .radius((node) =>
-          (node as PositionedNode).id === activeRootNode.id ? 100 : 15,
+          (node as PositionedNode).id === activeRootNode.id
+            ? 100
+            : MIN_SPACE_BETWEEN_NODES,
         )
         .strength(0.3),
     )
@@ -148,10 +150,10 @@ export function calcNodePositions(
         .distance((link) => {
           const baseDistance =
             link.relationship_type === "spouse"
-              ? 15
+              ? MIN_SPACE_BETWEEN_NODES
               : link.relationship_type === "parent_child_biological"
-              ? 20
-              : 20;
+              ? MIN_SPACE_BETWEEN_NODES + 5
+              : MIN_SPACE_BETWEEN_NODES + 5;
 
           // Get the maximum depth of the two nodes connected by this link
           const maxDepth = Math.max(

@@ -1,6 +1,10 @@
 import { Canvas, Group } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
-import { SharedValue, useDerivedValue } from "react-native-reanimated";
+import {
+  SharedValue,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
@@ -66,6 +70,7 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
 const styles = StyleSheet.create({
   canvas: {
     flex: 1,
+    overflow: "visible",
     // backgroundColor: "rgba(155, 155, 0, 0.3)",
   },
 });

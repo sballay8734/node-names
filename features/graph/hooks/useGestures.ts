@@ -2,11 +2,11 @@ import { useMemo } from "react";
 import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue, withDecay } from "react-native-reanimated";
 
-const MIN_SCALE = 0.3;
+const MIN_SCALE = 0.1;
 const MAX_SCALE = 4;
-// export const INITIAL_SCALE = 0.5;
-export const INITIAL_SCALE = 1;
-export const CENTER_ON_SCALE = 1.7;
+
+export const INITIAL_SCALE = 0.3;
+export const CENTER_ON_SCALE = 0.5;
 const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {

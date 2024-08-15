@@ -41,7 +41,7 @@ export default function Link({
         <Paint
           color={"rgba(245, 240, 196, 1)"}
           opacity={opacity}
-          strokeWidth={1}
+          strokeWidth={2}
           style="stroke"
           strokeCap="round"
         />

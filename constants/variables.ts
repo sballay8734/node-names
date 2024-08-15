@@ -2,12 +2,13 @@ import { SharedValue } from "react-native-gesture-handler/lib/typescript/handler
 
 import { WindowSize } from "@/hooks/useWindowSize";
 
-export const ROOT_NODE_RADIUS = 50;
-export const REG_NODE_RADIUS = 25;
+export const ROOT_NODE_RADIUS = 200;
+export const REG_NODE_RADIUS = 100;
 export const NODE_BORDER_WIDTH = 1;
-export const TEST_NODE_DIM = 20;
-export const ROOT_TEXT_SIZE = 14;
-export const REG_TEXT_SIZE = 8;
+export const TEST_NODE_DIM = 35;
+export const ROOT_TEXT_SIZE = 40;
+export const REG_TEXT_SIZE = 20;
+export const MIN_SPACE_BETWEEN_NODES = 75;
 
 const TEST_NODE_RADIUS = TEST_NODE_DIM / 2;
 

@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   canvasWrapper: {
     flex: 1,
     position: "relative",
-    // backgroundColor: "rgba(255, 0, 0, 0.1)",
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
 });
@@ -181,9 +181,11 @@ export default Index;
 
 // !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
 
+// !TODO: Links not overflowing or showing over AnimatedView
+
 // !TODO: Spouses should have a sudo node between them where links to children come out of
 
-// !TODO: zoomOne = depth 0-2, zoomTwo = depth 3-5
+// !TODO: Why are Aarons connections to Levi, Rachel, 2nd child not full length?
 
 // !TODO: Maybe add "depth_from_user" as a property
 
