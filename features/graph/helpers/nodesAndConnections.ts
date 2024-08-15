@@ -12,28 +12,29 @@ export function getSourceValidConns(
   connections: Tables<"connections">[],
   currentRootNodeId: number,
 ): Tables<"connections">[] {
-  const nodeIsSource = connections.filter(
+  const connsWhereNodeIsSource = connections.filter(
     (c) => c.source_node_id === currentRootNodeId,
   );
-  const nodeIsTarget = connections.filter(
+  const connsWhereNodeIsTarget = connections.filter(
     (c) =>
       c.target_node_id === currentRootNodeId &&
       acceptedTypes.includes(c.relationship_type),
   );
 
-  return [...nodeIsSource, ...nodeIsTarget];
+  return [...connsWhereNodeIsSource, ...connsWhereNodeIsTarget];
 }
 
 export function getValidConns(
   nodeId: number,
   connections: Tables<"connections">[],
-  isRoot: boolean,
 ): Tables<"connections">[] {
   const nodeIsSource = connections.filter((c) => c.source_node_id === nodeId);
   const nodeIsTarget = connections.filter(
     (c) =>
       c.target_node_id === nodeId &&
-      acceptedTypes.includes(c.relationship_type),
+      acceptedTypes.includes(c.relationship_type) &&
+      c.relationship_details &&
+      c.relationship_details.child !== nodeId,
   );
 
   return [...nodeIsSource, ...nodeIsTarget];
@@ -202,5 +203,56 @@ const DERIVED = [
     relationship_type: "parent_child_biological",
     source_node_id: 24,
     target_node_id: 26,
+  },
+];
+
+const FINAL = [
+  {
+    created_at: "2024-07-20T14:27:54.515567+00:00",
+    id: 8,
+    relationship_details: null,
+    relationship_type: "spouse",
+    source_node_id: 2,
+    target_node_id: 9,
+  },
+  {
+    created_at: "2024-07-20T14:29:05.076905+00:00",
+    id: 9,
+    relationship_details: { child: 10, parent: 2 },
+    relationship_type: "parent_child_biological",
+    source_node_id: 2,
+    target_node_id: 10,
+  },
+  {
+    created_at: "2024-07-20T14:35:17.465332+00:00",
+    id: 15,
+    relationship_details: { child: 2, parent: 14 },
+    relationship_type: "parent_child_biological",
+    source_node_id: 14,
+    target_node_id: 2,
+  },
+  {
+    created_at: "2024-07-20T14:35:29.28415+00:00",
+    id: 16,
+    relationship_details: { child: 2, parent: 15 },
+    relationship_type: "parent_child_biological",
+    source_node_id: 15,
+    target_node_id: 2,
+  },
+  {
+    created_at: "2024-08-05T23:08:02.359857+00:00",
+    id: 37,
+    relationship_details: { child: 21, parent: 2 },
+    relationship_type: "parent_child_biological",
+    source_node_id: 2,
+    target_node_id: 21,
+  },
+  {
+    created_at: "2024-08-05T23:11:07.777623+00:00",
+    id: 40,
+    relationship_details: null,
+    relationship_type: "ex_partner",
+    source_node_id: 2,
+    target_node_id: 20,
   },
 ];

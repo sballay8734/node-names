@@ -94,7 +94,7 @@ export default function NodeTapDetector({
 
   const tap = Gesture.Tap()
     .onStart(() => {
-      console.log(node);
+      // console.log(node);
       dispatch(handleNodeSelect(node));
       centerOnNode(node);
     })

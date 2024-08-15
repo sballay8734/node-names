@@ -29,8 +29,9 @@ export function getShownNodesAndConnections(
     };
   });
 
-  // !TODO: Derive connections here then add them
-  const derivedConnections = formattedPeople.flatMap((p) => {
+  // derive connections that aren't created
+  // !TODO: Eventually these connections SHOULD be created when link is
+  let derivedConnections = formattedPeople.flatMap((p) => {
     if (p.partner_details) {
       let childConnections: Tables<"connections">[] = [];
       p.partner_details.forEach((partner) => {
@@ -105,7 +106,16 @@ export function getShownNodesAndConnections(
     let finalConns: Tables<"connections">[] = [];
 
     combinedNodeIds.forEach((id) => {
-      const validConns = getValidConns(id, formattedConnections, false);
+      const nodeDepthFromUser = formattedPeople.find(
+        (p) => p.id === id,
+      )?.depth_from_user;
+      const rootDepthFromUser = currentRootNode.depth_from_user;
+
+      if (!nodeDepthFromUser) return;
+
+      if (nodeDepthFromUser > rootDepthFromUser + 2) return;
+
+      const validConns = getValidConns(id, formattedConnections);
       const connIds = Array.from(new Set(validConns.map((c) => c.id)));
 
       const finalConnections = formattedConnections.filter(
@@ -129,8 +139,6 @@ export function getShownNodesAndConnections(
       ...Array.from(new Set(newConns.map((c) => c.target_node_id))),
       ...Array.from(new Set(newConns.map((c) => c.source_node_id))),
     ];
-
-    // console.log("NEW TARGET IDS:", newTargetIds);
 
     combinedNodeIds = [...newTargetIds];
 
