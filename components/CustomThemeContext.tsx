@@ -19,6 +19,12 @@ export interface ITheme {
 
   groupTitleText: string;
   groupTitleOutline: string;
+
+  grp1NodeBg: string;
+  grp2NodeBg: string;
+  grp3NodeBg: string;
+  grp4NodeBg: string;
+  grp5NodeBg: string;
 }
 
 const CustomThemeContext = createContext<ITheme | undefined>(undefined);

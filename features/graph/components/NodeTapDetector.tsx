@@ -5,6 +5,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { nodeBgMap } from "@/constants/Colors";
 import {
   REG_NODE_RADIUS,
   REG_TEXT_SIZE,
@@ -48,8 +49,6 @@ export default function NodeTapDetector({
       state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
   );
 
-  // console.log("NodeConnectionCount:", nodeConnectionCount);
-
   const isSelected = selectedNode;
   const { x, y } = nodePosition;
 
@@ -60,7 +59,6 @@ export default function NodeTapDetector({
     activeBorderColor,
   } = getColors(node);
 
-  // !TODO: REVIEW THE TOP AND LEFT VALUES (AND REFACTOR)
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
     width: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
@@ -85,22 +83,11 @@ export default function NodeTapDetector({
     borderWidth: 2,
     opacity: 1,
     borderRadius: 100,
-    borderColor: "transparent",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-  }));
 
-  const tap = Gesture.Tap()
-    .onStart(() => {
-      // console.log(node);
-      dispatch(handleNodeSelect(node));
-      centerOnNode(node);
-    })
-    .runOnJS(true);
-
-  const animatedStyles = useAnimatedStyle(() => ({
     borderColor: withTiming(
       isSelected ? activeBorderColor : inactiveBorderColor,
       {
@@ -118,6 +105,18 @@ export default function NodeTapDetector({
     }),
   }));
 
+  const rootImgStyles = useAnimatedStyle(() => ({
+    opacity: withTiming(isSelected ? 0.5 : 0.3, { duration: 200 }),
+  }));
+
+  const tap = Gesture.Tap()
+    .onStart(() => {
+      // console.log(node);
+      dispatch(handleNodeSelect(node));
+      centerOnNode(node);
+    })
+    .runOnJS(true);
+
   // TODO: Calc font size based on name length and circle size
   // THIS IS JUST A QUICK WORKAROUND
   function calcFontSize(node: INode2) {
@@ -132,27 +131,29 @@ export default function NodeTapDetector({
     if (node.id === rootNodeId) {
       return {
         inactiveBgColor: "transparent",
+        sourceActiveBg: "",
         activeBgColor: "#66e889",
         inactiveBorderColor: "#121212",
         activeBorderColor: "rgba(245, 240, 196, 1)",
       };
     } else {
       return {
-        inactiveBgColor: "#082b21",
-        activeBgColor: "#0fdba5",
+        inactiveBgColor: !node.group_id ? "#1e2152" : nodeBgMap[node.group_id],
+        sourceActiveBg: !node.group_id
+          ? "#1e2152"
+          : nodeBgMap[node.group_id * 11],
+        activeBgColor: !node.group_id
+          ? "#1e2152"
+          : nodeBgMap[node.group_id * 111],
         inactiveBorderColor: "transparent",
         activeBorderColor: "rgba(245, 240, 196, 1)",
       };
     }
   }
 
-  const rootImgStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(isSelected ? 0.5 : 0.3, { duration: 200 }),
-  }));
-
   return (
     <GestureDetector key={node.id} gesture={tap}>
-      <Animated.View style={[animatedStyle, animatedStyles]}>
+      <Animated.View style={[animatedStyle]}>
         {/* Trans BG VIEW */}
         <Animated.View
           style={[
@@ -186,7 +187,9 @@ export default function NodeTapDetector({
               borderRadius: 2,
               paddingHorizontal: 3,
               paddingVertical: 1,
-              backgroundColor: "#1e2152",
+              backgroundColor: !node.group_id
+                ? "#1e2152"
+                : nodeBgMap[node.group_id],
               borderWidth: 1,
               borderColor:
                 isSelected && node.id !== rootNodeId

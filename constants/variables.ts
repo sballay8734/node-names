@@ -8,7 +8,7 @@ export const NODE_BORDER_WIDTH = 1;
 export const TEST_NODE_DIM = 35;
 export const ROOT_TEXT_SIZE = 40;
 export const REG_TEXT_SIZE = 20;
-export const MIN_SPACE_BETWEEN_NODES = 75;
+export const MIN_SPACE_BETWEEN_NODES = 60;
 
 const TEST_NODE_RADIUS = TEST_NODE_DIM / 2;
 

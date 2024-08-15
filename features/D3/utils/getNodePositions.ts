@@ -95,7 +95,7 @@ export function calcNodePositions(
     });
   }
 
-  const groupRadius = Math.min(windowSize.width, windowSize.height) * 1.5; // Adjust as needed
+  const groupRadius = Math.min(windowSize.width, windowSize.height) * 1.5;
 
   function customRadialForce(alpha: number) {
     positionedNodes.forEach((node: PositionedNode) => {
@@ -152,8 +152,8 @@ export function calcNodePositions(
             link.relationship_type === "spouse"
               ? MIN_SPACE_BETWEEN_NODES
               : link.relationship_type === "parent_child_biological"
-              ? MIN_SPACE_BETWEEN_NODES + 5
-              : MIN_SPACE_BETWEEN_NODES + 5;
+              ? MIN_SPACE_BETWEEN_NODES
+              : MIN_SPACE_BETWEEN_NODES;
 
           // Get the maximum depth of the two nodes connected by this link
           const maxDepth = Math.max(
