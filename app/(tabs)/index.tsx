@@ -4,7 +4,6 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Easing,
   useAnimatedStyle,
-  useDerivedValue,
   withTiming,
 } from "react-native-reanimated";
 
@@ -136,8 +135,9 @@ const Index = () => {
         ]}
       >
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
+          {/* Links ******************************************************** */}
           <LinksCanvas windowSize={windowSize} />
-          {/* Nodes ********************************************************** */}
+          {/* Nodes ******************************************************** */}
           <Nodes centerOnNode={centerOnNode} />
         </Animated.View>
         {/* Overlays && Absolute Btns ************************************** */}
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: depth_from_user should be ONLY way that rendered nodes is determined. Spouses and children of nodes with a depth of 1 should AUTOMATICALLY default to having a depth of 1. This will be easily configurable/edited by the user. THIS WILL MAKE LOGIC SOOOOO MUCH SIMPLER because you won't need to perform a bunch of weird checks and filters to decide who to show.
+// !TODO: depth_from_user should be ONLY way that rendered nodes is determined. Spouses and children of the root's directly connected nodes with a depth of 1 should AUTOMATICALLY default to having a depth of 1. This will also be easily configurable/edited by the user. THIS WILL MAKE LOGIC SOOOOO MUCH SIMPLER because you won't need to perform a bunch of weird checks and filters to decide who to show.
 
 // !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
 

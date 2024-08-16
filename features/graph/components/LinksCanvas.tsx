@@ -70,6 +70,8 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
 const styles = StyleSheet.create({
   canvas: {
     flex: 1,
+    // width: "100%",
+    // height: "100%",
     overflow: "visible",
     // backgroundColor: "rgba(155, 155, 0, 0.3)",
   },
