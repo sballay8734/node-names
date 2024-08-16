@@ -159,12 +159,14 @@ const styles = StyleSheet.create({
   canvasWrapper: {
     flex: 1,
     position: "relative",
-    backgroundColor: "rgba(255, 0, 0, 0.1)",
+    // backgroundColor: "rgba(255, 0, 0, 0.1)",
     // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
 });
 
 export default Index;
+
+// !TODO: You're onto something with the canvas height and width: You might just have to bite the bullet and go back to scaling the nodes and links independently. But this time, wrap them BOTH in a separate view
 
 // !TODO: depth_from_user should be ONLY way that rendered nodes is determined. Spouses and children of the root's directly connected nodes with a depth of 1 should AUTOMATICALLY default to having a depth of 1. This will also be easily configurable/edited by the user. THIS WILL MAKE LOGIC SOOOOO MUCH SIMPLER because you won't need to perform a bunch of weird checks and filters to decide who to show.
 
