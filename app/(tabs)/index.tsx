@@ -166,18 +166,7 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// FIRST FOR FRI. ****************************************************
-// 1. FIX TYPE ISSUE IN LINKSCANVAS
-// 2. Link highlighting logic (selected a node should highlight all it's direct links)
-// 3. Node highlighting logic (3 levels)
-
-// 4. Root node needs to be bigger when switching
-
-// 3. Work on adding/connecting/grouping nodes (+ btn)
-// 4. Add overlay over groups that fades out as you zoom in
-// 7. Refactor NODETAPDETECTOR)
-
-// 8. Node is already centered when selected. So just make it bigger while fading it out to give the impression that you're zooming in. Fade all root primary connections out while doing this while fading in (from smaller to bigger) all primary connections TO THE SELECTED NODE.
+// !TODO: depth_from_user should be ONLY way that rendered nodes is determined. Spouses and children of nodes with a depth of 1 should AUTOMATICALLY default to having a depth of 1. This will be easily configurable/edited by the user. THIS WILL MAKE LOGIC SOOOOO MUCH SIMPLER because you won't need to perform a bunch of weird checks and filters to decide who to show.
 
 // !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
 
@@ -185,69 +174,25 @@ export default Index;
 
 // !TODO: Spouses should have a sudo node between them where links to children come out of
 
-// !TODO: Why are Aarons connections to Levi, Rachel, 2nd child not full length?
-
-// !TODO: Maybe add "depth_from_user" as a property
-
-// !TODO: FIRST: Try and get depth working at a rudimentary level
-
-// !TODO: Node is not centered after inspection
-
 // !TODO: I'm not sure "deriving" connections is how I want to do it
-
-// !TODO: Optimization still needed. There is a lot of uncessary loops and checks happening
 
 // !TODO: Add back button when inside and inspected node
 
-// !TODO: Need to double check logic (you SHOULD be looping through partner details to make sure kids are connected to BOTH parents) RACHEL IS NOT CONNECTED TO LEVI
-
 // !TODO: Need to clean up types and remove columns in db that are no longer needed
-
-// !TODO: Need to add option to manually hide nodes permanently for ex's that are no longer in the picture (some people might not want to just delete them)
 
 // !TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
 
-// !TODO: YOU SHOULD NOT BE ABLE TO INSPECT A NODE THAT DOESN'T HAVE HIDDEN CONNECTIONS!!!!
-
-// !TODO: BUT, YOU STILL NEED TO FIGURE OUT WHY SOME OF THEM ARE OFF
-
 // !TODO: Why do Mackenzie, Carmen and Joe have hidden conns when Aaron is root? (Log hiddenConnections to find out) - Joe's and Carmens has to do with Grandparent/grandchild and Mackenzies has to do with niece/nephew
-
-// !TODO: Rachel should also be connected to aaron with the option to view aarons hidden connections
-
-// !TODO: It will probably be better to get full families first or something because although
-
-// !TODO: Why is Lauren connected directly to Levi when Lauren is root?
-
-// !TODO: You will likely have to adjust logic to handle hidden connections better
-
-// !TODO: Also, the activeRoot doesn't have the correct types
-
-// !TODO: DO SOME RENAMING, TESTING, ETC.. OF getShownNodesAndConnections
-
-// !TODO: !! !! !! Optimize above (use hashmaps where possible) !! !! !! !! !!
-
-// !TODO: Should b3 THREE node states (inactive[darkest], sourceIsSelected[brighter], selfIsSelected[brightest])
-
-// !TODO: WHILE positioning the nodes, you should be grouping the families together maybe while also calculating the widgets
 
 // !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
 
 // TODO: using nodeIsSelected in index.tsx is BETTER but not perfect. You're still getting one or two re-renders that you don't want
 
-// !TODO: You might need to make Initial Scale much bigger. Zooming into the small nodes reveals blurry text
-
 // TODO: See about replacing useState with useRef where possible (This likely won't be possible in many places but since ref doesn't trigger re-renders, it could help performance)
 
 // TODO: Colors of TODO icons no longer match.
 
-// TODO: Color nodes
-
-// !TODO: Current "add link" logic assumes a stationary graph (you will eventually need to track the postions of the links and nodes as they move by panning/pinching)
-
 // TODO: little map in bottom right/left to show where you are in relation like in civs
-
-// TODO: use custom icon for btn
 
 // mTODO: Eventually change arrow in bottom left to a compass (SEE INSP Folder)
 
