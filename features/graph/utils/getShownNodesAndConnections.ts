@@ -18,6 +18,9 @@ export function getShownNodesAndConnections(
   shownNodes: EnhancedPerson[];
   finalConnections: Tables<"connections">[];
 } {
+  const newPeeps = allPeople.filter((p) => p.depth_from_user <= 2);
+
+  // OLD **********************************************************************
   // 1 if userIsInspected, 2 if it's someone else
   let depth: 1 | 2 = currentRootNode.id === userId ? 1 : 2;
 
@@ -162,7 +165,8 @@ export function getShownNodesAndConnections(
 
   return {
     shownNodes: finalNodesToRender,
-    finalConnections: finalConnectionsToRender,
+    // finalConnections: finalConnectionsToRender,
+    finalConnections: [],
   };
 }
 

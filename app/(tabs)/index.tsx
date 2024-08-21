@@ -166,6 +166,10 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Should you maybe just add a "showAtDefaultZoom" to each node. If true, show on render, if not, they must zoom in? I DON'T Love this as much because the logic for rendering default might be simpler but zooming becomes just as complicated as before.
+
+// !TODO: Maybe instead of above, you define specific classes like direct connections will ALWAYS be 1, spouses and children of 1 will ALWAYS be 2 (and nothing else will be 2),
+
 // !TODO: You're onto something with the canvas height and width: You might just have to bite the bullet and go back to scaling the nodes and links independently. But this time, wrap them BOTH in a separate view
 
 // WORKING ON THIS vv

@@ -57,7 +57,9 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
       style={[
         styles.canvas,
         {
-          width: windowSize.width * 2,
+          // TODO: ADD THIS BACK TO SEE HOW IT WORKS
+          // width: windowSize.width * 2,
+          width: windowSize.width,
           height: windowSize.height,
         },
       ]}
