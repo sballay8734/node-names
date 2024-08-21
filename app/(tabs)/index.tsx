@@ -168,6 +168,7 @@ export default Index;
 
 // !TODO: You're onto something with the canvas height and width: You might just have to bite the bullet and go back to scaling the nodes and links independently. But this time, wrap them BOTH in a separate view
 
+// WORKING ON THIS vv
 // !TODO: depth_from_user should be ONLY way that rendered nodes is determined. Spouses and children of the root's directly connected nodes with a depth of 1 should AUTOMATICALLY default to having a depth of 1. This will also be easily configurable/edited by the user. THIS WILL MAKE LOGIC SOOOOO MUCH SIMPLER because you won't need to perform a bunch of weird checks and filters to decide who to show.
 
 // !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
