@@ -41,12 +41,6 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
     return false;
   }
 
-  // const svgTransform = useDerivedValue(() => [
-  //   { translateX: translateX.value },
-  //   { translateY: translateY.value },
-  //   { scale: scale.value },
-  // ]);
-
   const origin = useDerivedValue(() => ({
     x: windowSize.width / 2,
     y: windowSize.height / 2,

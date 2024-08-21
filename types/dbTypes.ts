@@ -26,10 +26,25 @@ export type RelationshipType =
 
 export type Sex = "male" | "female" | "other";
 
+// TODO: expand this to have partner's name maybe?
 export type Partner = {
   partner_id: number;
   children_ids: number[] | null;
   status: "current" | "ex";
+};
+
+// TODO: expand this to have child's name maybe?
+export type Child = {
+  child_id: number;
+  biologial_parents_ids: number[];
+  adoptive_parents_ids: number[];
+};
+
+// TODO: expand this to have parent's name maybe?
+export type Parent = {
+  parent_id: number;
+  biologial_children_ids: number[];
+  adoptive_children_ids: number[];
 };
 
 // SUPABASE STUFF BELOW *******************************************************
@@ -117,70 +132,96 @@ export type Database = {
       };
       people: {
         Row: {
+          // auto created
+          id: number;
           created_at: string;
-          date_of_birth: string | null;
-          date_of_death: string | null;
+
+          // important information
           first_name: string;
-          gift_ideas: string[] | null;
+          last_name: string | null;
           group_id: number | null;
           group_name: string | null;
-          id: number;
-          last_name: string | null;
+          date_of_birth: string | null;
+          date_of_death: string | null;
           maiden_name: string | null;
+          sex: string;
+
           partner_details: Partner[] | null;
+          parent_details: Parent[] | null;
+          children_details: Child[] | null;
+
+          // optional information
+          gift_ideas: string[] | null;
           preferred_name: string | null;
           phonetic_name: string | null;
-          sex: string;
-          source_node_ids: string[] | null;
           depth_from_user: number;
 
-          partner_id: number | null;
-          partner_type: "spouse" | "dating" | "divorced" | null;
-          children_ids: string[] | null;
+          shallowest_ancestor: number;
+
+          // source_node_ids: string[] | null;
+          // partner_id: number | null;
+          // partner_type: "spouse" | "dating" | "divorced" | null;
+          // children_ids: string[] | null;
         };
         Insert: {
+          // auto created
+          id: number;
           created_at: string;
-          date_of_birth: string | null;
-          date_of_death: string | null;
+
+          // important information
           first_name: string;
-          gift_ideas: string[] | null;
+          last_name: string | null;
           group_id: number | null;
           group_name: string | null;
-          id: number;
-          last_name: string | null;
+          date_of_birth: string | null;
+          date_of_death: string | null;
           maiden_name: string | null;
+          sex: string;
+
           partner_details: Partner[] | null;
+          parent_details: Parent[] | null;
+          children_details: Child[] | null;
+
+          // optional information
+          gift_ideas: string[] | null;
           preferred_name: string | null;
           phonetic_name: string | null;
-          sex: string;
-          source_node_ids: string[] | null;
           depth_from_user: number;
 
-          partner_id: number | null;
-          partner_type: "spouse" | "dating" | "divorced" | null;
-          children_ids: string[] | null;
+          // source_node_ids: string[] | null;
+          // partner_id: number | null;
+          // partner_type: "spouse" | "dating" | "divorced" | null;
+          // children_ids: string[] | null;
         };
         Update: {
+          // auto created
+          id: number;
           created_at: string;
-          date_of_birth: string | null;
-          date_of_death: string | null;
+
+          // important information
           first_name: string;
-          gift_ideas: string[] | null;
+          last_name: string | null;
           group_id: number | null;
           group_name: string | null;
-          id: number;
-          last_name: string | null;
+          date_of_birth: string | null;
+          date_of_death: string | null;
           maiden_name: string | null;
+          sex: string;
+
           partner_details: Partner[] | null;
+          parent_details: Parent[] | null;
+          children_details: Child[] | null;
+
+          // optional information
+          gift_ideas: string[] | null;
           preferred_name: string | null;
           phonetic_name: string | null;
-          sex: string;
-          source_node_ids: string[] | null;
           depth_from_user: number;
 
-          partner_id: number | null;
-          partner_type: "spouse" | "dating" | "divorced" | null;
-          children_ids: string[] | null;
+          // source_node_ids: string[] | null;
+          // partner_id: number | null;
+          // partner_type: "spouse" | "dating" | "divorced" | null;
+          // children_ids: string[] | null;
         };
         Relationships: [
           {

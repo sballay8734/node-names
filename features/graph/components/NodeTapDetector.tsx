@@ -2,6 +2,7 @@ import { ImageBackground, StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
@@ -20,6 +21,8 @@ import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelectio
 import { INode2 } from "../redux/graphManagement";
 
 import NodeWidget from "./NodeWidget";
+import useWindowSize from "@/hooks/useWindowSize";
+import { useEffect } from "react";
 
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 
@@ -41,6 +44,7 @@ export default function NodeTapDetector({
   centerOnNode,
 }: Props) {
   const dispatch = useAppDispatch();
+  const windowSize = useWindowSize();
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
@@ -48,9 +52,13 @@ export default function NodeTapDetector({
     (state: RootState) =>
       state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
   );
-
   const isSelected = selectedNode;
   const { x, y } = nodePosition;
+
+  const initialX = useSharedValue(windowSize.windowCenterX);
+  const initialY = useSharedValue(windowSize.windowCenterY);
+  const finalX = useSharedValue(x);
+  const finalY = useSharedValue(y);
 
   const {
     inactiveBgColor,

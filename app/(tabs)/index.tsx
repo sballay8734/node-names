@@ -166,14 +166,7 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: Should you maybe just add a "showAtDefaultZoom" to each node. If true, show on render, if not, they must zoom in? I DON'T Love this as much because the logic for rendering default might be simpler but zooming becomes just as complicated as before.
-
-// !TODO: Maybe instead of above, you define specific classes like direct connections will ALWAYS be 1, spouses and children of 1 will ALWAYS be 2 (and nothing else will be 2),
-
-// !TODO: You're onto something with the canvas height and width: You might just have to bite the bullet and go back to scaling the nodes and links independently. But this time, wrap them BOTH in a separate view
-
-// WORKING ON THIS vv
-// !TODO: depth_from_user should be ONLY way that rendered nodes is determined. Spouses and children of the root's directly connected nodes with a depth of 1 should AUTOMATICALLY default to having a depth of 1. This will also be easily configurable/edited by the user. THIS WILL MAKE LOGIC SOOOOO MUCH SIMPLER because you won't need to perform a bunch of weird checks and filters to decide who to show.
+// !TODO: FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
 // !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
 

@@ -45,7 +45,9 @@ export default function InspectBtn(): React.JSX.Element {
     if (
       selectedNodeCount === 1 &&
       !rootNodeIsSelected &&
-      !longPressRef.current
+      !longPressRef.current &&
+      // TODO: This line currently disallows inspecting deeper nested nodes until you fix the data structure to simplify the logic for handling it
+      selectedNodes[0].depth_from_user < 2
     ) {
       console.log("TODO: UPDATE_ROOT_ID");
       updateRootId(selectedNodes[0].id);
@@ -60,9 +62,13 @@ export default function InspectBtn(): React.JSX.Element {
   const inspectBtnStyles = useAnimatedStyle(() => {
     return {
       opacity: withTiming(
-        selectedNodeCount === 1 && !rootNodeIsSelected
+        selectedNodeCount === 1 &&
+          !rootNodeIsSelected &&
+          selectedNodes[0].shallowest_ancestor === 1
           ? 1
-          : selectedNodeCount === 1 && rootNodeIsSelected
+          : (selectedNodeCount === 1 && rootNodeIsSelected) ||
+            (selectedNodeCount === 1 &&
+              selectedNodes[0].shallowest_ancestor !== 1)
           ? 0.3
           : selectedNodeCount > 1
           ? 0.3
