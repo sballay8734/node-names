@@ -63,7 +63,7 @@ const ManageGraphSlice = createSlice({
   initialState,
   reducers: {
     // ROOT
-    setActiveRootNode: (state, action: PayloadAction<TempTillDbFix>) => {
+    setActiveRootNode: (state, action: PayloadAction<INode2>) => {
       state.activeRootNode = {
         ...action.payload,
       };
