@@ -1,0 +1,13 @@
+import { REG_TEXT_SIZE, ROOT_TEXT_SIZE } from "@/constants/variables";
+
+import { INode2 } from "../redux/graphManagement";
+
+export // TODO: Calc font size based on name length and circle size
+// THIS IS JUST A QUICK WORKAROUND
+function calcFontSize(node: INode2, rootId: number) {
+  if (node.id === rootId) {
+    return ROOT_TEXT_SIZE;
+  } else {
+    return REG_TEXT_SIZE - node.first_name.length / 2;
+  }
+}

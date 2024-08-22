@@ -7,21 +7,17 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { nodeBgMap } from "@/constants/Colors";
-import {
-  REG_NODE_RADIUS,
-  REG_TEXT_SIZE,
-  ROOT_NODE_RADIUS,
-  ROOT_TEXT_SIZE,
-} from "@/constants/variables";
+import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/variables";
 import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
+import { calcFontSize } from "../helpers/calcFontSize";
+import { getColors } from "../helpers/getColors";
 import { INode2 } from "../redux/graphManagement";
 
 import NodeWidget from "./NodeWidget";
-import useWindowSize from "@/hooks/useWindowSize";
 import { useEffect } from "react";
 
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
@@ -44,34 +40,57 @@ export default function NodeTapDetector({
   centerOnNode,
 }: Props) {
   const dispatch = useAppDispatch();
-  const windowSize = useWindowSize();
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
-  const rootNodeId = useAppSelector(
-    (state: RootState) =>
-      state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
-  );
+  const rootNodeId =
+    useAppSelector(
+      (state: RootState) =>
+        state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
+    ) || 0;
   const isSelected = selectedNode;
   const { x, y } = nodePosition;
+  const opacity = useSharedValue(0);
 
-  const initialX = useSharedValue(windowSize.windowCenterX);
-  const initialY = useSharedValue(windowSize.windowCenterY);
-  const finalX = useSharedValue(x);
-  const finalY = useSharedValue(y);
+  useEffect(() => {
+    // animate opactiy to 1 when component mounts
+    opacity.value = withTiming(1, { duration: 300 });
+
+    // clean up: animate the opacity to 0 when the component unmounts
+    return () => {
+      opacity.value = withTiming(0, { duration: 300 });
+    };
+  }, []);
 
   const {
     inactiveBgColor,
     activeBgColor,
     inactiveBorderColor,
     activeBorderColor,
-  } = getColors(node);
+  } = getColors(node, rootNodeId);
 
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
     width: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
     height: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
+    borderWidth: 2,
+    borderRadius: 100,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    borderColor: withTiming(
+      isSelected ? activeBorderColor : inactiveBorderColor,
+      {
+        duration: 200,
+      },
+    ),
+    backgroundColor: withTiming(isSelected ? activeBgColor : inactiveBgColor, {
+      duration: 200,
+    }),
+    opacity: opacity.value,
 
+    // TRANSFORM **************************************************************
     transform: [
       {
         translateX:
@@ -86,25 +105,6 @@ export default function NodeTapDetector({
             : y - REG_NODE_RADIUS / 2,
       },
     ],
-
-    // MY STUFF
-    borderWidth: 2,
-    opacity: 1,
-    borderRadius: 100,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-
-    borderColor: withTiming(
-      isSelected ? activeBorderColor : inactiveBorderColor,
-      {
-        duration: 200,
-      },
-    ),
-    backgroundColor: withTiming(isSelected ? activeBgColor : inactiveBgColor, {
-      duration: 200,
-    }),
   }));
 
   const animatedTextStyles = useAnimatedStyle(() => ({
@@ -124,40 +124,6 @@ export default function NodeTapDetector({
       centerOnNode(node);
     })
     .runOnJS(true);
-
-  // TODO: Calc font size based on name length and circle size
-  // THIS IS JUST A QUICK WORKAROUND
-  function calcFontSize(node: INode2) {
-    if (node.id === rootNodeId) {
-      return ROOT_TEXT_SIZE;
-    } else {
-      return REG_TEXT_SIZE - node.first_name.length / 2;
-    }
-  }
-
-  function getColors(node: INode2) {
-    if (node.id === rootNodeId) {
-      return {
-        inactiveBgColor: "transparent",
-        sourceActiveBg: "",
-        activeBgColor: "#66e889",
-        inactiveBorderColor: "#121212",
-        activeBorderColor: "rgba(245, 240, 196, 1)",
-      };
-    } else {
-      return {
-        inactiveBgColor: !node.group_id ? "#1e2152" : nodeBgMap[node.group_id],
-        sourceActiveBg: !node.group_id
-          ? "#1e2152"
-          : nodeBgMap[node.group_id * 11],
-        activeBgColor: !node.group_id
-          ? "#1e2152"
-          : nodeBgMap[node.group_id * 111],
-        inactiveBorderColor: "transparent",
-        activeBorderColor: "rgba(245, 240, 196, 1)",
-      };
-    }
-  }
 
   return (
     <GestureDetector key={node.id} gesture={tap}>
@@ -211,7 +177,7 @@ export default function NodeTapDetector({
             numberOfLines={1}
             style={{
               width: "100%",
-              fontSize: calcFontSize(node),
+              fontSize: calcFontSize(node, rootNodeId),
               color:
                 isSelected && node.id !== rootNodeId ? "#c2ffef" : "#516e66",
               fontWeight: node.id === rootNodeId ? "600" : "400",
@@ -244,7 +210,3 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
 });
-
-// TODO: Rootnode should be icon, others should not
-// TODO: Link should also be highlighted when a node is selected
-// TODO: Need option to connect to an existing node if node has no connections (it was just created)

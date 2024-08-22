@@ -188,9 +188,7 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
-// !TODO: FIRST ("Me" btn is not working)
-
-// !TODO: When root changes make sure to animate OUT and IN the other nodes. Currently they leave/change very abruptly
+// TODO: root changing animates nodes better but still not great
 
 // !TODO: Spouses should have a sudo node between them where links to children come out of
 
