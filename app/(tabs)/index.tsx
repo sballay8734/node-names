@@ -9,10 +9,7 @@ import Animated, {
 
 import { useCustomTheme } from "@/components/CustomThemeContext";
 import { PositionedNode } from "@/features/D3/types/d3Types";
-import {
-  calcNodePositions,
-  EnhancedPerson,
-} from "@/features/D3/utils/getNodePositions";
+import { calcNodePositions } from "@/features/D3/utils/getNodePositions";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import {
@@ -24,7 +21,10 @@ import {
   setUserLinks,
   setUserNodes,
 } from "@/features/Graph/redux/graphManagement";
-import { getShownNodesAndConnections } from "@/features/Graph/utils/getShownNodesAndConnections";
+import {
+  getShownNodesAndConnections,
+  NodeHashObj,
+} from "@/features/Graph/utils/getShownNodesAndConnections";
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import BackToUserBtn from "@/features/GraphActions/components/BackToUserBtn";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
@@ -56,17 +56,18 @@ const Index = () => {
   useEffect(() => {
     if (activeRootNode && people && connections) {
       const nodesAndConnections: {
-        shownNodes: EnhancedPerson[];
+        nodeObj: { [nodeId: number]: NodeHashObj };
         finalConnections: Tables<"connections">[];
       } = getShownNodesAndConnections(people, connections, activeRootNode);
 
       if (!nodesAndConnections) return;
 
-      const { shownNodes, finalConnections } = nodesAndConnections;
+      const { nodeObj, finalConnections } = nodesAndConnections;
 
       // calculate position of nodes
       const { nodes, links } = calcNodePositions(
-        shownNodes,
+        people,
+        nodeObj,
         finalConnections,
         windowSize,
         scale,
@@ -190,15 +191,15 @@ export default Index;
 
 // TODO: root changing animates nodes better but still not great
 
+// !TODO: LOAD ALL NODES INITIALLY AND USE A HASHMAP TO CONTROL THEIR STATE AND LOCATION (SO ALL NODES SHOULD BE ON SCREEN AT ALL TIMES BUT SOME WILL BE HIDDEN and have no pointer events)
+
+// !TODO: Need to improve how nodes are rendered. There is some glitchiness happening due to bad rendering logic
+
 // !TODO: Spouses should have a sudo node between them where links to children come out of
 
 // !TODO: Add back button when inside and inspected node
 
-// !TODO: Need to clean up types and remove columns in db that are no longer needed
-
 // !TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
-
-// !TODO: Why do Mackenzie, Carmen and Joe have hidden conns when Aaron is root? (Log hiddenConnections to find out) - Joe's and Carmens has to do with Grandparent/grandchild and Mackenzies has to do with niece/nephew
 
 // !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
 

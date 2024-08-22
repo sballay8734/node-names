@@ -1,6 +1,7 @@
 import { ImageBackground, StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -48,19 +49,30 @@ export default function NodeTapDetector({
       (state: RootState) =>
         state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
     ) || 0;
+
   const isSelected = selectedNode;
   const { x, y } = nodePosition;
+
+  // Opacity for animating in and out
   const opacity = useSharedValue(0);
 
-  useEffect(() => {
-    // animate opactiy to 1 when component mounts
-    opacity.value = withTiming(1, { duration: 300 });
+  // Transition progress for smooth root node transition
+  const transitionProgress = useSharedValue(node.id === rootNodeId ? 1 : 0);
 
-    // clean up: animate the opacity to 0 when the component unmounts
+  useEffect(() => {
+    // Animate opacity to 1 when component mounts
+    opacity.value = withTiming(1, { duration: 500 });
+
+    // Animate the transition when root node changes
+    transitionProgress.value = withTiming(node.id === rootNodeId ? 1 : 0, {
+      duration: 500,
+    });
+
+    // Clean up: animate the opacity to 0 when the component unmounts
     return () => {
-      opacity.value = withTiming(0, { duration: 300 });
+      opacity.value = withTiming(0, { duration: 500 });
     };
-  }, []);
+  }, [node.id, rootNodeId]);
 
   const {
     inactiveBgColor,
@@ -69,43 +81,35 @@ export default function NodeTapDetector({
     activeBorderColor,
   } = getColors(node, rootNodeId);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    position: "absolute",
-    width: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
-    height: node.id === rootNodeId ? ROOT_NODE_RADIUS : ROOT_NODE_RADIUS / 2,
-    borderWidth: 2,
-    borderRadius: 100,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    borderColor: withTiming(
-      isSelected ? activeBorderColor : inactiveBorderColor,
-      {
-        duration: 200,
-      },
-    ),
-    backgroundColor: withTiming(isSelected ? activeBgColor : inactiveBgColor, {
-      duration: 200,
-    }),
-    opacity: opacity.value,
+  const animatedStyle = useAnimatedStyle(() => {
+    const radius = interpolate(
+      transitionProgress.value,
+      [0, 1],
+      [REG_NODE_RADIUS / 2, ROOT_NODE_RADIUS / 2],
+    );
 
-    // TRANSFORM **************************************************************
-    transform: [
-      {
-        translateX:
-          node.id === rootNodeId
-            ? x - ROOT_NODE_RADIUS / 2
-            : x - REG_NODE_RADIUS / 2,
-      },
-      {
-        translateY:
-          node.id === rootNodeId
-            ? y - ROOT_NODE_RADIUS / 2
-            : y - REG_NODE_RADIUS / 2,
-      },
-    ],
-  }));
+    return {
+      position: "absolute",
+      width: radius * 2,
+      height: radius * 2,
+      borderWidth: 2,
+      borderRadius: 100,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "row",
+      borderColor: withTiming(
+        isSelected ? activeBorderColor : inactiveBorderColor,
+        { duration: 200 },
+      ),
+      backgroundColor: withTiming(
+        isSelected ? activeBgColor : inactiveBgColor,
+        { duration: 200 },
+      ),
+      opacity: opacity.value, // Keep opacity animation for in/out transitions
+      transform: [{ translateX: x - radius }, { translateY: y - radius }],
+    };
+  });
 
   const animatedTextStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isSelected ? "#172924" : "#172924", {
@@ -114,12 +118,11 @@ export default function NodeTapDetector({
   }));
 
   const rootImgStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(isSelected ? 0.5 : 0.3, { duration: 200 }),
+    opacity: interpolate(transitionProgress.value, [0, 1], [0, 0.5]),
   }));
 
   const tap = Gesture.Tap()
     .onStart(() => {
-      // console.log(node);
       dispatch(handleNodeSelect(node));
       centerOnNode(node);
     })
@@ -128,7 +131,6 @@ export default function NodeTapDetector({
   return (
     <GestureDetector key={node.id} gesture={tap}>
       <Animated.View style={[animatedStyle]}>
-        {/* Trans BG VIEW */}
         <Animated.View
           style={[
             {
@@ -142,14 +144,11 @@ export default function NodeTapDetector({
             },
           ]}
         >
-          {node.id === rootNodeId && (
-            <AnimatedBg
-              source={image}
-              style={[styles.image, rootImgStyles]}
-              borderRadius={100}
-              // imageStyle={{ borderWidth: 2 }}
-            />
-          )}
+          <AnimatedBg
+            source={image}
+            style={[styles.image, rootImgStyles]}
+            borderRadius={100}
+          />
         </Animated.View>
 
         {/* Text View */}
@@ -186,12 +185,13 @@ export default function NodeTapDetector({
             {node.id === rootNodeId ? node.first_name : node.first_name}
           </Text>
         </Animated.View>
-
-        <NodeWidget hiddenConnections={node.hiddenConnections} />
+        {/* 
+        <NodeWidget hiddenConnections={node.hiddenConnections} /> */}
       </Animated.View>
     </GestureDetector>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -3,27 +3,31 @@ import { SharedValue } from "react-native-reanimated";
 
 import { centerNode, MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
 import { INode2 } from "@/features/Graph/redux/graphManagement";
+import { NodeHashObj } from "@/features/Graph/utils/getShownNodesAndConnections";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
 
 import { PositionedLink, PositionedNode } from "../types/d3Types";
 
-export interface EnhancedPerson extends Tables<"people"> {
-  shownConnections: number;
-  hiddenConnections: number;
-}
-
 export function calcNodePositions(
-  people: EnhancedPerson[],
+  people: Tables<"people">[],
+  nodeObj: { [nodeId: number]: NodeHashObj },
   connections: Tables<"connections">[],
   windowSize: WindowSize,
   scale: SharedValue<number>,
   activeRootNode: INode2,
 ): { nodes: PositionedNode[]; links: PositionedLink[] } {
   // make copy of nodes and links
-  const positionedNodes: PositionedNode[] = people.map((p) => ({
-    ...p,
-  }));
+  const positionedNodes: PositionedNode[] = Object.values(nodeObj).map((p) => {
+    const { node, ...rest } = p;
+
+    return {
+      ...rest,
+      ...node,
+    };
+  });
+
+  console.log("REFORMATTED:", positionedNodes);
   const connectionsCopy: Tables<"connections">[] = connections.map((c) => ({
     ...c,
   }));
