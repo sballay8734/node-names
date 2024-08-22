@@ -8,31 +8,32 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
-import { useAppSelector } from "@/hooks/reduxHooks";
+import { setActiveRootNode } from "@/features/Graph/redux/graphManagement";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
 export default function InspectBtn(): React.JSX.Element {
+  const dispatch = useAppDispatch();
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
+  const activeRootNode = useAppSelector(
+    (state: RootState) => state.manageGraph.activeRootNode,
+  );
   const selectedNodeCount = useAppSelector(
     (state: RootState) => state.selections.selectedNodes.length,
   );
-  // this will update the root and trigger a new reload of all nodes/connections
-  // !TODO: You should store the userRoot somewhere so that when you switch back to the user, you don't have to run all those functions again
-  const { updateRootId, newRootNode } = useDataLoad();
 
   const rootNodeIsSelected = useAppSelector((state: RootState) => {
     return (
-      newRootNode &&
+      activeRootNode &&
       state.selections.selectedNodes.length === 1 &&
-      state.selections.selectedNodes[0].id === newRootNode.id
+      state.selections.selectedNodes[0].id === activeRootNode.id
     );
   });
 
@@ -51,7 +52,7 @@ export default function InspectBtn(): React.JSX.Element {
       // TODO: This line currently disallows inspecting deeper nested nodes until you fix the data structure to simplify the logic for handling it
       selectedNodes[0].depth_from_user < 2
     ) {
-      updateRootId(selectedNodes[0].id);
+      dispatch(setActiveRootNode(selectedNodes[0]));
     }
     isPressed.value = false;
   }

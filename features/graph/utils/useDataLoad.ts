@@ -13,26 +13,24 @@ export function useDataLoad() {
   const [rootNodeId, setRootNodeId] = useState<number>(tempRootId);
   const { people, connections, groups, isLoading, dataFetched } = useDbData();
 
-  // !TODO: vv This is currently searching all people in DB (not right)
-  let newRootNode = people?.find((p) => p.id === rootNodeId);
-
   useEffect(() => {
-    if (dataFetched && people && connections && groups && newRootNode) {
-      // initial render
-      dispatch(setActiveRootNode(newRootNode));
+    if (dataFetched && people && connections && groups) {
+      const initialRootNode = people.find((p) => p.id === rootNodeId);
+      if (initialRootNode) {
+        dispatch(setActiveRootNode(initialRootNode));
+      }
     }
-  }, [dataFetched, people, connections, groups, newRootNode, dispatch]);
+  }, [dataFetched, people, connections, groups, rootNodeId, dispatch]);
 
   const updateRootId = (newRootId: number) => {
-    let newRootNode = people?.find((p) => p.id === newRootId);
-    if (!newRootNode) return;
-
-    setRootNodeId(newRootNode.id);
-    dispatch(setActiveRootNode(newRootNode));
+    const newRootNode = people?.find((p) => p.id === newRootId);
+    if (newRootNode) {
+      setRootNodeId(newRootNode.id);
+      dispatch(setActiveRootNode(newRootNode));
+    }
   };
 
   return {
-    newRootNode,
     isLoading,
     updateRootId,
     people,
@@ -40,6 +38,3 @@ export function useDataLoad() {
     rootNodeId,
   };
 }
-
-// !TODO: You'll actually have to find the person whose ID matches the userId
-// !TODO: Double check this logic

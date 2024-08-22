@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 import { Child, Parent, Partner } from "@/types/dbTypes";
 
+import { NodeHashObj } from "../utils/getShownNodesAndConnections";
+
 export interface INode2 {
   id: number;
   created_at: string;
@@ -28,8 +30,6 @@ export interface INode2 {
   shallowest_ancestor: number;
 
   isShown: boolean;
-  xPosition: number;
-  yPosition: number;
 }
 
 // !TODO: Current issue is that you're calculating shown/hidden connections at run time, thus you had to alter the interfaces to make it work (not ideal)
@@ -40,7 +40,7 @@ interface ManageGraphState {
   activeRootNode: INode2 | null;
   activeRootType: "user" | "notUser";
 
-  userNodes: PositionedNode[];
+  userNodes: { [x: number]: NodeHashObj };
   userLinks: PositionedLink[];
 
   inspectedNodes: PositionedNode[];
@@ -70,7 +70,10 @@ const ManageGraphSlice = createSlice({
     },
 
     // USER (Will not change often)
-    setUserNodes: (state, action: PayloadAction<PositionedNode[]>) => {
+    setUserNodes: (
+      state,
+      action: PayloadAction<{ [x: number]: NodeHashObj }>,
+    ) => {
       state.userNodes = action.payload;
     },
     setUserLinks: (state, action: PayloadAction<PositionedLink[]>) => {

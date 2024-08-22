@@ -24,7 +24,7 @@ export default function Nodes({ centerOnNode }: Props): React.JSX.Element {
       }}
     >
       {nodes &&
-        nodes.map((node) => {
+        Object.values(nodes).map((node) => {
           const { x, y } = node;
 
           if (x && y) {

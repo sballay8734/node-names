@@ -2,11 +2,10 @@ import { Tables } from "@/types/dbTypes";
 
 import { INode2 } from "../redux/graphManagement";
 
-export interface NodeHashObj {
+export interface NodeHashObj extends Tables<"people"> {
   isShown: boolean;
-  xPosition: number;
-  yPosition: number;
-  node: Tables<"people">;
+  x: number;
+  y: number;
 }
 
 // REMOVE: Will be removed when auth is added
@@ -17,7 +16,7 @@ export function getShownNodesAndConnections(
   allConnections: Tables<"connections">[],
   currentRootNode: INode2,
 ): {
-  nodeObj: { [nodeId: number]: NodeHashObj };
+  nodeHash: { [nodeId: number]: NodeHashObj };
   finalConnections: Tables<"connections">[];
 } {
   let nodeHash: {
@@ -31,9 +30,9 @@ export function getShownNodesAndConnections(
 
     nodeHash[person.id] = {
       isShown: false,
-      xPosition: 0,
-      yPosition: 0,
-      node: person,
+      x: 0,
+      y: 0,
+      ...person,
     };
   });
 
@@ -73,7 +72,59 @@ export function getShownNodesAndConnections(
   }
 
   return {
-    nodeObj: nodeHash,
+    nodeHash,
     finalConnections: [],
   };
 }
+
+const BEFORE = {
+  "1": {
+    children_details: null,
+    created_at: "2024-07-20T14:07:07.332245+00:00",
+    date_of_birth: "2000-10-01",
+    date_of_death: null,
+    depth_from_user: 0,
+    first_name: "Shawn",
+    gift_ideas: null,
+    group_id: null,
+    group_name: null,
+    id: 1,
+    isShown: true,
+    last_name: "Ballay",
+    maiden_name: null,
+    parent_details: [[Object], [Object]],
+    partner_details: null,
+    phonetic_name: "sh AW n",
+    preferred_name: null,
+    sex: "male",
+    shallowest_ancestor: null,
+    x: 0,
+    y: 0,
+  },
+};
+
+const AFTER = {
+  "1": {
+    children_details: null,
+    created_at: "2024-07-20T14:07:07.332245+00:00",
+    date_of_birth: "2000-10-01",
+    date_of_death: null,
+    depth_from_user: 0,
+    first_name: "Shawn",
+    gift_ideas: null,
+    group_id: null,
+    group_name: null,
+    id: 1,
+    isShown: true,
+    last_name: "Ballay",
+    maiden_name: null,
+    parent_details: [[Object], [Object]],
+    partner_details: null,
+    phonetic_name: "sh AW n",
+    preferred_name: null,
+    sex: "male",
+    shallowest_ancestor: null,
+    x: 0,
+    y: 0,
+  },
+};

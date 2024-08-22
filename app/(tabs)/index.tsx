@@ -1,129 +1,35 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 import { useCustomTheme } from "@/components/CustomThemeContext";
-import { PositionedNode } from "@/features/D3/types/d3Types";
-import { calcNodePositions } from "@/features/D3/utils/getNodePositions";
+import ControlButtons from "@/features/Graph/components/ControlButtons";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
-import {
-  CENTER_ON_SCALE,
-  INITIAL_SCALE,
-  useGestures,
-} from "@/features/Graph/hooks/useGestures";
-import {
-  setUserLinks,
-  setUserNodes,
-} from "@/features/Graph/redux/graphManagement";
-import {
-  getShownNodesAndConnections,
-  NodeHashObj,
-} from "@/features/Graph/utils/getShownNodesAndConnections";
-import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
-import BackToUserBtn from "@/features/GraphActions/components/BackToUserBtn";
-import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
-import InspectBtn from "@/features/GraphActions/components/InspectBtn";
-import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
-import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
-import Popover from "@/features/Shared/Popover";
-import SearchBar from "@/features/Shared/SearchBar";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useGestures } from "@/features/Graph/hooks/useGestures";
+import { useGraphData } from "@/features/Graph/hooks/useGraphData";
+import { useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-import { Tables } from "@/types/dbTypes";
 
 const Index = () => {
   const theme = useCustomTheme();
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
-  const { arrowData, showArrow } = useArrowData({ translateX, translateY });
-  const dispatch = useAppDispatch();
-  const nodeIsSelected = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes.length > 0,
-  );
+  const windowSize = useWindowSize();
+
   const activeRootNode = useAppSelector(
     (state: RootState) => state.manageGraph.activeRootNode,
   );
-  const windowSize = useWindowSize();
 
-  const { people, connections } = useDataLoad();
-
-  useEffect(() => {
-    if (activeRootNode && people && connections) {
-      const nodesAndConnections: {
-        nodeObj: { [nodeId: number]: NodeHashObj };
-        finalConnections: Tables<"connections">[];
-      } = getShownNodesAndConnections(people, connections, activeRootNode);
-
-      if (!nodesAndConnections) return;
-
-      const { nodeObj, finalConnections } = nodesAndConnections;
-
-      // calculate position of nodes
-      const { nodes, links } = calcNodePositions(
-        people,
-        nodeObj,
-        finalConnections,
-        windowSize,
-        scale,
-        activeRootNode,
-      );
-
-      dispatch(setUserNodes(nodes));
-      dispatch(setUserLinks(links));
-
-      centerOnRoot();
-    }
-  }, [activeRootNode, connections, dispatch, people, scale, windowSize]);
-
-  function centerOnRoot() {
-    translateX.value = withTiming(0, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    translateY.value = withTiming(0, {
-      duration: 500,
-      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-    });
-    scale.value = withTiming(
-      INITIAL_SCALE,
-      { duration: 500, easing: Easing.bezier(0.35, 0.68, 0.58, 1) },
-      (finished) => {
-        if (finished) {
-          lastScale.value = scale.value; // Set lastScale after the animation is done
-        }
-      },
-    );
-  }
-
-  function centerOnNode(node: PositionedNode) {
-    if (!nodeIsSelected) {
-      translateX.value = withTiming(
-        (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
-        {
-          duration: 500,
-          easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-        },
-      );
-      translateY.value = withTiming(
-        (windowSize.windowCenterY - node.y!) * CENTER_ON_SCALE,
-        {
-          duration: 500,
-          easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-        },
-      );
-      scale.value = withTiming(CENTER_ON_SCALE, {
-        duration: 500,
-        easing: Easing.bezier(0.35, 0.68, 0.58, 1),
-      });
-      lastScale.value = CENTER_ON_SCALE;
-    }
-  }
+  const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
+    activeRootNode,
+    scale,
+    translateX,
+    translateY,
+    windowSize,
+    lastScale,
+  });
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -138,30 +44,17 @@ const Index = () => {
   return (
     <GestureDetector gesture={composed}>
       <View
-        style={[
-          styles.canvasWrapper,
-          {
-            backgroundColor: theme.bgBaseTest,
-          },
-        ]}
+        style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
       >
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
-          {/* Links ******************************************************** */}
           <LinksCanvas windowSize={windowSize} />
-          {/* Nodes ******************************************************** */}
           <Nodes centerOnNode={centerOnNode} />
         </Animated.View>
-        {/* Overlays && Absolute Btns ************************************** */}
-        <Popover />
-        <SearchBar />
-        <RecenterBtn
-          centerOnRoot={centerOnRoot}
+        <ControlButtons
           arrowData={arrowData}
           showArrow={showArrow}
+          centerOnRoot={centerOnRoot}
         />
-        <DeselectAllBtn />
-        <InspectBtn />
-        <BackToUserBtn />
       </View>
     </GestureDetector>
   );
@@ -171,8 +64,6 @@ const styles = StyleSheet.create({
   canvasWrapper: {
     flex: 1,
     position: "relative",
-    // backgroundColor: "rgba(255, 0, 0, 0.1)",
-    // WARNING: Adding border here will screw up layout slightly (BE CAREFUL)
   },
 });
 
@@ -180,6 +71,12 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
+
+// !TODO: WORKING ON useGraphData.ts
+
+// !TODO: WHY IS THERE STILL MASSIVE LAG WHEN SWITCHING ROOTS
+
+// !TODO: There is a bug when you unselect Aaron as the root using "me" (has something to do with the active/inactive state of the node)
 
 // !TODO: Why is pressing "me" btn and "inspect" btn press-out animation SOOO slow (is something or many things re-rendering?)
 

@@ -3,8 +3,6 @@ import { RelationshipType } from "@/types/dbTypes";
 
 export interface PositionedNode extends d3.SimulationNodeDatum, INode2 {
   isShown: boolean;
-  xPosition: number;
-  yPosition: number;
 }
 
 export interface PositionedLink extends d3.SimulationLinkDatum<PositionedNode> {
