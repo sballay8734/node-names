@@ -25,10 +25,18 @@ export function useDataLoad() {
 
   const updateRootId = (newRootId: number) => {
     // TODO: Also center the screen on the root here
+    console.log("RUNNING...", rootNodeId, newRootId);
     setRootNodeId(newRootId);
   };
 
-  return { newRootNode, isLoading, updateRootId, people, connections };
+  return {
+    newRootNode,
+    isLoading,
+    updateRootId,
+    people,
+    connections,
+    rootNodeId,
+  };
 }
 
 // !TODO: You'll actually have to find the person whose ID matches the userId

@@ -11,7 +11,6 @@ import Animated, {
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { INITIAL_SCALE, useGestures } from "@/features/Graph/hooks/useGestures";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);

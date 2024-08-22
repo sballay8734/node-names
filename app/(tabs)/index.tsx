@@ -26,6 +26,7 @@ import {
 } from "@/features/Graph/redux/graphManagement";
 import { getShownNodesAndConnections } from "@/features/Graph/utils/getShownNodesAndConnections";
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
+import BackToUserBtn from "@/features/GraphActions/components/BackToUserBtn";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
 import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
@@ -159,6 +160,7 @@ const Index = () => {
         />
         <DeselectAllBtn />
         <InspectBtn />
+        <BackToUserBtn />
       </View>
     </GestureDetector>
   );
@@ -177,6 +179,8 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
+
+// !TODO: FIRST ("Me" btn is not working)
 
 // !TODO: When root changes make sure to animate OUT and IN the other nodes. Currently they leave/change very abruptly
 
