@@ -205,7 +205,3 @@ export function getShownNodesAndConnections(
     finalConnections: [],
   };
 }
-
-// !TODO: incorporate "depth" in the function
-
-// !TODO: MAJOR: Rachel and Joe BOTH didn't have connections to their spouse in the DB. BUT because Aaron was processed before Rachel, there was no error. In Joe's case though, Joe was process first and an error was thrown because Joe never appeared in the connObj since he didn't have a connection in the DB. You NEED to make sure either, 1. connections are always created for BOTH spouses OR you need to change the logic above so that it doesn't matter

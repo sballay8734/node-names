@@ -17,6 +17,7 @@ import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import {
   CENTER_ON_SCALE,
+  INITIAL_SCALE,
   useGestures,
 } from "@/features/Graph/hooks/useGestures";
 import {
@@ -87,7 +88,15 @@ const Index = () => {
       duration: 500,
       easing: Easing.bezier(0.35, 0.68, 0.58, 1),
     });
-    lastScale.value = scale.value;
+    scale.value = withTiming(
+      INITIAL_SCALE,
+      { duration: 500, easing: Easing.bezier(0.35, 0.68, 0.58, 1) },
+      (finished) => {
+        if (finished) {
+          lastScale.value = scale.value; // Set lastScale after the animation is done
+        }
+      },
+    );
   }
 
   function centerOnNode(node: PositionedNode) {
@@ -166,15 +175,12 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
+// DONE vvv
+// -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
-// !TODO: Links not highlighting between Joe & Carmen, You and your parents, Aaron and his parents, (PROB because the parents are the source)
-
-// !TODO: Links not overflowing or showing over AnimatedView
+// !TODO: When root changes make sure to animate OUT and IN the other nodes. Currently they leave/change very abruptly
 
 // !TODO: Spouses should have a sudo node between them where links to children come out of
-
-// !TODO: I'm not sure "deriving" connections is how I want to do it
 
 // !TODO: Add back button when inside and inspected node
 
@@ -185,6 +191,8 @@ export default Index;
 // !TODO: Why do Mackenzie, Carmen and Joe have hidden conns when Aaron is root? (Log hiddenConnections to find out) - Joe's and Carmens has to do with Grandparent/grandchild and Mackenzies has to do with niece/nephew
 
 // !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
+
+// !TODO: Search bar
 
 // TODO: using nodeIsSelected in index.tsx is BETTER but not perfect. You're still getting one or two re-renders that you don't want
 

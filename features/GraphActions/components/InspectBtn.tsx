@@ -11,6 +11,7 @@ import Animated, {
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { INITIAL_SCALE, useGestures } from "@/features/Graph/hooks/useGestures";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
@@ -42,6 +43,8 @@ export default function InspectBtn(): React.JSX.Element {
   }
 
   function handlePressOut() {
+    if (selectedNodeCount === 1 && selectedNodes[0].depth_from_user > 2) return;
+
     if (
       selectedNodeCount === 1 &&
       !rootNodeIsSelected &&
