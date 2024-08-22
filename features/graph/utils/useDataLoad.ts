@@ -25,8 +25,10 @@ export function useDataLoad() {
 
   const updateRootId = (newRootId: number) => {
     // TODO: Also center the screen on the root here
-    console.log("RUNNING...", rootNodeId, newRootId);
-    setRootNodeId(newRootId);
+    let newRootNode = people?.find((p) => p.id === newRootId);
+    if (!newRootNode) return;
+
+    dispatch(setActiveRootNode(newRootNode));
   };
 
   return {

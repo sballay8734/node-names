@@ -51,7 +51,7 @@ const Index = () => {
   );
   const windowSize = useWindowSize();
 
-  const { people, connections } = useDataLoad();
+  const { people, connections, rootNodeId } = useDataLoad();
 
   useEffect(() => {
     if (activeRootNode && people && connections) {
@@ -78,7 +78,15 @@ const Index = () => {
 
       centerOnRoot();
     }
-  }, [activeRootNode, connections, dispatch, people, scale, windowSize]);
+  }, [
+    activeRootNode,
+    connections,
+    dispatch,
+    people,
+    scale,
+    windowSize,
+    rootNodeId,
+  ]);
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {

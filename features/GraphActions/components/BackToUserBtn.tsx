@@ -14,7 +14,8 @@ export default function BackToUserBtn(): React.JSX.Element {
   const longPressRef = useRef(false);
   const insets = useSafeAreaInsets();
 
-  const { updateRootId } = useDataLoad();
+  const { updateRootId, rootNodeId } = useDataLoad();
+  console.log("Current rootNodeId:", rootNodeId);
 
   function handlePressIn() {
     isPressed.value = true;
