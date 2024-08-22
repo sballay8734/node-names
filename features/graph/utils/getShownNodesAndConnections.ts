@@ -72,11 +72,8 @@ export function getShownNodesAndConnections(
     setTempRootConnectedNodes();
   }
 
-  // console.log("HASH:", JSON.stringify(nodeHash));
-
   return {
     nodeObj: nodeHash,
-    // finalConnections: finalConnectionsToRender,
     finalConnections: [],
   };
 }

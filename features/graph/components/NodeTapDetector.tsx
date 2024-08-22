@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ImageBackground, StyleSheet, Text } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -17,9 +18,6 @@ import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelectio
 import { calcFontSize } from "../helpers/calcFontSize";
 import { getColors } from "../helpers/getColors";
 import { INode2 } from "../redux/graphManagement";
-
-import NodeWidget from "./NodeWidget";
-import { useEffect } from "react";
 
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 
@@ -125,6 +123,9 @@ export default function NodeTapDetector({
 
   const tap = Gesture.Tap()
     .onStart(() => {
+      // this line below is basically pointer events: "none"
+      if (node.isShown === false) return;
+
       dispatch(handleNodeSelect(node));
       centerOnNode(node);
     })

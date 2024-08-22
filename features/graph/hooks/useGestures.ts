@@ -6,7 +6,7 @@ const MIN_SCALE = 0.1;
 const MAX_SCALE = 4;
 
 export const INITIAL_SCALE = 0.3;
-export const CENTER_ON_SCALE = 0.5;
+export const CENTER_ON_SCALE = 0.4;
 const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {

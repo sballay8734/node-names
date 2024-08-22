@@ -51,7 +51,6 @@ export default function InspectBtn(): React.JSX.Element {
       // TODO: This line currently disallows inspecting deeper nested nodes until you fix the data structure to simplify the logic for handling it
       selectedNodes[0].depth_from_user < 2
     ) {
-      console.log("INSPECT BTN");
       updateRootId(selectedNodes[0].id);
     }
     isPressed.value = false;

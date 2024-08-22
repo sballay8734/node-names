@@ -51,7 +51,7 @@ const Index = () => {
   );
   const windowSize = useWindowSize();
 
-  const { people, connections, rootNodeId } = useDataLoad();
+  const { people, connections } = useDataLoad();
 
   useEffect(() => {
     if (activeRootNode && people && connections) {
@@ -79,15 +79,7 @@ const Index = () => {
 
       centerOnRoot();
     }
-  }, [
-    activeRootNode,
-    connections,
-    dispatch,
-    people,
-    scale,
-    windowSize,
-    rootNodeId,
-  ]);
+  }, [activeRootNode, connections, dispatch, people, scale, windowSize]);
 
   function centerOnRoot() {
     translateX.value = withTiming(0, {
@@ -189,15 +181,11 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
-// TODO: root changing animates nodes better but still not great
+// !TODO: Why is pressing "me" btn and "inspect" btn press-out animation SOOO slow (is something or many things re-rendering?)
 
 // !TODO: LOAD ALL NODES INITIALLY AND USE A HASHMAP TO CONTROL THEIR STATE AND LOCATION (SO ALL NODES SHOULD BE ON SCREEN AT ALL TIMES BUT SOME WILL BE HIDDEN and have no pointer events)
 
-// !TODO: Need to improve how nodes are rendered. There is some glitchiness happening due to bad rendering logic
-
 // !TODO: Spouses should have a sudo node between them where links to children come out of
-
-// !TODO: Add back button when inside and inspected node
 
 // !TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
 
