@@ -106,8 +106,12 @@ export default function NodeTapDetector({
         isSelected ? activeBgColor : inactiveBgColor,
         { duration: 200 },
       ),
-      opacity: opacity.value, // Keep opacity animation for in/out transitions
-      transform: [{ translateX: x - radius }, { translateY: y - radius }],
+      // opacity: opacity.value,
+      opacity: withTiming(node.isShown ? 1 : 0, { duration: 300 }),
+      transform: [
+        { translateX: withTiming(x - radius, { duration: 100 }) },
+        { translateY: withTiming(y - radius, { duration: 100 }) },
+      ],
     };
   });
 

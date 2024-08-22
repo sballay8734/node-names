@@ -26,8 +26,6 @@ export function calcNodePositions(
       ...node,
     };
   });
-
-  console.log("REFORMATTED:", positionedNodes);
   const connectionsCopy: Tables<"connections">[] = connections.map((c) => ({
     ...c,
   }));

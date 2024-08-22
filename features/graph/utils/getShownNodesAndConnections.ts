@@ -20,9 +20,6 @@ export function getShownNodesAndConnections(
   nodeObj: { [nodeId: number]: NodeHashObj };
   finalConnections: Tables<"connections">[];
 } {
-  let formattedPeople;
-  let formattedConnections;
-
   let nodeHash: {
     [nodeId: number]: NodeHashObj;
   } = {};
@@ -53,31 +50,24 @@ export function getShownNodesAndConnections(
   }
 
   // returns nodes to render if currentRootNode is NOT user
-  function getTempRootConnectedNodes(): Tables<"people">[] {
-    const tempRootConnectedNodes = allPeople.filter(
-      (p) => p.shallowest_ancestor === currentRootNode.id,
-    );
+  function setTempRootConnectedNodes(): void {
+    allPeople.forEach((p) => {
+      if (p.shallowest_ancestor === currentRootNode.id) {
+        nodeHash[p.id].isShown = true;
+      } else {
+        nodeHash[p.id].isShown = false;
+      }
 
-    const formattedPeople: Tables<"people">[] = tempRootConnectedNodes.map(
-      (p) => {
-        return {
-          ...p,
-        };
-      },
-    );
-
-    return [currentRootNode, ...formattedPeople];
+      // always show the root
+      nodeHash[currentRootNode.id].isShown = true;
+    });
   }
 
   // if currentRootNode is the user, get rootConnections
   if (currentRootNode.id === userId) {
-    const nodes = setUserConnectedNodes();
-
-    formattedPeople = nodes;
+    setUserConnectedNodes();
   } else {
-    const nodes = getTempRootConnectedNodes();
-
-    formattedPeople = nodes;
+    setTempRootConnectedNodes();
   }
 
   // console.log("HASH:", JSON.stringify(nodeHash));
