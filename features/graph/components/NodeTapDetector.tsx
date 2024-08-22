@@ -52,6 +52,7 @@ export default function NodeTapDetector({
 
   const isSelected = selectedNode;
   const { x, y } = nodePosition;
+  const position = useSharedValue({ x, y });
 
   // Opacity for animating in and out
   const opacity = useSharedValue(0);
@@ -60,19 +61,16 @@ export default function NodeTapDetector({
   const transitionProgress = useSharedValue(node.id === rootNodeId ? 1 : 0);
 
   useEffect(() => {
-    // Animate opacity to 1 when component mounts
     opacity.value = withTiming(1, { duration: 500 });
-
-    // Animate the transition when root node changes
     transitionProgress.value = withTiming(node.id === rootNodeId ? 1 : 0, {
       duration: 500,
     });
+    position.value = withTiming({ x, y }, { duration: 500 });
 
-    // Clean up: animate the opacity to 0 when the component unmounts
     return () => {
       opacity.value = withTiming(0, { duration: 500 });
     };
-  }, [node.id, rootNodeId]);
+  }, [node.id, rootNodeId, x, y, opacity, transitionProgress, position]);
 
   const {
     inactiveBgColor,
@@ -109,8 +107,8 @@ export default function NodeTapDetector({
       // opacity: opacity.value,
       opacity: withTiming(node.isShown ? 1 : 0, { duration: 300 }),
       transform: [
-        { translateX: withTiming(x - radius, { duration: 100 }) },
-        { translateY: withTiming(y - radius, { duration: 100 }) },
+        { translateX: position.value.x - radius },
+        { translateY: position.value.y - radius },
       ],
     };
   });

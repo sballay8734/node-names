@@ -51,15 +51,17 @@ export function getShownNodesAndConnections(
 
   // returns nodes to render if currentRootNode is NOT user
   function setTempRootConnectedNodes(): void {
+    // always show the root
+    nodeHash[currentRootNode.id].isShown = true;
+
     allPeople.forEach((p) => {
+      if (p.id === currentRootNode.id) return;
+
       if (p.shallowest_ancestor === currentRootNode.id) {
         nodeHash[p.id].isShown = true;
       } else {
         nodeHash[p.id].isShown = false;
       }
-
-      // always show the root
-      nodeHash[currentRootNode.id].isShown = true;
     });
   }
 
