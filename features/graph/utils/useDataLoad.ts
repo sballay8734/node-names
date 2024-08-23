@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { PositionedNode } from "@/features/D3/types/d3Types";
-import { useAppDispatch } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useDbData from "@/hooks/useDbData";
-import useWindowSize from "@/hooks/useWindowSize";
+import { RootState } from "@/store/store";
 import { Tables } from "@/types/dbTypes";
 
 import { setActiveRootNode, setUserNode } from "../redux/graphManagement";
@@ -14,7 +14,7 @@ const userId = 1;
 export function useDataLoad() {
   console.log(`[${new Date().toISOString()}] Rendering useDataLoad`);
   const dispatch = useAppDispatch();
-  const windowSize = useWindowSize();
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const [rootNodeId, setRootNodeId] = useState<number>(userId);
   const {
     people: initialPeople,

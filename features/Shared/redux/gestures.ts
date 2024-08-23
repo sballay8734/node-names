@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SharedValue } from "react-native-reanimated";
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 4;

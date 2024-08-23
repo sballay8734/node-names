@@ -7,8 +7,9 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 
-import Link from "./Link";
 import { useGestures } from "../hooks/useGestures";
+
+import Link from "./Link";
 
 interface Props {
   windowSize: WindowSize;

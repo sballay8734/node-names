@@ -12,7 +12,6 @@ import { nodeBgMap } from "@/constants/Colors";
 import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/variables";
 import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
@@ -36,7 +35,7 @@ const image = {
 export default function NodeTapDetector({ node, centerOnNode }: Props) {
   const dispatch = useAppDispatch();
   const [isSelected, setIsSelected] = useState<boolean>(false);
-  const windowSize = useWindowSize();
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
   const { x, y } = node;
   const position = useSharedValue({ x, y });

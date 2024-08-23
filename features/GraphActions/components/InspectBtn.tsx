@@ -20,7 +20,6 @@ import {
   updateRootNode,
 } from "@/features/Graph/redux/graphManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -29,7 +28,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 export default function InspectBtn(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const { translateX, translateY, scale, lastScale } = useGestures();
-  const windowSize = useWindowSize();
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
