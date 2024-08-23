@@ -44,6 +44,7 @@ export default function NodeTapDetector({
   );
 
   // FLAG: when changing the rootNode, this will change, potentially causing ALL nodes to re-render
+  // OPTIMIZE: THIS IS THE ISSUE!!! the rootNode changing causes NOT ONLY EVERY NODE to rerender, but it ALSO causes their styles (AND EVERYWHERE rootNodeId is used) to be recalculated
   const rootNodeId =
     useAppSelector(
       (state: RootState) =>
