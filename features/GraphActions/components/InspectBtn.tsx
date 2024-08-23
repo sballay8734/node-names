@@ -1,15 +1,26 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
+  Easing,
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-import { setActiveRootNode } from "@/features/Graph/redux/graphManagement";
+import { PositionedNode } from "@/features/D3/types/d3Types";
+import {
+  CENTER_ON_SCALE,
+  INITIAL_SCALE,
+  useGestures,
+} from "@/features/Graph/hooks/useGestures";
+import {
+  setActiveRootNode,
+  updateRootNode,
+} from "@/features/Graph/redux/graphManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import useWindowSize from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -17,6 +28,9 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
 export default function InspectBtn(): React.JSX.Element {
   const dispatch = useAppDispatch();
+  const { translateX, translateY, scale, lastScale } = useGestures();
+  const windowSize = useWindowSize();
+
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
   const selectedNodes = useAppSelector(
@@ -37,13 +51,39 @@ export default function InspectBtn(): React.JSX.Element {
     );
   });
 
+  const centerOnRoot = useCallback(() => {
+    translateX.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+    translateY.value = withTiming(0, {
+      duration: 500,
+      easing: Easing.bezier(0.35, 0.68, 0.58, 1),
+    });
+    scale.value = withTiming(
+      INITIAL_SCALE,
+      { duration: 500, easing: Easing.bezier(0.35, 0.68, 0.58, 1) },
+      (finished) => {
+        if (finished) {
+          lastScale.value = scale.value;
+        }
+      },
+    );
+  }, [translateX, translateY, scale, lastScale]);
+
   function handlePressIn() {
     isPressed.value = true;
     longPressRef.current = false;
   }
 
   function handlePressOut() {
-    if (selectedNodeCount === 1 && selectedNodes[0].depth_from_user > 2) return;
+    if (
+      (selectedNodeCount === 1 && selectedNodes[0].depth_from_user > 2) ||
+      !activeRootNode
+    ) {
+      isPressed.value = false;
+      return;
+    }
 
     if (
       selectedNodeCount === 1 &&
@@ -52,7 +92,14 @@ export default function InspectBtn(): React.JSX.Element {
       // TODO: This line currently disallows inspecting deeper nested nodes until you fix the data structure to simplify the logic for handling it
       selectedNodes[0].depth_from_user < 2
     ) {
+      dispatch(
+        updateRootNode({
+          newRootId: selectedNodes[0].id,
+          oldRootNode: activeRootNode,
+        }),
+      );
       dispatch(setActiveRootNode(selectedNodes[0]));
+      centerOnRoot();
     }
     isPressed.value = false;
   }

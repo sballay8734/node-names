@@ -9,21 +9,14 @@ import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import { useGestures } from "@/features/Graph/hooks/useGestures";
 import { useGraphData } from "@/features/Graph/hooks/useGraphData";
-import { useAppSelector } from "@/hooks/reduxHooks";
 import useWindowSize from "@/hooks/useWindowSize";
-import { RootState } from "@/store/store";
 
 const Index = () => {
   const theme = useCustomTheme();
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const windowSize = useWindowSize();
 
-  const activeRootNode = useAppSelector(
-    (state: RootState) => state.manageGraph.activeRootNode,
-  );
-
   const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
-    activeRootNode,
     scale,
     translateX,
     translateY,
@@ -72,9 +65,7 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
-// !TODO: WORKING ON useGraphData.ts
-
-// !TODO: WHY IS THERE STILL MASSIVE LAG WHEN SWITCHING ROOTS
+// !TODO: You need to refactor how "centerOnRoot" is used/called. You currently have the same code in two places. NOT GOOD
 
 // !TODO: There is a bug when you unselect Aaron as the root using "me" (has something to do with the active/inactive state of the node)
 

@@ -20,25 +20,17 @@ export default function Nodes({ centerOnNode }: Props): React.JSX.Element {
     <Animated.View
       style={{
         ...styles.tapWrapper,
-        // transform: transform,
       }}
     >
       {nodes &&
         Object.values(nodes).map((node) => {
-          const { x, y } = node;
-
-          if (x && y) {
-            return (
-              <NodeTapDetector
-                key={node.id}
-                centerOnNode={centerOnNode}
-                node={node}
-                nodePosition={{ x, y }}
-              />
-            );
-          } else {
-            return null;
-          }
+          return (
+            <NodeTapDetector
+              key={node.id}
+              centerOnNode={centerOnNode}
+              node={node}
+            />
+          );
         })}
     </Animated.View>
   );

@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
-import { Pressable, StyleSheet, View, Text } from "react-native";
+import { useRef } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,21 +8,25 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
-import { useAppSelector } from "@/hooks/reduxHooks";
+import {
+  setActiveRootNode,
+  updateRootNode,
+} from "@/features/Graph/redux/graphManagement";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
-// REMOVE: hardcoded for testing
-const userId = 1;
-
 export default function BackToUserBtn(): React.JSX.Element {
-  const { updateRootId } = useDataLoad();
+  const dispatch = useAppDispatch();
   const activeRootNode = useAppSelector(
     (state: RootState) => state.manageGraph.activeRootNode,
   );
+  const userNode = useAppSelector(
+    (state: RootState) => state.manageGraph.userNode,
+  );
+
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
   const insets = useSafeAreaInsets();
@@ -36,7 +40,13 @@ export default function BackToUserBtn(): React.JSX.Element {
     // TODO: Replace this with the user's id and NOT a hardcoded value
 
     isPressed.value = false;
-    updateRootId(1);
+
+    if (userNode && activeRootNode) {
+      dispatch(
+        updateRootNode({ newRootId: userNode.id, oldRootNode: activeRootNode }),
+      );
+      dispatch(setActiveRootNode(userNode));
+    }
   }
 
   function handleLongPress() {
@@ -46,11 +56,13 @@ export default function BackToUserBtn(): React.JSX.Element {
   const btnStyles = useAnimatedStyle(() => {
     return {
       opacity: withTiming(
-        activeRootNode && activeRootNode.id !== userId ? 1 : 0,
+        activeRootNode && userNode && activeRootNode.id !== userNode.id ? 1 : 0,
         { duration: 200 },
       ),
       pointerEvents:
-        activeRootNode && activeRootNode.id === userId ? "none" : "auto",
+        activeRootNode && userNode && activeRootNode.id === userNode.id
+          ? "none"
+          : "auto",
       backgroundColor: withTiming(
         isPressed.value ? "rgba(15,15,15,1)" : "rgba(0,0,0,1)",
         {

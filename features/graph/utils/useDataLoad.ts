@@ -1,38 +1,69 @@
 import { useEffect, useState } from "react";
 
+import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import useDbData from "@/hooks/useDbData";
+import useWindowSize from "@/hooks/useWindowSize";
+import { Tables } from "@/types/dbTypes";
 
-import { setActiveRootNode } from "../redux/graphManagement";
+import { setActiveRootNode, setUserNode } from "../redux/graphManagement";
 
 // REMOVE: Temporary until you add auth
-const tempRootId = 1;
+const userId = 1;
 
 export function useDataLoad() {
   const dispatch = useAppDispatch();
-  const [rootNodeId, setRootNodeId] = useState<number>(tempRootId);
-  const { people, connections, groups, isLoading, dataFetched } = useDbData();
+  const windowSize = useWindowSize();
+  const [rootNodeId, setRootNodeId] = useState<number>(userId);
+  const {
+    people: initialPeople,
+    connections,
+    groups,
+    isLoading,
+    dataFetched,
+  } = useDbData();
+  const [people, setPeople] = useState<Tables<"people">[] | null>(null);
 
   useEffect(() => {
-    if (dataFetched && people && connections && groups) {
-      const initialRootNode = people.find((p) => p.id === rootNodeId);
+    if (dataFetched && initialPeople && connections && groups) {
+      const updatedPeople = initialPeople.map((person) => {
+        if (person.id === rootNodeId) {
+          return {
+            ...person,
+            is_current_root: true,
+          };
+        }
+        return person;
+      });
+
+      setPeople(updatedPeople);
+
+      let initialRootNode = updatedPeople.find((p) => p.id === rootNodeId);
+
+      // set position of root
       if (initialRootNode) {
+        (initialRootNode as PositionedNode).fx = windowSize.width / 2;
+        (initialRootNode as PositionedNode).fy = windowSize.height;
+        (initialRootNode as PositionedNode).isShown = true;
+        (initialRootNode as PositionedNode).is_current_root = true;
+
         dispatch(setActiveRootNode(initialRootNode));
+        dispatch(setUserNode(initialRootNode));
       }
     }
-  }, [dataFetched, people, connections, groups, rootNodeId, dispatch]);
-
-  const updateRootId = (newRootId: number) => {
-    const newRootNode = people?.find((p) => p.id === newRootId);
-    if (newRootNode) {
-      setRootNodeId(newRootNode.id);
-      dispatch(setActiveRootNode(newRootNode));
-    }
-  };
+  }, [
+    dataFetched,
+    initialPeople,
+    connections,
+    groups,
+    rootNodeId,
+    dispatch,
+    windowSize.width,
+    windowSize.height,
+  ]);
 
   return {
     isLoading,
-    updateRootId,
     people,
     connections,
     rootNodeId,

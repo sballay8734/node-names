@@ -25,6 +25,7 @@ export interface INode2 {
   shallowest_ancestor: number;
 
   isShown: boolean;
+  is_current_root: boolean;
 }
 
 // !TODO: Current issue is that you're calculating shown/hidden connections at run time, thus you had to alter the interfaces to make it work (not ideal)

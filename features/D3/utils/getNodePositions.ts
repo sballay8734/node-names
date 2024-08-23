@@ -2,8 +2,7 @@ import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
 import { centerNode, MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
-import { INode2 } from "@/features/Graph/types/graphManagementTypes";
-import { NodeHashObj } from "@/features/Graph/utils/getShownNodesAndConnections";
+import { NodeHashObj } from "@/features/Graph/utils/getInitialNodes";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
 
@@ -15,7 +14,6 @@ export function calcNodePositions(
   connections: Tables<"connections">[],
   windowSize: WindowSize,
   scale: SharedValue<number>,
-  activeRootNode: INode2,
 ): { nodes: PositionedNode[]; links: PositionedLink[] } {
   // make copy of nodes and links
   const positionedNodes: PositionedNode[] = Object.values(nodeObj).map((p) => {
@@ -24,23 +22,6 @@ export function calcNodePositions(
   const connectionsCopy: Tables<"connections">[] = connections.map((c) => ({
     ...c,
   }));
-
-  const rootNode = positionedNodes.find((n) => n.id === activeRootNode.id);
-
-  if (rootNode) {
-    (rootNode as PositionedNode).fx = centerNode(
-      windowSize,
-      "root",
-      "d3",
-      scale,
-    ).nodeCenterX;
-    (rootNode as PositionedNode).fy = centerNode(
-      windowSize,
-      "root",
-      "d3",
-      scale,
-    ).nodeCenterY;
-  }
 
   const positionedLinks: PositionedLink[] = connectionsCopy.map(
     (connection) => {
@@ -74,23 +55,6 @@ export function calcNodePositions(
       };
     }
   });
-
-  function clusteringForce(alpha: number) {
-    positionedNodes.forEach((node: PositionedNode) => {
-      if (node.group_id === null) return;
-
-      if (node.group_id === 2) {
-        // Best Friends within friends
-        const groupCenter = groupCenters[node.group_id];
-        node.vx! += (groupCenter.x - node.x!) * alpha * 0.3;
-        node.vy! += (groupCenter.y - node.y!) * alpha * 0.3;
-      } else {
-        const groupCenter = groupCenters[node.group_id];
-        node.vx! += (groupCenter.x - node.x!) * alpha * 0.05;
-        node.vy! += (groupCenter.y - node.y!) * alpha * 0.05;
-      }
-    });
-  }
 
   const groupRadius = Math.min(windowSize.width, windowSize.height) * 1.5;
 
@@ -133,7 +97,7 @@ export function calcNodePositions(
       d3
         .forceCollide()
         .radius((node) =>
-          (node as PositionedNode).id === activeRootNode.id
+          (node as PositionedNode).is_current_root
             ? 100
             : MIN_SPACE_BETWEEN_NODES,
         )
@@ -174,7 +138,7 @@ export function calcNodePositions(
       d3
         .forceManyBody()
         .strength((node) =>
-          (node as PositionedNode).id === activeRootNode.id ? 100 : -20,
+          (node as PositionedNode).is_current_root ? 100 : -20,
         ),
     );
 
@@ -186,60 +150,3 @@ export function calcNodePositions(
 
   return { nodes: positionedNodes, links: positionedLinks };
 }
-
-const nodesAfterCalc = [
-  {
-    children_details: null,
-    created_at: "2024-07-20T14:07:07.332245+00:00",
-    date_of_birth: "2000-10-01",
-    date_of_death: null,
-    depth_from_user: 0,
-    first_name: "Shawn",
-    fx: 196.5, // MARK
-    fy: 386.5, // MARK
-    gift_ideas: null,
-    group_id: null,
-    group_name: null,
-    id: 1,
-    index: 0, // MARK
-    isShown: true, // MARK
-    last_name: "Ballay",
-    maiden_name: null,
-    parent_details: [[Object], [Object]],
-    partner_details: null,
-    phonetic_name: "sh AW n",
-    preferred_name: null,
-    sex: "male",
-    shallowest_ancestor: null,
-    vx: 0, // MARK
-    vy: 0, // MARK
-    x: 196.5, // MARK
-    y: 386.5, // MARK
-  },
-  {
-    children_details: [[Object]],
-    created_at: "2024-07-20T14:08:06.754277+00:00",
-    date_of_birth: null,
-    date_of_death: null,
-    depth_from_user: 1,
-    first_name: "Aaron",
-    gift_ideas: ["Baby thing1", "Babything2", "Workout app"],
-    group_id: 2,
-    group_name: "Best Friends",
-    id: 2,
-    index: 1,
-    isShown: true,
-    last_name: "Mackenzie",
-    maiden_name: null,
-    parent_details: [[Object], [Object]],
-    partner_details: [[Object], [Object]],
-    phonetic_name: "Ah run",
-    preferred_name: "Amac",
-    sex: "male",
-    shallowest_ancestor: 1,
-    vx: -0.001366007529848085,
-    vy: 0.00038064947584544334,
-    x: -471.580414370403,
-    y: 408.9424694293023,
-  },
-];

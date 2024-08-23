@@ -3,9 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 
 import { INode2 } from "../types/graphManagementTypes";
-import { NodeHashObj } from "../utils/getShownNodesAndConnections";
+import { NodeHashObj } from "../utils/getInitialNodes";
 
 interface ManageGraphState {
+  userNode: INode2 | null;
+
   activeRootNode: INode2 | null;
   activeRootType: "user" | "notUser";
 
@@ -17,10 +19,12 @@ interface ManageGraphState {
 }
 
 const initialState: ManageGraphState = {
+  userNode: null,
+
   activeRootNode: null,
   activeRootType: "user",
 
-  userNodes: [],
+  userNodes: {},
   userLinks: [],
 
   inspectedNodes: [],
@@ -38,7 +42,11 @@ const ManageGraphSlice = createSlice({
       };
     },
 
-    // USER (Will not change often)
+    // USER ********************************************************************
+    setUserNode: (state, action: PayloadAction<INode2>) => {
+      state.userNode = action.payload;
+    },
+
     setUserNodes: (
       state,
       action: PayloadAction<{ [x: number]: NodeHashObj }>,
@@ -48,15 +56,18 @@ const ManageGraphSlice = createSlice({
     setUserLinks: (state, action: PayloadAction<PositionedLink[]>) => {
       state.userLinks = action.payload;
     },
-    updateUserNodes: (state, action: PayloadAction<PositionedNode[]>) => {
-      const nodes = action.payload;
+    updateRootNode: (
+      state,
+      action: PayloadAction<{ newRootId: number; oldRootNode: INode2 }>,
+    ) => {
+      const { newRootId, oldRootNode } = action.payload;
 
-      // !TODO: This logic is wrong. It's just for testing if the dispatch speeds things up. You need to actually track which nodes should be shown for which rootNodes in order for this to work. When the rootNode changes, you're trying to avoid recalculating all the positions so you need to be able to tell each node in the hash if it should be shown or not.
-      nodes.forEach((n) => {
-        if (state.userNodes[n.id]) {
-          state.userNodes[n.id].isShown = !state.userNodes[n.id].isShown;
-        }
-      });
+      if (newRootId && oldRootNode) {
+        state.userNodes[newRootId].is_current_root = true;
+        state.userNodes[oldRootNode.id].is_current_root = false;
+      } else {
+        console.error("");
+      }
     },
 
     // Changes when user "inspects"
@@ -75,7 +86,44 @@ export const {
   setUserLinks,
   setInspectedNodes,
   setInspectedLinks,
-  updateUserNodes,
+  updateRootNode,
+  setUserNode,
 } = ManageGraphSlice.actions;
 
 export default ManageGraphSlice.reducer;
+
+const initialRoot = {
+  children_details: null,
+  created_at: "2024-07-20T14:07:07.332245+00:00",
+  date_of_birth: "2000-10-01",
+  date_of_death: null,
+  depth_from_user: 0,
+  first_name: "Shawn",
+  fx: 196.5,
+  fy: 773,
+  gift_ideas: null,
+  group_id: null,
+  group_name: null,
+  id: 1,
+  isShown: true,
+  is_current_root: true,
+  last_name: "Ballay",
+  maiden_name: null,
+  parent_details: [
+    {
+      adoptive_children_ids: [Array],
+      biological_children_ids: [Array],
+      parent_id: 23,
+    },
+    {
+      adoptive_children_ids: [Array],
+      biological_children_ids: [Array],
+      parent_id: 24,
+    },
+  ],
+  partner_details: null,
+  phonetic_name: "sh AW n",
+  preferred_name: null,
+  sex: "male",
+  shallowest_ancestor: null,
+};

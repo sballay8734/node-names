@@ -2,8 +2,8 @@ import { nodeBgMap } from "@/constants/Colors";
 
 import { INode2 } from "../types/graphManagementTypes";
 
-export function getColors(node: INode2, rootId: number) {
-  if (node.id === rootId) {
+export function getColors(node: INode2) {
+  if (node.is_current_root) {
     return {
       inactiveBgColor: "transparent",
       sourceActiveBg: "",

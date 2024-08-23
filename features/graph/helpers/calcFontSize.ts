@@ -4,8 +4,8 @@ import { INode2 } from "../types/graphManagementTypes";
 
 export // TODO: Calc font size based on name length and circle size
 // THIS IS JUST A QUICK WORKAROUND
-function calcFontSize(node: INode2, rootId: number) {
-  if (node.id === rootId) {
+function calcFontSize(node: INode2) {
+  if (node.is_current_root) {
     return ROOT_TEXT_SIZE;
   } else {
     return REG_TEXT_SIZE - node.first_name.length / 2;
