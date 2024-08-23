@@ -48,6 +48,16 @@ const ManageGraphSlice = createSlice({
     setUserLinks: (state, action: PayloadAction<PositionedLink[]>) => {
       state.userLinks = action.payload;
     },
+    updateUserNodes: (state, action: PayloadAction<PositionedNode[]>) => {
+      const nodes = action.payload;
+
+      // !TODO: This logic is wrong. It's just for testing if the dispatch speeds things up. You need to actually track which nodes should be shown for which rootNodes in order for this to work. When the rootNode changes, you're trying to avoid recalculating all the positions so you need to be able to tell each node in the hash if it should be shown or not.
+      nodes.forEach((n) => {
+        if (state.userNodes[n.id]) {
+          state.userNodes[n.id].isShown = !state.userNodes[n.id].isShown;
+        }
+      });
+    },
 
     // Changes when user "inspects"
     setInspectedNodes: (state, action: PayloadAction<PositionedNode[]>) => {
@@ -65,6 +75,7 @@ export const {
   setUserLinks,
   setInspectedNodes,
   setInspectedLinks,
+  updateUserNodes,
 } = ManageGraphSlice.actions;
 
 export default ManageGraphSlice.reducer;

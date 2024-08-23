@@ -6,13 +6,15 @@ import { calcNodePositions } from "@/features/D3/utils/getNodePositions";
 import {
   setUserNodes,
   setUserLinks,
-  INode2,
+  updateUserNodes,
 } from "@/features/Graph/redux/graphManagement";
 import { getShownNodesAndConnections } from "@/features/Graph/utils/getShownNodesAndConnections";
 import { useDataLoad } from "@/features/Graph/utils/useDataLoad";
 import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
+
+import { INode2 } from "../types/graphManagementTypes";
 
 import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
 
@@ -36,6 +38,7 @@ export const useGraphData = ({
   const dispatch = useAppDispatch();
   const { people, connections } = useDataLoad(); // it's not this...
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
+  const cachedNodes = useRef<PositionedNode[] | null>(null);
 
   const { nodeHash, finalConnections } = useMemo(() => {
     if (people && connections && activeRootNode) {
@@ -118,11 +121,14 @@ export const useGraphData = ({
         }
       });
       dispatch(setUserNodes(nodeHashCopy));
+      // cache nodes
+      cachedNodes.current = nodes;
     } else {
       // !TODO: Otherwise, JUST update isShown somehow
-      console.log("IDK what to do...");
+      if (cachedNodes.current) {
+        dispatch(updateUserNodes(cachedNodes.current));
+      }
     }
-    // use cached positions
     // dispatch(setUserLinks(cachedLinks.current));
     centerOnRoot();
   }, [
@@ -138,3 +144,8 @@ export const useGraphData = ({
 
   return { centerOnRoot, centerOnNode, arrowData, showArrow };
 };
+
+// !TODO: CHECK EVERY REFERENCE TO activeRootNode to see where it is causing UNECESSARY re-renders (NodeTapDetector-(rootNodeId), index-(GestureDetector being reinitialized?), InspectBtn, BackToUserBtn, )
+// HERE ARE ALL THE THINGS THAT HAPPEN WHEN INSPECT IS PRESSED
+// 1. activeRootNode is changed
+// 2.

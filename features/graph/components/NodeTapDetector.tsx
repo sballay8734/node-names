@@ -42,11 +42,14 @@ export default function NodeTapDetector({
   const selectedNode = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.find((n) => node.id === n.id),
   );
+
+  // FLAG: when changing the rootNode, this will change, potentially causing ALL nodes to re-render
   const rootNodeId =
     useAppSelector(
       (state: RootState) =>
         state.manageGraph.activeRootNode && state.manageGraph.activeRootNode.id,
     ) || 0;
+  console.log("CHANGED...", node.id);
 
   const isSelected = selectedNode;
   const { x, y } = nodePosition;

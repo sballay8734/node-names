@@ -19,7 +19,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 const userId = 1;
 
 export default function BackToUserBtn(): React.JSX.Element {
-  const { updateRootId, rootNodeId } = useDataLoad();
+  const { updateRootId } = useDataLoad();
   const activeRootNode = useAppSelector(
     (state: RootState) => state.manageGraph.activeRootNode,
   );
