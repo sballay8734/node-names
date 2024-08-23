@@ -157,6 +157,7 @@ export type Database = {
           depth_from_user: number;
 
           shallowest_ancestor: number;
+          is_current_root: boolean;
 
           // source_node_ids: string[] | null;
           // partner_id: number | null;

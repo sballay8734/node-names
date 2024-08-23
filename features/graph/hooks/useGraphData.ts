@@ -36,7 +36,7 @@ export const useGraphData = ({
   lastScale,
 }: Props) => {
   const dispatch = useAppDispatch();
-  const { people, connections } = useDataLoad(); // it's not this...
+  const { people, connections } = useDataLoad();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });
   const cachedNodes = useRef<PositionedNode[] | null>(null);
 
