@@ -1,6 +1,6 @@
 import { nodeBgMap } from "@/constants/Colors";
 
-import { INode2 } from "../redux/graphManagement";
+import { INode2 } from "../types/graphManagementTypes";
 
 export function getColors(node: INode2, rootId: number) {
   if (node.id === rootId) {

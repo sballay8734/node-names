@@ -17,7 +17,7 @@ import { RootState } from "@/store/store";
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
 import { calcFontSize } from "../helpers/calcFontSize";
 import { getColors } from "../helpers/getColors";
-import { INode2 } from "../redux/graphManagement";
+import { INode2 } from "../types/graphManagementTypes";
 
 // const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
 

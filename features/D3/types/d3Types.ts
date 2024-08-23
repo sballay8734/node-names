@@ -1,4 +1,4 @@
-import { INode2 } from "@/features/Graph/redux/graphManagement";
+import { INode2 } from "@/features/Graph/types/graphManagementTypes";
 import { RelationshipType } from "@/types/dbTypes";
 
 export interface PositionedNode extends d3.SimulationNodeDatum, INode2 {

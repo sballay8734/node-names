@@ -1,6 +1,6 @@
 import { REG_TEXT_SIZE, ROOT_TEXT_SIZE } from "@/constants/variables";
 
-import { INode2 } from "../redux/graphManagement";
+import { INode2 } from "../types/graphManagementTypes";
 
 export // TODO: Calc font size based on name length and circle size
 // THIS IS JUST A QUICK WORKAROUND

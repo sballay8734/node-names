@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
 import { centerNode, MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
-import { INode2 } from "@/features/Graph/redux/graphManagement";
+import { INode2 } from "@/features/Graph/types/graphManagementTypes";
 import { NodeHashObj } from "@/features/Graph/utils/getShownNodesAndConnections";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
