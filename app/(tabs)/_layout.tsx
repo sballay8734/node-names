@@ -8,10 +8,10 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { useCustomTheme } from "@/components/CustomThemeContext";
+import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { handlePopover } from "@/features/SelectionManagement/redux/manageSelections";
 import { useAppDispatch } from "@/hooks/reduxHooks";
-import PlusIcon from "@/components/PlusIcon";
 
 export default function TabLayout() {
   const theme = useCustomTheme();

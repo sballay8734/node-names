@@ -31,6 +31,7 @@ export const useGraphData = ({
   windowSize,
   lastScale,
 }: Props) => {
+  console.log(`[${new Date().toISOString()}] Running useGraphData...`);
   const dispatch = useAppDispatch();
   const { people, connections } = useDataLoad();
   const { arrowData, showArrow } = useArrowData({ translateX, translateY });

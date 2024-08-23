@@ -12,6 +12,7 @@ import { useGraphData } from "@/features/Graph/hooks/useGraphData";
 import useWindowSize from "@/hooks/useWindowSize";
 
 const Index = () => {
+  console.log(`[${new Date().toISOString()}] Rendering Index Component`);
   const theme = useCustomTheme();
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const windowSize = useWindowSize();
@@ -68,10 +69,6 @@ export default Index;
 // !TODO: You need to refactor how "centerOnRoot" is used/called. You currently have the same code in two places. NOT GOOD
 
 // !TODO: There is a bug when you unselect Aaron as the root using "me" (has something to do with the active/inactive state of the node)
-
-// !TODO: Why is pressing "me" btn and "inspect" btn press-out animation SOOO slow (is something or many things re-rendering?)
-
-// !TODO: LOAD ALL NODES INITIALLY AND USE A HASHMAP TO CONTROL THEIR STATE AND LOCATION (SO ALL NODES SHOULD BE ON SCREEN AT ALL TIMES BUT SOME WILL BE HIDDEN and have no pointer events)
 
 // !TODO: Spouses should have a sudo node between them where links to children come out of
 
