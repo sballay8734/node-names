@@ -65,28 +65,31 @@ export default function TabLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <View
-              style={{
-                position: "absolute",
-                display: "flex",
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                top: -25,
-                borderRadius: 100,
-                borderWidth: 1,
-                borderColor: theme.primary,
-                backgroundColor: theme.btnBaseSelected,
-                padding: 12,
-                shadowColor: theme.primary,
-                shadowOffset: {
-                  width: 0,
-                  height: 0,
-                },
-                shadowOpacity: 0.35,
-                shadowRadius: 6.0,
+              style={[
+                {
+                  position: "absolute",
+                  display: "flex",
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  top: -40,
+                  borderRadius: 100,
+                  borderWidth: 10,
+                  // borderColor: theme.primary,
+                  borderColor: theme.bgBaseTest,
+                  backgroundColor: theme.btnBaseSelected,
+                  padding: 12,
+                  // shadowColor: theme.primary,
+                  // shadowOffset: {
+                  //   width: 0,
+                  //   height: 0,
+                  // },
+                  // shadowOpacity: 0.35,
+                  // shadowRadius: 6.0,
 
-                elevation: 24,
-              }}
+                  // elevation: 24,
+                },
+              ]}
             >
               <PlusIcon color={theme.primary} size={44} />
             </View>

@@ -3,9 +3,12 @@ import { Dimensions } from "react-native";
 
 import { TAB_BAR_HEIGHT } from "@/constants/styles";
 
+const windowHeight = Dimensions.get("window").height - TAB_BAR_HEIGHT;
+const EXTENSION = 10;
+
 const INITIAL_POSITION = {
   x: 0,
-  y: Dimensions.get("window").height - TAB_BAR_HEIGHT,
+  y: windowHeight,
 };
 
 type Action =
@@ -37,10 +40,9 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     action: "createNewNode",
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
-    finalX: 0,
-    finalY: 450,
+    finalX: -50,
+    finalY: windowHeight - TAB_BAR_HEIGHT + EXTENSION,
     visibilityRule: "any",
-    // isVisibleCondition: (count) => count >= 0,
   },
   {
     text: "Create a new group",
@@ -50,9 +52,8 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
     finalX: 0,
-    finalY: 500,
+    finalY: windowHeight - TAB_BAR_HEIGHT - EXTENSION,
     visibilityRule: "none",
-    // isVisibleCondition: (count) => count === 0,
   },
   {
     text: "Create sub group from selection",
@@ -61,10 +62,9 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     action: "createSubGroupFromSelection",
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
-    finalX: 0,
-    finalY: 550,
+    finalX: 50,
+    finalY: windowHeight - TAB_BAR_HEIGHT + EXTENSION,
     visibilityRule: "multiple",
-    // isVisibleCondition: (count) => count >= 1,
   },
   {
     text: "Move node to another group",
@@ -76,22 +76,20 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
     finalX: 0,
-    finalY: 600,
+    finalY: windowHeight - TAB_BAR_HEIGHT - 50 - EXTENSION,
     visibilityRule: "single",
-    // isVisibleCondition: (count) => count === 1,
   },
-  {
-    text: "ERROR: Can only connect root to a NEW node/group",
-    iconName: "error",
-    // icon: <MaterialIcons name="error" size={18} color="red" />,
-    action: "error",
-    initialX: INITIAL_POSITION.x,
-    initialY: INITIAL_POSITION.y,
-    finalX: 0,
-    finalY: 650,
-    visibilityRule: "error",
-    // isVisibleCondition: (_, isRootSelected) => isRootSelected,
-  },
+  // {
+  //   text: "ERROR: Can only connect root to a NEW node/group",
+  //   iconName: "error",
+  //   // icon: <MaterialIcons name="error" size={18} color="red" />,
+  //   action: "error",
+  //   initialX: INITIAL_POSITION.x,
+  //   initialY: INITIAL_POSITION.y,
+  //   finalX: 0,
+  //   finalY: windowHeight - TAB_BAR_HEIGHT - EXTENSION,
+  //   visibilityRule: "error",
+  // },
 ];
 
 // !TODO: Change all icons to custom icons

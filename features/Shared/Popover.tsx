@@ -13,7 +13,7 @@ import { RootState } from "@/store/store";
 import { POPOVER_OPTIONS } from "../SelectionManagement/utils/determineOptions";
 
 export default function Popover(): React.JSX.Element {
-  console.log("Re-rendering Popover");
+  // console.log("Re-rendering Popover");
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
   );
@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     height: "100%",
     display: "flex",
     alignItems: "center",
+    // justifyContent: "center",
+    alignSelf: "center",
     // backgroundColor: "rgba(155, 155, 0, 0.1)",
     backgroundColor: "transparent",
     zIndex: 1000,

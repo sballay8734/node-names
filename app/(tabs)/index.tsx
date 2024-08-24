@@ -66,9 +66,19 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
+// !TODO: Animate colors and rotation in PlusIcon.tsx
+
+// !TODO: Add "pressed" states to action Btns
+
+// !TODO: Replace + border with sudo background so you can't see through
+
+// !TODO: MAYBE JUST ALWAYS SHOW ALL OPTIONS AND JUST GREY OUT THE ONES THAT ARE NOT USABLE (CREATE A SORT OF MINI DASHBOARD)
+
+// !TODO: I really don't like how the popover "right" and + button use hard coded "guestimates" for alignment
+
 // !TODO: You DEFINITELY have a memory leak somewhere. Your RAM is too high in performance monitor
 
-// !TODO: Just make the Popover always visible/not Visible and just control the visibility of the BTNs individually
+// !TODO: REMEMBER to fill in default values for certain PopoverActions (if there are no nodes selected, automatically populate the root as the source of a newNode or Group) -- THERE ARE MORE EXAMPLES OF THIS, BE SMART, DON'T ADD MORE BTNS
 
 // !TODO: You really need to optimize the way the PopoverActionBtns are rendered. Anytime one of them changes, they all re-render NOT GOOD
 

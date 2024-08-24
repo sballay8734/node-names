@@ -73,14 +73,14 @@ const testNode: NodeHashObj = {
 
 const iconMap: { [key: string]: React.ReactNode } = {
   "person-add-alt-1": (
-    <MaterialIcons name="person-add-alt-1" size={18} color="#170038" />
+    <MaterialIcons name="person-add-alt-1" size={24} color="#170038" />
   ),
-  "group-add": <MaterialIcons name="group-add" size={18} color="#170038" />,
-  "group-work": <MaterialIcons name="group-work" size={18} color="#170038" />,
+  "group-add": <MaterialIcons name="group-add" size={24} color="#170038" />,
+  "group-work": <MaterialIcons name="group-work" size={24} color="#170038" />,
   "account-balance-wallet": (
-    <MaterialIcons name="account-balance-wallet" size={18} color="#170038" />
+    <MaterialIcons name="account-balance-wallet" size={24} color="#170038" />
   ),
-  error: <MaterialIcons name="error" size={18} color="#170038" />,
+  error: <MaterialIcons name="error" size={24} color="#170038" />,
 };
 
 const determineVis = (
@@ -139,7 +139,7 @@ function PopoverActionBtn({
       createSubGroupFromSelection: () =>
         console.log("Create sub group from selection"),
       move: () => console.log("Move this node to another group"),
-      showError: () => console.log("ERROR"),
+      error: () => console.log("ERROR"),
     }),
     [dispatch],
   );
@@ -161,9 +161,12 @@ function PopoverActionBtn({
 
     return {
       transform: [{ translateX: x }, { translateY: y }],
-      opacity: withTiming(isVisible ? 1 : 0, {
+      opacity: withTiming(isVisible ? 1 : 0.2, {
         duration: 200,
       }),
+
+      // !TODO: This (below) is allowing pass through (nodes behind non-visible Btns can be clicked)
+      pointerEvents: isVisible ? "auto" : "none",
     };
   });
 
@@ -197,12 +200,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    padding: 2,
+    // padding: 6,
     borderRadius: 100,
-    backgroundColor: "#7448b8",
+    backgroundColor: "#f53c31",
   },
   iconWrapper: {
-    backgroundColor: "#845fba",
+    backgroundColor: "#c74a44",
     borderRadius: 100,
     padding: 10,
     borderWidth: 1,
