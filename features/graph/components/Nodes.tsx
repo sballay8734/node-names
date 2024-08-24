@@ -14,7 +14,7 @@ interface Props {
 
 function Nodes({ centerOnNode }: Props): React.JSX.Element {
   const nodes = useAppSelector(
-    (state: RootState) => state.manageGraph.userNodes,
+    (state: RootState) => state.manageGraph.globalNodesHash,
   );
 
   const memoizedNodes = useMemo(() => {

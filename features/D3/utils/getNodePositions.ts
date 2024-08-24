@@ -88,10 +88,10 @@ export function calcNodePositions(
 
   const simulation = d3
     .forceSimulation<PositionedNode, PositionedLink>(positionedNodes)
-    // .force(
-    //   "center",
-    //   d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
-    // )
+    .force(
+      "center",
+      d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
+    )
     .force("customRadial", customRadialForce)
     .force(
       "collision",

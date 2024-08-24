@@ -76,6 +76,8 @@ export default Index;
 
 // !TODO: Search bar
 
+// OPTIMIZE: OPTIMIZATION Look deeper into initial render. The hooks are causing lots of rerenders
+
 // TODO: using nodeIsSelected in index.tsx is BETTER but not perfect. You're still getting one or two re-renders that you don't want
 
 // TODO: See about replacing useState with useRef where possible (This likely won't be possible in many places but since ref doesn't trigger re-renders, it could help performance)

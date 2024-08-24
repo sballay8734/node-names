@@ -34,8 +34,8 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
   const activeRootNode = useAppSelector(
     (state: RootState) => state.manageGraph.activeRootNode,
   );
-  const userNodes = useAppSelector(
-    (state: RootState) => state.manageGraph.userNodes,
+  const globalNodesHash = useAppSelector(
+    (state: RootState) => state.manageGraph.globalNodesHash,
   );
 
   const isButtonEnabled =
@@ -62,7 +62,7 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
     }
 
     const selectedNodeId = selectedNodeIds[0];
-    const selectedNode = userNodes[selectedNodeId];
+    const selectedNode = globalNodesHash[selectedNodeId];
 
     if (selectedNode) {
       dispatch(

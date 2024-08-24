@@ -2,15 +2,56 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import { useDispatch } from "react-redux";
 
 import CPressable from "@/components/CustomNativeComponents/CPressable";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
+import { createNewNode } from "../Graph/redux/graphManagement";
+import { NodeHashObj } from "../Graph/utils/getInitialNodes";
 import { usePopoverOptions } from "../SelectionManagement/utils/determineOptions";
+
+const testNode: NodeHashObj = {
+  isShown: true,
+  x: 600.7020822980046,
+  y: 335.2613025301253,
+  id: 99,
+  created_at: "2024-08-08T18:09:18.182221+00:00",
+  first_name: "Johnny",
+  last_name: "TEST",
+  maiden_name: null,
+  group_id: 4,
+  sex: "male",
+  phonetic_name: null,
+  group_name: "Family",
+  date_of_birth: null,
+  date_of_death: null,
+  gift_ideas: null,
+  preferred_name: null,
+  partner_details: null,
+  depth_from_user: 1,
+  children_details: [
+    { child_id: 1, adoptive_parents_ids: [], biological_parents_ids: [24, 23] },
+    {
+      child_id: 25,
+      adoptive_parents_ids: [],
+      biological_parents_ids: [24, 23],
+    },
+    {
+      child_id: 26,
+      adoptive_parents_ids: [],
+      biological_parents_ids: [24, 23],
+    },
+  ],
+  parent_details: null,
+  shallowest_ancestor: 1,
+  is_current_root: false,
+};
 
 export default function Popover(): React.JSX.Element {
   const popoverOptions = usePopoverOptions();
+  const dispatch = useDispatch();
 
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
@@ -26,7 +67,7 @@ export default function Popover(): React.JSX.Element {
   };
 
   const actionMap: ActionMap = {
-    "Create a new node": () => console.log("Create new node"),
+    "Create a new node": () => dispatch(createNewNode(testNode)),
     "Create a new group": () => console.log("Create new group"),
     "Connect to a new node": () => console.log("Connect to new node"),
     "Connect to a new group": () => console.log("Connect to new group"),

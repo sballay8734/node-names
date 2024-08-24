@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -33,17 +33,25 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
   const isSelected = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.includes(node.id),
   );
-  const userNode = useAppSelector(
-    (state: RootState) => state.manageGraph.userNode,
-  );
+  const isShown = useMemo(() => node.isShown, [node.isShown]);
 
   const position = useSharedValue({ x: node.x, y: node.y });
   const isRoot = useSharedValue(node.is_current_root);
+  const opacity = useSharedValue(0);
 
   useEffect(() => {
     isRoot.value = node.is_current_root;
     position.value = { x: node.x, y: node.y };
-  }, [node.is_current_root, node.x, node.y, isRoot, position]);
+    opacity.value = node.isShown ? 1 : 0;
+  }, [
+    node.is_current_root,
+    node.x,
+    node.y,
+    isRoot,
+    position,
+    node.isShown,
+    opacity,
+  ]);
 
   const {
     inactiveBgColor,
@@ -80,7 +88,7 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
         isSelected ? activeBgColor : inactiveBgColor,
         { duration: 200 },
       ),
-      opacity: withTiming(node.isShown ? 1 : 0, { duration: 200 }),
+      opacity: withTiming(opacity.value, { duration: 200 }),
       transform: [
         { translateX: withTiming(targetX, { duration: 300 }) },
         { translateY: withTiming(targetY, { duration: 300 }) },
@@ -103,7 +111,7 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
   const tap = Gesture.Tap()
     .onStart(() => {
       // this line below is basically pointer events: "none"
-      if (node.isShown) {
+      if (isShown) {
         dispatch(handleNodeSelect(node.id));
       }
       // centerOnNode(node);

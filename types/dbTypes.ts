@@ -36,7 +36,7 @@ export type Partner = {
 // TODO: expand this to have child's name maybe?
 export type Child = {
   child_id: number;
-  biologial_parents_ids: number[];
+  biological_parents_ids: number[];
   adoptive_parents_ids: number[];
 };
 

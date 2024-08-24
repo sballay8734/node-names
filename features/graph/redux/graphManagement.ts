@@ -1,57 +1,43 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
+import { PositionedLink } from "@/features/D3/types/d3Types";
 
 import { INode2 } from "../types/graphManagementTypes";
 import { NodeHashObj } from "../utils/getInitialNodes";
 
 interface ManageGraphState {
   userNode: INode2 | null;
-
   activeRootNode: INode2 | null;
-  activeRootType: "user" | "notUser";
 
-  userNodes: { [x: number]: NodeHashObj };
+  globalNodesHash: { [x: number]: NodeHashObj };
   userLinks: PositionedLink[];
-
-  inspectedNodes: PositionedNode[];
-  inspectedLinks: PositionedLink[];
 }
 
 const initialState: ManageGraphState = {
   userNode: null,
-
   activeRootNode: null,
-  activeRootType: "user",
 
-  userNodes: {},
+  globalNodesHash: {},
   userLinks: [],
-
-  inspectedNodes: [],
-  inspectedLinks: [],
 };
 
 const ManageGraphSlice = createSlice({
   name: "manageGraph",
   initialState,
   reducers: {
-    // ROOT
     setActiveRootNode: (state, action: PayloadAction<INode2>) => {
       state.activeRootNode = {
         ...action.payload,
       };
     },
-
-    // USER ********************************************************************
     setUserNode: (state, action: PayloadAction<INode2>) => {
       state.userNode = action.payload;
     },
-
     setUserNodes: (
       state,
       action: PayloadAction<{ [x: number]: NodeHashObj }>,
     ) => {
-      state.userNodes = action.payload;
+      state.globalNodesHash = action.payload;
     },
     setUserLinks: (state, action: PayloadAction<PositionedLink[]>) => {
       state.userLinks = action.payload;
@@ -63,24 +49,24 @@ const ManageGraphSlice = createSlice({
       const { newRootId, oldRootNode } = action.payload;
 
       if (newRootId && oldRootNode) {
-        state.userNodes[newRootId].is_current_root = true;
-        state.userNodes[newRootId].isShown = true;
+        state.globalNodesHash[newRootId].is_current_root = true;
+        state.globalNodesHash[newRootId].isShown = true;
         // if the oldRoot was the users node, hide it
         if (state.userNode && oldRootNode.id === state.userNode.id) {
-          state.userNodes[oldRootNode.id].isShown = false;
+          state.globalNodesHash[oldRootNode.id].isShown = false;
         }
-        state.userNodes[oldRootNode.id].is_current_root = false;
+        state.globalNodesHash[oldRootNode.id].is_current_root = false;
       } else {
         console.error("");
       }
     },
-
-    // Changes when user "inspects"
-    setInspectedNodes: (state, action: PayloadAction<PositionedNode[]>) => {
-      state.inspectedNodes = action.payload;
-    },
-    setInspectedLinks: (state, action: PayloadAction<PositionedLink[]>) => {
-      state.userLinks = action.payload;
+    createNewNode: (state, action: PayloadAction<NodeHashObj>) => {
+      const newNode = action.payload;
+      if (!state.globalNodesHash[newNode.id]) {
+        state.globalNodesHash[newNode.id] = newNode;
+      } else {
+        console.log("Node with that ID already exists");
+      }
     },
   },
 });
@@ -89,10 +75,9 @@ export const {
   setActiveRootNode,
   setUserNodes,
   setUserLinks,
-  setInspectedNodes,
-  setInspectedLinks,
   updateRootNode,
   setUserNode,
+  createNewNode,
 } = ManageGraphSlice.actions;
 
 export default ManageGraphSlice.reducer;
