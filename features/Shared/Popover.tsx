@@ -17,9 +17,14 @@ export default function Popover(): React.JSX.Element {
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
   );
-  const selectedNodesLength = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes.length,
+  const selectedNodes = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes,
   );
+  const activeRootNode = useAppSelector(
+    (state: RootState) => state.manageGraph.activeRootNode,
+  );
+  const isRootSelected =
+    (activeRootNode && selectedNodes.includes(activeRootNode.id)) || false;
 
   const animationProgress = useSharedValue(0);
 
@@ -46,16 +51,17 @@ export default function Popover(): React.JSX.Element {
         // DO SOME LOGIC HERE SO THAT PROPS ARE NOT OBJECTS
         return (
           <PopoverActionBtn
-            key={o.text} // string
-            iconName={o.iconName} // string
-            action={o.action} // string
+            key={o.text}
+            iconName={o.iconName}
+            action={o.action}
             initialX={o.initialX}
             initialY={o.initialY}
             finalX={o.finalX}
             finalY={o.finalY}
             visibilityRule={o.visibilityRule}
-            selectedNodesLength={selectedNodesLength}
+            selectedNodesLength={selectedNodes.length}
             animationProgress={animationProgress}
+            isRootSelected={isRootSelected}
           />
         );
       })}
@@ -80,7 +86,7 @@ const styles = StyleSheet.create({
 
 // ALL SCENARIOS ***************************************************************
 // 1. No nodes are selected (createGroup OR createNode) - root as default source
-// 2. 1 node selected (createNode) - selected node as default source
+// 2. 1 node selected (createNode AND moveNode) - selected node as default source
 
 // 3. more than 1 node selected
 // ----- groupNodes (createsSubGroup inside group with selected nodes)

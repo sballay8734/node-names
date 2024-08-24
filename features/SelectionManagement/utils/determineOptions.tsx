@@ -1,6 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { Dimensions } from "react-native";
 
-const INITIAL_POSITION = { x: 0, y: 900 };
+import { TAB_BAR_HEIGHT } from "@/constants/styles";
+
+const INITIAL_POSITION = {
+  x: 0,
+  y: Dimensions.get("window").height - TAB_BAR_HEIGHT,
+};
 
 type Action =
   | "createNewNode"
@@ -44,7 +50,7 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
     finalX: 0,
-    finalY: 460,
+    finalY: 500,
     visibilityRule: "none",
     // isVisibleCondition: (count) => count === 0,
   },
@@ -56,7 +62,7 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
     finalX: 0,
-    finalY: 470,
+    finalY: 550,
     visibilityRule: "multiple",
     // isVisibleCondition: (count) => count >= 1,
   },
@@ -70,7 +76,7 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
     finalX: 0,
-    finalY: 480,
+    finalY: 600,
     visibilityRule: "single",
     // isVisibleCondition: (count) => count === 1,
   },
@@ -82,7 +88,7 @@ export const POPOVER_OPTIONS: OptionsObj[] = [
     initialX: INITIAL_POSITION.x,
     initialY: INITIAL_POSITION.y,
     finalX: 0,
-    finalY: 490,
+    finalY: 650,
     visibilityRule: "error",
     // isVisibleCondition: (_, isRootSelected) => isRootSelected,
   },

@@ -1,8 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { memo, useMemo, useRef } from "react";
+import { memo, useMemo } from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import Animated, {
-  Extrapolate,
   interpolate,
   SharedValue,
   useAnimatedStyle,
@@ -14,8 +13,6 @@ import { useDispatch } from "react-redux";
 import { createNewNode } from "@/features/Graph/redux/graphManagement";
 import { NodeHashObj } from "@/features/Graph/utils/getInitialNodes";
 import { Rule } from "@/features/SelectionManagement/utils/determineOptions";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { RootState } from "@/store/store";
 
 interface Props {
   iconName: string;
@@ -27,6 +24,7 @@ interface Props {
   visibilityRule: Rule;
   selectedNodesLength: number;
   animationProgress: SharedValue<number>;
+  isRootSelected: boolean;
   // isVisibleCondition: (count: number, isRootSelected: boolean) => boolean;
 }
 
@@ -88,19 +86,28 @@ const iconMap: { [key: string]: React.ReactNode } = {
 const determineVis = (
   rule: Rule,
   count: number,
-  // isRootSelected: boolean,
+  isRootSelected: boolean,
 ): boolean => {
-  switch (rule) {
-    case "any":
-      return true;
-    case "none":
-      return count === 0;
-    case "single":
-      return count === 1;
-    case "multiple":
-      return count > 1;
-    default:
-      return false;
+  if (isRootSelected && count === 1) {
+    // Case 1: If ONLY rootNode is selected
+    return rule === "any" || rule === "none";
+  } else if (isRootSelected && count > 1) {
+    // Case 2: If root + ANY amount is selected, NO actions should show
+    return false;
+  } else {
+    // Default rules for other cases
+    switch (rule) {
+      case "any":
+        return true;
+      case "none":
+        return count === 0;
+      case "single":
+        return count === 1;
+      case "multiple":
+        return count > 1;
+      default:
+        return false;
+    }
   }
 };
 
@@ -114,14 +121,15 @@ function PopoverActionBtn({
   visibilityRule,
   selectedNodesLength,
   animationProgress,
+  isRootSelected,
 }: Props): React.JSX.Element {
   // console.log("Re-rendering BTN");
   const dispatch = useDispatch();
   const isPressed = useSharedValue<boolean>(false);
 
   const isVisible = useMemo(
-    () => determineVis(visibilityRule, selectedNodesLength),
-    [visibilityRule, selectedNodesLength],
+    () => determineVis(visibilityRule, selectedNodesLength, isRootSelected),
+    [visibilityRule, selectedNodesLength, isRootSelected],
   );
 
   const actionMap: PopoverActionMap = useMemo(
@@ -184,6 +192,7 @@ function PopoverActionBtn({
 
 const styles = StyleSheet.create({
   btnStyles: {
+    position: "absolute",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
