@@ -1,7 +1,10 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useRef } from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import Animated, {
+  Extrapolate,
+  interpolate,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -10,9 +13,9 @@ import { useDispatch } from "react-redux";
 
 import { createNewNode } from "@/features/Graph/redux/graphManagement";
 import { NodeHashObj } from "@/features/Graph/utils/getInitialNodes";
+import { Rule } from "@/features/SelectionManagement/utils/determineOptions";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { Rule } from "@/features/SelectionManagement/utils/determineOptions";
 
 interface Props {
   iconName: string;
@@ -22,6 +25,8 @@ interface Props {
   finalX: number;
   finalY: number;
   visibilityRule: Rule;
+  selectedNodesLength: number;
+  animationProgress: SharedValue<number>;
   // isVisibleCondition: (count: number, isRootSelected: boolean) => boolean;
 }
 
@@ -107,29 +112,17 @@ function PopoverActionBtn({
   finalX,
   finalY,
   visibilityRule,
+  selectedNodesLength,
+  animationProgress,
 }: Props): React.JSX.Element {
-  console.log("Re-rendering BTN");
+  // console.log("Re-rendering BTN");
   const dispatch = useDispatch();
   const isPressed = useSharedValue<boolean>(false);
-  const position = useSharedValue<{ x: number; y: number }>({
-    x: initialX,
-    y: initialY,
-  });
-  const isRootSelected = useAppSelector(
-    (state: RootState) =>
-      (activeRootNode &&
-        state.selections.selectedNodes.includes(activeRootNode.id)) ||
-      false,
-  );
-  const activeRootNode = useAppSelector(
-    (state: RootState) => state.manageGraph.activeRootNode,
-  );
-  const selectedNodesLength = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes.length,
-  );
 
-  const shouldShow = determineVis(visibilityRule, selectedNodesLength);
-  const isVisible = useMemo(() => shouldShow, [shouldShow]);
+  const isVisible = useMemo(
+    () => determineVis(visibilityRule, selectedNodesLength),
+    [visibilityRule, selectedNodesLength],
+  );
 
   const actionMap: PopoverActionMap = useMemo(
     () => ({
@@ -144,23 +137,27 @@ function PopoverActionBtn({
   );
 
   // update position and visibility when `isVisible` changes
-  const animatedStyles = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(isPressed.value ? "#7448b5" : "#B58DF1", {
-      duration: 200,
-    }),
-    transform: [
-      {
-        translateX: withTiming(isVisible ? finalX : position.value.x, {
-          duration: 300,
-        }),
-      },
-      {
-        translateY: withTiming(isVisible ? finalY : position.value.y, {
-          duration: 300,
-        }),
-      },
-    ],
-  }));
+  const animatedStyles = useAnimatedStyle(() => {
+    const x = interpolate(
+      animationProgress.value,
+      [0, 1],
+      [initialX, finalX],
+      "clamp",
+    );
+    const y = interpolate(
+      animationProgress.value,
+      [0, 1],
+      [initialY, finalY],
+      "clamp",
+    );
+
+    return {
+      transform: [{ translateX: x }, { translateY: y }],
+      opacity: withTiming(isVisible ? 1 : 0, {
+        duration: 200,
+      }),
+    };
+  });
 
   function handlePressIn() {
     isPressed.value = true;
@@ -175,7 +172,7 @@ function PopoverActionBtn({
       onPress={actionMap[action]}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[{ ...styles.btnStyles }, animatedStyles]}
+      style={[styles.btnStyles, animatedStyles]}
     >
       {iconName && (
         <View style={[styles.iconWrapper]}>{iconMap[iconName]}</View>
@@ -187,13 +184,13 @@ function PopoverActionBtn({
 
 const styles = StyleSheet.create({
   btnStyles: {
-    height: 50,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingHorizontal: 6,
+    padding: 2,
     borderRadius: 100,
+    backgroundColor: "#7448b8",
   },
   iconWrapper: {
     backgroundColor: "#845fba",

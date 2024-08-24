@@ -66,6 +66,8 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
+// !TODO: You DEFINITELY have a memory leak somewhere. Your RAM is too high in performance monitor
+
 // !TODO: Just make the Popover always visible/not Visible and just control the visibility of the BTNs individually
 
 // !TODO: You really need to optimize the way the PopoverActionBtns are rendered. Anytime one of them changes, they all re-render NOT GOOD

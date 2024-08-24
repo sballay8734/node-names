@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
@@ -15,9 +17,19 @@ export default function Popover(): React.JSX.Element {
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
   );
+  const selectedNodesLength = useAppSelector(
+    (state: RootState) => state.selections.selectedNodes.length,
+  );
+
+  const animationProgress = useSharedValue(0);
+
+  // animate progress when visibility changes
+  useEffect(() => {
+    animationProgress.value = withTiming(isVisible ? 1 : 0, { duration: 300 });
+  }, [isVisible, animationProgress]);
 
   const viewStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(isVisible ? 1 : 0, { duration: 200 }),
+    opacity: animationProgress.value,
   }));
 
   return (
@@ -42,6 +54,8 @@ export default function Popover(): React.JSX.Element {
             finalX={o.finalX}
             finalY={o.finalY}
             visibilityRule={o.visibilityRule}
+            selectedNodesLength={selectedNodesLength}
+            animationProgress={animationProgress}
           />
         );
       })}
@@ -56,7 +70,8 @@ const styles = StyleSheet.create({
     height: "100%",
     display: "flex",
     alignItems: "center",
-    backgroundColor: "rgba(155, 155, 0, 0.1)",
+    // backgroundColor: "rgba(155, 155, 0, 0.1)",
+    backgroundColor: "transparent",
     zIndex: 1000,
     top: 0,
     pointerEvents: "box-none",
