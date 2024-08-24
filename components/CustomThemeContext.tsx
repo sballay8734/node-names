@@ -1,4 +1,6 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
+
+import DefTheme from "@/constants/Colors";
 
 export interface ITheme {
   bgBase: string;
@@ -27,25 +29,17 @@ export interface ITheme {
   grp5NodeBg: string;
 }
 
-const CustomThemeContext = createContext<ITheme | undefined>(undefined);
-
 export const TAB_BG_COLOR = "rgba(9, 9, 9, 1)";
 
+// THEME SETTING **************************************************************
+export const CustomThemeContext = createContext<ITheme>(DefTheme);
+
 export const CustomThemeProvider: React.FC<{
-  theme: ITheme;
   children: React.ReactNode;
-}> = ({ theme, children }) => {
+}> = ({ children }) => {
   return (
-    <CustomThemeContext.Provider value={theme}>
+    <CustomThemeContext.Provider value={DefTheme}>
       {children}
     </CustomThemeContext.Provider>
   );
-};
-
-export const useCustomTheme = () => {
-  const context = useContext(CustomThemeContext);
-  if (context === undefined) {
-    throw new Error("useCustomTheme must be used within a CustomThemeProvider");
-  }
-  return context;
 };

@@ -4,17 +4,17 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { useContext } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import { useCustomTheme } from "@/components/CustomThemeContext";
+import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { handlePopover } from "@/features/SelectionManagement/redux/manageSelections";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 
 export default function TabLayout() {
-  const theme = useCustomTheme();
+  const theme = useContext(CustomThemeContext);
   const dispatch = useAppDispatch();
 
   return (

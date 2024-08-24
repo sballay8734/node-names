@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { SharedValue } from "react-native-reanimated";
 
-import { centerNode, MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
+import { MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
 import { NodeHashObj } from "@/features/Graph/utils/getInitialNodes";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { Tables } from "@/types/dbTypes";
@@ -15,6 +15,7 @@ export function calcNodePositions(
   windowSize: WindowSize,
   scale: SharedValue<number>,
 ): { nodes: PositionedNode[]; links: PositionedLink[] } {
+  console.log("GETTING NODE POS");
   // make copy of nodes and links
   const positionedNodes: PositionedNode[] = Object.values(nodeObj).map((p) => {
     return p;

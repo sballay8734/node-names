@@ -132,11 +132,6 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
     })
     .runOnJS(true);
 
-  // if (node.is_current_root) {
-  //   console.log(node.first_name);
-  //   console.log(node.id);
-  // }
-
   return (
     <GestureDetector key={node.id} gesture={tap}>
       <Animated.View style={[animatedStyle]}>

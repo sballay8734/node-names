@@ -12,7 +12,7 @@ import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 
-import { getInitialNodes } from "../utils/getInitialNodes";
+import { getInitialNodes, NodeHashObj } from "../utils/getInitialNodes";
 
 import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
 
@@ -39,7 +39,7 @@ export const useGraphData = ({
     translateY,
     scale,
   });
-  const cachedNodes = useRef<PositionedNode[] | null>(null);
+  const cachedHash = useRef<{ [nodeId: number]: NodeHashObj } | null>(null);
 
   const { nodeHash, finalConnections } = useMemo(() => {
     if (people && connections) {
@@ -63,6 +63,7 @@ export const useGraphData = ({
       (finished) => {
         if (finished) {
           lastScale.value = scale.value;
+          console.log("DONE CENTERING...");
         }
       },
     );
@@ -94,11 +95,17 @@ export const useGraphData = ({
   );
 
   useEffect(() => {
+    console.log("RUNNING uGD uE");
+    console.log("PEEPS:", people && people[0]);
+    console.log("CONNS:", finalConnections);
+    console.log("SCALE:", scale);
+    console.log("WINDOWSIZE:", windowSize);
     if (!nodeHash) return;
 
     const nodeHashCopy = { ...nodeHash };
 
     if (people) {
+      // TODO: Surprisingly this only runs once. So what's triggering the renders?
       const { nodes, links } = calcNodePositions(
         people,
         nodeHash,
@@ -118,14 +125,12 @@ export const useGraphData = ({
           };
         }
       });
+
+      console.log("DONE!!");
+      cachedHash.current = nodeHashCopy;
       dispatch(setUserNodes(nodeHashCopy));
-      // cache nodes
-      cachedNodes.current = nodes;
     } else {
       console.error("useGraphData.ts ERROR");
-      // if (cachedNodes.current) {
-      //   dispatch(updateUserNodes(cachedNodes.current));
-      // }
     }
     centerOnRoot();
   }, [

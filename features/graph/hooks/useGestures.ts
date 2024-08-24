@@ -74,7 +74,10 @@ export const useGestures = () => {
     [initialFocalX, initialFocalY, lastScale, scale, translateX, translateY],
   );
 
-  const composed = Gesture.Simultaneous(pan, pinch);
+  const composed = useMemo(
+    () => Gesture.Simultaneous(pan, pinch),
+    [pan, pinch],
+  );
 
   return {
     composed,

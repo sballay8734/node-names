@@ -3,12 +3,11 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
 import { CustomThemeProvider } from "@/components/CustomThemeContext";
-import DefTheme from "@/constants/Colors";
 import { store } from "@/store/store";
 
 export {
@@ -50,9 +49,8 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   // const colorScheme = useColorScheme();  // detects light or dark mode
-
   return (
-    <CustomThemeProvider theme={DefTheme}>
+    <CustomThemeProvider>
       <Provider store={store}>
         <GestureHandlerRootView style={[styles.container]}>
           <View

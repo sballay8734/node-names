@@ -21,9 +21,6 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
   const links = useAppSelector(
     (state: RootState) => state.manageGraph.userLinks,
   );
-  const selectedNodeId = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes[0]?.id,
-  );
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );

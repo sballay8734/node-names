@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
-import { useCustomTheme } from "@/components/CustomThemeContext";
+import { CustomThemeContext } from "@/components/CustomThemeContext";
 import ControlButtons from "@/features/Graph/components/ControlButtons";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
@@ -12,11 +12,11 @@ import { useGraphData } from "@/features/Graph/hooks/useGraphData";
 import useWindowSize from "@/hooks/useWindowSize";
 
 const Index = () => {
-  console.log(`[${new Date().toISOString()}] Rendering Index Component`);
-  const theme = useCustomTheme();
-  const { composed, scale, translateX, translateY, lastScale } = useGestures();
+  // console.log(`[${new Date().toISOString()}] Rendering Index Component`);
   const windowSize = useWindowSize();
+  const theme = useContext(CustomThemeContext);
 
+  const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
     scale,
     translateX,
@@ -41,7 +41,7 @@ const Index = () => {
         style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
       >
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
-          <LinksCanvas windowSize={windowSize} />
+          {/* <LinksCanvas windowSize={windowSize} /> */}
           <Nodes centerOnNode={centerOnNode} />
         </Animated.View>
         <ControlButtons
@@ -66,7 +66,13 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
-// !TODO: You need to refactor how "centerOnRoot" is used/called. You currently have the same code in two places. NOT GOOD
+// !TODO: utilized "cachedHash" in useGraphData. You want the useEffect to skip running if nodeHashCopy is unchanged... I think?
+
+// !TODO: IS IT BECAUSE YOU'RE CHANGING THE SCALE INSIDE OF centerOnRoot()? You're changing lastScale.value
+
+// !TODO: PEEPS AND CONNS ARE EMPTY ON FIRST TWO RENDERS ( ARE YOU NOT AWAITING?)
+
+// !TODO: Maybe it's the Nodes calling centerOnNode or the Buttons calling centerOnRoot?
 
 // !TODO: There is a bug when you unselect Aaron as the root using "me" (has something to do with the active/inactive state of the node)
 
