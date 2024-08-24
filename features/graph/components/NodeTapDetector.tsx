@@ -34,7 +34,9 @@ const image = {
 
 export default function NodeTapDetector({ node, centerOnNode }: Props) {
   const dispatch = useAppDispatch();
-  const [isSelected, setIsSelected] = useState<boolean>(false);
+  const isSelected = useAppSelector((state: RootState) =>
+    state.selections.selectedNodes.includes(node.id),
+  );
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
   const { x, y } = node;
@@ -125,9 +127,7 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
       // this line below is basically pointer events: "none"
       if (node.isShown === false) return;
 
-      setIsSelected(!isSelected);
-
-      dispatch(handleNodeSelect(node));
+      dispatch(handleNodeSelect(node.id));
       // centerOnNode(node);
     })
     .runOnJS(true);

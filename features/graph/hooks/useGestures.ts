@@ -79,13 +79,16 @@ export const useGestures = () => {
     [pan, pinch],
   );
 
-  return {
-    composed,
-    scale,
-    translateX,
-    translateY,
-    lastScale,
-    focalX,
-    focalY,
-  };
+  return useMemo(
+    () => ({
+      composed,
+      scale,
+      translateX,
+      translateY,
+      lastScale,
+      focalX,
+      focalY,
+    }),
+    [composed, scale, translateX, translateY, lastScale, focalX, focalY],
+  );
 };

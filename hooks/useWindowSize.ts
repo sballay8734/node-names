@@ -43,7 +43,20 @@ const useWindowSize = () => {
     return () => subscription.remove();
   }, [dispatch, windowSize]);
 
-  return useMemo(() => windowSize, [windowSize]);
+  return useMemo(
+    () => ({
+      width: windowSize.width,
+      height: windowSize.height,
+      windowCenterX: windowSize.windowCenterX,
+      windowCenterY: windowSize.windowCenterY,
+    }),
+    [
+      windowSize.width,
+      windowSize.height,
+      windowSize.windowCenterX,
+      windowSize.windowCenterY,
+    ],
+  );
 };
 
 export default useWindowSize;

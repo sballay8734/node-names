@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Easing, SharedValue, withTiming } from "react-native-reanimated";
 
 import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
@@ -34,6 +34,7 @@ export const useGraphData = ({
   console.log(`[${new Date().toISOString()}] Running useGraphData...`);
   const dispatch = useAppDispatch();
   const { people, connections } = useDataLoad();
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const { arrowData, showArrow } = useArrowData({
     translateX,
     translateY,
@@ -42,11 +43,10 @@ export const useGraphData = ({
   const cachedHash = useRef<{ [nodeId: number]: NodeHashObj } | null>(null);
 
   const { nodeHash, finalConnections } = useMemo(() => {
-    if (people && connections) {
-      return getInitialNodes(people, connections);
+    if (!people || !connections) {
+      return { nodeHash: null, finalConnections: [] };
     }
-    // !TODO: MAYBE DON'T RETURN THIS HERE???
-    return { nodeHash: null, finalConnections: [] };
+    return getInitialNodes(people, connections);
   }, [people, connections]);
 
   const centerOnRoot = useCallback(() => {
@@ -95,21 +95,18 @@ export const useGraphData = ({
     [translateX, translateY, scale, lastScale, windowSize],
   );
 
-  // !TODO: PEEPS and NODEHASH are NULL on first few renders... WHYYYYYYY!
   useEffect(() => {
-    console.log("RUNNING uGD uE");
-    console.log("PEEPS:", people && people[0]);
-    console.log("HASH:", nodeHash);
-    console.log("CONNS:", finalConnections);
-    console.log("SCALE:", scale.value);
-    console.log("WINDOWSIZE:", windowSize);
-    if (!nodeHash) return;
+    if (people && connections) {
+      setIsDataLoaded(true);
+    }
+  }, [people, connections]);
 
-    console.log("HASH EXISTS!!!");
+  useEffect(() => {
+    if (!nodeHash) return;
+    if (!isDataLoaded) return;
     const nodeHashCopy = { ...nodeHash };
 
     if (people) {
-      // TODO: Surprisingly this only runs once. So what's triggering the renders?
       const { nodes, links } = calcNodePositions(
         people,
         nodeHash,
@@ -145,6 +142,7 @@ export const useGraphData = ({
     scale,
     windowSize,
     centerOnRoot,
+    isDataLoaded,
   ]);
 
   return { centerOnRoot, centerOnNode, arrowData, showArrow };

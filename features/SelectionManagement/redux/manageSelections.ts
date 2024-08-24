@@ -1,38 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { PositionedNode } from "@/features/D3/types/d3Types";
-import { RelationshipType } from "@/types/dbTypes";
-
-interface IConnectionsAndNodes {
-  connections: {
-    [id: number]: {
-      id: number;
-      created_at: string;
-      person_1_id: number;
-      person_2_id: number;
-      relationship_type: RelationshipType;
-    };
-  };
-  nodes: {
-    [id: number]: PositionedNode;
-  };
-  connectionIds: number[];
-  nodeIds: number[];
-}
-
 // Define a type for the slice state
 interface ManageSelectionsState {
-  secondaryConnections: { [nodeId: number]: IConnectionsAndNodes };
-
   popoverIsShown: boolean;
-  selectedNodes: PositionedNode[];
+  selectedNodes: number[];
 }
 
 // Define the initial state using that type
 const initialState: ManageSelectionsState = {
-  secondaryConnections: {},
-
   popoverIsShown: false,
   selectedNodes: [],
 };
@@ -54,28 +30,19 @@ const ManageSelectionsSlice = createSlice({
       state.popoverIsShown = false;
     },
 
-    setSecondary: (
-      state,
-      action: PayloadAction<{ [nodeId: number]: IConnectionsAndNodes }>,
-    ) => {
-      state.secondaryConnections = action.payload;
-    },
-
     // SELECTION MANAGEMENT ****************************************************
-    handleNodeSelect: (state, action: PayloadAction<PositionedNode>) => {
-      const clickedNode = action.payload;
-      const nodeIndex = state.selectedNodes.findIndex(
-        (node) => node.id === clickedNode.id,
-      );
+    handleNodeSelect: (state, action: PayloadAction<number>) => {
+      const clickedNodeId = action.payload;
+      const nodeIndex = state.selectedNodes.indexOf(clickedNodeId);
 
-      // if we found it, it's already in array so this click should remove it
       if (nodeIndex > -1) {
+        // If the ID is already in the array, remove it
         state.selectedNodes = state.selectedNodes.filter(
-          (node) => node.id !== clickedNode.id,
+          (id) => id !== clickedNodeId,
         );
       } else {
-        // if we didn't find it, then just add it to the array
-        state.selectedNodes = [...state.selectedNodes, clickedNode];
+        // If the ID is not in the array, add it
+        state.selectedNodes = [...state.selectedNodes, clickedNodeId];
       }
     },
 
@@ -99,7 +66,6 @@ export const {
   handleNodeSelect,
   handleConnectToNewNode,
   deselectAll,
-  setSecondary,
 } = ManageSelectionsSlice.actions;
 
 export default ManageSelectionsSlice.reducer;

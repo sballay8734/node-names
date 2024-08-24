@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import useDbData from "@/hooks/useDbData";
 import { RootState } from "@/store/store";
@@ -28,7 +27,7 @@ export function useDataLoad() {
   useEffect(() => {
     if (dataFetched && initialPeople && connections && groups) {
       const updatedPeople = initialPeople.map((person) => {
-        if (person.id === rootNodeId) {
+        if (person.id === rootNodeId && !person.is_current_root) {
           return {
             ...person,
             is_current_root: true,
@@ -43,13 +42,16 @@ export function useDataLoad() {
 
       // set position of root
       if (initialRootNode) {
-        (initialRootNode as PositionedNode).fx = windowSize.width / 2;
-        (initialRootNode as PositionedNode).fy = windowSize.height;
-        (initialRootNode as PositionedNode).isShown = true;
-        (initialRootNode as PositionedNode).is_current_root = true;
+        const updatedNode = {
+          ...initialRootNode,
+          fx: windowSize.width / 2,
+          fy: windowSize.height,
+          isShown: true,
+          is_current_root: true,
+        };
 
-        dispatch(setActiveRootNode(initialRootNode as PositionedNode));
-        dispatch(setUserNode(initialRootNode as PositionedNode));
+        dispatch(setActiveRootNode(updatedNode));
+        dispatch(setUserNode(updatedNode));
       }
     }
   }, [

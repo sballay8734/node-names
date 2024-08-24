@@ -26,11 +26,9 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
   );
 
   function show(link: PositionedLink) {
-    const nodeIds = selectedNodes.map((n) => n.id);
-
     // type guard
     if (typeof link.source === "object" && "id" in link.source) {
-      return nodeIds.includes(link.source.id);
+      return selectedNodes.includes(link.source.id);
     }
 
     return false;

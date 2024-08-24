@@ -52,8 +52,13 @@ export function usePopoverOptions() {
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
-  const isRootSelected = useAppSelector((state: RootState) =>
-    state.selections.selectedNodes.find((node) => !node.source_node_ids),
+  const activeRootNode = useAppSelector(
+    (state: RootState) => state.manageGraph.activeRootNode,
+  );
+  const isRootSelected = useAppSelector(
+    (state: RootState) =>
+      activeRootNode &&
+      state.selections.selectedNodes.includes(activeRootNode.id),
   );
 
   const getPopoverOptions = () => {
