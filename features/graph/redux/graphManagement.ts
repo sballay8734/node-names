@@ -64,6 +64,11 @@ const ManageGraphSlice = createSlice({
 
       if (newRootId && oldRootNode) {
         state.userNodes[newRootId].is_current_root = true;
+        state.userNodes[newRootId].isShown = true;
+        // if the oldRoot was the users node, hide it
+        if (state.userNode && oldRootNode.id === state.userNode.id) {
+          state.userNodes[oldRootNode.id].isShown = false;
+        }
         state.userNodes[oldRootNode.id].is_current_root = false;
       } else {
         console.error("");

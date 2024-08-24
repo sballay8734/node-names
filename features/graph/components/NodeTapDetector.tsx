@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ImageBackground, StyleSheet, Text } from "react-native";
+import { useEffect } from "react";
+import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
@@ -8,7 +8,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { nodeBgMap } from "@/constants/Colors";
 import {
   REG_NODE_RADIUS,
   REG_TEXT_SIZE,
@@ -20,7 +19,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
-import { calcFontSize } from "../helpers/calcFontSize";
 import { getColors } from "../helpers/getColors";
 import { NodeHashObj } from "../utils/getInitialNodes";
 
@@ -34,6 +32,9 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const isSelected = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.includes(node.id),
+  );
+  const userNode = useAppSelector(
+    (state: RootState) => state.manageGraph.userNode,
   );
 
   const position = useSharedValue({ x: node.x, y: node.y });
