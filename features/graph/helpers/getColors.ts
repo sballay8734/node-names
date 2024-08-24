@@ -5,10 +5,10 @@ import { INode2 } from "../types/graphManagementTypes";
 export function getColors(node: INode2) {
   if (node.is_current_root) {
     return {
-      inactiveBgColor: "transparent",
+      inactiveBgColor: "#121212",
       sourceActiveBg: "",
-      activeBgColor: "#66e889",
-      inactiveBorderColor: "#121212",
+      activeBgColor: "#636363",
+      inactiveBorderColor: "#262626",
       activeBorderColor: "rgba(245, 240, 196, 1)",
     };
   } else {
@@ -25,3 +25,5 @@ export function getColors(node: INode2) {
     };
   }
 }
+
+// const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];

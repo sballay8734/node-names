@@ -9,7 +9,12 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { nodeBgMap } from "@/constants/Colors";
-import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/constants/variables";
+import {
+  REG_NODE_RADIUS,
+  REG_TEXT_SIZE,
+  ROOT_NODE_RADIUS,
+  ROOT_TEXT_SIZE,
+} from "@/constants/variables";
 import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
@@ -19,49 +24,25 @@ import { calcFontSize } from "../helpers/calcFontSize";
 import { getColors } from "../helpers/getColors";
 import { NodeHashObj } from "../utils/getInitialNodes";
 
-// const NODE_COLORS = ["#4c55b7", "#099671", "#7e4db7", "#b97848", "#ad4332"];
-
-const AnimatedBg = Animated.createAnimatedComponent(ImageBackground);
-
 interface Props {
   node: NodeHashObj;
   centerOnNode: (node: PositionedNode) => void;
 }
 
-const image = {
-  uri: "https://sa1s3optim.patientpop.com/assets/images/provider/photos/2735132.jpeg",
-};
-
 export default function NodeTapDetector({ node, centerOnNode }: Props) {
   const dispatch = useAppDispatch();
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const isSelected = useAppSelector((state: RootState) =>
     state.selections.selectedNodes.includes(node.id),
   );
-  const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
-  const { x, y } = node;
-  const position = useSharedValue({ x, y });
-  const rootPosition = useSharedValue({
-    x: windowSize.windowCenterX - ROOT_NODE_RADIUS / 2,
-    y: windowSize.windowCenterY - ROOT_NODE_RADIUS / 2,
-  });
-  const opacity = useSharedValue(0);
-  const transitionProgress = useSharedValue(node.is_current_root ? 1 : 0);
+  const position = useSharedValue({ x: node.x, y: node.y });
+  const isRoot = useSharedValue(node.is_current_root);
 
   useEffect(() => {
-    opacity.value = withTiming(1, { duration: 500 });
-    transitionProgress.value = withTiming(node.is_current_root ? 1 : 0, {
-      duration: 500,
-    });
-
-    return () => {
-      opacity.value = withTiming(0, { duration: 500 });
-    };
-  }, [node.is_current_root, opacity, transitionProgress, position]);
-
-  useEffect(() => {
-    position.value = withTiming({ x, y }, { duration: 500 });
-  }, [x, y, position]);
+    isRoot.value = node.is_current_root;
+    position.value = { x: node.x, y: node.y };
+  }, [node.is_current_root, node.x, node.y, isRoot, position]);
 
   const {
     inactiveBgColor,
@@ -72,21 +53,24 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
 
   const animatedStyle = useAnimatedStyle(() => {
     const radius = interpolate(
-      transitionProgress.value,
+      isRoot.value === true ? 1 : 0,
       [0, 1],
       [REG_NODE_RADIUS / 2, ROOT_NODE_RADIUS / 2],
     );
 
+    const targetX = isRoot.value
+      ? windowSize.windowCenterX - ROOT_NODE_RADIUS / 2
+      : position.value.x - radius;
+    const targetY = isRoot.value
+      ? windowSize.windowCenterY - ROOT_NODE_RADIUS / 2
+      : position.value.y - radius;
+
     return {
       position: "absolute",
-      width: radius * 2,
-      height: radius * 2,
-      borderWidth: 2,
+      width: withTiming(radius * 2, { duration: 300 }),
+      height: withTiming(radius * 2, { duration: 300 }),
       borderRadius: 100,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "row",
+      borderWidth: 2,
       borderColor: withTiming(
         isSelected ? activeBorderColor : inactiveBorderColor,
         { duration: 200 },
@@ -95,99 +79,50 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
         isSelected ? activeBgColor : inactiveBgColor,
         { duration: 200 },
       ),
-      // opacity: opacity.value,
-      opacity: withTiming(node.isShown ? 1 : 0, { duration: 300 }),
+      opacity: withTiming(node.isShown ? 1 : 0, { duration: 200 }),
       transform: [
-        {
-          translateX: node.is_current_root
-            ? rootPosition.value.x
-            : position.value.x - radius,
-        },
-        {
-          translateY: node.is_current_root
-            ? rootPosition.value.y
-            : position.value.y - radius,
-        },
+        { translateX: withTiming(targetX, { duration: 300 }) },
+        { translateY: withTiming(targetY, { duration: 300 }) },
       ],
     };
   });
 
-  const animatedTextStyles = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(isSelected ? "#172924" : "#172924", {
-      duration: 200,
-    }),
-  }));
+  const animatedTextStyle = useAnimatedStyle(() => {
+    const fontSize = interpolate(
+      isRoot.value === true ? 1 : 0,
+      [1, 0],
+      [ROOT_TEXT_SIZE, REG_TEXT_SIZE],
+    );
 
-  const rootImgStyles = useAnimatedStyle(() => ({
-    opacity: interpolate(transitionProgress.value, [0, 1], [0, 0.5]),
-  }));
+    return {
+      fontSize: withTiming(fontSize, { duration: 300 }),
+    };
+  });
 
   const tap = Gesture.Tap()
     .onStart(() => {
       // this line below is basically pointer events: "none"
-      if (node.isShown === false) return;
-
-      dispatch(handleNodeSelect(node.id));
+      if (node.isShown) {
+        dispatch(handleNodeSelect(node.id));
+      }
       // centerOnNode(node);
     })
     .runOnJS(true);
 
   return (
-    <GestureDetector key={node.id} gesture={tap}>
-      <Animated.View style={[animatedStyle]}>
-        <Animated.View
+    <GestureDetector gesture={tap}>
+      <Animated.View style={[{ ...styles.container }, animatedStyle]}>
+        <Animated.Text
           style={[
+            { ...styles.text },
             {
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              backgroundColor: node.is_current_root ? "#0d0d0d" : "transparent",
-              borderRadius: 100,
-              borderWidth: 1,
+              color: isSelected ? "#c2ffef" : "#516e66",
             },
+            animatedTextStyle,
           ]}
         >
-          <AnimatedBg
-            source={image}
-            style={[styles.image, rootImgStyles]}
-            borderRadius={100}
-          />
-        </Animated.View>
-
-        {/* Text View */}
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              bottom: node.is_current_root ? -10 : -3,
-              borderRadius: 2,
-              paddingHorizontal: 3,
-              paddingVertical: 1,
-              backgroundColor: !node.group_id
-                ? "#1e2152"
-                : nodeBgMap[node.group_id],
-              borderWidth: 1,
-              borderColor:
-                isSelected && !node.is_current_root ? "#0fdba5" : "transparent",
-            },
-            !node.is_current_root && animatedTextStyles,
-          ]}
-        >
-          <Text
-            numberOfLines={1}
-            style={{
-              width: "100%",
-              fontSize: calcFontSize(node),
-              color:
-                isSelected && !node.is_current_root ? "#c2ffef" : "#516e66",
-              fontWeight: node.is_current_root ? "600" : "400",
-            }}
-          >
-            {node.is_current_root ? node.first_name : node.first_name}
-          </Text>
-        </Animated.View>
-        {/* 
-        <NodeWidget hiddenConnections={node.hiddenConnections} /> */}
+          {node.first_name}
+        </Animated.Text>
       </Animated.View>
     </GestureDetector>
   );
@@ -197,6 +132,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
     flex: 1,
@@ -204,8 +141,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    color: "white",
-    fontSize: 42,
     fontWeight: "bold",
     textAlign: "center",
     backgroundColor: "transparent",
