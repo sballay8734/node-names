@@ -1,93 +1,91 @@
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { RootState } from "@/store/store";
+const INITIAL_POSITION = { x: 0, y: 900 };
 
-export const POPOVER_OPTIONS: {
+type Action =
+  | "createNewNode"
+  | "createNewGroup"
+  | "createSubGroupFromSelection"
+  | "move"
+  | "error";
+
+export type Rule = "any" | "none" | "multiple" | "single" | "error";
+
+export interface OptionsObj {
   text: string;
-  icon: React.ReactNode;
-}[] = [
-  // selected nodes === 0 *****************************************************
+  iconName: string;
+  action: Action;
+  initialX: number;
+  initialY: number;
+  finalX: number;
+  finalY: number;
+  visibilityRule: Rule;
+  // isVisibleCondition: (count: number, isRootSelected: boolean) => boolean;
+}
+
+export const POPOVER_OPTIONS: OptionsObj[] = [
   {
     text: "Create a new node",
-    icon: <MaterialIcons name="person-add-alt-1" size={18} color="#170038" />,
+    iconName: "person-add-alt-1",
+    // icon: <MaterialIcons name="person-add-alt-1" size={18} color="#170038" />,
+    action: "createNewNode",
+    initialX: INITIAL_POSITION.x,
+    initialY: INITIAL_POSITION.y,
+    finalX: 0,
+    finalY: 450,
+    visibilityRule: "any",
+    // isVisibleCondition: (count) => count >= 0,
   },
   {
     text: "Create a new group",
-    icon: <MaterialIcons name="group-add" size={18} color="#170038" />,
-  },
-
-  // selected nodes === 1 (CONNECT TO CURRENT NODE) ****************************
-  {
-    text: "Connect to a new node",
-    icon: (
-      <MaterialCommunityIcons name="connection" size={18} color="#170038" />
-    ),
-  },
-  {
-    text: "Connect to a new group",
-    icon: (
-      <MaterialCommunityIcons name="connection" size={18} color="#170038" />
-    ),
-  },
-
-  // selected nodes > 1 ********************************************************
-  {
-    text: "Connect selected nodes",
-    icon: <MaterialIcons name="link" size={18} color="#170038" />,
+    iconName: "group-add",
+    // icon: <MaterialIcons name="group-add" size={18} color="#170038" />,
+    action: "createNewGroup",
+    initialX: INITIAL_POSITION.x,
+    initialY: INITIAL_POSITION.y,
+    finalX: 0,
+    finalY: 460,
+    visibilityRule: "none",
+    // isVisibleCondition: (count) => count === 0,
   },
   {
-    text: "Create group from selection",
-    icon: <MaterialIcons name="group-work" size={18} color="#170038" />,
+    text: "Create sub group from selection",
+    iconName: "group-work",
+    // icon: <MaterialIcons name="group-work" size={18} color="#170038" />,
+    action: "createSubGroupFromSelection",
+    initialX: INITIAL_POSITION.x,
+    initialY: INITIAL_POSITION.y,
+    finalX: 0,
+    finalY: 470,
+    visibilityRule: "multiple",
+    // isVisibleCondition: (count) => count >= 1,
   },
-
-  // REMOVE: Just temporary to demonstrate need
+  {
+    text: "Move node to another group",
+    iconName: "account-balance-wallet",
+    // icon: (
+    //   <MaterialIcons name="account-balance-wallet" size={18} color="#170038" />
+    // ),
+    action: "move",
+    initialX: INITIAL_POSITION.x,
+    initialY: INITIAL_POSITION.y,
+    finalX: 0,
+    finalY: 480,
+    visibilityRule: "single",
+    // isVisibleCondition: (count) => count === 1,
+  },
   {
     text: "ERROR: Can only connect root to a NEW node/group",
-    icon: <MaterialIcons name="group-work" size={18} color="red" />,
+    iconName: "error",
+    // icon: <MaterialIcons name="error" size={18} color="red" />,
+    action: "error",
+    initialX: INITIAL_POSITION.x,
+    initialY: INITIAL_POSITION.y,
+    finalX: 0,
+    finalY: 490,
+    visibilityRule: "error",
+    // isVisibleCondition: (_, isRootSelected) => isRootSelected,
   },
 ];
 
-// !TODO: THIS SHOULD NOT BE CUSTOM HOOK
-export function usePopoverOptions() {
-  const selectedNodes = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
-  );
-  const activeRootNode = useAppSelector(
-    (state: RootState) => state.manageGraph.activeRootNode,
-  );
-  const isRootSelected = useAppSelector(
-    (state: RootState) =>
-      activeRootNode &&
-      state.selections.selectedNodes.includes(activeRootNode.id),
-  );
-
-  const getPopoverOptions = () => {
-    const selectedCount = selectedNodes.length;
-
-    if (selectedCount === 0) {
-      return [POPOVER_OPTIONS[0], POPOVER_OPTIONS[1]];
-    } else if (selectedCount === 1) {
-      return [POPOVER_OPTIONS[2], POPOVER_OPTIONS[3]];
-    } else if (selectedCount === 2 && !isRootSelected) {
-      return [POPOVER_OPTIONS[4], POPOVER_OPTIONS[5]];
-    } else if (selectedCount > 2 && !isRootSelected) {
-      return [POPOVER_OPTIONS[5]];
-    } else {
-      return [POPOVER_OPTIONS[6]];
-    }
-  };
-
-  return getPopoverOptions();
-}
-
 // !TODO: Change all icons to custom icons
-
-// Create A New Group
-// Create A New Node
-
-// Connect A New Node
-// Connect A New Group
-
-// Connect Selected Nodes
-// Create Group From Selection

@@ -10,7 +10,7 @@ export const CENTER_ON_SCALE = 0.4;
 const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {
-  console.log(`[${new Date().toISOString()}] Running useGestures`);
+  // console.log(`[${new Date().toISOString()}] Running useGestures`);
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);

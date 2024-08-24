@@ -15,7 +15,7 @@ export function calcNodePositions(
   windowSize: WindowSize,
   scale: SharedValue<number>,
 ): { nodes: PositionedNode[]; links: PositionedLink[] } {
-  console.log("GETTING NODE POS");
+  // console.log("GETTING NODE POS");
   // make copy of nodes and links
   const positionedNodes: PositionedNode[] = Object.values(nodeObj).map((p) => {
     return p;

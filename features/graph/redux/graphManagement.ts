@@ -81,3 +81,13 @@ export const {
 } = ManageGraphSlice.actions;
 
 export default ManageGraphSlice.reducer;
+
+// ALL SCENARIOS ***************************************************************
+// 1. No nodes are selected (createGroup OR createNode) - root as default source
+// 2. 1 node selected (createNode) - selected node as default source
+
+// 3. more than 1 node selected
+// ----- groupNodes (createsSubGroup inside current group of selected nodes with selected nodes going into the subgroup)
+// ----- createNode (where the new node will connect to all selected nodes [think creating a child of two parents])
+
+// creating a group should always default to the userNode as the source

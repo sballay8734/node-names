@@ -31,7 +31,7 @@ export const useGraphData = ({
   windowSize,
   lastScale,
 }: Props) => {
-  console.log(`[${new Date().toISOString()}] Running useGraphData...`);
+  // console.log(`[${new Date().toISOString()}] Running useGraphData...`);
   const dispatch = useAppDispatch();
   const { people, connections } = useDataLoad();
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -64,7 +64,6 @@ export const useGraphData = ({
       (finished) => {
         if (finished) {
           lastScale.value = scale.value;
-          console.log("DONE CENTERING...");
         }
       },
     );
@@ -127,7 +126,6 @@ export const useGraphData = ({
         }
       });
 
-      console.log("DONE!!");
       cachedHash.current = nodeHashCopy;
       dispatch(setUserNodes(nodeHashCopy));
     } else {
