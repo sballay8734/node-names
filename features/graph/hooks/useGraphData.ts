@@ -34,7 +34,11 @@ export const useGraphData = ({
   console.log(`[${new Date().toISOString()}] Running useGraphData...`);
   const dispatch = useAppDispatch();
   const { people, connections } = useDataLoad();
-  const { arrowData, showArrow } = useArrowData({ translateX, translateY });
+  const { arrowData, showArrow } = useArrowData({
+    translateX,
+    translateY,
+    scale,
+  });
   const cachedNodes = useRef<PositionedNode[] | null>(null);
 
   const { nodeHash, finalConnections } = useMemo(() => {

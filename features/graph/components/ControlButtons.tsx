@@ -24,7 +24,7 @@ const ControlButtons = ({ arrowData, showArrow, centerOnRoot }: Props) => (
       showArrow={showArrow}
     />
     <DeselectAllBtn />
-    <InspectBtn />
+    <InspectBtn centerOnRoot={centerOnRoot} />
     <BackToUserBtn />
   </>
 );

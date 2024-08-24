@@ -1,19 +1,18 @@
-import { useDerivedValue } from "react-native-reanimated";
+import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
 import { ARROW_BTN_RADIUS } from "@/constants/styles";
 import { centerNode } from "@/constants/variables";
-import { useGestures } from "@/features/Graph/hooks/useGestures";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 interface Props {
-  translateX: any;
-  translateY: any;
+  translateX: SharedValue<number>;
+  translateY: SharedValue<number>;
+  scale: SharedValue<number>;
 }
 
-export const useArrowData = ({ translateX, translateY }: Props) => {
+export const useArrowData = ({ translateX, translateY, scale }: Props) => {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const { scale } = useGestures();
 
   // rootNode center postion
   const { nodeCenterX, nodeCenterY } = centerNode(

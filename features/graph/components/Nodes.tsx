@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -11,10 +12,23 @@ interface Props {
   centerOnNode: (node: PositionedNode) => void;
 }
 
-export default function Nodes({ centerOnNode }: Props): React.JSX.Element {
+function Nodes({ centerOnNode }: Props): React.JSX.Element {
   const nodes = useAppSelector(
     (state: RootState) => state.manageGraph.userNodes,
   );
+
+  const memoizedNodes = useMemo(() => {
+    return (
+      nodes &&
+      Object.values(nodes).map((node) => (
+        <NodeTapDetector
+          key={node.id}
+          centerOnNode={centerOnNode}
+          node={node}
+        />
+      ))
+    );
+  }, [nodes, centerOnNode]);
 
   return (
     <Animated.View
@@ -22,16 +36,7 @@ export default function Nodes({ centerOnNode }: Props): React.JSX.Element {
         ...styles.tapWrapper,
       }}
     >
-      {nodes &&
-        Object.values(nodes).map((node) => {
-          return (
-            <NodeTapDetector
-              key={node.id}
-              centerOnNode={centerOnNode}
-              node={node}
-            />
-          );
-        })}
+      {memoizedNodes}
     </Animated.View>
   );
 }
@@ -47,3 +52,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default memo(Nodes);

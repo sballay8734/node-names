@@ -1,4 +1,4 @@
-import { Canvas, Group, scale } from "@shopify/react-native-skia";
+import { Canvas, Group } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { useDerivedValue } from "react-native-reanimated";
 
@@ -6,8 +6,6 @@ import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { WindowSize } from "@/hooks/useWindowSize";
 import { RootState } from "@/store/store";
-
-import { useGestures } from "../hooks/useGestures";
 
 import Link from "./Link";
 
@@ -29,7 +27,6 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
   const selectedNodes = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
-  const { scale } = useGestures();
 
   function show(link: PositionedLink) {
     const nodeIds = selectedNodes.map((n) => n.id);

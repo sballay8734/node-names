@@ -48,8 +48,8 @@ export function useDataLoad() {
         (initialRootNode as PositionedNode).isShown = true;
         (initialRootNode as PositionedNode).is_current_root = true;
 
-        dispatch(setActiveRootNode(initialRootNode));
-        dispatch(setUserNode(initialRootNode));
+        dispatch(setActiveRootNode(initialRootNode as PositionedNode));
+        dispatch(setUserNode(initialRootNode as PositionedNode));
       }
     }
   }, [
