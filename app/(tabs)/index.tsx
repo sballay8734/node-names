@@ -66,6 +66,8 @@ export default Index;
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 
+// !TODO: WHY ARE PEEPS AND NODEHASH NULL ON FIRST FEW RENDERS????
+
 // !TODO: utilized "cachedHash" in useGraphData. You want the useEffect to skip running if nodeHashCopy is unchanged... I think?
 
 // !TODO: IS IT BECAUSE YOU'RE CHANGING THE SCALE INSIDE OF centerOnRoot()? You're changing lastScale.value

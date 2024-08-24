@@ -45,6 +45,7 @@ export const useGraphData = ({
     if (people && connections) {
       return getInitialNodes(people, connections);
     }
+    // !TODO: MAYBE DON'T RETURN THIS HERE???
     return { nodeHash: null, finalConnections: [] };
   }, [people, connections]);
 
@@ -94,14 +95,17 @@ export const useGraphData = ({
     [translateX, translateY, scale, lastScale, windowSize],
   );
 
+  // !TODO: PEEPS and NODEHASH are NULL on first few renders... WHYYYYYYY!
   useEffect(() => {
     console.log("RUNNING uGD uE");
     console.log("PEEPS:", people && people[0]);
+    console.log("HASH:", nodeHash);
     console.log("CONNS:", finalConnections);
-    console.log("SCALE:", scale);
+    console.log("SCALE:", scale.value);
     console.log("WINDOWSIZE:", windowSize);
     if (!nodeHash) return;
 
+    console.log("HASH EXISTS!!!");
     const nodeHashCopy = { ...nodeHash };
 
     if (people) {
