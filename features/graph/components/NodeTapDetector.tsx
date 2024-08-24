@@ -41,11 +41,11 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
 
   const { x, y } = node;
   const position = useSharedValue({ x, y });
-
-  // opacity for animating in and out
+  const rootPosition = useSharedValue({
+    x: windowSize.windowCenterX - ROOT_NODE_RADIUS / 2,
+    y: windowSize.windowCenterY - ROOT_NODE_RADIUS / 2,
+  });
   const opacity = useSharedValue(0);
-
-  // Transition progress for smooth root node transition
   const transitionProgress = useSharedValue(node.is_current_root ? 1 : 0);
 
   useEffect(() => {
@@ -100,12 +100,12 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
       transform: [
         {
           translateX: node.is_current_root
-            ? windowSize.windowCenterX - ROOT_NODE_RADIUS / 2
+            ? rootPosition.value.x
             : position.value.x - radius,
         },
         {
           translateY: node.is_current_root
-            ? windowSize.windowCenterY - ROOT_NODE_RADIUS / 2
+            ? rootPosition.value.y
             : position.value.y - radius,
         },
       ],

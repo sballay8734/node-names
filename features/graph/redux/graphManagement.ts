@@ -91,39 +91,3 @@ export const {
 } = ManageGraphSlice.actions;
 
 export default ManageGraphSlice.reducer;
-
-const initialRoot = {
-  children_details: null,
-  created_at: "2024-07-20T14:07:07.332245+00:00",
-  date_of_birth: "2000-10-01",
-  date_of_death: null,
-  depth_from_user: 0,
-  first_name: "Shawn",
-  fx: 196.5,
-  fy: 773,
-  gift_ideas: null,
-  group_id: null,
-  group_name: null,
-  id: 1,
-  isShown: true,
-  is_current_root: true,
-  last_name: "Ballay",
-  maiden_name: null,
-  parent_details: [
-    {
-      adoptive_children_ids: [Array],
-      biological_children_ids: [Array],
-      parent_id: 23,
-    },
-    {
-      adoptive_children_ids: [Array],
-      biological_children_ids: [Array],
-      parent_id: 24,
-    },
-  ],
-  partner_details: null,
-  phonetic_name: "sh AW n",
-  preferred_name: null,
-  sex: "male",
-  shallowest_ancestor: null,
-};

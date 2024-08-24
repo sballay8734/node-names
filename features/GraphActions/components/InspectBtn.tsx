@@ -27,23 +27,23 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
 
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
-  const selectedNodes = useAppSelector(
+
+  const selectedNodeIds = useAppSelector(
     (state: RootState) => state.selections.selectedNodes,
   );
   const activeRootNode = useAppSelector(
     (state: RootState) => state.manageGraph.activeRootNode,
   );
-  const selectedNodeCount = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes.length,
+  const userNodes = useAppSelector(
+    (state: RootState) => state.manageGraph.userNodes,
   );
 
-  const rootNodeIsSelected = useAppSelector((state: RootState) => {
-    return (
-      activeRootNode &&
-      state.selections.selectedNodes.length === 1 &&
-      state.selections.selectedNodes[0].id === activeRootNode.id
-    );
-  });
+  const isButtonEnabled =
+    selectedNodeIds.length === 1 && selectedNodeIds[0] !== activeRootNode?.id;
+  const isButtonVisible = selectedNodeIds.length > 0;
+  const isButtonFaded =
+    selectedNodeIds.length > 1 ||
+    (selectedNodeIds.length === 1 && selectedNodeIds[0] === activeRootNode?.id);
 
   function handlePressIn() {
     isPressed.value = true;
@@ -51,30 +51,32 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
   }
 
   function handlePressOut() {
-    if (
-      (selectedNodeCount === 1 && selectedNodes[0].depth_from_user > 2) ||
-      !activeRootNode
-    ) {
+    if (!isButtonEnabled || longPressRef.current) {
       isPressed.value = false;
       return;
     }
 
-    if (
-      selectedNodeCount === 1 &&
-      !rootNodeIsSelected &&
-      !longPressRef.current &&
-      // TODO: This line currently disallows inspecting deeper nested nodes until you fix the data structure to simplify the logic for handling it
-      selectedNodes[0].depth_from_user < 2
-    ) {
+    if (!activeRootNode) {
+      console.log("NO ACTIVE ROOT (InspectBtn)");
+      return;
+    }
+
+    const selectedNodeId = selectedNodeIds[0];
+    const selectedNode = userNodes[selectedNodeId];
+
+    if (selectedNode) {
       dispatch(
         updateRootNode({
-          newRootId: selectedNodes[0].id,
+          newRootId: selectedNodeId,
           oldRootNode: activeRootNode,
         }),
       );
-      dispatch(setActiveRootNode(selectedNodes[0]));
+      dispatch(setActiveRootNode(selectedNode));
       centerOnRoot();
+    } else {
+      console.error(`Node with id ${selectedNodeId} not found`);
     }
+
     isPressed.value = false;
   }
 
@@ -84,27 +86,13 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
 
   const inspectBtnStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(
-        selectedNodeCount === 1 &&
-          !rootNodeIsSelected &&
-          selectedNodes[0].shallowest_ancestor === 1
-          ? 1
-          : (selectedNodeCount === 1 && rootNodeIsSelected) ||
-            (selectedNodeCount === 1 &&
-              selectedNodes[0].shallowest_ancestor !== 1)
-          ? 0.3
-          : selectedNodeCount > 1
-          ? 0.3
-          : 0,
-        { duration: 200 },
-      ),
-      pointerEvents:
-        selectedNodeCount === 1 && !rootNodeIsSelected ? "auto" : "none",
+      opacity: withTiming(isButtonVisible ? (isButtonFaded ? 0.3 : 1) : 0, {
+        duration: 200,
+      }),
+      pointerEvents: isButtonEnabled ? "auto" : "none",
       backgroundColor: withTiming(
         isPressed.value ? "rgba(15,15,15,1)" : "rgba(0,0,0,1)",
-        {
-          duration: 200,
-        },
+        { duration: 200 },
       ),
     };
   });
