@@ -2,14 +2,12 @@ import { QueryError } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
 import { supabase } from "@/supabase";
-import { Tables } from "@/types/dbTypes";
+import { Tables } from "@/types/newArchTypes";
 
 export default function useDbData() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [people, setPeople] = useState<Tables<"people">[] | null>(null);
-  const [connections, setConnections] = useState<
-    Tables<"connections">[] | null
-  >(null);
+  const [vertices, setVertices] = useState<Tables<"vertices">[] | null>(null);
+  const [edges, setEdges] = useState<Tables<"edges">[] | null>(null);
   const [groups, setGroups] = useState<Tables<"groups">[] | null>(null);
   const [error, setError] = useState<QueryError | null>(null);
 
@@ -23,19 +21,21 @@ export default function useDbData() {
     setIsLoading(true);
     async function fetchData() {
       try {
-        const [peopleResult, connectionsResult, groupsResult] =
-          await Promise.all([
-            supabase.from("people").select(),
-            supabase.from("connections").select(),
-            supabase.from("groups").select(),
-          ]);
+        const [verticesResult, edgesResult, groupsResult] = await Promise.all([
+          supabase.from("vertices").select(),
+          supabase.from("edges").select(),
+          supabase.from("groups").select(),
+        ]);
 
-        if (peopleResult.error) throw peopleResult.error;
-        if (connectionsResult.error) throw connectionsResult.error;
+        if (verticesResult.error) throw verticesResult.error;
+        if (edgesResult.error) throw edgesResult.error;
         if (groupsResult.error) throw groupsResult.error;
 
-        setPeople(peopleResult.data);
-        setConnections(connectionsResult.data);
+        console.log(verticesResult.data);
+        console.log(edgesResult.data);
+
+        setVertices(verticesResult.data);
+        setEdges(edgesResult.data);
         setGroups(groupsResult.data);
         setDataFetched(true);
       } catch (error) {
@@ -50,8 +50,8 @@ export default function useDbData() {
 
   return {
     isLoading,
-    people,
-    connections,
+    vertices,
+    edges,
     groups,
     error,
     dataFetched,

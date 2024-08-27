@@ -3,9 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import { AppState } from "react-native";
 import "react-native-url-polyfill/auto";
 
-import { Database } from "../types/dbTypes";
+// import { Database } from "../types/dbTypes";
+import { NewDatabase } from "@/types/newArchTypes";
 
-export const supabase = createClient<Database>(
+export const supabase = createClient<NewDatabase>(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
   {

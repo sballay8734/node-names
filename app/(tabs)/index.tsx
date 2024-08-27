@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
+import { AuthForm } from "@/components/Auth/LoginForm";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import ControlButtons from "@/features/Graph/components/ControlButtons";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
@@ -12,8 +13,6 @@ import { useGestures } from "@/features/Graph/hooks/useGestures";
 import { useGraphData } from "@/features/Graph/hooks/useGraphData";
 import useWindowSize from "@/hooks/useWindowSize";
 import { supabase } from "@/supabase";
-
-import { Auth } from "../_layout";
 
 const Index = () => {
   // console.log(`[${new Date().toISOString()}] Rendering Index Component`);
@@ -72,7 +71,7 @@ const Index = () => {
     );
   }
 
-  return <Auth />;
+  return <AuthForm />;
 };
 
 const styles = StyleSheet.create({
@@ -86,6 +85,9 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
+
+// !TODO: FIRST - Refactor Auth. Before any hooks are called, auth should happen.
+// !TODO: SECOND - Refactor data fetching and hooks. THEY ARE A MESS
 
 // !TODO: remove default value of "male" from vertex "sex" and profiles "sex" (you did this just to get around dumb error) YOU'LL HAVE TO FIX USER CREATION THOUGH
 

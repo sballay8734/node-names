@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
-import { SignUpWithPasswordCredentials } from "@supabase/supabase-js";
 
 import { CustomThemeProvider } from "@/components/CustomThemeContext";
 import { store } from "@/store/store";

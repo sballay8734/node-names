@@ -5,6 +5,7 @@ import useDbData from "@/hooks/useDbData";
 import { RootState } from "@/store/store";
 import { Tables } from "@/types/dbTypes";
 
+import { setState } from "../redux/graphDataManagement";
 import { setActiveRootNode, setUserNode } from "../redux/graphManagement";
 
 // REMOVE: Temporary until you add auth
@@ -15,28 +16,15 @@ export function useDataLoad() {
   const dispatch = useAppDispatch();
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const [rootNodeId, setRootNodeId] = useState<number>(userId);
-  const {
-    people: initialPeople,
-    connections,
-    groups,
-    isLoading,
-    dataFetched,
-  } = useDbData();
+  const { vertices, edges, groups, isLoading, dataFetched } = useDbData();
+
   const [people, setPeople] = useState<Tables<"people">[] | null>(null);
 
   useEffect(() => {
-    if (dataFetched && initialPeople && connections && groups) {
-      const updatedPeople = initialPeople.map((person) => {
-        if (person.id === rootNodeId && !person.is_current_root) {
-          return {
-            ...person,
-            is_current_root: true,
-          };
-        }
-        return person;
-      });
-
-      setPeople(updatedPeople);
+    if (dataFetched && vertices && edges && groups && !isLoading) {
+      // console.log("VERTICES:", vertices);
+      // console.log("EDGES:", edges);
+      dispatch(setState({ vertices, edges, groups }));
 
       let initialRootNode = updatedPeople.find((p) => p.id === rootNodeId);
 
@@ -56,19 +44,20 @@ export function useDataLoad() {
     }
   }, [
     dataFetched,
-    initialPeople,
-    connections,
+    vertices,
+    edges,
     groups,
     rootNodeId,
     dispatch,
     windowSize.width,
     windowSize.height,
+    isLoading,
   ]);
 
   return {
     isLoading,
     people,
-    connections,
+    edges,
     rootNodeId,
   };
 }
