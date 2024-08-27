@@ -85,6 +85,7 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
+// !TODO: Take a look at RootLayout and possibly use that idea to make an AuthLayout to prevent those hooks from running until the user is authorized
 
 // !TODO: FIRST - Refactor Auth. Before any hooks are called, auth should happen.
 // !TODO: SECOND - Refactor data fetching and hooks. THEY ARE A MESS
