@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ARROW_BTN_RADIUS } from "@/constants/styles";
+import { supabase } from "@/supabase";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -45,6 +46,8 @@ const RecenterBtn = ({
 
   const handlePressOut = () => {
     isPressed.value = false;
+    // REMOVE: Temp for easy sign out
+    supabase.auth.signOut();
   };
 
   return (

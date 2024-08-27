@@ -20,6 +20,8 @@
     "@react-spring/native": "^9.7.3",
     "@react-spring/types": "^9.7.3",
     "@reduxjs/toolkit": "^2.2.6",
+    "@rneui/base": "^4.0.0-rc.8",
+    "@rneui/themed": "^4.0.0-rc.8",
     "@shopify/react-native-skia": "^1.3.2",
     "@supabase/supabase-js": "^2.44.4",
     "d3": "^7.9.0",
