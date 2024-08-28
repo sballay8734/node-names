@@ -1,10 +1,8 @@
-import { Session } from "@supabase/supabase-js";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
-import { AuthForm } from "@/components/Auth/LoginForm";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import ControlButtons from "@/features/Graph/components/ControlButtons";
 import LinksCanvas from "@/features/Graph/components/LinksCanvas";
@@ -12,23 +10,8 @@ import Nodes from "@/features/Graph/components/Nodes";
 import { useGestures } from "@/features/Graph/hooks/useGestures";
 import { useGraphData } from "@/features/Graph/hooks/useGraphData";
 import useWindowSize from "@/hooks/useWindowSize";
-import { supabase } from "@/supabase";
 
 const Index = () => {
-  // console.log(`[${new Date().toISOString()}] Rendering Index Component`);
-  const [session, setSession] = useState<Session | null>(null);
-  console.log(session);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
   const windowSize = useWindowSize();
   const theme = useContext(CustomThemeContext);
 
@@ -51,27 +34,23 @@ const Index = () => {
     };
   });
 
-  if (session && session.user) {
-    return (
-      <GestureDetector gesture={composed}>
-        <View
-          style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
-        >
-          <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
-            {/* <LinksCanvas windowSize={windowSize} /> */}
-            <Nodes centerOnNode={centerOnNode} />
-          </Animated.View>
-          <ControlButtons
-            arrowData={arrowData}
-            showArrow={showArrow}
-            centerOnRoot={centerOnRoot}
-          />
-        </View>
-      </GestureDetector>
-    );
-  }
-
-  return <AuthForm />;
+  return (
+    <GestureDetector gesture={composed}>
+      <View
+        style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
+      >
+        <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
+          {/* <LinksCanvas windowSize={windowSize} /> */}
+          <Nodes centerOnNode={centerOnNode} />
+        </Animated.View>
+        <ControlButtons
+          arrowData={arrowData}
+          showArrow={showArrow}
+          centerOnRoot={centerOnRoot}
+        />
+      </View>
+    </GestureDetector>
+  );
 };
 
 const styles = StyleSheet.create({

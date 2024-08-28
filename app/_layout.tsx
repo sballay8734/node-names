@@ -1,12 +1,12 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
+import AuthFlow from "@/components/Auth/AuthFlow";
 import { CustomThemeProvider } from "@/components/CustomThemeContext";
 import { store } from "@/store/store";
 
@@ -23,7 +23,6 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 // SplashScreen.preventAutoHideAsync();
 
-// !TODO: Maybe do something like this for Auth (Make new file AuthLayout)
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -54,24 +53,7 @@ function RootLayoutNav() {
     <CustomThemeProvider>
       <Provider store={store}>
         <GestureHandlerRootView style={[styles.container]}>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              backgroundColor: "transparent",
-            }}
-          >
-            <Stack>
-              <Stack.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false,
-                  // contentStyle: { backgroundColor: "#0c0b0d" },
-                }}
-              />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            </Stack>
-          </View>
+          <AuthFlow />
         </GestureHandlerRootView>
       </Provider>
     </CustomThemeProvider>
@@ -83,30 +65,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "transparent",
-  },
-  image: {
-    flex: 1,
-    // height: 1000,
-    // width: 1000,
-    // resizeMode: "contain",
-    justifyContent: "center",
-    backgroundColor: "black",
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: "stretch",
-  },
-  mt20: {
-    marginTop: 20,
-  },
-  authContainer: {
-    flex: 1,
-    padding: 12,
-    flexDirection: "column",
-    backgroundColor: "transparent",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 
