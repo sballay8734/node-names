@@ -12,7 +12,6 @@ import { setActiveRootNode, setUserNode } from "../redux/graphManagement";
 const userId = 1;
 
 export function useDataLoad() {
-  // console.log(`[${new Date().toISOString()}] Rendering useDataLoad`);
   const dispatch = useAppDispatch();
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const [rootNodeId, setRootNodeId] = useState<number>(userId);

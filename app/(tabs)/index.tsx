@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
@@ -9,13 +9,21 @@ import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import { useGestures } from "@/features/Graph/hooks/useGestures";
 import { useGraphData } from "@/features/Graph/hooks/useGraphData";
+import { useAppSelector } from "@/hooks/reduxHooks";
+import useDbData from "@/hooks/useDbData";
 import useWindowSize from "@/hooks/useWindowSize";
+import { RootState } from "@/store/store";
 
 const Index = () => {
   const windowSize = useWindowSize();
   const theme = useContext(CustomThemeContext);
-
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
+  const { dataIsLoading, error } = useDbData();
+  const vertices = useAppSelector(
+    (state: RootState) => state.graphData.vertices,
+  );
+  const edges = useAppSelector((state: RootState) => state.graphData.edges);
+
   const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
     scale,
     translateX,
@@ -33,6 +41,18 @@ const Index = () => {
       ],
     };
   });
+
+  if (dataIsLoading) {
+    return null;
+  }
+
+  if (error) {
+    console.error("Error getting data!");
+    return null;
+  }
+
+  console.log("VERTICES:", vertices);
+  console.log("EDGES:", edges);
 
   return (
     <GestureDetector gesture={composed}>
@@ -58,16 +78,21 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
+  spinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#001a2e",
+  },
 });
 
 export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
-// !TODO: Take a look at RootLayout and possibly use that idea to make an AuthLayout to prevent those hooks from running until the user is authorized
+// !TODO: The BIG QUESTION IS, Where do you inject the d3 logic and the position of the nodes? Is it possible to do it in redux? Or should you get the node positions after you successfully get the data?
 
-// !TODO: FIRST - Refactor Auth. Before any hooks are called, auth should happen.
-// !TODO: SECOND - Refactor data fetching and hooks. THEY ARE A MESS
+// !TODO: Fix white screen flash while sign up request is happening and transitions to graph
 
 // !TODO: remove default value of "male" from vertex "sex" and profiles "sex" (you did this just to get around dumb error) YOU'LL HAVE TO FIX USER CREATION THOUGH
 

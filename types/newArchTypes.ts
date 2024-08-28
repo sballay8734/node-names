@@ -1,7 +1,7 @@
 // GRAPH SLICE *****************************************************************
 
-type VertexStatus = "active" | "parent_active" | "inactive";
-type EdgeStatus = "active" | "inactive";
+export type VertexStatus = "active" | "parent_active" | "inactive";
+export type EdgeStatus = "active" | "inactive";
 
 // RAW Types from DB WITHOUT ui related properties
 // vertex/node
@@ -50,12 +50,12 @@ export interface RawGroup {
 // UI Extensions of Raw types WITH Added ui controlling properties ************
 export interface UiVertex extends RawVertex {
   isCurrentRoot: boolean;
-  status: VertexStatus;
+  vertex_status: VertexStatus;
 }
 export interface UiEdge extends RawEdge {
   vertex_1_status: VertexStatus;
   vertex_2_status: VertexStatus;
-  status: EdgeStatus;
+  edge_status: EdgeStatus;
 }
 export interface UiGroup extends RawGroup {}
 

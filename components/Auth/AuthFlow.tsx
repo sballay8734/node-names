@@ -1,7 +1,7 @@
 import { Session } from "@supabase/supabase-js";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
 
 import { supabase } from "@/supabase";
 
@@ -24,14 +24,7 @@ export default function AuthFlow() {
 
   if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#2e0300",
-        }}
-      >
+      <View style={styles.spinner}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -42,13 +35,7 @@ export default function AuthFlow() {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        backgroundColor: "#2e0300",
-      }}
-    >
+    <View style={styles.container}>
       <Stack>
         <Stack.Screen
           name="(tabs)"
@@ -61,3 +48,17 @@ export default function AuthFlow() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "#2e0300",
+  },
+  spinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#2e0300",
+  },
+});

@@ -1,13 +1,15 @@
 import { QueryError } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
+import { setInitialState } from "@/features/Graph/redux/graphDataManagement";
 import { supabase } from "@/supabase";
 import { Tables } from "@/types/newArchTypes";
 
+import { useAppDispatch } from "./reduxHooks";
+
 export default function useDbData() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [vertices, setVertices] = useState<Tables<"vertices">[] | null>(null);
-  const [edges, setEdges] = useState<Tables<"edges">[] | null>(null);
+  const dispatch = useAppDispatch();
+  const [dataIsLoading, setDataIsLoading] = useState<boolean>(false);
   const [groups, setGroups] = useState<Tables<"groups">[] | null>(null);
   const [error, setError] = useState<QueryError | null>(null);
 
@@ -18,7 +20,7 @@ export default function useDbData() {
     if (dataFetched) return;
 
     setError(null);
-    setIsLoading(true);
+    setDataIsLoading(true);
     async function fetchData() {
       try {
         const [verticesResult, edgesResult, groupsResult] = await Promise.all([
@@ -31,29 +33,27 @@ export default function useDbData() {
         if (edgesResult.error) throw edgesResult.error;
         if (groupsResult.error) throw groupsResult.error;
 
-        console.log(verticesResult.data);
-        console.log(edgesResult.data);
+        dispatch(
+          setInitialState({
+            vertices: verticesResult.data,
+            edges: edgesResult.data,
+          }),
+        );
 
-        setVertices(verticesResult.data);
-        setEdges(edgesResult.data);
         setGroups(groupsResult.data);
         setDataFetched(true);
       } catch (error) {
         setError(error as QueryError);
       } finally {
-        setIsLoading(false);
+        setDataIsLoading(false);
       }
     }
 
     fetchData();
-  }, [dataFetched]);
+  }, [dataFetched, dispatch]);
 
   return {
-    isLoading,
-    vertices,
-    edges,
-    groups,
+    dataIsLoading,
     error,
-    dataFetched,
   };
 }
