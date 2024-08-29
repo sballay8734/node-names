@@ -34,7 +34,7 @@ export default function Popover(): React.JSX.Element {
 
   // animate progress when visibility changes
   useEffect(() => {
-    animationProgress.value = withTiming(isVisible ? 1 : 0, { duration: 300 });
+    animationProgress.value = withTiming(isVisible ? 1 : 0, { duration: 200 });
   }, [isVisible, animationProgress]);
 
   const viewStyles = useAnimatedStyle(() => ({

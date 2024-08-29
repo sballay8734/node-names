@@ -90,6 +90,7 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
+// !TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
 // !TODO: "determineOptions" REALLY needs a refactor
 // !TODO: Do we really need "centerNode" function in useArrowData? How is it different from the other two centering functions?
 // !TODO: TESTING STILL NEEDED on ALL action buttons

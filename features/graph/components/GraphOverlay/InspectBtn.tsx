@@ -62,6 +62,8 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
     }
 
     if (soloSelectedVertex) {
+      console.log("SOLO:", soloSelectedVertex);
+      console.log("ACTIVE:", activeRootNodeId);
       dispatch(
         swapRootVertex({
           newRootId: soloSelectedVertex.id,
