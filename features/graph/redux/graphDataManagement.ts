@@ -118,7 +118,7 @@ const NewArchitectureSlice = createSlice({
         // make vertex active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
           state.vertices.byId[vertexId].vertex_status = "active";
-          // handle case of vertex click while active AND parent IS active
+          // !TODO: handle case of vertex click when active AND parent IS active
         } else if (false) {
           state.vertices.byId[vertexId].vertex_status = "parent_active";
           // handle case of vertex click while active AND parent is NOT active
