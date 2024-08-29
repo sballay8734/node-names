@@ -1,7 +1,7 @@
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
-import { ARROW_BTN_RADIUS } from "@/constants/styles";
-import { centerNode } from "@/constants/variables";
+import { ARROW_BTN_RADIUS } from "@/lib/constants/styles";
+import { centerNode } from "@/lib/constants/variables";
 import { RootState } from "@/store/store";
 
 import { useAppSelector } from "../constants/reduxHooks";

@@ -1,19 +1,14 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { UiEdge, UiGroup, UiVertex, VertexStatus } from "@/lib/types/database";
+import {
+  Edges,
+  Groups,
+  UiVertex,
+  VertexStatus,
+  Vertices,
+} from "@/lib/types/graph";
 import { D3Edge, D3Vertex } from "@/lib/utils/setInitialVertexPostions";
 import { RootState } from "@/store/store";
-
-// FINAL SHAPE ****************************************************************
-interface Edges {
-  [id: number]: UiEdge;
-}
-interface Vertices {
-  [id: number]: UiVertex;
-}
-interface Groups {
-  [id: number]: UiGroup;
-}
 
 interface GraphSliceState {
   userId: number | null;

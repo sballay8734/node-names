@@ -1,9 +1,9 @@
 import * as d3 from "d3";
 
-import { MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
-import { WindowSize } from "@/features/Graph/redux/windowSize";
+import { MIN_SPACE_BETWEEN_NODES } from "@/lib/constants/variables";
+import { WindowSize } from "@/lib/types/misc";
 
-import { RawVertex, RawEdge } from "../types/database";
+import { RawVertex, RawEdge } from "../types/graph";
 
 export interface D3Vertex extends RawVertex, d3.SimulationNodeDatum {}
 export interface D3Edge extends RawEdge {}

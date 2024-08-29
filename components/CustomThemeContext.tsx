@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
 
-import DefTheme from "@/constants/Colors";
+import DefTheme from "@/lib/constants/Colors";
 
 export interface ITheme {
   bgBase: string;

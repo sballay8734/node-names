@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 
-import { TAB_BAR_HEIGHT } from "@/constants/styles";
+import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 
 const windowHeight = Dimensions.get("window").height - TAB_BAR_HEIGHT;
 const EXTENSION = 10;

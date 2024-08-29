@@ -1,18 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { Dimensions, ScaledSize } from "react-native";
 
-import { TAB_BAR_HEIGHT } from "@/constants/styles";
 import { updateWindowSize } from "@/features/Graph/redux/windowSize";
+import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 import { RootState } from "@/store/store";
 
 import { useAppDispatch, useAppSelector } from "../constants/reduxHooks";
-
-export interface WindowSize {
-  width: number;
-  height: number;
-  windowCenterX: number;
-  windowCenterY: number;
-}
 
 const useWindowSize = () => {
   const dispatch = useAppDispatch();

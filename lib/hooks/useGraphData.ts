@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { Easing, SharedValue, withTiming } from "react-native-reanimated";
 
-import { WindowSize } from "@/features/Graph/redux/windowSize";
+import { WindowSize } from "@/lib/types/misc";
 
 import { UiVertex } from "../types/database";
 

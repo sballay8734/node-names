@@ -16,7 +16,7 @@ import { getSelectedVertices } from "../../redux/graphSlice";
 export default function Popover(): React.JSX.Element {
   // console.log("Re-rendering Popover");
   const isVisible = useAppSelector(
-    (state: RootState) => state.selections.popoverIsShown,
+    (state: RootState) => state.ui.popoverIsShown,
   );
 
   // why am i not getting auto complete on vertex here?

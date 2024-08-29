@@ -1,14 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Dimensions } from "react-native";
 
-import { TAB_BAR_HEIGHT } from "@/constants/styles";
-
-export interface WindowSize {
-  width: number;
-  height: number;
-  windowCenterX: number;
-  windowCenterY: number;
-}
+import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
+import { WindowSize } from "@/lib/types/misc";
 
 const getInitialWindowSize = (): WindowSize => {
   const { width, height } = Dimensions.get("window");

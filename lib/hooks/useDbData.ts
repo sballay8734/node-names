@@ -2,7 +2,7 @@ import { QueryError } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
 import { setInitialState } from "@/features/Graph/redux/graphSlice";
-import { WindowSize } from "@/features/Graph/redux/windowSize";
+import { WindowSize } from "@/lib/types/misc";
 import { supabase } from "@/supabase";
 
 import { useAppDispatch } from "../constants/reduxHooks";

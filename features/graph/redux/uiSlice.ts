@@ -2,19 +2,19 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 // Define a type for the slice state
-interface ManageSelectionsState {
+interface UiSliceState {
   popoverIsShown: boolean;
   selectedNodes: number[];
 }
 
 // Define the initial state using that type
-const initialState: ManageSelectionsState = {
+const initialState: UiSliceState = {
   popoverIsShown: false,
   selectedNodes: [],
 };
 
-const ManageSelectionsSlice = createSlice({
-  name: "manageSelections",
+const UiSlice = createSlice({
+  name: "uiSlice",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
@@ -66,6 +66,6 @@ export const {
   handleNodeSelect,
   handleConnectToNewNode,
   deselectAll,
-} = ManageSelectionsSlice.actions;
+} = UiSlice.actions;
 
-export default ManageSelectionsSlice.reducer;
+export default UiSlice.reducer;

@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { useAppSelector } from "@/lib/constants/reduxHooks";
-import { UiVertex } from "@/lib/types/database";
+import { UiVertex } from "@/lib/types/graph";
 import { RootState } from "@/store/store";
 
 import NodeTapDetector from "./NodeTapDetector";

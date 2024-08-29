@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { useDerivedValue } from "react-native-reanimated";
 
 import { useAppSelector } from "@/lib/constants/reduxHooks";
-import { WindowSize } from "@/lib/hooks/useWindowSize";
+import { WindowSize } from "@/lib/types/misc";
 import { RootState } from "@/store/store";
 
 import Link from "./Link";
@@ -23,7 +23,7 @@ export default function LinksCanvas({ windowSize }: Props): React.JSX.Element {
     (state: RootState) => state.manageGraph.userLinks,
   );
   const selectedNodes = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
+    (state: RootState) => state.ui.selectedNodes,
   );
 
   function show(link: PositionedLink) {

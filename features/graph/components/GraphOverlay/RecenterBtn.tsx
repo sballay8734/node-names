@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { ARROW_BTN_RADIUS } from "@/constants/styles";
+import { ARROW_BTN_RADIUS } from "@/lib/constants/styles";
 import { supabase } from "@/supabase";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
