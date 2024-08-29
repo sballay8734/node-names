@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { Easing, SharedValue, withTiming } from "react-native-reanimated";
 
-import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
 import { WindowSize } from "@/hooks/useWindowSize";
+import { UiVertex } from "@/types/newArchTypes";
 
 import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
 
@@ -49,7 +49,7 @@ export const useGraphData = ({
   }, [translateX, translateY, scale, lastScale]);
 
   const centerOnNode = useCallback(
-    (node: PositionedNode) => {
+    (node: UiVertex) => {
       translateX.value = withTiming(
         (windowSize.windowCenterX - node.x!) * CENTER_ON_SCALE,
         {

@@ -17,14 +17,21 @@ export default function Popover(): React.JSX.Element {
   const isVisible = useAppSelector(
     (state: RootState) => state.selections.popoverIsShown,
   );
-  const selectedNodes = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
+
+  // why am i not getting auto complete on vertex here?
+  const selectedVerticesLength = useAppSelector((state: RootState) => {
+    return Object.values(state.graphData.vertices.byId).filter(
+      (vertex) => vertex.vertex_status === "active",
+    ).length;
+  });
+
+  const activeRootNodeId = useAppSelector(
+    (state: RootState) => state.graphData.vertices.activeRootId,
   );
-  const activeRootNode = useAppSelector(
-    (state: RootState) => state.manageGraph.activeRootNode,
+
+  const isRootSelected = useAppSelector(
+    (state: RootState) => state.graphData.userId === activeRootNodeId,
   );
-  const isRootSelected =
-    (activeRootNode && selectedNodes.includes(activeRootNode.id)) || false;
 
   const animationProgress = useSharedValue(0);
 
@@ -59,7 +66,7 @@ export default function Popover(): React.JSX.Element {
             finalX={o.finalX}
             finalY={o.finalY}
             visibilityRule={o.visibilityRule}
-            selectedNodesLength={selectedNodes.length}
+            selectedVerticesLength={selectedVerticesLength}
             animationProgress={animationProgress}
             isRootSelected={isRootSelected}
           />

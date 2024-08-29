@@ -16,9 +16,12 @@ interface Groups {
 }
 
 interface GraphSliceState {
+  userId: number | null;
   vertices: {
     byId: Vertices;
     allIds: number[];
+    activeRootId: number | null;
+    // activeVertexIds: D3Vertex[]
   };
   edges: {
     byId: Edges;
@@ -31,9 +34,12 @@ interface GraphSliceState {
 }
 
 const initialState: GraphSliceState = {
+  userId: null,
   vertices: {
     byId: {},
     allIds: [],
+    activeRootId: null,
+    // activeVertexIds: []
   },
   edges: {
     byId: {},
@@ -76,6 +82,12 @@ const NewArchitectureSlice = createSlice({
           };
           state.vertices.byId[vertex.id] = newVertex;
           state.vertices.allIds.push(vertex.id);
+
+          // set active root id to user for initial load
+          if (newVertex.is_user) {
+            state.vertices.activeRootId = newVertex.id;
+            state.userId = newVertex.id;
+          }
 
           // store status in temporary map for SAFE look up during edges loop
           vertexStatusMap[vertex.id] = {
@@ -127,9 +139,21 @@ const NewArchitectureSlice = createSlice({
         }
       }
     },
+    swapRootVertex: (
+      state,
+      action: PayloadAction<{ newRootId: number; oldRootId: number }>,
+    ) => {
+      const { newRootId, oldRootId } = action.payload;
+
+      state.vertices.activeRootId = newRootId;
+      state.vertices.byId[newRootId].isCurrentRoot = true;
+
+      state.vertices.byId[oldRootId].isCurrentRoot = false;
+    },
   },
 });
 
-export const { setInitialState, toggleVertex } = NewArchitectureSlice.actions;
+export const { setInitialState, toggleVertex, swapRootVertex } =
+  NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;

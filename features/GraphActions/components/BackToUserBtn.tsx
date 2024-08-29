@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { swapRootVertex } from "@/features/Graph/redux/graphDataManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -16,11 +17,11 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
 export default function BackToUserBtn(): React.JSX.Element {
   const dispatch = useAppDispatch();
-  const activeRootNode = useAppSelector(
-    (state: RootState) => state.manageGraph.activeRootNode,
+  const activeRootNodeId = useAppSelector(
+    (state: RootState) => state.graphData.vertices.activeRootId,
   );
-  const userNode = useAppSelector(
-    (state: RootState) => state.manageGraph.userNode,
+  const userNodeId = useAppSelector(
+    (state: RootState) => state.graphData.userId,
   );
 
   const isPressed = useSharedValue(false);
@@ -37,11 +38,10 @@ export default function BackToUserBtn(): React.JSX.Element {
 
     isPressed.value = false;
 
-    if (userNode && activeRootNode) {
+    if (userNodeId && activeRootNodeId) {
       dispatch(
-        updateRootNode({ newRootId: userNode.id, oldRootNode: activeRootNode }),
+        swapRootVertex({ newRootId: userNodeId, oldRootId: activeRootNodeId }),
       );
-      dispatch(setActiveRootNode(userNode));
     }
   }
 
@@ -51,14 +51,10 @@ export default function BackToUserBtn(): React.JSX.Element {
 
   const btnStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(
-        activeRootNode && userNode && activeRootNode.id !== userNode.id ? 1 : 0,
-        { duration: 200 },
-      ),
-      pointerEvents:
-        activeRootNode && userNode && activeRootNode.id === userNode.id
-          ? "none"
-          : "auto",
+      opacity: withTiming(activeRootNodeId !== userNodeId ? 1 : 0, {
+        duration: 200,
+      }),
+      pointerEvents: activeRootNodeId === userNodeId ? "none" : "auto",
       backgroundColor: withTiming(
         isPressed.value ? "rgba(15,15,15,1)" : "rgba(0,0,0,1)",
         {

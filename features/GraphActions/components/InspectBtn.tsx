@@ -8,8 +8,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { swapRootVertex } from "@/features/Graph/redux/graphDataManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { UiVertex } from "@/types/newArchTypes";
 
 interface Props {
   centerOnRoot: () => void;
@@ -24,22 +26,29 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
 
-  const selectedNodeIds = useAppSelector(
-    (state: RootState) => state.selections.selectedNodes,
-  );
-  const activeRootNode = useAppSelector(
-    (state: RootState) => state.manageGraph.activeRootNode,
-  );
-  const globalNodesHash = useAppSelector(
-    (state: RootState) => state.manageGraph.globalNodesHash,
+  const selectedVertices = useAppSelector((state: RootState) => {
+    return Object.values(state.graphData.vertices.byId).filter(
+      (vertex) => vertex.vertex_status === "active",
+    );
+  });
+
+  let soloSelectedVertex: UiVertex | null;
+  if (selectedVertices.length === 1) {
+    soloSelectedVertex = selectedVertices[0];
+  } else {
+    soloSelectedVertex = null;
+  }
+
+  const activeRootNodeId = useAppSelector(
+    (state: RootState) => state.graphData.vertices.activeRootId,
   );
 
   const isButtonEnabled =
-    selectedNodeIds.length === 1 && selectedNodeIds[0] !== activeRootNode?.id;
-  const isButtonVisible = selectedNodeIds.length > 0;
+    selectedVertices.length === 1 && soloSelectedVertex !== activeRootNodeId;
+  const isButtonVisible = selectedVertices.length > 0;
   const isButtonFaded =
-    selectedNodeIds.length > 1 ||
-    (selectedNodeIds.length === 1 && selectedNodeIds[0] === activeRootNode?.id);
+    selectedVertices.length > 1 ||
+    (selectedVertices.length === 1 && soloSelectedVertex === activeRootNodeId);
 
   function handlePressIn() {
     isPressed.value = true;
@@ -52,25 +61,21 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
       return;
     }
 
-    if (!activeRootNode) {
+    if (!activeRootNodeId) {
       console.log("NO ACTIVE ROOT (InspectBtn)");
       return;
     }
 
-    const selectedNodeId = selectedNodeIds[0];
-    const selectedNode = globalNodesHash[selectedNodeId];
-
-    if (selectedNode) {
+    if (soloSelectedVertex) {
       dispatch(
-        updateRootNode({
-          newRootId: selectedNodeId,
-          oldRootNode: activeRootNode,
+        swapRootVertex({
+          newRootId: soloSelectedVertex.id,
+          oldRootId: activeRootNodeId,
         }),
       );
-      dispatch(setActiveRootNode(selectedNode));
       centerOnRoot();
     } else {
-      console.error(`Node with id ${selectedNodeId} not found`);
+      console.error(`Vertex not found`);
     }
 
     isPressed.value = false;

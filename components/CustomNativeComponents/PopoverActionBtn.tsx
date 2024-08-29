@@ -10,8 +10,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
 
-import { createNewNode } from "@/features/Graph/redux/graphManagement";
-import { NodeHashObj } from "@/features/Graph/utils/getInitialNodes";
 import { Rule } from "@/features/SelectionManagement/utils/determineOptions";
 
 interface Props {
@@ -22,7 +20,7 @@ interface Props {
   finalX: number;
   finalY: number;
   visibilityRule: Rule;
-  selectedNodesLength: number;
+  selectedVerticesLength: number;
   animationProgress: SharedValue<number>;
   isRootSelected: boolean;
   // isVisibleCondition: (count: number, isRootSelected: boolean) => boolean;
@@ -33,43 +31,6 @@ type PopoverActionMap = {
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-const testNode: NodeHashObj = {
-  isShown: true,
-  x: 600.7020822980046,
-  y: 335.2613025301253,
-  id: 99,
-  created_at: "2024-08-08T18:09:18.182221+00:00",
-  first_name: "Johnny",
-  last_name: "TEST",
-  maiden_name: null,
-  group_id: 4,
-  sex: "male",
-  phonetic_name: null,
-  group_name: "Family",
-  date_of_birth: null,
-  date_of_death: null,
-  gift_ideas: null,
-  preferred_name: null,
-  partner_details: null,
-  depth_from_user: 1,
-  children_details: [
-    { child_id: 1, adoptive_parents_ids: [], biological_parents_ids: [24, 23] },
-    {
-      child_id: 25,
-      adoptive_parents_ids: [],
-      biological_parents_ids: [24, 23],
-    },
-    {
-      child_id: 26,
-      adoptive_parents_ids: [],
-      biological_parents_ids: [24, 23],
-    },
-  ],
-  parent_details: null,
-  shallowest_ancestor: 1,
-  is_current_root: false,
-};
 
 const iconMap: { [key: string]: React.ReactNode } = {
   "person-add-alt-1": (
@@ -119,7 +80,7 @@ function PopoverActionBtn({
   finalX,
   finalY,
   visibilityRule,
-  selectedNodesLength,
+  selectedVerticesLength,
   animationProgress,
   isRootSelected,
 }: Props): React.JSX.Element {
@@ -128,13 +89,13 @@ function PopoverActionBtn({
   const isPressed = useSharedValue<boolean>(false);
 
   const isVisible = useMemo(
-    () => determineVis(visibilityRule, selectedNodesLength, isRootSelected),
-    [visibilityRule, selectedNodesLength, isRootSelected],
+    () => determineVis(visibilityRule, selectedVerticesLength, isRootSelected),
+    [visibilityRule, selectedVerticesLength, isRootSelected],
   );
 
   const actionMap: PopoverActionMap = useMemo(
     () => ({
-      createNewNode: () => dispatch(createNewNode(testNode)),
+      createNewNode: () => console.log("Creating new node"),
       createNewGroup: () => console.log("Create new group"),
       createSubGroupFromSelection: () =>
         console.log("Create sub group from selection"),
