@@ -1,8 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { UiEdge, UiGroup, UiVertex, VertexStatus } from "@/types/newArchTypes";
 
 import { D3Edge, D3Vertex } from "../utils/setInitialPostions";
+import { RootState } from "@/store/store";
 
 // FINAL SHAPE ****************************************************************
 interface Edges {
@@ -157,3 +158,18 @@ export const { setInitialState, toggleVertex, swapRootVertex } =
   NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;
+
+// SELECTORS ******************************************************************
+export const getSelectedVertices = createSelector(
+  (state: RootState) => state.graphData.vertices.byId,
+  (vertices) =>
+    Object.values(vertices).filter(
+      (vertex): vertex is UiVertex => vertex.vertex_status === "active",
+    ),
+);
+
+export const getSoloSelectedVertex = createSelector(
+  getSelectedVertices,
+  (selectedVertices) =>
+    selectedVertices.length === 1 ? selectedVertices[0] : null,
+);

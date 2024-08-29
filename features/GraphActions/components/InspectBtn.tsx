@@ -8,10 +8,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { swapRootVertex } from "@/features/Graph/redux/graphDataManagement";
+import {
+  getSelectedVertices,
+  getSoloSelectedVertex,
+  swapRootVertex,
+} from "@/features/Graph/redux/graphDataManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
-import { UiVertex } from "@/types/newArchTypes";
 
 interface Props {
   centerOnRoot: () => void;
@@ -26,18 +29,9 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
 
-  const selectedVertices = useAppSelector((state: RootState) => {
-    return Object.values(state.graphData.vertices.byId).filter(
-      (vertex) => vertex.vertex_status === "active",
-    );
-  });
-
-  let soloSelectedVertex: UiVertex | null;
-  if (selectedVertices.length === 1) {
-    soloSelectedVertex = selectedVertices[0];
-  } else {
-    soloSelectedVertex = null;
-  }
+  // memoized with create selector
+  const selectedVertices = useAppSelector(getSelectedVertices);
+  const soloSelectedVertex = useAppSelector(getSoloSelectedVertex);
 
   const activeRootNodeId = useAppSelector(
     (state: RootState) => state.graphData.vertices.activeRootId,

@@ -11,6 +11,7 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { POPOVER_OPTIONS } from "../SelectionManagement/utils/determineOptions";
+import { getSelectedVertices } from "../Graph/redux/graphDataManagement";
 
 export default function Popover(): React.JSX.Element {
   // console.log("Re-rendering Popover");
@@ -19,11 +20,7 @@ export default function Popover(): React.JSX.Element {
   );
 
   // why am i not getting auto complete on vertex here?
-  const selectedVerticesLength = useAppSelector((state: RootState) => {
-    return Object.values(state.graphData.vertices.byId).filter(
-      (vertex) => vertex.vertex_status === "active",
-    ).length;
-  });
+  const selectedVertices = useAppSelector(getSelectedVertices);
 
   const activeRootNodeId = useAppSelector(
     (state: RootState) => state.graphData.vertices.activeRootId,
@@ -66,7 +63,7 @@ export default function Popover(): React.JSX.Element {
             finalX={o.finalX}
             finalY={o.finalY}
             visibilityRule={o.visibilityRule}
-            selectedVerticesLength={selectedVerticesLength}
+            selectedVerticesLength={selectedVertices.length}
             animationProgress={animationProgress}
             isRootSelected={isRootSelected}
           />

@@ -51,8 +51,8 @@ const Index = () => {
     return null;
   }
 
-  console.log("VERTICES:", vertices);
-  console.log("EDGES:", edges);
+  // console.log("VERTICES:", vertices);
+  // console.log("EDGES:", edges);
 
   return (
     <GestureDetector gesture={composed}>

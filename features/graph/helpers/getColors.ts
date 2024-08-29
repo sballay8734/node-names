@@ -1,8 +1,6 @@
 import { nodeBgMap } from "@/constants/Colors";
 import { UiVertex } from "@/types/newArchTypes";
 
-import { INode2 } from "../types/graphManagementTypes";
-
 export function getColors(node: UiVertex) {
   if (node.isCurrentRoot) {
     return {

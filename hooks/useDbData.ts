@@ -42,12 +42,10 @@ export default function useDbData(windowSize: WindowSize) {
           windowSize,
         );
 
-        console.log(positionedVertices);
-
         dispatch(
           setInitialState({
-            vertices: verticesResult.data,
-            edges: edgesResult.data,
+            vertices: positionedVertices,
+            edges: positionedEdges,
           }),
         );
 
