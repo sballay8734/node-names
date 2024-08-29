@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { deselectAll } from "../../redux/uiSlice";

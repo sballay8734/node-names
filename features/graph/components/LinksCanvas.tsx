@@ -2,8 +2,8 @@ import { Canvas, Group } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { useDerivedValue } from "react-native-reanimated";
 
-import { useAppSelector } from "@/lib/constants/reduxHooks";
 import { WindowSize } from "@/lib/types/misc";
+import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import Link from "./Link";

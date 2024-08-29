@@ -5,7 +5,7 @@ import { updateWindowSize } from "@/features/Graph/redux/windowSize";
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 import { RootState } from "@/store/store";
 
-import { useAppDispatch, useAppSelector } from "../constants/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../store/reduxHooks";
 
 const useWindowSize = () => {
   const dispatch = useAppDispatch();

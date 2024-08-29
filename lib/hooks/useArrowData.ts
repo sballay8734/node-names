@@ -1,10 +1,10 @@
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
 import { ARROW_BTN_RADIUS } from "@/lib/constants/styles";
-import { centerNode } from "@/lib/constants/variables";
 import { RootState } from "@/store/store";
 
-import { useAppSelector } from "../constants/reduxHooks";
+import { useAppSelector } from "../../store/reduxHooks";
+import { centerNode } from "../utils/centerNode";
 
 interface Props {
   translateX: SharedValue<number>;

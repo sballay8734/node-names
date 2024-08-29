@@ -29,8 +29,6 @@ export interface ITheme {
   grp5NodeBg: string;
 }
 
-export const TAB_BG_COLOR = "rgba(9, 9, 9, 1)";
-
 // THEME SETTING **************************************************************
 export const CustomThemeContext = createContext<ITheme>(DefTheme);
 

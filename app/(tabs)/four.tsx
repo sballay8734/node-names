@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text } from "react-native";
 
-import { TAB_BG_COLOR } from "@/components/CustomThemeContext";
 import EditScreenInfo from "@/components/EditScreenInfo";
+import { TAB_BG_COLOR } from "@/lib/constants/Colors";
 
 export default function TabFourScreen() {
   return (

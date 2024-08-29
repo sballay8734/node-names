@@ -5,7 +5,7 @@ import { setInitialState } from "@/features/Graph/redux/graphSlice";
 import { WindowSize } from "@/lib/types/misc";
 import { supabase } from "@/supabase";
 
-import { useAppDispatch } from "../constants/reduxHooks";
+import { useAppDispatch } from "../../store/reduxHooks";
 import { Tables } from "../types/database";
 import { setInitialVertexPositions } from "../utils/setInitialVertexPostions";
 

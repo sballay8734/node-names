@@ -7,14 +7,14 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
 import {
   REG_NODE_RADIUS,
   REG_TEXT_SIZE,
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
-} from "@/lib/constants/variables";
+} from "@/lib/constants/styles";
 import { UiVertex } from "@/lib/types/graph";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { getColors } from "../../../lib/utils/getColors";

@@ -2,15 +2,7 @@ import { SharedValue } from "react-native-gesture-handler/lib/typescript/handler
 
 import { WindowSize } from "@/lib/types/misc";
 
-export const ROOT_NODE_RADIUS = 200;
-export const REG_NODE_RADIUS = 100;
-export const NODE_BORDER_WIDTH = 1;
-export const TEST_NODE_DIM = 35;
-export const ROOT_TEXT_SIZE = 40;
-export const REG_TEXT_SIZE = 20;
-export const MIN_SPACE_BETWEEN_NODES = 60;
-
-const TEST_NODE_RADIUS = TEST_NODE_DIM / 2;
+import { TEST_NODE_RADIUS } from "../constants/styles";
 
 // Position is relative to absolutely positioned canvasWrapper
 export function centerNode(
@@ -44,5 +36,3 @@ export function centerNode(
     };
   }
 }
-
-// !TODO: 0.4 NEEDS TO BE REPLACED BY DYNAMIC SCALE FACTOR

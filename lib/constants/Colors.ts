@@ -4,6 +4,8 @@ import { ITheme } from "@/components/CustomThemeContext";
 
 export type CustomTheme = ITheme & Partial<Theme>;
 
+export const TAB_BG_COLOR = "rgba(9, 9, 9, 1)";
+
 const DefTheme: ITheme = {
   bgBase: "rgba(13, 13, 13, 1)",
   bgBaseTest: "rgba(9, 9, 9, 1)",

@@ -11,7 +11,7 @@ import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { handlePopover } from "@/features/Graph/redux/uiSlice";
-import { useAppDispatch } from "@/lib/constants/reduxHooks";
+import { useAppDispatch } from "@/store/reduxHooks";
 
 export default function TabLayout() {
   const theme = useContext(CustomThemeContext);
