@@ -6,8 +6,8 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 
-import AuthFlow from "@/components/Auth/AuthFlow";
 import { CustomThemeProvider } from "@/components/CustomThemeContext";
+import AuthFlow from "@/features/Auth/AuthFlow";
 import { store } from "@/store/store";
 
 export {
