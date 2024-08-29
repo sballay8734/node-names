@@ -2,12 +2,13 @@ import { Canvas, Group } from "@shopify/react-native-skia";
 import { StyleSheet } from "react-native";
 import { useDerivedValue } from "react-native-reanimated";
 
-import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import { WindowSize } from "@/hooks/useWindowSize";
+import { useAppSelector } from "@/lib/constants/reduxHooks";
+import { WindowSize } from "@/lib/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 
 import Link from "./Link";
+
+import { PositionedLink, PositionedNode } from "@/features/D3/types/d3Types";
 
 interface Props {
   windowSize: WindowSize;

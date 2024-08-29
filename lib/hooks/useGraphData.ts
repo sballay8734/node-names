@@ -1,10 +1,11 @@
 import { useCallback } from "react";
 import { Easing, SharedValue, withTiming } from "react-native-reanimated";
 
-import { useArrowData } from "@/features/GraphActions/hooks/useArrowData";
-import { WindowSize } from "@/hooks/useWindowSize";
-import { UiVertex } from "@/types/newArchTypes";
+import { WindowSize } from "@/features/Graph/redux/windowSize";
 
+import { UiVertex } from "../types/database";
+
+import { useArrowData } from "./useArrowData";
 import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
 
 export interface Props {

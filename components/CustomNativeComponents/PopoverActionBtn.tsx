@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
 
-import { Rule } from "@/features/SelectionManagement/utils/determineOptions";
+import { Rule } from "@/lib/utils/determineOptions";
 
 interface Props {
   iconName: string;

@@ -1,13 +1,14 @@
 import * as d3 from "d3";
 
 import { MIN_SPACE_BETWEEN_NODES } from "@/constants/variables";
-import { WindowSize } from "@/features/Shared/redux/windowSize";
-import { RawVertex, RawEdge } from "@/types/newArchTypes";
+import { WindowSize } from "@/features/Graph/redux/windowSize";
+
+import { RawVertex, RawEdge } from "../types/database";
 
 export interface D3Vertex extends RawVertex, d3.SimulationNodeDatum {}
 export interface D3Edge extends RawEdge {}
 
-export function setInitialPositions(
+export function setInitialVertexPositions(
   vertices: RawVertex[],
   edges: RawEdge[],
   windowSize: WindowSize,

@@ -13,7 +13,7 @@ import {
   getSoloSelectedVertex,
   swapRootVertex,
 } from "@/features/Graph/redux/graphDataManagement";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
 import { RootState } from "@/store/store";
 
 interface Props {

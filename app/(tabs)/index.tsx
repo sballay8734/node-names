@@ -6,11 +6,11 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import ControlButtons from "@/features/Graph/components/ControlButtons";
 import Nodes from "@/features/Graph/components/Nodes";
-import { useGestures } from "@/features/Graph/hooks/useGestures";
-import { useGraphData } from "@/features/Graph/hooks/useGraphData";
-import { useAppSelector } from "@/hooks/reduxHooks";
-import useDbData from "@/hooks/useDbData";
-import useWindowSize from "@/hooks/useWindowSize";
+import { useAppSelector } from "@/lib/constants/reduxHooks";
+import useDbData from "@/lib/hooks/useDbData";
+import { useGestures } from "@/lib/hooks/useGestures";
+import { useGraphData } from "@/lib/hooks/useGraphData";
+import useWindowSize from "@/lib/hooks/useWindowSize";
 import { RootState } from "@/store/store";
 
 const Index = () => {
@@ -90,8 +90,8 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
-// !TODO: SECOND: Fix BackToUserBtn
-// !TODO: THIRD: Fix InspectBtn
+// !TODO: TESTING STILL NEEDED on ALL action buttons
+// !TODO: Refactor needed in MANY places to styles an logic
 // !TODO: FOURTH: move popover stuff in "manageSelections" slice to UI slice
 // !TODO: FIFTH: get centerOnNode OUT of NodeTapDetector. Figure out a way to move it somewhere else!
 

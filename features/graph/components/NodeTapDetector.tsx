@@ -13,11 +13,11 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
+import { UiVertex } from "@/lib/types/database";
 import { RootState } from "@/store/store";
-import { UiVertex } from "@/types/newArchTypes";
 
-import { getColors } from "../helpers/getColors";
+import { getColors } from "../../../lib/utils/getColors";
 import { toggleVertex } from "../redux/graphDataManagement";
 
 interface Props {

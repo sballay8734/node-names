@@ -1,6 +1,6 @@
 import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
 
-import { WindowSize } from "@/hooks/useWindowSize";
+import { WindowSize } from "@/lib/hooks/useWindowSize";
 
 export const ROOT_NODE_RADIUS = 200;
 export const REG_NODE_RADIUS = 100;

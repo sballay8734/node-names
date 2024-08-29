@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import windowSizeReducer from "@/features/Shared/redux/windowSize";
+import windowSizeReducer from "@/features/Graph/redux/windowSize";
 
 import NewArchitectureReducer from "../features/Graph/redux/graphDataManagement";
-import ManageSelectionsReducer from "../features/SelectionManagement/redux/manageSelections";
+import ManageSelectionsReducer from "../features/Graph/redux/uiManagement";
 
 export const store = configureStore({
   reducer: {

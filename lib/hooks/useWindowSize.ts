@@ -2,10 +2,10 @@ import { useEffect, useMemo } from "react";
 import { Dimensions, ScaledSize } from "react-native";
 
 import { TAB_BAR_HEIGHT } from "@/constants/styles";
-import { updateWindowSize } from "@/features/Shared/redux/windowSize";
+import { updateWindowSize } from "@/features/Graph/redux/windowSize";
 import { RootState } from "@/store/store";
 
-import { useAppDispatch, useAppSelector } from "./reduxHooks";
+import { useAppDispatch, useAppSelector } from "../constants/reduxHooks";
 
 export interface WindowSize {
   width: number;

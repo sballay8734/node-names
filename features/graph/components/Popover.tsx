@@ -7,11 +7,11 @@ import Animated, {
 } from "react-native-reanimated";
 
 import PopoverActionBtn from "@/components/CustomNativeComponents/PopoverActionBtn";
-import { useAppSelector } from "@/hooks/reduxHooks";
+import { useAppSelector } from "@/lib/constants/reduxHooks";
+import { POPOVER_OPTIONS } from "@/lib/utils/determineOptions";
 import { RootState } from "@/store/store";
 
-import { POPOVER_OPTIONS } from "../SelectionManagement/utils/determineOptions";
-import { getSelectedVertices } from "../Graph/redux/graphDataManagement";
+import { getSelectedVertices } from "../redux/graphDataManagement";
 
 export default function Popover(): React.JSX.Element {
   // console.log("Re-rendering Popover");

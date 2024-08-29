@@ -8,10 +8,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { deselectAll } from "../../SelectionManagement/redux/manageSelections";
+import { deselectAll } from "../../Graph/redux/uiManagement";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);

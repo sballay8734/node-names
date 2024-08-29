@@ -2,9 +2,9 @@ import { memo, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { useAppSelector } from "@/hooks/reduxHooks";
+import { useAppSelector } from "@/lib/constants/reduxHooks";
+import { UiVertex } from "@/lib/types/database";
 import { RootState } from "@/store/store";
-import { UiVertex } from "@/types/newArchTypes";
 
 import NodeTapDetector from "./NodeTapDetector";
 

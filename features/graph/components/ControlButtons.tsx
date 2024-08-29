@@ -1,12 +1,13 @@
 import React from "react";
 import { DerivedValue, SharedValue } from "react-native-reanimated";
 
+import SearchBar from "@/features/Graph/components/SearchBar";
 import BackToUserBtn from "@/features/GraphActions/components/BackToUserBtn";
 import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
 import InspectBtn from "@/features/GraphActions/components/InspectBtn";
 import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
-import Popover from "@/features/Shared/Popover";
-import SearchBar from "@/features/Shared/SearchBar";
+
+import Popover from "./Popover";
 
 interface Props {
   arrowData: DerivedValue<{ transform: { rotate: string }[] }>;

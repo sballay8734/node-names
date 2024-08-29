@@ -1,8 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { UiEdge, UiGroup, UiVertex, VertexStatus } from "@/types/newArchTypes";
-
-import { D3Edge, D3Vertex } from "../utils/setInitialPostions";
+import { UiEdge, UiGroup, UiVertex, VertexStatus } from "@/lib/types/database";
+import { D3Edge, D3Vertex } from "@/lib/utils/setInitialVertexPostions";
 import { RootState } from "@/store/store";
 
 // FINAL SHAPE ****************************************************************

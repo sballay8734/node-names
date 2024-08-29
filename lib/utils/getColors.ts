@@ -1,5 +1,5 @@
 import { nodeBgMap } from "@/constants/Colors";
-import { UiVertex } from "@/types/newArchTypes";
+import { UiVertex } from "@/lib/types/database";
 
 export function getColors(node: UiVertex) {
   if (node.isCurrentRoot) {
