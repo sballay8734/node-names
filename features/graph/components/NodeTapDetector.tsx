@@ -18,7 +18,7 @@ import { UiVertex } from "@/lib/types/database";
 import { RootState } from "@/store/store";
 
 import { getColors } from "../../../lib/utils/getColors";
-import { toggleVertex } from "../redux/graphDataManagement";
+import { toggleVertex } from "../redux/graphSlice";
 
 interface Props {
   vertexId: number;

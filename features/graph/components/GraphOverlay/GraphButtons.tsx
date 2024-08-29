@@ -1,12 +1,12 @@
 import React from "react";
 import { DerivedValue, SharedValue } from "react-native-reanimated";
 
-import SearchBar from "@/features/Graph/components/SearchBar";
-import BackToUserBtn from "@/features/GraphActions/components/BackToUserBtn";
-import DeselectAllBtn from "@/features/GraphActions/components/DeselectAllBtn";
-import InspectBtn from "@/features/GraphActions/components/InspectBtn";
-import RecenterBtn from "@/features/GraphActions/components/RecenterBtn";
+import BackToUserBtn from "@/features/Graph/components/GraphOverlay/BackToUserBtn";
+import InspectBtn from "@/features/Graph/components/GraphOverlay/InspectBtn";
+import RecenterBtn from "@/features/Graph/components/GraphOverlay/RecenterBtn";
+import SearchBar from "@/features/Graph/components/GraphOverlay/SearchBar";
 
+import DeselectAllBtn from "./DeselectAllBtn";
 import Popover from "./Popover";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
   centerOnRoot: () => void;
 }
 
-const ControlButtons = ({ arrowData, showArrow, centerOnRoot }: Props) => (
+const GraphButtons = ({ arrowData, showArrow, centerOnRoot }: Props) => (
   <>
     <Popover />
     <SearchBar />
@@ -30,4 +30,4 @@ const ControlButtons = ({ arrowData, showArrow, centerOnRoot }: Props) => (
   </>
 );
 
-export default ControlButtons;
+export default GraphButtons;

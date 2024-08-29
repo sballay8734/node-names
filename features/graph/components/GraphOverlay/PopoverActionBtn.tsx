@@ -8,7 +8,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useDispatch } from "react-redux";
 
 import { Rule } from "@/lib/utils/determineOptions";
 
@@ -85,7 +84,6 @@ function PopoverActionBtn({
   isRootSelected,
 }: Props): React.JSX.Element {
   // console.log("Re-rendering BTN");
-  const dispatch = useDispatch();
   const isPressed = useSharedValue<boolean>(false);
 
   const isVisible = useMemo(
@@ -102,7 +100,7 @@ function PopoverActionBtn({
       move: () => console.log("Move this node to another group"),
       error: () => console.log("ERROR"),
     }),
-    [dispatch],
+    [],
   );
 
   // update position and visibility when `isVisible` changes

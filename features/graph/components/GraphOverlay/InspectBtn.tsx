@@ -8,13 +8,14 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
+import { RootState } from "@/store/store";
+
 import {
   getSelectedVertices,
   getSoloSelectedVertex,
   swapRootVertex,
-} from "@/features/Graph/redux/graphDataManagement";
-import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
-import { RootState } from "@/store/store";
+} from "../../redux/graphSlice";
 
 interface Props {
   centerOnRoot: () => void;

@@ -12,7 +12,7 @@ interface Props {
   centerOnNode: (node: UiVertex) => void;
 }
 
-function Nodes({ centerOnNode }: Props): React.JSX.Element {
+function NodesWrapper({ centerOnNode }: Props): React.JSX.Element {
   const vertexIds = useAppSelector(
     (state: RootState) => state.graphData.vertices.allIds,
   );
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Nodes);
+export default memo(NodesWrapper);

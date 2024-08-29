@@ -12,7 +12,7 @@ export interface RawVertex {
   is_user: boolean;
   first_name: string;
   last_name: string | null;
-  sex: NewDatabase["public"]["Enums"]["sexes"];
+  sex: Database["public"]["Enums"]["sexes"];
 
   date_of_birth: string | null;
   date_of_death: string | null;
@@ -28,7 +28,7 @@ export interface RawEdge {
   id: number;
   created_at: string;
   user_id: string;
-  relationship_type: NewDatabase["public"]["Enums"]["relationship_types"];
+  relationship_type: Database["public"]["Enums"]["relationship_types"];
 
   is_active_romance: boolean;
   is_parent_child: boolean;
@@ -41,7 +41,7 @@ export interface RawEdge {
 // group
 export interface RawGroup {
   created_at: string;
-  group_name: NewDatabase["public"]["Enums"]["group_names"] | null;
+  group_name: Database["public"]["Enums"]["group_names"] | null;
   id: number;
   user_id: string;
   parent_group_id: number | null;
@@ -71,7 +71,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type NewDatabase = {
+export type Database = {
   public: {
     Tables: {
       edges: {
@@ -82,7 +82,7 @@ export type NewDatabase = {
           is_active_romance: boolean;
           is_parent_child: boolean;
           parent_id: number | null;
-          relationship_type: NewDatabase["public"]["Enums"]["relationship_types"];
+          relationship_type: Database["public"]["Enums"]["relationship_types"];
           user_id: string;
           vertex_1_id: number;
           vertex_2_id: number;
@@ -94,7 +94,7 @@ export type NewDatabase = {
           is_active_romance: boolean;
           is_parent_child?: boolean;
           parent_id?: number | null;
-          relationship_type: NewDatabase["public"]["Enums"]["relationship_types"];
+          relationship_type: Database["public"]["Enums"]["relationship_types"];
           user_id: string;
           vertex_1_id: number;
           vertex_2_id: number;
@@ -106,7 +106,7 @@ export type NewDatabase = {
           is_active_romance?: boolean;
           is_parent_child?: boolean;
           parent_id?: number | null;
-          relationship_type?: NewDatabase["public"]["Enums"]["relationship_types"];
+          relationship_type?: Database["public"]["Enums"]["relationship_types"];
           user_id?: string;
           vertex_1_id?: number;
           vertex_2_id?: number;
@@ -152,21 +152,21 @@ export type NewDatabase = {
       groups: {
         Row: {
           created_at: string;
-          group_name: NewDatabase["public"]["Enums"]["group_names"] | null;
+          group_name: Database["public"]["Enums"]["group_names"] | null;
           id: number;
           parent_group_id: number | null;
           user_id: string;
         };
         Insert: {
           created_at?: string;
-          group_name?: NewDatabase["public"]["Enums"]["group_names"] | null;
+          group_name?: Database["public"]["Enums"]["group_names"] | null;
           id?: number;
           parent_group_id?: number | null;
           user_id: string;
         };
         Update: {
           created_at?: string;
-          group_name?: NewDatabase["public"]["Enums"]["group_names"] | null;
+          group_name?: Database["public"]["Enums"]["group_names"] | null;
           id?: number;
           parent_group_id?: number | null;
           user_id?: string;
@@ -192,21 +192,21 @@ export type NewDatabase = {
         Row: {
           first_name: string | null;
           id: string;
-          sex: NewDatabase["public"]["Enums"]["sexes"];
+          sex: Database["public"]["Enums"]["sexes"];
           updated_at: string | null;
           username: string | null;
         };
         Insert: {
           first_name?: string | null;
           id: string;
-          sex: NewDatabase["public"]["Enums"]["sexes"];
+          sex: Database["public"]["Enums"]["sexes"];
           updated_at?: string | null;
           username?: string | null;
         };
         Update: {
           first_name?: string | null;
           id?: string;
-          sex?: NewDatabase["public"]["Enums"]["sexes"];
+          sex?: Database["public"]["Enums"]["sexes"];
           updated_at?: string | null;
           username?: string | null;
         };
@@ -234,7 +234,7 @@ export type NewDatabase = {
           maiden_name: string | null;
           phonetic_name: string | null;
           preferred_name: string | null;
-          sex: NewDatabase["public"]["Enums"]["sexes"];
+          sex: Database["public"]["Enums"]["sexes"];
           user_id: string;
         };
         Insert: {
@@ -250,7 +250,7 @@ export type NewDatabase = {
           maiden_name?: string | null;
           phonetic_name?: string | null;
           preferred_name?: string | null;
-          sex: NewDatabase["public"]["Enums"]["sexes"];
+          sex: Database["public"]["Enums"]["sexes"];
           user_id: string;
         };
         Update: {
@@ -266,7 +266,7 @@ export type NewDatabase = {
           maiden_name?: string | null;
           phonetic_name?: string | null;
           preferred_name?: string | null;
-          sex?: NewDatabase["public"]["Enums"]["sexes"];
+          sex?: Database["public"]["Enums"]["sexes"];
           user_id?: string;
         };
         Relationships: [
@@ -317,21 +317,21 @@ export type NewDatabase = {
   };
 };
 
-type PublicSchema = NewDatabase[Extract<keyof NewDatabase, "public">];
+type PublicSchema = Database[Extract<keyof Database, "public">];
 
 export type Tables<
   PublicTableNameOrOptions extends
     | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
-    | { schema: keyof NewDatabase },
+    | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends {
-    schema: keyof NewDatabase;
+    schema: keyof Database;
   }
-    ? keyof (NewDatabase[PublicTableNameOrOptions["schema"]]["Tables"] &
-        NewDatabase[PublicTableNameOrOptions["schema"]]["Views"])
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof NewDatabase }
-  ? (NewDatabase[PublicTableNameOrOptions["schema"]]["Tables"] &
-      NewDatabase[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R;
     }
     ? R
@@ -349,14 +349,14 @@ export type Tables<
 export type TablesInsert<
   PublicTableNameOrOptions extends
     | keyof PublicSchema["Tables"]
-    | { schema: keyof NewDatabase },
+    | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends {
-    schema: keyof NewDatabase;
+    schema: keyof Database;
   }
-    ? keyof NewDatabase[PublicTableNameOrOptions["schema"]]["Tables"]
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof NewDatabase }
-  ? NewDatabase[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
     }
     ? I
@@ -372,14 +372,14 @@ export type TablesInsert<
 export type TablesUpdate<
   PublicTableNameOrOptions extends
     | keyof PublicSchema["Tables"]
-    | { schema: keyof NewDatabase },
+    | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends {
-    schema: keyof NewDatabase;
+    schema: keyof Database;
   }
-    ? keyof NewDatabase[PublicTableNameOrOptions["schema"]]["Tables"]
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof NewDatabase }
-  ? NewDatabase[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
     }
     ? U
@@ -395,12 +395,12 @@ export type TablesUpdate<
 export type Enums<
   PublicEnumNameOrOptions extends
     | keyof PublicSchema["Enums"]
-    | { schema: keyof NewDatabase },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof NewDatabase }
-    ? keyof NewDatabase[PublicEnumNameOrOptions["schema"]]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof NewDatabase }
-  ? NewDatabase[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
   ? PublicSchema["Enums"][PublicEnumNameOrOptions]
   : never;

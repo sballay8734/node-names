@@ -5,7 +5,7 @@ interface Props {
   color: string;
   size: number;
 }
-
+// This component is the icon in the center of the main + button
 const PlusIcon = ({ color, size }: Props) => {
   const strokeWidth = size * 0.02;
   const halfSize = size / 2;

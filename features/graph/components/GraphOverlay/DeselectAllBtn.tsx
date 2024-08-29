@@ -11,7 +11,7 @@ import Animated, {
 import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { deselectAll } from "../../Graph/redux/uiManagement";
+import { deselectAll } from "../../redux/uiSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);

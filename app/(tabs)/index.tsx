@@ -4,8 +4,8 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
-import ControlButtons from "@/features/Graph/components/ControlButtons";
-import Nodes from "@/features/Graph/components/Nodes";
+import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
+import NodesWrapper from "@/features/Graph/components/NodesWrapper";
 import { useAppSelector } from "@/lib/constants/reduxHooks";
 import useDbData from "@/lib/hooks/useDbData";
 import { useGestures } from "@/lib/hooks/useGestures";
@@ -61,9 +61,9 @@ const Index = () => {
       >
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
           {/* <LinksCanvas windowSize={windowSize} /> */}
-          <Nodes centerOnNode={centerOnNode} />
+          <NodesWrapper centerOnNode={centerOnNode} />
         </Animated.View>
-        <ControlButtons
+        <GraphButtons
           arrowData={arrowData}
           showArrow={showArrow}
           centerOnRoot={centerOnRoot}

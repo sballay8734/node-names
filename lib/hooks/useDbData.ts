@@ -1,7 +1,7 @@
 import { QueryError } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
-import { setInitialState } from "@/features/Graph/redux/graphDataManagement";
+import { setInitialState } from "@/features/Graph/redux/graphSlice";
 import { WindowSize } from "@/features/Graph/redux/windowSize";
 import { supabase } from "@/supabase";
 
@@ -60,7 +60,7 @@ export default function useDbData(windowSize: WindowSize) {
     }
 
     fetchData();
-  }, [dataFetched, dispatch]);
+  }, [dataFetched, dispatch, windowSize]);
 
   return {
     dataIsLoading,

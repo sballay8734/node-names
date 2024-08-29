@@ -10,7 +10,7 @@ import { TouchableOpacity, View } from "react-native";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { handlePopover } from "@/features/Graph/redux/uiManagement";
+import { handlePopover } from "@/features/Graph/redux/uiSlice";
 import { useAppDispatch } from "@/lib/constants/reduxHooks";
 
 export default function TabLayout() {

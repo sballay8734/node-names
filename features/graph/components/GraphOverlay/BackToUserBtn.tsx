@@ -8,9 +8,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { swapRootVertex } from "@/features/Graph/redux/graphDataManagement";
 import { useAppDispatch, useAppSelector } from "@/lib/constants/reduxHooks";
 import { RootState } from "@/store/store";
+
+import { swapRootVertex } from "../../redux/graphSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
