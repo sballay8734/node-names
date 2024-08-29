@@ -1,9 +1,10 @@
 import { nodeBgMap } from "@/constants/Colors";
+import { UiVertex } from "@/types/newArchTypes";
 
 import { INode2 } from "../types/graphManagementTypes";
 
-export function getColors(node: INode2) {
-  if (node.is_current_root) {
+export function getColors(node: UiVertex) {
+  if (node.isCurrentRoot) {
     return {
       inactiveBgColor: "#121212",
       sourceActiveBg: "",

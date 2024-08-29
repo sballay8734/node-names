@@ -48,9 +48,12 @@ export interface RawGroup {
 }
 
 // UI Extensions of Raw types WITH Added ui controlling properties ************
-export interface UiVertex extends RawVertex {
+export interface UiVertex extends RawVertex, d3.SimulationNodeDatum {
   isCurrentRoot: boolean;
   vertex_status: VertexStatus;
+  isShown: boolean;
+
+  // D3 STUFF *****************************************************************
 }
 export interface UiEdge extends RawEdge {
   vertex_1_status: VertexStatus;

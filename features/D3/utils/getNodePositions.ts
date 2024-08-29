@@ -87,7 +87,7 @@ export function calcNodePositions(
   }
 
   const simulation = d3
-    .forceSimulation<PositionedNode, PositionedLink>(positionedNodes)
+    .forceSimulation<PositionedNode>(positionedNodes)
     .force(
       "center",
       d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
@@ -104,36 +104,6 @@ export function calcNodePositions(
         )
         .strength(0.3),
     )
-    // .force(
-    //   "link",
-    //   d3
-    //     .forceLink<PositionedNode, PositionedLink>(positionedLinks)
-    //     .id((link) => link.id)
-    //     .distance((link) => {
-    //       const baseDistance =
-    //         link.relationship_type === "spouse"
-    //           ? MIN_SPACE_BETWEEN_NODES
-    //           : link.relationship_type === "parent_child_biological"
-    //           ? MIN_SPACE_BETWEEN_NODES
-    //           : MIN_SPACE_BETWEEN_NODES;
-
-    //       // Get the maximum depth of the two nodes connected by this link
-    //       const maxDepth = Math.max(
-    //         (link.source as PositionedNode).depth_from_user || 0,
-    //         (link.target as PositionedNode).depth_from_user || 0,
-    //       );
-
-    //       // Increase the distance based on depth
-    //       return baseDistance * (1 + maxDepth * 0.9);
-    //     })
-    //     .strength((link) =>
-    //       link.relationship_type === "spouse"
-    //         ? 1
-    //         : link.relationship_type === "parent_child_biological"
-    //         ? 0.5
-    //         : 0.1,
-    //     ),
-    // )
     .force(
       "charge",
       d3

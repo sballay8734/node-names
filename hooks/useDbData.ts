@@ -2,12 +2,14 @@ import { QueryError } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
 import { setInitialState } from "@/features/Graph/redux/graphDataManagement";
+import { setInitialPositions } from "@/features/Graph/utils/setInitialPostions";
+import { WindowSize } from "@/features/Shared/redux/windowSize";
 import { supabase } from "@/supabase";
 import { Tables } from "@/types/newArchTypes";
 
 import { useAppDispatch } from "./reduxHooks";
 
-export default function useDbData() {
+export default function useDbData(windowSize: WindowSize) {
   const dispatch = useAppDispatch();
   const [dataIsLoading, setDataIsLoading] = useState<boolean>(false);
   const [groups, setGroups] = useState<Tables<"groups">[] | null>(null);
@@ -32,6 +34,15 @@ export default function useDbData() {
         if (verticesResult.error) throw verticesResult.error;
         if (edgesResult.error) throw edgesResult.error;
         if (groupsResult.error) throw groupsResult.error;
+
+        // !TODO: RUN D3 INITIAL POSITIONING LOGIC HERE (because vertices and edges are arrays BEFORE they go to redux)
+        const { positionedVertices, positionedEdges } = setInitialPositions(
+          verticesResult.data,
+          edgesResult.data,
+          windowSize,
+        );
+
+        console.log(positionedVertices);
 
         dispatch(
           setInitialState({

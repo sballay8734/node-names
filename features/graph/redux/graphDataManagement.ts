@@ -1,15 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import {
-  EdgeStatus,
-  RawEdge,
-  RawGroup,
-  RawVertex,
-  UiEdge,
-  UiGroup,
-  UiVertex,
-  VertexStatus,
-} from "@/types/newArchTypes";
+import { UiEdge, UiGroup, UiVertex, VertexStatus } from "@/types/newArchTypes";
+
+import { D3Edge, D3Vertex } from "../utils/setInitialPostions";
 
 // FINAL SHAPE ****************************************************************
 interface Edges {
@@ -60,8 +53,8 @@ const NewArchitectureSlice = createSlice({
     setInitialState: (
       state,
       action: PayloadAction<{
-        vertices: RawVertex[];
-        edges: RawEdge[];
+        vertices: D3Vertex[];
+        edges: D3Edge[];
       }>,
     ) => {
       const { vertices, edges } = action.payload;
@@ -79,6 +72,7 @@ const NewArchitectureSlice = createSlice({
             vertex_status: (vertex.is_user
               ? "active"
               : "inactive") as VertexStatus,
+            isShown: true,
           };
           state.vertices.byId[vertex.id] = newVertex;
           state.vertices.allIds.push(vertex.id);
@@ -114,9 +108,28 @@ const NewArchitectureSlice = createSlice({
         }
       });
     },
+    toggleVertex: (state, action: PayloadAction<number>) => {
+      const vertexId = action.payload;
+
+      // because you have 3 statuses, you need to slightly complicate logic
+      if (state.vertices.byId[vertexId]) {
+        const status = state.vertices.byId[vertexId].vertex_status;
+
+        // make vertex active if it's "parent_active" or "inactive" when clicked
+        if (status !== "active") {
+          state.vertices.byId[vertexId].vertex_status = "active";
+          // handle case of vertex click while active AND parent IS active
+        } else if (false) {
+          state.vertices.byId[vertexId].vertex_status = "parent_active";
+          // handle case of vertex click while active AND parent is NOT active
+        } else {
+          state.vertices.byId[vertexId].vertex_status = "inactive";
+        }
+      }
+    },
   },
 });
 
-export const { setInitialState } = NewArchitectureSlice.actions;
+export const { setInitialState, toggleVertex } = NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;

@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -14,51 +13,41 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/constants/variables";
-import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { UiVertex } from "@/types/newArchTypes";
 
-import { handleNodeSelect } from "../../SelectionManagement/redux/manageSelections";
 import { getColors } from "../helpers/getColors";
-import { NodeHashObj } from "../utils/getInitialNodes";
+import { toggleVertex } from "../redux/graphDataManagement";
 
 interface Props {
-  node: NodeHashObj;
-  centerOnNode: (node: PositionedNode) => void;
+  vertexId: number;
+  centerOnNode: (node: UiVertex) => void;
 }
 
-export default function NodeTapDetector({ node, centerOnNode }: Props) {
+// !TODO: PROPS MAY NOT BE EQUAL BECAUSE YOU'RE PASSING A FUNCTION
+
+export default function NodeTapDetector({ vertexId, centerOnNode }: Props) {
   const dispatch = useAppDispatch();
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const isSelected = useAppSelector((state: RootState) =>
-    state.selections.selectedNodes.includes(node.id),
+  const vertex = useAppSelector(
+    (state: RootState) => state.graphData.vertices.byId[vertexId],
   );
-  const isShown = useMemo(() => node.isShown, [node.isShown]);
 
-  const position = useSharedValue({ x: node.x, y: node.y });
-  const isRoot = useSharedValue(node.is_current_root);
-  const opacity = useSharedValue(0);
+  // !TODO: Need a better way to manage isSelected now that you're using enum
+  const isSelected = vertex.vertex_status === "active" ? true : false;
+  const isShown = vertex.isShown;
 
-  useEffect(() => {
-    isRoot.value = node.is_current_root;
-    position.value = { x: node.x, y: node.y };
-    opacity.value = node.isShown ? 1 : 0;
-  }, [
-    node.is_current_root,
-    node.x,
-    node.y,
-    isRoot,
-    position,
-    node.isShown,
-    opacity,
-  ]);
+  const position = useSharedValue({ x: vertex.x || 0, y: vertex.y || 0 });
+  const isRoot = useSharedValue(vertex.isCurrentRoot);
+  const opacity = useSharedValue(vertex.isShown ? 1 : 0);
 
   const {
     inactiveBgColor,
     activeBgColor,
     inactiveBorderColor,
     activeBorderColor,
-  } = getColors(node);
+  } = getColors(vertex);
 
   const animatedStyle = useAnimatedStyle(() => {
     const radius = interpolate(
@@ -112,7 +101,7 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
     .onStart(() => {
       // this line below is basically pointer events: "none"
       if (isShown) {
-        dispatch(handleNodeSelect(node.id));
+        dispatch(toggleVertex(vertexId));
       }
       // centerOnNode(node);
     })
@@ -130,7 +119,7 @@ export default function NodeTapDetector({ node, centerOnNode }: Props) {
             animatedTextStyle,
           ]}
         >
-          {node.first_name}
+          {vertex.first_name}
         </Animated.Text>
       </Animated.View>
     </GestureDetector>

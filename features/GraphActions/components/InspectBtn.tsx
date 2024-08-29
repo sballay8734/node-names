@@ -8,10 +8,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import {
-  setActiveRootNode,
-  updateRootNode,
-} from "@/features/Graph/redux/graphManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 

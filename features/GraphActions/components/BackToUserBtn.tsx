@@ -8,10 +8,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import {
-  setActiveRootNode,
-  updateRootNode,
-} from "@/features/Graph/redux/graphManagement";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
 

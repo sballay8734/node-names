@@ -2,33 +2,29 @@ import { memo, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { PositionedNode } from "@/features/D3/types/d3Types";
 import { useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/store";
+import { UiVertex } from "@/types/newArchTypes";
 
 import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
-  centerOnNode: (node: PositionedNode) => void;
+  centerOnNode: (node: UiVertex) => void;
 }
 
 function Nodes({ centerOnNode }: Props): React.JSX.Element {
-  const nodes = useAppSelector(
-    (state: RootState) => state.manageGraph.globalNodesHash,
+  const vertexIds = useAppSelector(
+    (state: RootState) => state.graphData.vertices.allIds,
   );
 
   const memoizedNodes = useMemo(() => {
     return (
-      nodes &&
-      Object.values(nodes).map((node) => (
-        <NodeTapDetector
-          key={node.id}
-          centerOnNode={centerOnNode}
-          node={node}
-        />
+      vertexIds &&
+      vertexIds.map((id) => (
+        <NodeTapDetector key={id} centerOnNode={centerOnNode} vertexId={id} />
       ))
     );
-  }, [nodes, centerOnNode]);
+  }, [vertexIds, centerOnNode]);
 
   return (
     <Animated.View

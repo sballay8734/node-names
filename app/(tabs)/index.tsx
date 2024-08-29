@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import React, { useContext } from "react";
+import { StyleSheet, View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import ControlButtons from "@/features/Graph/components/ControlButtons";
-import LinksCanvas from "@/features/Graph/components/LinksCanvas";
 import Nodes from "@/features/Graph/components/Nodes";
 import { useGestures } from "@/features/Graph/hooks/useGestures";
 import { useGraphData } from "@/features/Graph/hooks/useGraphData";
@@ -18,7 +17,8 @@ const Index = () => {
   const windowSize = useWindowSize();
   const theme = useContext(CustomThemeContext);
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
-  const { dataIsLoading, error } = useDbData();
+  const { dataIsLoading, error } = useDbData(windowSize);
+
   const vertices = useAppSelector(
     (state: RootState) => state.graphData.vertices,
   );
@@ -90,7 +90,21 @@ export default Index;
 
 // DONE vvv
 // -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
-// !TODO: The BIG QUESTION IS, Where do you inject the d3 logic and the position of the nodes? Is it possible to do it in redux? Or should you get the node positions after you successfully get the data?
+// !TODO: FIRST: Fix AddGroupBtn
+// !TODO: SECOND: Fix BackToUserBtn
+// !TODO: THIRD: Fix InspectBtn
+// !TODO: FOURTH: move popover stuff in "manageSelections" slice to UI slice
+// !TODO: FIFTH: get centerOnNode OUT of NodeTapDetector. Figure out a way to move it somewhere else!
+
+// !TODO: Fix else if (false) in toggleVertex reducer
+
+// !TODO: DOUBLE CHECK THAT YOU'RE TAKING ADVANTAGE OF D3 INDEXING IN YOU setInitialPostions function
+
+// !TODO: BEFORE YOU DO ANYTHING CHECK TYPE FLOW FROM INITIAL FETCH -> D3 -> Redux
+
+// !TODO: You MUST run d3 positioning logic inside useDbData BEFORE dispatching the data to state
+
+// !TODO: And how will you determine the initial state for isShown? Right now, by default it is true for ALL nodes simply for testing purposes
 
 // !TODO: Fix white screen flash while sign up request is happening and transitions to graph
 
