@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { swapRootVertex } from "../../redux/graphSlice";
+import { swapRootNode } from "../../redux/graphSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
@@ -19,7 +19,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 export default function BackToUserBtn(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const activeRootNodeId = useAppSelector(
-    (state: RootState) => state.graphData.vertices.activeRootId,
+    (state: RootState) => state.graphData.nodes.activeRootId,
   );
   const userNodeId = useAppSelector(
     (state: RootState) => state.graphData.userId,
@@ -41,7 +41,7 @@ export default function BackToUserBtn(): React.JSX.Element {
 
     if (userNodeId && activeRootNodeId) {
       dispatch(
-        swapRootVertex({ newRootId: userNodeId, oldRootId: activeRootNodeId }),
+        swapRootNode({ newRootId: userNodeId, oldRootId: activeRootNodeId }),
       );
     }
   }

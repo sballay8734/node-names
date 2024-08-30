@@ -1,8 +1,8 @@
 import { nodeBgMap } from "@/lib/constants/Colors";
 
-import { UiVertex } from "../types/graph";
+import { UiNode } from "../types/graph";
 
-export function getColors(node: UiVertex) {
+export function getColors(node: UiNode) {
   if (node.isCurrentRoot) {
     return {
       inactiveBgColor: "#121212",

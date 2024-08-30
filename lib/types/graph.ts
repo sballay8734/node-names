@@ -1,10 +1,10 @@
 import { Database } from "./database";
 
 // status types
-export type VertexStatus = "active" | "parent_active" | "inactive";
+export type NodeStatus = "active" | "parent_active" | "inactive";
 export type EdgeStatus = "active" | "inactive";
 // VERTICES *******************************************************************
-export interface RawVertex {
+export interface RawNode {
   id: number;
   user_id: string;
   created_at: string;
@@ -22,7 +22,7 @@ export interface RawVertex {
   phonetic_name: string | null;
   preferred_name: string | null;
 }
-// What d3 adds to node (Just added here for better vis on UiVertex)
+// What d3 adds to node (Just added here for better vis on UiNode)
 interface PropsFromD3 {
   index?: number | undefined;
   x?: number | undefined;
@@ -33,13 +33,13 @@ interface PropsFromD3 {
   fy?: number | null | undefined;
 }
 // UI Extensions of Raw types WITH ui controlling properties
-export interface UiVertex extends RawVertex, PropsFromD3 {
+export interface UiNode extends RawNode, PropsFromD3 {
   isCurrentRoot: boolean;
-  vertex_status: VertexStatus;
+  node_status: NodeStatus;
   isShown: boolean;
 }
-export interface Vertices {
-  [id: number]: UiVertex;
+export interface Nodes {
+  [id: number]: UiNode;
 }
 
 // EDGES *********************************************************************
@@ -54,12 +54,12 @@ export interface RawEdge {
   parent_id: number | null;
   child_id: number | null;
 
-  vertex_1_id: number;
-  vertex_2_id: number;
+  node_1_id: number;
+  node_2_id: number;
 }
 export interface UiEdge extends RawEdge {
-  vertex_1_status: VertexStatus;
-  vertex_2_status: VertexStatus;
+  node_1_status: NodeStatus;
+  node_2_status: NodeStatus;
   edge_status: EdgeStatus;
 }
 export interface Edges {

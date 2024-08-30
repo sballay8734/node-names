@@ -20,8 +20,8 @@ export type Database = {
           parent_id: number | null;
           relationship_type: Database["public"]["Enums"]["relationship_types"];
           user_id: string;
-          vertex_1_id: number;
-          vertex_2_id: number;
+          node_1_id: number;
+          node_2_id: number;
         };
         Insert: {
           child_id?: number | null;
@@ -32,8 +32,8 @@ export type Database = {
           parent_id?: number | null;
           relationship_type: Database["public"]["Enums"]["relationship_types"];
           user_id: string;
-          vertex_1_id: number;
-          vertex_2_id: number;
+          node_1_id: number;
+          node_2_id: number;
         };
         Update: {
           child_id?: number | null;
@@ -44,22 +44,22 @@ export type Database = {
           parent_id?: number | null;
           relationship_type?: Database["public"]["Enums"]["relationship_types"];
           user_id?: string;
-          vertex_1_id?: number;
-          vertex_2_id?: number;
+          node_1_id?: number;
+          node_2_id?: number;
         };
         Relationships: [
           {
             foreignKeyName: "edges_child_id_fkey";
             columns: ["child_id"];
             isOneToOne: false;
-            referencedRelation: "vertices";
+            referencedRelation: "nodes";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "edges_parent_id_fkey";
             columns: ["parent_id"];
             isOneToOne: false;
-            referencedRelation: "vertices";
+            referencedRelation: "nodes";
             referencedColumns: ["id"];
           },
           {
@@ -70,17 +70,17 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "edges_vertex_1_id_fkey";
-            columns: ["vertex_1_id"];
+            foreignKeyName: "edges_node_1_id_fkey";
+            columns: ["node_1_id"];
             isOneToOne: false;
-            referencedRelation: "vertices";
+            referencedRelation: "nodes";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "edges_vertex_2_id_fkey";
-            columns: ["vertex_2_id"];
+            foreignKeyName: "edges_node_2_id_fkey";
+            columns: ["node_2_id"];
             isOneToOne: false;
-            referencedRelation: "vertices";
+            referencedRelation: "nodes";
             referencedColumns: ["id"];
           },
         ];
@@ -156,7 +156,7 @@ export type Database = {
           },
         ];
       };
-      vertices: {
+      nodes: {
         Row: {
           id: number;
           created_at: string;
@@ -207,14 +207,14 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "vertices_group_id_fkey";
+            foreignKeyName: "nodes_group_id_fkey";
             columns: ["group_id"];
             isOneToOne: false;
             referencedRelation: "groups";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "vertices_user_id_fkey";
+            foreignKeyName: "nodes_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";

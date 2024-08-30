@@ -12,9 +12,9 @@ import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import {
-  getSelectedVertices,
-  getSoloSelectedVertex,
-  swapRootVertex,
+  getSelectedNodes,
+  getSoloSelectedNode,
+  swapRootNode,
 } from "../../redux/graphSlice";
 
 interface Props {
@@ -31,19 +31,19 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
   const longPressRef = useRef(false);
 
   // memoized with create selector
-  const selectedVertices = useAppSelector(getSelectedVertices);
-  const soloSelectedVertex = useAppSelector(getSoloSelectedVertex);
+  const selectedNodes = useAppSelector(getSelectedNodes);
+  const soloSelectedNode = useAppSelector(getSoloSelectedNode);
 
   const activeRootNodeId = useAppSelector(
-    (state: RootState) => state.graphData.vertices.activeRootId,
+    (state: RootState) => state.graphData.nodes.activeRootId,
   );
 
   const isButtonEnabled =
-    selectedVertices.length === 1 && soloSelectedVertex !== activeRootNodeId;
-  const isButtonVisible = selectedVertices.length > 0;
+    selectedNodes.length === 1 && soloSelectedNode !== activeRootNodeId;
+  const isButtonVisible = selectedNodes.length > 0;
   const isButtonFaded =
-    selectedVertices.length > 1 ||
-    (selectedVertices.length === 1 && soloSelectedVertex === activeRootNodeId);
+    selectedNodes.length > 1 ||
+    (selectedNodes.length === 1 && soloSelectedNode === activeRootNodeId);
 
   function handlePressIn() {
     isPressed.value = true;
@@ -61,18 +61,18 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
       return;
     }
 
-    if (soloSelectedVertex) {
-      console.log("SOLO:", soloSelectedVertex);
+    if (soloSelectedNode) {
+      console.log("SOLO:", soloSelectedNode);
       console.log("ACTIVE:", activeRootNodeId);
       dispatch(
-        swapRootVertex({
-          newRootId: soloSelectedVertex.id,
+        swapRootNode({
+          newRootId: soloSelectedNode.id,
           oldRootId: activeRootNodeId,
         }),
       );
       centerOnRoot();
     } else {
-      console.error(`Vertex not found`);
+      console.error(`Node not found`);
     }
 
     isPressed.value = false;

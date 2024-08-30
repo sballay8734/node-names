@@ -2,29 +2,29 @@ import { memo, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { UiVertex } from "@/lib/types/graph";
+import { UiNode } from "@/lib/types/graph";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import NodeTapDetector from "./NodeTapDetector";
 
 interface Props {
-  centerOnNode: (node: UiVertex) => void;
+  centerOnNode: (node: UiNode) => void;
 }
 
 function NodesWrapper({ centerOnNode }: Props): React.JSX.Element {
-  const vertexIds = useAppSelector(
-    (state: RootState) => state.graphData.vertices.allIds,
+  const nodeIds = useAppSelector(
+    (state: RootState) => state.graphData.nodes.allIds,
   );
 
   const memoizedNodes = useMemo(() => {
     return (
-      vertexIds &&
-      vertexIds.map((id) => (
-        <NodeTapDetector key={id} centerOnNode={centerOnNode} vertexId={id} />
+      nodeIds &&
+      nodeIds.map((id) => (
+        <NodeTapDetector key={id} centerOnNode={centerOnNode} nodeId={id} />
       ))
     );
-  }, [vertexIds, centerOnNode]);
+  }, [nodeIds, centerOnNode]);
 
   return (
     <Animated.View

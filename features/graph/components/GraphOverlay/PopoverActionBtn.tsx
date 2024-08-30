@@ -19,7 +19,7 @@ interface Props {
   finalX: number;
   finalY: number;
   visibilityRule: Rule;
-  selectedVerticesLength: number;
+  selectedNodesLength: number;
   animationProgress: SharedValue<number>;
   isRootSelected: boolean;
   // isVisibleCondition: (count: number, isRootSelected: boolean) => boolean;
@@ -79,7 +79,7 @@ function PopoverActionBtn({
   finalX,
   finalY,
   visibilityRule,
-  selectedVerticesLength,
+  selectedNodesLength,
   animationProgress,
   isRootSelected,
 }: Props): React.JSX.Element {
@@ -87,8 +87,8 @@ function PopoverActionBtn({
   const isPressed = useSharedValue<boolean>(false);
 
   const isVisible = useMemo(
-    () => determineVis(visibilityRule, selectedVerticesLength, isRootSelected),
-    [visibilityRule, selectedVerticesLength, isRootSelected],
+    () => determineVis(visibilityRule, selectedNodesLength, isRootSelected),
+    [visibilityRule, selectedNodesLength, isRootSelected],
   );
 
   const actionMap: PopoverActionMap = useMemo(

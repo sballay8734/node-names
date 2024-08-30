@@ -20,18 +20,18 @@ export default function DeselectAllBtn(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
-  const selectedVerticesCount = useAppSelector((state: RootState) => {
-    return Object.values(state.graphData.vertices.byId).filter(
-      (vertex) => vertex.vertex_status === "active",
+  const selectedNodesCount = useAppSelector((state: RootState) => {
+    return Object.values(state.graphData.nodes.byId).filter(
+      (node) => node.node_status === "active",
     ).length;
   });
 
   const inspectBtnStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(selectedVerticesCount >= 1 ? 1 : 0, {
+      opacity: withTiming(selectedNodesCount >= 1 ? 1 : 0, {
         duration: 200,
       }),
-      pointerEvents: selectedVerticesCount >= 1 ? "auto" : "none",
+      pointerEvents: selectedNodesCount >= 1 ? "auto" : "none",
       backgroundColor: withTiming(
         isPressed.value ? "rgba(15,15,15,1)" : "rgba(0,0,0,1)",
         {
@@ -84,7 +84,7 @@ export default function DeselectAllBtn(): React.JSX.Element {
       </View>
       <Animated.View style={[styles.widget]}>
         <Text style={{ fontWeight: "bold", fontSize: 9 }}>
-          {selectedVerticesCount}
+          {selectedNodesCount}
         </Text>
       </Animated.View>
     </AnimatedPressable>

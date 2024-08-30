@@ -13,41 +13,41 @@ import {
   ROOT_NODE_RADIUS,
   ROOT_TEXT_SIZE,
 } from "@/lib/constants/styles";
-import { UiVertex } from "@/lib/types/graph";
+import { UiNode } from "@/lib/types/graph";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { getColors } from "../../../lib/utils/getColors";
-import { toggleVertex } from "../redux/graphSlice";
+import { toggleNode } from "../redux/graphSlice";
 
 interface Props {
-  vertexId: number;
-  centerOnNode: (node: UiVertex) => void;
+  nodeId: number;
+  centerOnNode: (node: UiNode) => void;
 }
 
 // !TODO: PROPS MAY NOT BE EQUAL BECAUSE YOU'RE PASSING A FUNCTION
 
-export default function NodeTapDetector({ vertexId, centerOnNode }: Props) {
+export default function NodeTapDetector({ nodeId, centerOnNode }: Props) {
   const dispatch = useAppDispatch();
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const vertex = useAppSelector(
-    (state: RootState) => state.graphData.vertices.byId[vertexId],
+  const node = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId[nodeId],
   );
 
   // !TODO: Need a better way to manage isSelected now that you're using enum
-  const isSelected = vertex.vertex_status === "active" ? true : false;
-  const isShown = vertex.isShown;
+  const isSelected = node.node_status === "active" ? true : false;
+  const isShown = node.isShown;
 
-  const position = useSharedValue({ x: vertex.x || 0, y: vertex.y || 0 });
-  const isRoot = useSharedValue(vertex.isCurrentRoot);
-  const opacity = useSharedValue(vertex.isShown ? 1 : 0);
+  const position = useSharedValue({ x: node.x || 0, y: node.y || 0 });
+  const isRoot = useSharedValue(node.isCurrentRoot);
+  const opacity = useSharedValue(node.isShown ? 1 : 0);
 
   const {
     inactiveBgColor,
     activeBgColor,
     inactiveBorderColor,
     activeBorderColor,
-  } = getColors(vertex);
+  } = getColors(node);
 
   const animatedStyle = useAnimatedStyle(() => {
     const radius = interpolate(
@@ -101,7 +101,7 @@ export default function NodeTapDetector({ vertexId, centerOnNode }: Props) {
     .onStart(() => {
       // this line below is basically pointer events: "none"
       if (isShown) {
-        dispatch(toggleVertex(vertexId));
+        dispatch(toggleNode(nodeId));
       }
       // centerOnNode(node);
     })
@@ -119,7 +119,7 @@ export default function NodeTapDetector({ vertexId, centerOnNode }: Props) {
             animatedTextStyle,
           ]}
         >
-          {vertex.first_name}
+          {node.first_name}
         </Animated.Text>
       </Animated.View>
     </GestureDetector>

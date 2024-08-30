@@ -7,7 +7,7 @@ import { supabase } from "@/supabase";
 
 import { useAppDispatch } from "../../store/reduxHooks";
 import { Tables } from "../types/database";
-import { setInitialVertexPositions } from "../utils/setInitialVertexPostions";
+import { setInitialNodePositions } from "../utils/setInitialNodePostions";
 
 export default function useDbData(windowSize: WindowSize) {
   const dispatch = useAppDispatch();
@@ -25,27 +25,26 @@ export default function useDbData(windowSize: WindowSize) {
     setDataIsLoading(true);
     async function fetchData() {
       try {
-        const [verticesResult, edgesResult, groupsResult] = await Promise.all([
-          supabase.from("vertices").select(),
+        const [nodesResult, edgesResult, groupsResult] = await Promise.all([
+          supabase.from("nodes").select(),
           supabase.from("edges").select(),
           supabase.from("groups").select(),
         ]);
 
-        if (verticesResult.error) throw verticesResult.error;
+        if (nodesResult.error) throw nodesResult.error;
         if (edgesResult.error) throw edgesResult.error;
         if (groupsResult.error) throw groupsResult.error;
 
-        // !TODO: RUN D3 INITIAL POSITIONING LOGIC HERE (because vertices and edges are arrays BEFORE they go to redux)
-        const { positionedVertices, positionedEdges } =
-          setInitialVertexPositions(
-            verticesResult.data,
-            edgesResult.data,
-            windowSize,
-          );
+        // !TODO: RUN D3 INITIAL POSITIONING LOGIC HERE (because nodes and edges are arrays BEFORE they go to redux)
+        const { positionedNodes, positionedEdges } = setInitialNodePositions(
+          nodesResult.data,
+          edgesResult.data,
+          windowSize,
+        );
 
         dispatch(
           setInitialState({
-            vertices: positionedVertices,
+            nodes: positionedNodes,
             edges: positionedEdges,
           }),
         );

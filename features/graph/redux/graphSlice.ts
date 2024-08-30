@@ -1,22 +1,16 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import {
-  Edges,
-  Groups,
-  UiVertex,
-  VertexStatus,
-  Vertices,
-} from "@/lib/types/graph";
-import { D3Edge, D3Vertex } from "@/lib/utils/setInitialVertexPostions";
+import { Edges, Groups, UiNode, NodeStatus, Nodes } from "@/lib/types/graph";
+import { D3Edge, D3Node } from "@/lib/utils/setInitialNodePostions";
 import { RootState } from "@/store/store";
 
 interface GraphSliceState {
   userId: number | null;
-  vertices: {
-    byId: Vertices;
+  nodes: {
+    byId: Nodes;
     allIds: number[];
     activeRootId: number | null;
-    // activeVertexIds: D3Vertex[]
+    // activeNodeIds: D3Node[]
   };
   edges: {
     byId: Edges;
@@ -30,11 +24,11 @@ interface GraphSliceState {
 
 const initialState: GraphSliceState = {
   userId: null,
-  vertices: {
+  nodes: {
     byId: {},
     allIds: [],
     activeRootId: null,
-    // activeVertexIds: []
+    // activeNodeIds: []
   },
   edges: {
     byId: {},
@@ -54,116 +48,113 @@ const NewArchitectureSlice = createSlice({
     setInitialState: (
       state,
       action: PayloadAction<{
-        vertices: D3Vertex[];
+        nodes: D3Node[];
         edges: D3Edge[];
       }>,
     ) => {
-      const { vertices, edges } = action.payload;
+      const { nodes, edges } = action.payload;
 
-      const vertexStatusMap: {
-        [id: number]: { isCurrentRoot: boolean; vertex_status: string };
+      const nodeStatusMap: {
+        [id: number]: { isCurrentRoot: boolean; node_status: string };
       } = {};
 
-      // initialize vertices state
-      vertices.forEach((vertex) => {
-        if (!state.vertices.byId[vertex.id]) {
-          const newVertex = {
-            ...vertex,
-            isCurrentRoot: vertex.is_user,
-            vertex_status: (vertex.is_user
-              ? "active"
-              : "inactive") as VertexStatus,
+      // initialize nodes state
+      nodes.forEach((node) => {
+        if (!state.nodes.byId[node.id]) {
+          const newNode = {
+            ...node,
+            isCurrentRoot: node.is_user,
+            node_status: (node.is_user ? "active" : "inactive") as NodeStatus,
             isShown: true,
           };
-          state.vertices.byId[vertex.id] = newVertex;
-          state.vertices.allIds.push(vertex.id);
+          state.nodes.byId[node.id] = newNode;
+          state.nodes.allIds.push(node.id);
 
           // set active root id to user for initial load
-          if (newVertex.is_user) {
-            state.vertices.activeRootId = newVertex.id;
-            state.userId = newVertex.id;
+          if (newNode.is_user) {
+            state.nodes.activeRootId = newNode.id;
+            state.userId = newNode.id;
           }
 
           // store status in temporary map for SAFE look up during edges loop
-          vertexStatusMap[vertex.id] = {
-            isCurrentRoot: newVertex.isCurrentRoot,
-            vertex_status: newVertex.vertex_status,
+          nodeStatusMap[node.id] = {
+            isCurrentRoot: newNode.isCurrentRoot,
+            node_status: newNode.node_status,
           };
         }
       });
 
-      // initialize edges state and use vertextStatusMap
+      // initialize edges state and use nodetStatusMap
       edges.forEach((edge) => {
         if (!state.edges.byId[edge.id]) {
-          const vertex1InMap = vertexStatusMap[edge.vertex_1_id];
-          const vertex2InMap = vertexStatusMap[edge.vertex_2_id];
+          const node1InMap = nodeStatusMap[edge.node_1_id];
+          const node2InMap = nodeStatusMap[edge.node_2_id];
 
           state.edges.byId[edge.id] = {
             ...edge,
-            vertex_1_status: vertex1InMap
-              ? (vertex1InMap.vertex_status as VertexStatus)
+            node_1_status: node1InMap
+              ? (node1InMap.node_status as NodeStatus)
               : "inactive",
-            vertex_2_status: vertex2InMap
-              ? (vertex2InMap.vertex_status as VertexStatus)
+            node_2_status: node2InMap
+              ? (node2InMap.node_status as NodeStatus)
               : "inactive",
             edge_status:
-              (vertex1InMap && vertex1InMap.isCurrentRoot) ||
-              (vertex2InMap && vertex2InMap.isCurrentRoot)
+              (node1InMap && node1InMap.isCurrentRoot) ||
+              (node2InMap && node2InMap.isCurrentRoot)
                 ? "active"
                 : "inactive",
           };
         }
       });
     },
-    toggleVertex: (state, action: PayloadAction<number>) => {
-      const vertexId = action.payload;
+    toggleNode: (state, action: PayloadAction<number>) => {
+      const nodeId = action.payload;
 
       // because you have 3 statuses, you need to slightly complicate logic
-      if (state.vertices.byId[vertexId]) {
-        const status = state.vertices.byId[vertexId].vertex_status;
+      if (state.nodes.byId[nodeId]) {
+        const status = state.nodes.byId[nodeId].node_status;
 
-        // make vertex active if it's "parent_active" or "inactive" when clicked
+        // make node active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
-          state.vertices.byId[vertexId].vertex_status = "active";
-          // !TODO: handle case of vertex click when active AND parent IS active
+          state.nodes.byId[nodeId].node_status = "active";
+          // !TODO: handle case of node click when active AND parent IS active
         } else if (false) {
-          state.vertices.byId[vertexId].vertex_status = "parent_active";
-          // handle case of vertex click while active AND parent is NOT active
+          state.nodes.byId[nodeId].node_status = "parent_active";
+          // handle case of node click while active AND parent is NOT active
         } else {
-          state.vertices.byId[vertexId].vertex_status = "inactive";
+          state.nodes.byId[nodeId].node_status = "inactive";
         }
       }
     },
-    swapRootVertex: (
+    swapRootNode: (
       state,
       action: PayloadAction<{ newRootId: number; oldRootId: number }>,
     ) => {
       const { newRootId, oldRootId } = action.payload;
 
-      state.vertices.activeRootId = newRootId;
-      state.vertices.byId[newRootId].isCurrentRoot = true;
+      state.nodes.activeRootId = newRootId;
+      state.nodes.byId[newRootId].isCurrentRoot = true;
 
-      state.vertices.byId[oldRootId].isCurrentRoot = false;
+      state.nodes.byId[oldRootId].isCurrentRoot = false;
     },
   },
 });
 
-export const { setInitialState, toggleVertex, swapRootVertex } =
+export const { setInitialState, toggleNode, swapRootNode } =
   NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;
 
 // SELECTORS ******************************************************************
-export const getSelectedVertices = createSelector(
-  (state: RootState) => state.graphData.vertices.byId,
-  (vertices) =>
-    Object.values(vertices).filter(
-      (vertex): vertex is UiVertex => vertex.vertex_status === "active",
+export const getSelectedNodes = createSelector(
+  (state: RootState) => state.graphData.nodes.byId,
+  (nodes) =>
+    Object.values(nodes).filter(
+      (node): node is UiNode => node.node_status === "active",
     ),
 );
 
-export const getSoloSelectedVertex = createSelector(
-  getSelectedVertices,
-  (selectedVertices) =>
-    selectedVertices.length === 1 ? selectedVertices[0] : null,
+export const getSoloSelectedNode = createSelector(
+  getSelectedNodes,
+  (selectedNodes) => (selectedNodes.length === 1 ? selectedNodes[0] : null),
 );

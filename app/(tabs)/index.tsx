@@ -19,9 +19,7 @@ const Index = () => {
   const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { dataIsLoading, error } = useDbData(windowSize);
 
-  const vertices = useAppSelector(
-    (state: RootState) => state.graphData.vertices,
-  );
+  const nodes = useAppSelector((state: RootState) => state.graphData.nodes);
   const edges = useAppSelector((state: RootState) => state.graphData.edges);
 
   const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
@@ -51,7 +49,7 @@ const Index = () => {
     return null;
   }
 
-  // console.log("VERTICES:", vertices);
+  // console.log("VERTICES:", nodes);
   // console.log("EDGES:", edges);
 
   return (
@@ -100,7 +98,7 @@ export default Index;
 
 // !TODO: Setting userId should NOT happen inside of graphDataSlice (you just put it there temporarily). It should happen in it's own slice!
 
-// !TODO: Fix else if (false) in toggleVertex reducer
+// !TODO: Fix else if (false) in toggleNode reducer
 
 // !TODO: DOUBLE CHECK THAT YOU'RE TAKING ADVANTAGE OF D3 INDEXING IN YOU setInitialPostions function
 
@@ -112,7 +110,7 @@ export default Index;
 
 // !TODO: Fix white screen flash while sign up request is happening and transitions to graph
 
-// !TODO: remove default value of "male" from vertex "sex" and profiles "sex" (you did this just to get around dumb error) YOU'LL HAVE TO FIX USER CREATION THOUGH
+// !TODO: remove default value of "male" from node "sex" and profiles "sex" (you did this just to get around dumb error) YOU'LL HAVE TO FIX USER CREATION THOUGH
 
 // !TODO: Configure storage and access controls for storage
 

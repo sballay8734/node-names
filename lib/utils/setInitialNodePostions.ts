@@ -3,22 +3,22 @@ import * as d3 from "d3";
 import { WindowSize } from "@/lib/types/misc";
 
 import { MIN_SPACE_BETWEEN_NODES } from "../constants/styles";
-import { RawVertex, RawEdge } from "../types/graph";
+import { RawNode, RawEdge } from "../types/graph";
 
-export interface D3Vertex extends RawVertex, d3.SimulationNodeDatum {}
+export interface D3Node extends RawNode, d3.SimulationNodeDatum {}
 export interface D3Edge extends RawEdge {}
 
-export function setInitialVertexPositions(
-  vertices: RawVertex[],
+export function setInitialNodePositions(
+  nodes: RawNode[],
   edges: RawEdge[],
   windowSize: WindowSize,
-): { positionedVertices: D3Vertex[]; positionedEdges: D3Edge[] } {
+): { positionedNodes: D3Node[]; positionedEdges: D3Edge[] } {
   // make copies to allow d3 to take advantage of indexing
-  const verticesCopy = vertices.map((v) => v);
+  const nodesCopy = nodes.map((v) => v);
   const edgesCopy = edges.map((v) => v);
 
   const simulation = d3
-    .forceSimulation<D3Vertex>(verticesCopy)
+    .forceSimulation<D3Node>(nodesCopy)
     .force(
       "center",
       d3.forceCenter(windowSize.windowCenterX, windowSize.windowCenterY),
@@ -28,8 +28,8 @@ export function setInitialVertexPositions(
       "collision",
       d3
         .forceCollide()
-        .radius((vertex) =>
-          (vertex as D3Vertex).is_user ? 100 : MIN_SPACE_BETWEEN_NODES,
+        .radius((node) =>
+          (node as D3Node).is_user ? 100 : MIN_SPACE_BETWEEN_NODES,
         )
         .strength(0.3),
     )
@@ -37,7 +37,7 @@ export function setInitialVertexPositions(
       "charge",
       d3
         .forceManyBody()
-        .strength((vertext) => ((vertext as D3Vertex).is_user ? 100 : -20)),
+        .strength((nodet) => ((nodet as D3Node).is_user ? 100 : -20)),
     );
 
   // Run the simulation synchronously
@@ -47,7 +47,7 @@ export function setInitialVertexPositions(
   simulation.stop();
 
   return {
-    positionedVertices: vertices,
+    positionedNodes: nodes,
     positionedEdges: edges,
   };
 }
