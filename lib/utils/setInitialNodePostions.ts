@@ -37,7 +37,7 @@ export function setInitialNodePositions(
       "charge",
       d3
         .forceManyBody()
-        .strength((nodet) => ((nodet as D3Node).is_user ? 100 : -20)),
+        .strength((node) => ((node as D3Node).is_user ? 100 : -20)),
     );
 
   // Run the simulation synchronously

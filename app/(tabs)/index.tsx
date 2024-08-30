@@ -6,6 +6,7 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
 import NodesWrapper from "@/features/Graph/components/NodesWrapper";
+import TreeWrapper from "@/features/Graph/components/TreeWrapper";
 import useDbData from "@/lib/hooks/useDbData";
 import { useGestures } from "@/lib/hooks/useGestures";
 import { useGraphData } from "@/lib/hooks/useGraphData";
@@ -59,7 +60,8 @@ const Index = () => {
       >
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
           {/* <LinksCanvas windowSize={windowSize} /> */}
-          <NodesWrapper centerOnNode={centerOnNode} />
+          {/* <NodesWrapper centerOnNode={centerOnNode} /> */}
+          <TreeWrapper />
         </Animated.View>
         <GraphButtons
           arrowData={arrowData}
@@ -86,8 +88,6 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// DONE vvv
-// -- FOR NOW, don't allow inspect of any nodes that have a depth_from_user that is greater than 1. You may need to do this eventually, but for now, there's really no need
 // !TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
 // !TODO: "determineOptions" REALLY needs a refactor
 // !TODO: Do we really need "centerNode" function in useArrowData? How is it different from the other two centering functions?
@@ -95,6 +95,7 @@ export default Index;
 // !TODO: Refactor needed in MANY places to styles an logic
 // !TODO: FOURTH: move popover stuff in "manageSelections" slice to UI slice
 // !TODO: FIFTH: get centerOnNode OUT of NodeTapDetector. Figure out a way to move it somewhere else!
+// !TODO: Text on node is node transitioned smoothly
 
 // !TODO: Setting userId should NOT happen inside of graphDataSlice (you just put it there temporarily). It should happen in it's own slice!
 

@@ -3,7 +3,7 @@ import { Easing, SharedValue, withTiming } from "react-native-reanimated";
 
 import { WindowSize } from "@/lib/types/misc";
 
-import { UiNode } from "../types/database";
+import { UiNode } from "../types/graph";
 
 import { useArrowData } from "./useArrowData";
 import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
