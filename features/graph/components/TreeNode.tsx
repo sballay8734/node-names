@@ -1,70 +1,87 @@
-import React from "react";
 import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
-type Node = {
-  name: string;
-  groupId: number | null;
-  links: Node[];
-  relationshipType:
-    | "spouse"
-    | "other"
-    | "parent_child"
-    | "child_parent"
-    | "sibling"
-    | null;
-  x?: number;
-  y?: number;
-};
+import { Node } from "@/lib/utils/newTreeGraphStrategy";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
+import windowSize from "../redux/windowSize";
+import { ROOT_NODE_RADIUS } from "@/lib/constants/styles";
+import { useEffect } from "react";
 
-interface TreeNodeProps {
-  node: Node;
-  isSelected: boolean;
-  onSelect: (node: Node) => void;
+interface Props {
+  node: d3.HierarchyPointNode<Node>;
 }
 
-export const TreeNode: React.FC<TreeNodeProps> = ({
-  node,
-  isSelected,
-  onSelect,
-}) => {
+// !TODO: PROPS MAY NOT BE EQUAL BECAUSE YOU'RE PASSING A FUNCTION
+
+export default function TreeNode({ node }: Props) {
+  // const dispatch = useAppDispatch();
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
+  const position = useSharedValue({
+    x: windowSize.windowCenterX,
+    y: windowSize.windowCenterY,
+  });
+
+  useEffect(() => {
+    // Trigger the animation when the component mounts
+    position.value = withTiming(
+      { x: node.x, y: node.y },
+      { duration: 500 }, // Adjust duration as needed
+    );
+  }, [node.x, node.y, position]);
+
   const tap = Gesture.Tap()
-    .onEnd(() => {
-      onSelect(node);
+    .onStart(() => {
+      console.log(node.data.name);
     })
     .runOnJS(true);
 
-  // console.log(node.name, node.x);
-  // console.log(node.name, node.y);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: position.value.x },
+        { translateY: position.value.y },
+      ],
+    };
+  });
 
   return (
     <GestureDetector gesture={tap}>
-      <Animated.View
-        style={[
-          styles.nodeContainer,
-          {
-            left: node.x,
-            top: node.y,
-            backgroundColor: isSelected ? "#c2ffef" : "#f0f0f0",
-          },
-        ]}
-      >
-        <Animated.Text style={styles.nodeText}>{node.name}</Animated.Text>
+      <Animated.View style={[styles.node, animatedStyle]}>
+        <Animated.Text style={[{ ...styles.text }]}>
+          {node.data.name}
+        </Animated.Text>
       </Animated.View>
     </GestureDetector>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  nodeContainer: {
+  node: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     position: "absolute",
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    backgroundColor: "#400601",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
-  nodeText: {
-    fontSize: 16,
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
+  text: {
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "transparent",
+    color: "white",
   },
 });

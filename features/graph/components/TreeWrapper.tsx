@@ -1,29 +1,21 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import Animated from "react-native-reanimated";
+import { View } from "react-native";
 
-import { testData } from "@/lib/utils/newTreeGraphStrategy";
+import { WindowSize } from "@/lib/types/misc";
+import { createTree, Node } from "@/lib/utils/newTreeGraphStrategy";
 
 import Tree from "./Tree";
 
-const TreeWrapper: React.FC = () => {
+interface Props {
+  data: Node;
+  windowSize: WindowSize;
+}
+
+export default function TreeWrapper({ data, windowSize }: Props) {
+  const { descendants, links } = createTree(data, windowSize);
+
   return (
-    <Animated.View style={styles.treeWrapper}>
-      <Tree data={testData} />
-    </Animated.View>
+    <View style={{ flex: 1, backgroundColor: "green" }}>
+      <Tree descendants={descendants} links={links} />
+    </View>
   );
-};
-
-const styles = StyleSheet.create({
-  treeWrapper: {
-    position: "absolute",
-    backgroundColor: "red",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    left: 0,
-    // flex: 1,
-  },
-});
-
-export default TreeWrapper;
+}

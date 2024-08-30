@@ -6,13 +6,15 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
 import NodesWrapper from "@/features/Graph/components/NodesWrapper";
-import TreeWrapper from "@/features/Graph/components/TreeWrapper";
 import useDbData from "@/lib/hooks/useDbData";
 import { useGestures } from "@/lib/hooks/useGestures";
 import { useGraphData } from "@/lib/hooks/useGraphData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
+import { createTree, testData } from "@/lib/utils/newTreeGraphStrategy";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import Tree from "@/features/Graph/components/Tree";
+import TreeWrapper from "@/features/Graph/components/TreeWrapper";
 
 const Index = () => {
   const windowSize = useWindowSize();
@@ -50,9 +52,6 @@ const Index = () => {
     return null;
   }
 
-  // console.log("VERTICES:", nodes);
-  // console.log("EDGES:", edges);
-
   return (
     <GestureDetector gesture={composed}>
       <View
@@ -61,7 +60,7 @@ const Index = () => {
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
           {/* <LinksCanvas windowSize={windowSize} /> */}
           {/* <NodesWrapper centerOnNode={centerOnNode} /> */}
-          <TreeWrapper />
+          <TreeWrapper data={testData} windowSize={windowSize} />
         </Animated.View>
         <GraphButtons
           arrowData={arrowData}

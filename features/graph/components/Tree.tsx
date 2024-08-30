@@ -1,85 +1,23 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
-import { createTree, Node } from "@/lib/utils/newTreeGraphStrategy";
-import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import type { Node } from "@/lib/utils/newTreeGraphStrategy";
 
-import { TreeNode } from "./TreeNode";
+import TreeNode from "./TreeNode";
 
-const Tree: React.FC<{ data: Node }> = ({ data }) => {
-  const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+interface Props {
+  descendants: d3.HierarchyPointNode<Node>[];
+  links: {
+    source: d3.HierarchyPointNode<Node> | null;
+    target: d3.HierarchyPointNode<Node>;
+  }[];
+}
 
-  const handleSelect = (node: Node) => {
-    setSelectedNode(node);
-  };
-
-  const renderLinks = (root: d3.HierarchyPointNode<Node>) => {
-    return root.links().map((link, index) => {
-      const { source, target } = link;
-
-      return (
-        <View
-          key={index}
-          style={[
-            styles.link,
-            {
-              left: source.x,
-              top: source.y,
-              width: Math.abs(target.x - source.x),
-              height: Math.abs(target.y - source.y),
-              transform: [{ translateX: source.x }, { translateY: source.y }],
-            },
-          ]}
-        />
-      );
-    });
-  };
-
-  const renderNodes = (root: d3.HierarchyPointNode<Node>) => {
-    return root
-      .descendants()
-      .map((node) => (
-        <TreeNode
-          key={node.data.name}
-          node={node.data}
-          isSelected={selectedNode?.name === node.data.name}
-          onSelect={handleSelect}
-        />
-      ));
-  };
-
-  const root = createTree(data, windowSize);
-
+export default function Tree({ descendants, links }: Props) {
   return (
-    <View style={styles.treeContainer}>
-      {renderLinks(root)}
-      {renderNodes(root)}
+    <View style={{ flex: 1, backgroundColor: "red" }}>
+      {descendants.map((node) => (
+        <TreeNode key={node.data.name} node={node} />
+      ))}
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  treeContainer: {
-    flex: 1,
-    position: "relative",
-  },
-  nodeContainer: {
-    position: "absolute",
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
-  nodeText: {
-    fontSize: 16,
-  },
-  link: {
-    position: "absolute",
-    backgroundColor: "#ccc",
-    height: 1,
-  },
-});
-
-export default Tree;
+}

@@ -12,7 +12,7 @@ const useWindowSize = () => {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
   useEffect(() => {
-    console.log(`[${new Date().toISOString()}] Rendering useWindowSize`);
+    // console.log(`[${new Date().toISOString()}] Rendering useWindowSize`);
     function handleChange({ window }: { window: ScaledSize }) {
       const adjHeight = window.height - TAB_BAR_HEIGHT;
 
