@@ -55,12 +55,15 @@ const Index = () => {
 
   return (
     <GestureDetector gesture={composed}>
-      <View
-        style={[styles.canvasWrapper, { backgroundColor: theme.bgBaseTest }]}
-      >
+      {/* this view is the one that DETECTS gestures */}
+      <View style={[styles.container]}>
+        {/* WRAP THESE IN A WRAPPER */}
+        {/* NODE SVGS */}
+        {/* LINK SVGS */}
+        {/* THEN OVERLAY INVISIBLE BTNS */}
         <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
-          {/* <LinksCanvas windowSize={windowSize} /> */}
-          {/* <NodesWrapper centerOnNode={centerOnNode} /> */}
+          {/* <LinksCanvas windowSize={windowSize} />
+          <NodesWrapper centerOnNode={centerOnNode} /> */}
           <TreeWrapper data={testData} windowSize={windowSize} />
         </Animated.View>
         <GraphButtons
@@ -74,9 +77,18 @@ const Index = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+    flex: 1,
+    flexDirection: "column",
+    // alignItems: "center",
+    // justifyContent: "center",
+    backgroundColor: "rgba(120, 32, 18, 0.6)", // Made semi-transparent
+  },
   canvasWrapper: {
     flex: 1,
-    position: "relative",
+    flexDirection: "column",
+    backgroundColor: "rgba(31, 84, 29, 1)",
   },
   spinner: {
     flex: 1,

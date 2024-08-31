@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { WindowSize } from "@/lib/types/misc";
 import { createTree, Node } from "@/lib/utils/newTreeGraphStrategy";
@@ -14,13 +15,15 @@ export default function TreeWrapper({ data, windowSize }: Props) {
   const { descendants, links } = createTree(data, windowSize);
 
   return (
-    <View
+    <Animated.View
       style={{
-        flex: 1,
-        backgroundColor: "orange",
+        // flex: 1,
+        // backgroundColor: "#e38c40",
+        height: "100%",
+        width: "100%",
       }}
     >
       <Tree descendants={descendants} links={links} />
-    </View>
+    </Animated.View>
   );
 }
