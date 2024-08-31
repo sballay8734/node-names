@@ -92,10 +92,81 @@ export const testData: Node = {
         },
       ],
     },
+    {
+      name: "Chicago Bulls",
+      groupId: 1,
+      relationshipType: "spouse",
+      children: [
+        {
+          name: "Los Angeles Lakers",
+          groupId: 1,
+          relationshipType: "parent_child",
+          children: [],
+        },
+        {
+          name: "Golden State Warriors",
+          groupId: 1,
+          relationshipType: "parent_child",
+          children: [],
+        },
+      ],
+    },
+    {
+      name: "New York Yankees",
+      groupId: 2,
+      relationshipType: "sibling",
+      children: [
+        {
+          name: "Boston Red Sox",
+          groupId: 2,
+          relationshipType: "spouse",
+          children: [
+            {
+              name: "Houston Astros",
+              groupId: 2,
+              relationshipType: "parent_child",
+              children: [],
+            },
+            {
+              name: "Chicago Cubs",
+              groupId: 2,
+              relationshipType: "parent_child",
+              children: [],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Dallas Cowboys",
+      groupId: 3,
+      relationshipType: "other",
+      children: [
+        {
+          name: "San Francisco 49ers",
+          groupId: 3,
+          relationshipType: "spouse",
+          children: [
+            {
+              name: "Miami Dolphins",
+              groupId: 3,
+              relationshipType: "parent_child",
+              children: [],
+            },
+            {
+              name: "Green Bay Packers",
+              groupId: 3,
+              relationshipType: "parent_child",
+              children: [],
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
 
-export const TREE_NODE_DIM = 60;
+export const TREE_NODE_DIM = 100;
 export const TREE_NODE_RADIUS = TREE_NODE_DIM / 2;
 
 export function createTree(data: Node, windowSize: WindowSize) {
@@ -104,31 +175,33 @@ export function createTree(data: Node, windowSize: WindowSize) {
   const height = windowSize.height;
   const cx = windowSize.windowCenterX - TREE_NODE_RADIUS; // Center X
   const cy = windowSize.windowCenterY - TREE_NODE_RADIUS; // Center Y
-  const radius = Math.min(width, height) / 2 - 30;
+  const radius = Math.min(width, height) / 2 + 750;
 
   // Create a radial tree layout. The layout’s first dimension (x) is the angle, while the second (y) is the radius.
   const tree = d3
     .tree<Node>()
     .size([360, radius])
-    .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+    .separation((a, b) => (a.parent === b.parent ? 50 : 100));
 
   // Sort the tree and apply the layout.
   const root = tree(
     d3.hierarchy(data).sort((a, b) => d3.ascending(a.data.name, b.data.name)),
   );
 
-  root.x = cx;
-  root.y = cy;
-
   const descendants = root.descendants();
   const links = root.links();
+
+  // TODO: Use this to handle grouping
+  // const groupedNodes = root.descendants().map((n) => {
+  //   if (n.data.groupId)...
+  // })
 
   // const linkGenerator = d3
   //   .linkRadial()
   //   .angle((d) => d.x)
   //   .radius((d) => d.y);
 
-  // const radialLinks = links.map((link) => ({
+  // const links = root.links().map((link) => ({
   //   source: [link.source.x, link.source.y],
   //   target: [link.target.x, link.target.y],
   //   path: linkGenerator(link),
@@ -140,60 +213,48 @@ export function createTree(data: Node, windowSize: WindowSize) {
   };
 }
 
-const test = [
-  {
-    path: "M0,0C-1.98,27.679,26.626,-7.818,53.252,-15.636",
-    source: [3.2129924866259247, 0],
-    target: [1.2851969946503699, 55.5],
-  },
-  {
-    path: "M0,0C-1.98,27.679,-7.818,26.626,-15.636,53.252",
-    source: [3.2129924866259247, 0],
-    target: [3.4271919857343196, 55.5],
-  },
-  {
-    path: "M0,0C-1.98,27.679,-25.242,-11.528,-50.485,-23.056",
-    source: [3.2129924866259247, 0],
-    target: [5.140787978601479, 55.5],
-  },
-  {
-    path: "M53.252,-15.636C79.878,-23.454,62.916,-54.517,83.888,-72.69",
-    source: [1.2851969946503699, 55.5],
-    target: [0.8567979964335799, 111],
-  },
-  {
-    path: "M53.252,-15.636C79.878,-23.454,82.403,11.848,109.87,15.797",
-    source: [1.2851969946503699, 55.5],
-    target: [1.7135959928671598, 111],
-  },
-  {
-    path: "M-15.636,53.252C-23.454,79.878,-23.454,79.878,-31.272,106.504",
-    source: [3.4271919857343196, 55.5],
-    target: [3.4271919857343196, 111],
-  },
-  {
-    path: "M-50.485,-23.056C-75.727,-34.583,-75.727,-34.583,-100.969,-46.111",
-    source: [5.140787978601479, 55.5],
-    target: [5.140787978601479, 111],
-  },
-  {
-    path: "M-31.272,106.504C-39.09,133.13,0,138.75,0,166.5",
-    source: [3.4271919857343196, 111],
-    target: [3.141592653589793, 166.5],
-  },
-  {
-    path: "M-31.272,106.504C-39.09,133.13,-75.014,116.724,-90.017,140.069",
-    source: [3.4271919857343196, 111],
-    target: [3.7127913178788465, 166.5],
-  },
-  {
-    path: "M-100.969,-46.111C-126.211,-57.639,-137.338,-19.746,-164.805,-23.695",
-    source: [5.140787978601479, 111],
-    target: [4.855188646456953, 166.5],
-  },
-  {
-    path: "M-100.969,-46.111C-126.211,-57.639,-104.86,-90.862,-125.832,-109.034",
-    source: [5.140787978601479, 111],
-    target: [5.426387310746007, 166.5],
-  },
-];
+// const testLink = {
+//   source: {
+//     children: [[Node], [Node]],
+//     data: {
+//       children: [Array],
+//       groupId: 3,
+//       name: "Linda Smith",
+//       relationshipType: "spouse",
+//     },
+//     depth: 2,
+//     height: 1,
+//     parent: {
+//       children: [Array],
+//       data: [Object],
+//       depth: 1,
+//       height: 2,
+//       parent: [Node],
+//       x: 327.27272727272725,
+//       y: 315.5,
+//     },
+//     x: 327.27272727272725,
+//     y: 631,
+//   },
+//   target: {
+//     data: {
+//       children: [Array],
+//       groupId: 3,
+//       name: "Kevin Smith",
+//       relationshipType: "parent_child",
+//     },
+//     depth: 3,
+//     height: 0,
+//     parent: {
+//       children: [Array],
+//       data: [Object],
+//       depth: 2,
+//       height: 1,
+//       parent: [Node],
+//       x: 327.27272727272725,
+//       y: 631,
+//     },
+//     x: 338.1818181818182,
+//     y: 946.5,
+//   },
+// };

@@ -14,7 +14,12 @@ export default function TreeWrapper({ data, windowSize }: Props) {
   const { descendants, links } = createTree(data, windowSize);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "green" }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "orange",
+      }}
+    >
       <Tree descendants={descendants} links={links} />
     </View>
   );

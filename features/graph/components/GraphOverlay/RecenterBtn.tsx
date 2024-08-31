@@ -47,7 +47,7 @@ const RecenterBtn = ({
   const handlePressOut = () => {
     isPressed.value = false;
     // REMOVE: Temp for easy sign out
-    supabase.auth.signOut();
+    // supabase.auth.signOut();
   };
 
   return (
