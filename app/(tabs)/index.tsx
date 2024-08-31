@@ -51,28 +51,27 @@ const Index = () => {
     return null;
   }
 
-  console.log(windowSize);
-
   return (
-    <GestureDetector gesture={composed}>
-      {/* this view is the one that DETECTS gestures */}
-      <View style={[styles.container]}>
-        {/* WRAP THESE IN A WRAPPER */}
-        {/* NODE SVGS */}
-        {/* LINK SVGS */}
-        {/* THEN OVERLAY INVISIBLE BTNS */}
-        <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
-          {/* <LinksCanvas windowSize={windowSize} />
-          <NodesWrapper centerOnNode={centerOnNode} /> */}
+    // <GestureDetector gesture={composed}>
+
+    <View style={[styles.container]}>
+      <TreeWrapper data={testData} windowSize={windowSize} />
+      {/* WRAP THESE IN A WRAPPER */}
+      {/* NODE SVGS */}
+      {/* LINK SVGS */}
+      {/* THEN OVERLAY INVISIBLE BTNS */}
+      {/* <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
+          <LinksCanvas windowSize={windowSize} />
+          <NodesWrapper centerOnNode={centerOnNode} />
           <TreeWrapper data={testData} windowSize={windowSize} />
-        </Animated.View>
-        <GraphButtons
-          arrowData={arrowData}
-          showArrow={showArrow}
-          centerOnRoot={centerOnRoot}
-        />
-      </View>
-    </GestureDetector>
+        </Animated.View> */}
+      <GraphButtons
+        arrowData={arrowData}
+        showArrow={showArrow}
+        centerOnRoot={centerOnRoot}
+      />
+    </View>
+    // </GestureDetector>
   );
 };
 

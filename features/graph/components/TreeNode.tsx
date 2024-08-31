@@ -1,105 +1,42 @@
-import { useEffect } from "react";
-import { StyleSheet } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Circle, Group, SkiaProps } from "@shopify/react-native-skia";
+import { useWindowDimensions } from "react-native";
 import Animated, {
-  useAnimatedStyle,
+  useAnimatedProps,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
+import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 import { Node, TREE_NODE_DIM } from "@/lib/utils/newTreeGraphStrategy";
-import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import { forwardRef, useEffect } from "react";
 
 interface Props {
   node: d3.HierarchyPointNode<Node>;
 }
 
-// !TODO: PROPS MAY NOT BE EQUAL BECAUSE YOU'RE PASSING A FUNCTION
-
+// !TODO: you CANNOT USE useSelector INSIDE OF A CANVAS
 export default function TreeNode({ node }: Props) {
-  // const dispatch = useAppDispatch();
-  const windowSize = useAppSelector((state: RootState) => state.windowSize);
+  const { height, width } = useWindowDimensions();
   const position = useSharedValue({
-    x: node.x,
-    y: 0,
+    cx: width / 2,
+    cy: (height - TAB_BAR_HEIGHT) / 2,
   });
 
-  useEffect(() => {
-    // Animate to the final position
-    position.value = withTiming(
-      {
-        x: node.x,
-        y: node.y,
-      },
-      { duration: 500 },
-    );
-  }, [node.x, node.y, position]);
-
-  const tap = Gesture.Tap()
-    .onStart(() => {
-      console.log(node.data.name);
-    })
-    .runOnJS(true);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        // !TODO: ROTATE MUST BE FIRST
-        { rotate: `${(position.value.x * 180) / Math.PI - 90}deg` },
-        { translateY: position.value.y },
-        // { translateX: position.value.x },
-      ],
-    };
-  });
+  // const transform = useDerivedValue(() => {
+  //   const angle = (position.value.cx * 180) / Math.PI - 90;
+  //   return [{ rotate: angle }, { translateY: final.value.cy }];
+  // });
 
   return (
-    <GestureDetector gesture={tap}>
-      <Animated.View
-        style={[
-          styles.node,
-          { backgroundColor: node.depth === 0 ? "green" : "#400601" },
-          animatedStyle,
-        ]}
-      >
-        <Animated.Text
-          style={[
-            {
-              ...styles.text,
-              transform: [
-                { rotate: `-${(position.value.x * 180) / Math.PI - 90}deg` },
-              ],
-            },
-          ]}
-        >
-          {node.data.name}
-        </Animated.Text>
-      </Animated.View>
-    </GestureDetector>
+    <Group>
+      <Circle
+        // transform={[]}
+        r={TREE_NODE_DIM / 2}
+        color={node.depth === 0 ? "red" : "#400601"}
+        cx={position.value.cx}
+        cy={position.value.cy}
+      />
+    </Group>
   );
 }
-
-const styles = StyleSheet.create({
-  node: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    backgroundColor: "#400601",
-    width: TREE_NODE_DIM,
-    height: TREE_NODE_DIM,
-    borderRadius: 100,
-  },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-  },
-  text: {
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "transparent",
-    color: "white",
-  },
-});

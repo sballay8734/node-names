@@ -175,7 +175,7 @@ export function createTree(data: Node, windowSize: WindowSize) {
   const height = windowSize.height;
   const cx = windowSize.windowCenterX - TREE_NODE_RADIUS; // Center X
   const cy = windowSize.windowCenterY - TREE_NODE_RADIUS; // Center Y
-  const radius = Math.min(width, height) / 2 + 750;
+  const radius = Math.min(width, height) / 2 + 300;
 
   // Create a radial tree layout. The layout’s first dimension (x) is the angle, while the second (y) is the radius.
   const tree = d3

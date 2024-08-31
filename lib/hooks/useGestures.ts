@@ -2,12 +2,12 @@ import { useMemo } from "react";
 import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue, withDecay } from "react-native-reanimated";
 
-const MIN_SCALE = 0.1;
-const MAX_SCALE = 4;
+export const MIN_SCALE = 0.1;
+export const MAX_SCALE = 4;
 
 export const INITIAL_SCALE = 0.3;
 export const CENTER_ON_SCALE = 0.4;
-const SCALE_SENSITIVITY = 1.2;
+export const SCALE_SENSITIVITY = 1.2;
 
 export const useGestures = () => {
   // console.log(`[${new Date().toISOString()}] Running useGestures`);
@@ -66,6 +66,7 @@ export const useGestures = () => {
             // Adjust the translation to keep the center point fixed
             translateX.value = translateX.value * scaleChange;
             translateY.value = translateY.value * scaleChange;
+            // console.log(scale.value);
           }
         })
         .onEnd((e) => {
@@ -79,16 +80,13 @@ export const useGestures = () => {
     [pan, pinch],
   );
 
-  return useMemo(
-    () => ({
-      composed,
-      scale,
-      translateX,
-      translateY,
-      lastScale,
-      focalX,
-      focalY,
-    }),
-    [composed, scale, translateX, translateY, lastScale, focalX, focalY],
-  );
+  return {
+    composed,
+    scale,
+    translateX,
+    translateY,
+    lastScale,
+    focalX,
+    focalY,
+  };
 };
