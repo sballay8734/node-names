@@ -6,7 +6,11 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { Node } from "@/lib/utils/newTreeGraphStrategy";
+import {
+  Node,
+  TREE_NODE_DIM,
+  TREE_NODE_RADIUS,
+} from "@/lib/utils/newTreeGraphStrategy";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 import windowSize from "../redux/windowSize";
@@ -23,21 +27,27 @@ export default function TreeNode({ node }: Props) {
   // const dispatch = useAppDispatch();
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const position = useSharedValue({
-    x: windowSize.windowCenterX,
-    y: windowSize.windowCenterY,
+    x: windowSize.windowCenterX - TREE_NODE_RADIUS,
+    y: windowSize.windowCenterY - TREE_NODE_RADIUS,
   });
 
   useEffect(() => {
     // Trigger the animation when the component mounts
     position.value = withTiming(
-      { x: node.x, y: node.y },
+      {
+        x: node.depth === 0 ? node.x : node.x - TREE_NODE_RADIUS,
+        y:
+          node.depth === 0
+            ? node.y
+            : node.y + windowSize.windowCenterY + TREE_NODE_RADIUS,
+      },
       { duration: 500 }, // Adjust duration as needed
     );
-  }, [node.x, node.y, position]);
+  }, [node.x, node.y, position, node.depth]);
 
   const tap = Gesture.Tap()
     .onStart(() => {
-      console.log(node.data.name);
+      console.log(node);
     })
     .runOnJS(true);
 
@@ -69,8 +79,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "absolute",
     backgroundColor: "#400601",
-    width: 60,
-    height: 60,
+    width: TREE_NODE_DIM,
+    height: TREE_NODE_DIM,
     borderRadius: 30,
   },
   image: {
@@ -85,3 +95,38 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
+
+// const huh = {
+//   data: {
+//     children: [],
+//     groupId: 3,
+//     name: "Kevin Smith",
+//     relationshipType: "parent_child",
+//   },
+//   depth: 3,
+//   height: 0,
+//   parent: {
+//     children: [[Node], [Circular]],
+//     data: {
+//       children: [Array],
+//       groupId: 3,
+//       name: "Linda Smith",
+//       relationshipType: "spouse",
+//     },
+//     depth: 2,
+//     height: 1,
+//     parent: {
+//       children: [Array],
+//       data: [Object],
+//       depth: 1,
+//       height: 2,
+//       parent: [Node],
+//       x: 5.140787978601479,
+//       y: 55.5,
+//     },
+//     x: 5.140787978601479,
+//     y: 111,
+//   },
+//   x: 5.426387310746007,
+//   y: 166.5,
+// };
