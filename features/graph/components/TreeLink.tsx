@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 
-import { Node, TREE_NODE_DIM } from "@/lib/utils/newTreeGraphStrategy";
+import { Node } from "@/lib/utils/newTreeGraphStrategy";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
