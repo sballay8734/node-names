@@ -6,11 +6,14 @@ import {
   vec,
   Text,
 } from "@shopify/react-native-skia";
+import * as d3 from "d3";
 import { useEffect } from "react";
 import { Dimensions } from "react-native";
 import {
+  Easing,
   useDerivedValue,
   useSharedValue,
+  withSequence,
   withTiming,
 } from "react-native-reanimated";
 
@@ -37,34 +40,60 @@ const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 // !TODO: you CANNOT USE useSelector INSIDE OF A CANVAS
+
+// !TODO: CLEAN ALL THIS UP
 export default function TreeNode({ node }: Props) {
   const strokeWidth = 2;
   const r = (TREE_NODE_DIM - strokeWidth) / 2;
+  const angle = ((node.x - 90) / 180) * Math.PI;
+  const radius = node.y * 4;
+  const coords = [radius * Math.cos(angle), radius * Math.sin(angle)];
+  // const angle = calculateAngle(centerX, centerY, node.x, node.y);
 
-  const position = useSharedValue({ x: centerX, y: centerY });
-  const rotation = useSharedValue(0);
+  const customProjection = d3.geoProjection(function (lambda, phi) {
+    const angle = ((lambda - 90) / 180) * Math.PI;
+    const radius = phi;
+    return [radius * Math.cos(angle), radius * Math.sin(angle)];
+  });
+
+  const hello = customProjection([coords[0], coords[1]]);
+
+  const trans = useSharedValue({
+    rotate: 0,
+    x: centerX,
+    y: centerY,
+  });
 
   useEffect(() => {
     // Trigger animation when component mounts
-    rotation.value = withTiming(
-      ((node.x * 180) / Math.PI - 90) * (Math.PI / 180),
-      { duration: 500 },
+    const duration = 1000;
+
+    trans.value = withSequence(
+      // (trans.value = withTiming(
+      //   { rotate: angle, x: node.y + centerX, y: centerY },
+      //   { duration },
+      // )),
+      (trans.value = withTiming(
+        { rotate: 0, x: coords[0] + centerX, y: coords[1] + centerY },
+        { duration },
+      )),
+      // (trans.value = withTiming(
+      //   { rotate: angle, x: node.y + centerX, y: trans.value.y },
+      //   { duration },
+      // )),
     );
-    position.value = withTiming(
-      {
-        x: node.x + centerX,
-        y: node.y + centerY,
-      },
-      { duration: 500 },
-    );
-  }, [position, node.x, node.y, rotation]);
+  }, [node.x, node.y, trans]);
 
   const transform = useDerivedValue(() => {
-    return [{ translateY: position.value.y }, { translateX: position.value.x }];
+    return [
+      { rotate: trans.value.rotate },
+      { translateX: trans.value.x },
+      { translateY: trans.value.y },
+    ];
   });
 
   return (
-    <Group transform={transform}>
+    <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={r}>
         <Paint color={node.depth === 0 ? "#6eff81" : "#400601"} />
         <Paint color="#486c78" style="stroke" strokeWidth={strokeWidth} />

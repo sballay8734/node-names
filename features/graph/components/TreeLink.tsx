@@ -22,8 +22,8 @@ export default function TreeLink({ link }: Props) {
   const targetX = link.target.x + centerX;
   const targetY = link.target.y + centerY;
 
-  console.log("SOURCE:", sourceX, sourceY);
-  console.log("TARGET:", targetX, targetY);
+  // console.log("SOURCE:", sourceX, sourceY);
+  // console.log("TARGET:", targetX, targetY);
 
   const path = Skia.Path.Make();
   path.moveTo(sourceX, sourceY);
