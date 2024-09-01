@@ -1,5 +1,6 @@
 import { Canvas, Fill, Group, useCanvasRef } from "@shopify/react-native-skia";
 import { useEffect, useMemo, useState } from "react";
+import { Dimensions, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import {
   useDerivedValue,
@@ -16,7 +17,6 @@ import {
 import type { Node } from "@/lib/utils/newTreeGraphStrategy";
 
 import TreeNode from "./TreeNode";
-import { Dimensions, View } from "react-native";
 
 interface Props {
   descendants: d3.HierarchyPointNode<Node>[];
@@ -26,8 +26,6 @@ interface Props {
 const { width, height } = Dimensions.get("window");
 
 export default function Tree({ descendants, links }: Props) {
-  const ref = useCanvasRef();
-
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -61,8 +59,11 @@ export default function Tree({ descendants, links }: Props) {
             scale.value = newScale;
 
             // Adjust the translation to keep the center point fixed
-            translateX.value = translateX.value * scaleChange;
-            translateY.value = translateY.value * scaleChange;
+            const adjustedFocalX = initialFocalX.value - translateX.value;
+            const adjustedFocalY = initialFocalY.value - translateY.value;
+
+            translateX.value -= adjustedFocalX * (scaleChange - 1);
+            translateY.value -= adjustedFocalY * (scaleChange - 1);
             // console.log(scale.value);
           }
         })
@@ -96,7 +97,7 @@ export default function Tree({ descendants, links }: Props) {
     return [
       { translateX: translateX.value },
       { translateY: translateY.value },
-      // { scale: scale.value },
+      { scale: scale.value },
     ];
   });
 
@@ -112,8 +113,8 @@ export default function Tree({ descendants, links }: Props) {
           flex: 1,
         }}
       >
-        <Fill color="#24728c" />
-        <Group origin={{ x: 0, y: 0 }}>
+        <Fill color="#092730" />
+        <Group transform={transform}>
           {descendants.map((node) => (
             <TreeNode key={node.data.name} node={node} />
           ))}

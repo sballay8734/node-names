@@ -8,6 +8,10 @@ import SearchBar from "@/features/Graph/components/GraphOverlay/SearchBar";
 
 import DeselectAllBtn from "./DeselectAllBtn";
 import Popover from "./Popover";
+import { useGraphData } from "@/lib/hooks/useGraphData";
+import { useGestures } from "@/lib/hooks/useGestures";
+import { useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
 interface Props {
   arrowData: DerivedValue<{ transform: { rotate: string }[] }>;
@@ -15,19 +19,31 @@ interface Props {
   centerOnRoot: () => void;
 }
 
-const GraphButtons = ({ arrowData, showArrow, centerOnRoot }: Props) => (
-  <>
-    <Popover />
-    <SearchBar />
-    <RecenterBtn
-      centerOnRoot={centerOnRoot}
-      arrowData={arrowData}
-      showArrow={showArrow}
-    />
-    <DeselectAllBtn />
-    <InspectBtn centerOnRoot={centerOnRoot} />
-    <BackToUserBtn />
-  </>
-);
+const GraphButtons = () => {
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
+  const { scale, translateX, translateY, lastScale } = useGestures();
+  const { arrowData, showArrow, centerOnRoot } = useGraphData({
+    scale,
+    translateX,
+    translateY,
+    windowSize,
+    lastScale,
+  });
+
+  return (
+    <>
+      <Popover />
+      <SearchBar />
+      <RecenterBtn
+        centerOnRoot={centerOnRoot}
+        arrowData={arrowData}
+        showArrow={showArrow}
+      />
+      <DeselectAllBtn />
+      <InspectBtn centerOnRoot={centerOnRoot} />
+      <BackToUserBtn />
+    </>
+  );
+};
 
 export default GraphButtons;

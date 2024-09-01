@@ -18,19 +18,10 @@ import { RootState } from "@/store/store";
 const Index = () => {
   const windowSize = useWindowSize();
   const theme = useContext(CustomThemeContext);
-  // const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { dataIsLoading, error } = useDbData(windowSize);
 
   const nodes = useAppSelector((state: RootState) => state.graphData.nodes);
   const edges = useAppSelector((state: RootState) => state.graphData.edges);
-
-  // const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
-  //   scale,
-  //   translateX,
-  //   translateY,
-  //   windowSize,
-  //   lastScale,
-  // });
 
   // const animatedStyle = useAnimatedStyle(() => {
   //   return {
@@ -52,8 +43,6 @@ const Index = () => {
   }
 
   return (
-    // <GestureDetector gesture={composed}>
-
     <View style={[styles.container]}>
       <TreeWrapper data={testData} windowSize={windowSize} />
       {/* WRAP THESE IN A WRAPPER */}
@@ -65,13 +54,8 @@ const Index = () => {
           <NodesWrapper centerOnNode={centerOnNode} />
           <TreeWrapper data={testData} windowSize={windowSize} />
         </Animated.View> */}
-      {/* <GraphButtons
-        arrowData={arrowData}
-        showArrow={showArrow}
-        centerOnRoot={centerOnRoot}
-      /> */}
+      <GraphButtons />
     </View>
-    // </GestureDetector>
   );
 };
 
