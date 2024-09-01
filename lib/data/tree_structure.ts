@@ -639,8 +639,6 @@ export const finalShape: DerivedPerson = {
   ],
 };
 
-// !TODO: Maybe just store source_group id? Idk yet
-
 // loop through the edges
 // everytime you find a new source id, get the person
 // then get all the groups for that source and add them to the groups array
@@ -679,7 +677,7 @@ function getFinalTree(array: Edge[]) {
     }
   });
 
-  // !TODO: ACTAULLY THIS MIGHT BE OKAY. I think maybe you need to go depth first? And work your way out? I'm not sure
+  // !TODO: I THINK YOU NEED TO GO BOTTOM UP SOMEHOW (DEPTH FIRST)
   // TODO: first you need to find the ROOT
   // map through the edges to create people
   edges.forEach((e) => {
