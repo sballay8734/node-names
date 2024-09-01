@@ -645,14 +645,13 @@ export const finalShape: DerivedPerson = {
 // if edge.is_active === false SKIP
 // OTHERWISE, get the person where person_id === target_id
 // then use the source_target_relation as source_target_relation
-
+// !TODO: ALL DATA IS THERE BUT IT'S NOT IN TREE SHAPE
 function getFinalTree(array: Edge[]) {
-  let peopleMap: { [id: number]: DerivedPerson } = {};
-  let groupMap: { [id: number]: Group[] } = {};
+  let peopleMap: { [person_id: number]: DerivedPerson } = {};
+  let groupMap: { [person_id: number]: Group[] } = {};
+  let edgesMap: { [person_id: number]: Edge[] } = {};
 
-  // !TODO: MAKE EDGES MAP ALSO TO EASILY CHECK WHAT YOU NEED
-
-  // get groups first
+  // get groups
   groups.forEach((g) => {
     if (!groupMap[g.person_id]) {
       groupMap[g.person_id] = [g];
@@ -678,20 +677,15 @@ function getFinalTree(array: Edge[]) {
     }
   });
 
-  // !TODO: I THINK YOU NEED TO GO BOTTOM UP SOMEHOW (DEPTH FIRST)
-  // TODO: first you need to find the ROOT
-  // map through the edges to create people
+  // get edges for each source
   edges.forEach((e) => {
-    if (!peopleMap[e.source_id] || !peopleMap[e.target_id]) {
-      console.log("MISSING PERSON!");
-      return;
-    } else if (!e.is_active) {
-      return;
+    if (!peopleMap[e.source_id]) {
+      console.log("THIS CAN'T BE RIGHT");
     } else {
-      const target = peopleMap[e.target_id];
-      const source = peopleMap[e.source_id];
-
-      source.branches = [...source.branches, target];
+      peopleMap[e.source_id].branches = [
+        ...peopleMap[e.source_id].branches,
+        peopleMap[e.target_id],
+      ];
     }
   });
 }
