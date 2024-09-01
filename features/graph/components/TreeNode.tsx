@@ -47,16 +47,6 @@ export default function TreeNode({ node }: Props) {
   const r = (TREE_NODE_DIM - strokeWidth) / 2;
   const angle = ((node.x - 90) / 180) * Math.PI;
   const radius = node.y * 4;
-  const coords = [radius * Math.cos(angle), radius * Math.sin(angle)];
-  // const angle = calculateAngle(centerX, centerY, node.x, node.y);
-
-  const customProjection = d3.geoProjection(function (lambda, phi) {
-    const angle = ((lambda - 90) / 180) * Math.PI;
-    const radius = phi;
-    return [radius * Math.cos(angle), radius * Math.sin(angle)];
-  });
-
-  const hello = customProjection([coords[0], coords[1]]);
 
   const trans = useSharedValue({
     rotate: 0,
@@ -65,24 +55,17 @@ export default function TreeNode({ node }: Props) {
   });
 
   useEffect(() => {
+    const coords = [radius * Math.cos(angle), radius * Math.sin(angle)];
     // Trigger animation when component mounts
     const duration = 1000;
 
     trans.value = withSequence(
-      // (trans.value = withTiming(
-      //   { rotate: angle, x: node.y + centerX, y: centerY },
-      //   { duration },
-      // )),
       (trans.value = withTiming(
         { rotate: 0, x: coords[0] + centerX, y: coords[1] + centerY },
         { duration },
       )),
-      // (trans.value = withTiming(
-      //   { rotate: angle, x: node.y + centerX, y: trans.value.y },
-      //   { duration },
-      // )),
     );
-  }, [node.x, node.y, trans]);
+  }, [trans, angle, radius]);
 
   const transform = useDerivedValue(() => {
     return [

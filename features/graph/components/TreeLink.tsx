@@ -17,10 +17,18 @@ const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 export default function TreeLink({ link }: Props) {
-  const sourceX = link.source.x + centerX;
-  const sourceY = link.source.y + centerY;
-  const targetX = link.target.x + centerX;
-  const targetY = link.target.y + centerY;
+  const angleS = ((link.source.x - 90) / 180) * Math.PI;
+  const radiusS = link.source.y * 4;
+  const coordsS = [radiusS * Math.cos(angleS), radiusS * Math.sin(angleS)];
+
+  const angleT = ((link.target.x - 90) / 180) * Math.PI;
+  const radiusT = link.target.y * 4;
+  const coordsT = [radiusT * Math.cos(angleT), radiusT * Math.sin(angleT)];
+
+  const sourceX = coordsS[0] + centerX;
+  const sourceY = coordsS[1] + centerY;
+  const targetX = coordsT[0] + centerX;
+  const targetY = coordsT[1] + centerY;
 
   // console.log("SOURCE:", sourceX, sourceY);
   // console.log("TARGET:", targetX, targetY);
@@ -31,13 +39,15 @@ export default function TreeLink({ link }: Props) {
   path.close();
 
   return (
-    <Path
-      path={path}
-      color="#96a9b0"
-      strokeWidth={2}
-      strokeJoin={"round"}
-      strokeCap={"round"}
-      style={"stroke"}
-    />
+    <Group origin={{ x: centerX, y: centerY }}>
+      <Path
+        path={path}
+        color="#96a9b0"
+        strokeWidth={2}
+        strokeJoin={"round"}
+        strokeCap={"round"}
+        style={"stroke"}
+      />
+    </Group>
   );
 }

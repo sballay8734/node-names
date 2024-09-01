@@ -188,7 +188,7 @@ export function createTree(data: Node, windowSize: WindowSize) {
   const tree = d3
     .tree<Node>()
     .size([360, radius])
-    .separation((a, b) => (a.parent === b.parent ? 30 : 4 / a.depth))
+    .separation((a, b) => (a.parent === b.parent ? 1 : 2 / a.depth))
     .nodeSize([TREE_NODE_DIM, TREE_NODE_DIM]);
 
   // Sort the tree and apply the layout.
