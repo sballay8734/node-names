@@ -1,6 +1,5 @@
-import { Canvas, Group } from "@shopify/react-native-skia";
-import { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
+import { Canvas, Fill, Group, useCanvasRef } from "@shopify/react-native-skia";
+import { useEffect, useMemo, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import {
   useDerivedValue,
@@ -17,16 +16,17 @@ import {
 import type { Node } from "@/lib/utils/newTreeGraphStrategy";
 
 import TreeNode from "./TreeNode";
+import { Dimensions, View } from "react-native";
 
 interface Props {
   descendants: d3.HierarchyPointNode<Node>[];
   links: d3.HierarchyPointLink<Node>[];
 }
 
+const { width, height } = Dimensions.get("window");
+
 export default function Tree({ descendants, links }: Props) {
-  const { height, width } = useWindowDimensions();
-  const cx = width / 2;
-  const cy = height / 2;
+  const ref = useCanvasRef();
 
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
@@ -96,7 +96,7 @@ export default function Tree({ descendants, links }: Props) {
     return [
       { translateX: translateX.value },
       { translateY: translateY.value },
-      { scale: scale.value },
+      // { scale: scale.value },
     ];
   });
 
@@ -110,10 +110,10 @@ export default function Tree({ descendants, links }: Props) {
       <Canvas
         style={{
           flex: 1,
-          backgroundColor: "green",
         }}
       >
-        <Group origin={{ x: cx, y: cy }} transform={transform}>
+        <Fill color="#24728c" />
+        <Group origin={{ x: 0, y: 0 }}>
           {descendants.map((node) => (
             <TreeNode key={node.data.name} node={node} />
           ))}

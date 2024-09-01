@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import { HierarchyPointNode } from "d3";
 
 import { WindowSize } from "../types/misc";
 
@@ -60,7 +59,14 @@ export const testData: Node = {
               name: "Sue Johnson",
               groupId: 2,
               relationshipType: "parent_child",
-              children: [],
+              children: [
+                {
+                  name: "Shawn Ballay",
+                  groupId: 2,
+                  relationshipType: "spouse",
+                  children: [],
+                },
+              ],
             },
           ],
         },
@@ -166,26 +172,28 @@ export const testData: Node = {
   ],
 };
 
-export const TREE_NODE_DIM = 100;
+export const TREE_NODE_DIM = 50;
 export const TREE_NODE_RADIUS = TREE_NODE_DIM / 2;
+export const SIZE = 10;
 
 export function createTree(data: Node, windowSize: WindowSize) {
   // Specify the chart’s dimensions.
   const width = windowSize.width;
   const height = windowSize.height;
-  const cx = windowSize.windowCenterX - TREE_NODE_RADIUS; // Center X
-  const cy = windowSize.windowCenterY - TREE_NODE_RADIUS; // Center Y
+  const cx = width / 2; // Center X
+  const cy = height / 2; // Center Y
   const radius = Math.min(width, height) / 2 + 300;
 
   // Create a radial tree layout. The layout’s first dimension (x) is the angle, while the second (y) is the radius.
   const tree = d3
     .tree<Node>()
     .size([360, radius])
-    .separation((a, b) => (a.parent === b.parent ? 50 : 100));
+    .separation((a, b) => (a.parent === b.parent ? 0 : 20 / a.depth))
+    .nodeSize([SIZE, SIZE]);
 
   // Sort the tree and apply the layout.
   const root = tree(
-    d3.hierarchy(data).sort((a, b) => d3.ascending(a.data.name, b.data.name)),
+    d3.hierarchy(data).sort((a, b) => d3.descending(a.height, b.height)),
   );
 
   const descendants = root.descendants();
@@ -212,49 +220,3 @@ export function createTree(data: Node, windowSize: WindowSize) {
     links,
   };
 }
-
-// const testLink = {
-//   source: {
-//     children: [[Node], [Node]],
-//     data: {
-//       children: [Array],
-//       groupId: 3,
-//       name: "Linda Smith",
-//       relationshipType: "spouse",
-//     },
-//     depth: 2,
-//     height: 1,
-//     parent: {
-//       children: [Array],
-//       data: [Object],
-//       depth: 1,
-//       height: 2,
-//       parent: [Node],
-//       x: 327.27272727272725,
-//       y: 315.5,
-//     },
-//     x: 327.27272727272725,
-//     y: 631,
-//   },
-//   target: {
-//     data: {
-//       children: [Array],
-//       groupId: 3,
-//       name: "Kevin Smith",
-//       relationshipType: "parent_child",
-//     },
-//     depth: 3,
-//     height: 0,
-//     parent: {
-//       children: [Array],
-//       data: [Object],
-//       depth: 2,
-//       height: 1,
-//       parent: [Node],
-//       x: 327.27272727272725,
-//       y: 631,
-//     },
-//     x: 338.1818181818182,
-//     y: 946.5,
-//   },
-// };

@@ -18,29 +18,29 @@ import { RootState } from "@/store/store";
 const Index = () => {
   const windowSize = useWindowSize();
   const theme = useContext(CustomThemeContext);
-  const { composed, scale, translateX, translateY, lastScale } = useGestures();
+  // const { composed, scale, translateX, translateY, lastScale } = useGestures();
   const { dataIsLoading, error } = useDbData(windowSize);
 
   const nodes = useAppSelector((state: RootState) => state.graphData.nodes);
   const edges = useAppSelector((state: RootState) => state.graphData.edges);
 
-  const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
-    scale,
-    translateX,
-    translateY,
-    windowSize,
-    lastScale,
-  });
+  // const { arrowData, showArrow, centerOnRoot, centerOnNode } = useGraphData({
+  //   scale,
+  //   translateX,
+  //   translateY,
+  //   windowSize,
+  //   lastScale,
+  // });
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: scale.value },
-      ],
-    };
-  });
+  // const animatedStyle = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [
+  //       { translateX: translateX.value },
+  //       { translateY: translateY.value },
+  //       { scale: scale.value },
+  //     ],
+  //   };
+  // });
 
   if (dataIsLoading) {
     return null;
@@ -65,11 +65,11 @@ const Index = () => {
           <NodesWrapper centerOnNode={centerOnNode} />
           <TreeWrapper data={testData} windowSize={windowSize} />
         </Animated.View> */}
-      <GraphButtons
+      {/* <GraphButtons
         arrowData={arrowData}
         showArrow={showArrow}
         centerOnRoot={centerOnRoot}
-      />
+      /> */}
     </View>
     // </GestureDetector>
   );
@@ -77,23 +77,10 @@ const Index = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
     flex: 1,
-    flexDirection: "column",
     // alignItems: "center",
     // justifyContent: "center",
     backgroundColor: "rgba(120, 32, 18, 0.6)", // Made semi-transparent
-  },
-  canvasWrapper: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: "rgba(31, 84, 29, 1)",
-  },
-  spinner: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#001a2e",
   },
 });
 

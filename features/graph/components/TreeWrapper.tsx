@@ -13,6 +13,7 @@ interface Props {
 
 export default function TreeWrapper({ data, windowSize }: Props) {
   const { descendants, links } = createTree(data, windowSize);
+  console.log(windowSize);
 
   return <Tree descendants={descendants} links={links} />;
 }

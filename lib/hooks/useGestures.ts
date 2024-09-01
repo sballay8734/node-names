@@ -5,7 +5,7 @@ import { useSharedValue, withDecay } from "react-native-reanimated";
 export const MIN_SCALE = 0.1;
 export const MAX_SCALE = 4;
 
-export const INITIAL_SCALE = 0.3;
+export const INITIAL_SCALE = 1;
 export const CENTER_ON_SCALE = 0.4;
 export const SCALE_SENSITIVITY = 1.2;
 
