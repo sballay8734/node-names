@@ -647,9 +647,10 @@ export const finalShape: DerivedPerson = {
 // then use the source_target_relation as source_target_relation
 
 function getFinalTree(array: Edge[]) {
-  let finalShape: { [id: number]: DerivedPerson } = {};
   let peopleMap: { [id: number]: DerivedPerson } = {};
   let groupMap: { [id: number]: Group[] } = {};
+
+  // !TODO: MAKE EDGES MAP ALSO TO EASILY CHECK WHAT YOU NEED
 
   // get groups first
   groups.forEach((g) => {
