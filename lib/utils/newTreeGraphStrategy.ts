@@ -172,9 +172,9 @@ export const testData: Node = {
   ],
 };
 
-export const TREE_NODE_DIM = 50;
+export const TREE_NODE_DIM = 30;
 export const TREE_NODE_RADIUS = TREE_NODE_DIM / 2;
-export const SIZE = 10;
+export const SIZE = 50;
 
 export function createTree(data: Node, windowSize: WindowSize) {
   // Specify the chart’s dimensions.
@@ -188,7 +188,7 @@ export function createTree(data: Node, windowSize: WindowSize) {
   const tree = d3
     .tree<Node>()
     .size([360, radius])
-    .separation((a, b) => (a.parent === b.parent ? 0 : 20 / a.depth))
+    .separation((a, b) => (a.parent === b.parent ? 1 : 10 / a.depth))
     .nodeSize([SIZE, SIZE]);
 
   // Sort the tree and apply the layout.

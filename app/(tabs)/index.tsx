@@ -1,15 +1,10 @@
 import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
-import { GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
-import NodesWrapper from "@/features/Graph/components/NodesWrapper";
 import TreeWrapper from "@/features/Graph/components/TreeWrapper";
 import useDbData from "@/lib/hooks/useDbData";
-import { useGestures } from "@/lib/hooks/useGestures";
-import { useGraphData } from "@/lib/hooks/useGraphData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
 import { testData } from "@/lib/utils/newTreeGraphStrategy";
 import { useAppSelector } from "@/store/reduxHooks";
@@ -45,15 +40,6 @@ const Index = () => {
   return (
     <View style={[styles.container]}>
       <TreeWrapper data={testData} windowSize={windowSize} />
-      {/* WRAP THESE IN A WRAPPER */}
-      {/* NODE SVGS */}
-      {/* LINK SVGS */}
-      {/* THEN OVERLAY INVISIBLE BTNS */}
-      {/* <Animated.View style={[styles.canvasWrapper, animatedStyle]}>
-          <LinksCanvas windowSize={windowSize} />
-          <NodesWrapper centerOnNode={centerOnNode} />
-          <TreeWrapper data={testData} windowSize={windowSize} />
-        </Animated.View> */}
       <GraphButtons />
     </View>
   );
