@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
+import Groups from "@/features/Graph/components/Groups";
 import TreeWrapper from "@/features/Graph/components/TreeWrapper";
 import useDbData from "@/lib/hooks/useDbData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
@@ -39,7 +40,8 @@ const Index = () => {
 
   return (
     <View style={[styles.container]}>
-      <TreeWrapper data={testData} windowSize={windowSize} />
+      <Groups windowSize={windowSize} />
+      {/* <TreeWrapper data={testData} windowSize={windowSize} /> */}
       <GraphButtons />
     </View>
   );

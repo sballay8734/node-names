@@ -86,3 +86,11 @@ export default function TreeNode({ node }: Props) {
     </Group>
   );
 }
+
+const testGroups = [
+  { group_name: "friends", id: 1, x: 373.35, y: 386.5 },
+  { group_name: "work", id: 2, x: 251.14965545520946, y: 554.6943449067979 },
+  { group_name: "family", id: 3, x: 53.42534454479056, y: 490.4498218679239 },
+  { group_name: "school", id: 4, x: 53.42534454479056, y: 282.55017813207616 },
+  { group_name: "online", id: 5, x: 251.14965545520943, y: 218.3056550932021 },
+];
