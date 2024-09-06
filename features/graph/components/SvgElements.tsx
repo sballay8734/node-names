@@ -1,34 +1,33 @@
-import {
-  PositionedGroup,
-  PositionedLink,
-  PositionedNode,
-} from "@/lib/types/graph";
+import { useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
 import GroupSvg from "./GroupSvg";
 import LinkSvg from "./LinkSvg";
 import NodeSvg from "./NodeSvg";
 
-interface SVGsWrapperProps {
-  data: {
-    groups: PositionedGroup[];
-    nodes: PositionedNode[];
-    links: PositionedLink[];
-  };
-}
+export default function SvgElements() {
+  const linkIds = useAppSelector(
+    (state: RootState) => state.graphData.links.allIds,
+  );
+  const groupIds = useAppSelector(
+    (state: RootState) => state.graphData.groups.allIds,
+  );
+  const nodeIds = useAppSelector(
+    (state: RootState) => state.graphData.nodes.allIds,
+  );
 
-export default function SvgElements({ data }: SVGsWrapperProps) {
-  const { groups, nodes, links } = data;
+  console.log("Rendering SvgElements Wrapper");
 
   return (
     <>
-      {links.map((link) => {
-        return <LinkSvg key={link.id} link={link} />;
+      {linkIds.map((id) => {
+        return <LinkSvg key={id} id={id} />;
       })}
-      {groups.map((group) => {
-        return <GroupSvg key={group.id} group={group} />;
+      {groupIds.map((id) => {
+        return <GroupSvg key={id} id={id} />;
       })}
-      {nodes.map((node) => {
-        return <NodeSvg key={node.id} node={node} />;
+      {nodeIds.map((id) => {
+        return <NodeSvg key={id} id={id} />;
       })}
     </>
   );

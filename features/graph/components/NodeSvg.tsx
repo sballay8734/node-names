@@ -14,18 +14,18 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
-import { PositionedNode } from "@/lib/types/graph";
+import {
+  NODE_BORDER_WIDTH,
+  REG_NODE_RADIUS,
+  ROOT_NODE_RADIUS,
+  TAB_BAR_HEIGHT,
+} from "@/lib/constants/styles";
+import { useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
 interface NodeSvgProps {
-  node: PositionedNode;
+  id: number;
 }
-
-// REMOVE:
-export const HARD_CODE_RADIUS = 20;
-const HARD_CODE_SW = 2;
-const HARD_CODE_SHIFT_X = -12;
-const HARD_CODE_SHIFT_Y = 3;
 
 const { width, height } = Dimensions.get("window");
 const centerX = width / 2;
@@ -33,14 +33,27 @@ const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 const font = matchFont({
   fontFamily: "Helvetica",
-  fontSize: 10,
+  fontSize: 12,
   fontStyle: "normal",
   fontWeight: "400",
 });
 
-export default function NodeSvg({ node }: NodeSvgProps) {
-  const radius = node.depth === 1 ? 35 : HARD_CODE_RADIUS;
+export default function NodeSvg({ id }: NodeSvgProps) {
+  const node = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId[id],
+  );
+
+  const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
   const color = node.depth === 1 ? "#fccfff" : "#400601";
+
+  function getFontSize(text: string): { xOffset: number; yOffset: number } {
+    const fontSize = font.measureText(text);
+
+    const xOffset = -fontSize.width / 2 - fontSize.x;
+    const yOffset = fontSize.height / 4; // TODO: Not a perfect center
+
+    return { xOffset, yOffset };
+  }
 
   const trans = useSharedValue({
     rotate: 0,
@@ -63,19 +76,18 @@ export default function NodeSvg({ node }: NodeSvgProps) {
     ];
   });
 
+  const { xOffset, yOffset } = getFontSize(node.name);
+
+  if (!node) return null;
+
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={radius}>
         <Paint color={color} />
-        <Paint color="#486c78" style="stroke" strokeWidth={HARD_CODE_SW} />
-        <Paint color="#527a87" style="stroke" strokeWidth={HARD_CODE_SW / 2} />
+        <Paint color="#486c78" style="stroke" strokeWidth={NODE_BORDER_WIDTH} />
       </Circle>
-      <Text
-        x={HARD_CODE_SHIFT_X}
-        y={HARD_CODE_SHIFT_Y}
-        text={node.name}
-        font={font}
-      />
+      {/* <Text x={xOffset} y={yOffset} text={node.name} font={font} /> */}
+      <Text x={xOffset} y={yOffset} text={node.name} font={font} />
     </Group>
   );
 }

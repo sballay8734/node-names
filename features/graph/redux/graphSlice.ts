@@ -117,6 +117,8 @@ const NewArchitectureSlice = createSlice({
                 ? "active"
                 : "inactive",
           };
+
+          state.links.allIds.push(link.id);
         }
       });
 
@@ -132,7 +134,8 @@ const NewArchitectureSlice = createSlice({
         }
       });
 
-      console.log("GROUPS:", state.groups);
+      // console.log("GROUPS:", state.groups);
+      console.log(state.links);
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {

@@ -2,16 +2,15 @@ import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 
+import { REG_NODE_RADIUS } from "@/lib/constants/styles";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-
-import { HARD_CODE_RADIUS } from "./NodeSvg";
 
 interface PressableNodeProps {
   node_id: number;
 }
 
-const dimensions = HARD_CODE_RADIUS * 2;
+const dimensions = REG_NODE_RADIUS * 2;
 
 export default function PressableNode({ node_id }: PressableNodeProps) {
   const node = useAppSelector(
@@ -26,8 +25,8 @@ export default function PressableNode({ node_id }: PressableNodeProps) {
 
   const position = useDerivedValue(() => {
     return {
-      x: node.x - HARD_CODE_RADIUS,
-      y: node.y - HARD_CODE_RADIUS,
+      x: node.x - REG_NODE_RADIUS,
+      y: node.y - REG_NODE_RADIUS,
     };
   });
 

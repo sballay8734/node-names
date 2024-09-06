@@ -18,10 +18,11 @@ import {
 } from "@/lib/hooks/useGestures";
 import { positionGraphEls } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import { RootState, store } from "@/store/store";
 
 import PressableElements from "./PressableElements";
 import SvgElements from "./SvgElements";
+import { Provider } from "react-redux";
 
 // REMOVE:
 const thisData = {
@@ -130,12 +131,15 @@ export default function Graph() {
         >
           <Fill color="#092730" />
           <Group transform={transform}>
-            <SvgElements data={data} />
+            {/* NOTE: Unfortunately, wrapping the children in another provider is currently needed. See (https://shopify.github.io/react-native-skia/docs/canvas/contexts/) */}
+            <Provider store={store}>
+              <SvgElements />
+            </Provider>
           </Group>
         </Canvas>
-        <Animated.View style={[styles.wrapper, animatedStyle]}>
+        {/* <Animated.View style={[styles.wrapper, animatedStyle]}>
           <PressableElements />
-        </Animated.View>
+        </Animated.View> */}
       </View>
     </GestureDetector>
   );

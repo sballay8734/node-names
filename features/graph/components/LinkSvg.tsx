@@ -3,22 +3,23 @@ import React from "react";
 import { Dimensions } from "react-native";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
-import { PositionedLink } from "@/lib/types/graph";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 interface LinkSvgProps {
-  link: PositionedLink;
+  id: number;
 }
 
 const { width, height } = Dimensions.get("window");
 const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
-export default function LinkSvg({ link }: LinkSvgProps) {
-  // const testLink = useAppSelector(
-  //   (state: RootState) => state.graphData.links.byId[link.id],
-  // );
+export default function LinkSvg({ id }: LinkSvgProps) {
+  const link = useAppSelector(
+    (state: RootState) => state.graphData.links.byId[id],
+  );
+
+  if (!link) return null;
 
   const path = Skia.Path.Make();
   path.moveTo(link.x1, link.y1);
