@@ -1,33 +1,6 @@
-type RelationType =
-  | "partner"
-  | "friend"
-  | "sibling"
-  | "parent_child"
-  | "child_parent"
-  | "colleague"
-  | "classmate"
-  | "virtual";
+import { RawGroup, RawLink, RawNode } from "../types/graph";
 
-export interface NLink {
-  id: number;
-  source_id: number;
-  target_id: number;
-  relation_type: RelationType;
-}
-
-export interface NPerson {
-  id: number;
-  depth: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-  name: string;
-  group_id: number | null;
-}
-
-export interface NGroup {
-  id: number;
-  group_name: string;
-}
-
-export const people: NPerson[] = [
+export const people: RawNode[] = [
   { id: 1, depth: 1, name: "Root", group_id: null },
   { id: 2, depth: 2, name: "Aaron", group_id: 1 },
   { id: 3, depth: 2, name: "Beth", group_id: 2 },
@@ -36,7 +9,7 @@ export const people: NPerson[] = [
   { id: 6, depth: 3, name: "Ethan", group_id: 5 },
 ];
 
-export const links: NLink[] = [
+export const links: RawLink[] = [
   { id: 1, source_id: 1, target_id: 2, relation_type: "friend" },
   { id: 2, source_id: 1, target_id: 3, relation_type: "colleague" },
   { id: 3, source_id: 1, target_id: 4, relation_type: "child_parent" },
@@ -44,7 +17,7 @@ export const links: NLink[] = [
   { id: 5, source_id: 1, target_id: 6, relation_type: "virtual" },
 ];
 
-export const groups: NGroup[] = [
+export const groups: RawGroup[] = [
   { id: 1, group_name: "friends" },
   { id: 2, group_name: "work" },
   { id: 3, group_name: "family" },

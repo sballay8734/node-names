@@ -17,10 +17,8 @@ import {
   SCALE_SENSITIVITY,
 } from "@/lib/hooks/useGestures";
 import { positionGraphEls } from "@/lib/utils/positionGraphEls";
-import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
+import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-
-import { setInitialState } from "../redux/graphSlice";
 
 import PressableElements from "./PressableElements";
 import SvgElements from "./SvgElements";
@@ -34,13 +32,7 @@ const thisData = {
 
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const dispatch = useAppDispatch();
-  const { data, groupPositions } = positionGraphEls(
-    thisData,
-    windowSize,
-    dispatch,
-    setInitialState,
-  );
+  const { data } = positionGraphEls(thisData, windowSize);
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);

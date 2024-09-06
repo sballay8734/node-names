@@ -15,10 +15,10 @@ import {
 } from "react-native-reanimated";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
-import { PositionedPerson } from "@/lib/utils/positionGraphEls";
+import { PositionedNode } from "@/lib/types/graph";
 
 interface NodeSvgProps {
-  person: PositionedPerson;
+  node: PositionedNode;
 }
 
 // REMOVE:
@@ -38,9 +38,9 @@ const font = matchFont({
   fontWeight: "400",
 });
 
-export default function NodeSvg({ person }: NodeSvgProps) {
-  const radius = person.depth === 1 ? 35 : HARD_CODE_RADIUS;
-  const color = person.depth === 1 ? "#fccfff" : "#400601";
+export default function NodeSvg({ node }: NodeSvgProps) {
+  const radius = node.depth === 1 ? 35 : HARD_CODE_RADIUS;
+  const color = node.depth === 1 ? "#fccfff" : "#400601";
 
   const trans = useSharedValue({
     rotate: 0,
@@ -50,10 +50,10 @@ export default function NodeSvg({ person }: NodeSvgProps) {
 
   useEffect(() => {
     trans.value = withTiming(
-      { rotate: 0, x: person.x, y: person.y },
+      { rotate: 0, x: node.x, y: node.y },
       { duration: 500, easing: Easing.inOut(Easing.cubic) },
     );
-  }, [person.x, person.y, trans]);
+  }, [node.x, node.y, trans]);
 
   const transform = useDerivedValue(() => {
     return [
@@ -73,7 +73,7 @@ export default function NodeSvg({ person }: NodeSvgProps) {
       <Text
         x={HARD_CODE_SHIFT_X}
         y={HARD_CODE_SHIFT_Y}
-        text={person.name}
+        text={node.name}
         font={font}
       />
     </Group>

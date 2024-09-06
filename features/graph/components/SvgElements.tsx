@@ -1,34 +1,34 @@
 import {
   PositionedGroup,
   PositionedLink,
-  PositionedPerson,
-} from "@/lib/utils/positionGraphEls";
+  PositionedNode,
+} from "@/lib/types/graph";
 
-import NewGroup from "./GroupSvg";
-import NewLink from "./LinkSvg";
-import NewPerson from "./NodeSvg";
+import GroupSvg from "./GroupSvg";
+import LinkSvg from "./LinkSvg";
+import NodeSvg from "./NodeSvg";
 
 interface SVGsWrapperProps {
   data: {
     groups: PositionedGroup[];
-    people: PositionedPerson[];
+    nodes: PositionedNode[];
     links: PositionedLink[];
   };
 }
 
 export default function SvgElements({ data }: SVGsWrapperProps) {
-  const { groups, people, links } = data;
+  const { groups, nodes, links } = data;
 
   return (
     <>
       {links.map((link) => {
-        return <NewLink key={link.id} link={link} />;
+        return <LinkSvg key={link.id} link={link} />;
       })}
       {groups.map((group) => {
-        return <NewGroup key={group.id} group={group} />;
+        return <GroupSvg key={group.id} group={group} />;
       })}
-      {people.map((person) => {
-        return <NewPerson key={person.id} person={person} />;
+      {nodes.map((node) => {
+        return <NodeSvg key={node.id} node={node} />;
       })}
     </>
   );

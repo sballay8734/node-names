@@ -1,35 +1,32 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Edges, Groups, UiNode, NodeStatus } from "@/lib/types/graph";
+import {
+  GroupStatus,
+  NodeStatus,
+  PosGroupMap,
+  PositionedGroup,
+  PositionedLink,
+  PositionedNode,
+  PosLinkMap,
+  PosNodeMap,
+  UiNode,
+} from "@/lib/types/graph";
 import { RootState } from "@/store/store";
-
-export interface TestNode {
-  id: number;
-  depth: number;
-  group_id: number | null;
-  name: string;
-  x: number;
-  y: number;
-}
-
-export interface TestNodes {
-  [id: number]: TestNode;
-}
 
 interface GraphSliceState {
   userId: number | null;
   nodes: {
-    byId: TestNodes;
+    byId: PosNodeMap;
     allIds: number[];
     activeRootId: number | null;
     // activeNodeIds: D3Node[]
   };
-  edges: {
-    byId: Edges;
+  links: {
+    byId: PosLinkMap;
     allIds: number[];
   };
   groups: {
-    byId: Groups;
+    byId: PosGroupMap;
     allIds: number[];
   };
 }
@@ -42,7 +39,7 @@ const initialState: GraphSliceState = {
     activeRootId: null,
     // activeNodeIds: []
   },
-  edges: {
+  links: {
     byId: {},
     allIds: [],
   },
@@ -60,22 +57,24 @@ const NewArchitectureSlice = createSlice({
     setInitialState: (
       state,
       action: PayloadAction<{
-        nodes: TestNode[];
-        // edges: D3Edge[];
+        nodes: PositionedNode[];
+        links: PositionedLink[];
+        groups: PositionedGroup[];
       }>,
     ) => {
-      const { nodes } = action.payload;
+      const { nodes, links, groups } = action.payload;
 
+      // this map is used for quick lookup during links && groups loop
       const nodeStatusMap: {
-        [id: number]: { isCurrentRoot: boolean; node_status: string };
+        [id: number]: { isRoot: boolean; node_status: string };
       } = {};
 
-      // initialize nodes state
+      // initialize nodes state (byId, allIds, & activeRootId)
       nodes.forEach((node) => {
         if (!state.nodes.byId[node.id]) {
           const newNode = {
             ...node,
-            isCurrentRoot: node.depth === 1,
+            isRoot: node.depth === 1,
             node_status: (node.depth === 1
               ? "active"
               : "inactive") as NodeStatus,
@@ -90,13 +89,50 @@ const NewArchitectureSlice = createSlice({
             state.userId = newNode.id;
           }
 
-          // store status in temporary map for SAFE look up during edges loop
+          // store status in temporary map for SAFE look up during links loop
           nodeStatusMap[node.id] = {
-            isCurrentRoot: newNode.isCurrentRoot,
+            isRoot: newNode.isRoot,
             node_status: newNode.node_status,
           };
         }
       });
+
+      // initialize edges state and use nodetStatusMap
+      links.forEach((link) => {
+        if (!state.links.byId[link.id]) {
+          const node1InMap = nodeStatusMap[link.source_id];
+          const node2InMap = nodeStatusMap[link.target_id];
+
+          state.links.byId[link.id] = {
+            ...link,
+            node_1_status: node1InMap
+              ? (node1InMap.node_status as NodeStatus)
+              : "inactive",
+            node_2_status: node2InMap
+              ? (node2InMap.node_status as NodeStatus)
+              : "inactive",
+            link_status:
+              (node1InMap && node1InMap.isRoot) ||
+              (node2InMap && node2InMap.isRoot)
+                ? "active"
+                : "inactive",
+          };
+        }
+      });
+
+      groups.forEach((group) => {
+        if (!state.groups.byId[group.id]) {
+          const updatedGroup = {
+            ...group,
+            group_status: "active" as GroupStatus,
+            isShown: true,
+          };
+          state.groups.byId[group.id] = updatedGroup;
+          state.groups.allIds.push(group.id);
+        }
+      });
+
+      console.log("GROUPS:", state.groups);
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {
