@@ -1,7 +1,9 @@
 import { ActionCreatorWithPayload, Dispatch } from "@reduxjs/toolkit";
+
+import { TestNode } from "@/features/Graph/redux/graphSlice";
+
 import { NGroup, NLink, NPerson } from "../data/new_structure";
 import { WindowSize } from "../types/misc";
-import { TestNode } from "@/features/Graph/redux/graphSlice";
 
 export interface PositionedGroup extends NGroup {
   x: number;
@@ -13,7 +15,7 @@ export interface PositionedPerson extends NPerson {
   y: number;
 }
 
-interface PositionedLink extends NLink {
+export interface PositionedLink extends NLink {
   x1: number;
   y1: number;
   x2: number;
@@ -82,7 +84,7 @@ export function createGraph(
     }
     // Position people radially outward from the group's position
     // REMOVE: shouldn't be a hardcoded value here
-    const distanceFromGroup = 50;
+    const distanceFromGroup = 100;
     return {
       x: groupPos.x + distanceFromGroup * Math.cos(groupPos.angle),
       y: groupPos.y + distanceFromGroup * Math.sin(groupPos.angle),

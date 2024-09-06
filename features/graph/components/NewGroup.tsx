@@ -22,7 +22,7 @@ interface NewGroupProps {
 }
 
 // REMOVE:
-const HARD_CODE_RADIUS = 20;
+const HARD_CODE_RADIUS = 50;
 const HARD_CODE_SW = 2;
 const testFlop = true;
 const HARD_CODE_SHIFT_X = -12;

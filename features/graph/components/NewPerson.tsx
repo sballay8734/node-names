@@ -40,6 +40,9 @@ const font = matchFont({
 });
 
 export default function NewPerson({ person }: NewPersonProps) {
+  const radius = person.depth === 1 ? 35 : HARD_CODE_RADIUS;
+  const color = person.depth === 1 ? "#fccfff" : "#400601";
+
   const trans = useSharedValue({
     rotate: 0,
     x: centerX,
@@ -60,10 +63,11 @@ export default function NewPerson({ person }: NewPersonProps) {
       { translateY: trans.value.y },
     ];
   });
+
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-      <Circle r={HARD_CODE_RADIUS}>
-        <Paint color={testFlop ? "#6eff81" : "#400601"} />
+      <Circle r={radius}>
+        <Paint color={color} />
         <Paint color="#486c78" style="stroke" strokeWidth={HARD_CODE_SW} />
         <Paint color="#527a87" style="stroke" strokeWidth={HARD_CODE_SW / 2} />
       </Circle>

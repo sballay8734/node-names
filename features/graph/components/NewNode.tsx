@@ -20,6 +20,8 @@ export default function NewNode({ node_id }: NewNodeProps) {
     (state: RootState) => state.graphData.nodes.byId[node_id],
   );
 
+  const radius = node.depth === 1 ? 35 : HARD_CODE_RADIUS * 2;
+
   const tap = Gesture.Tap()
     .onStart(() => {
       console.log("TAPPED", node.name);
@@ -62,6 +64,6 @@ const styles = StyleSheet.create({
     height: dimensions,
     width: dimensions,
     borderRadius: 100,
-    opacity: 0,
+    // opacity: 0,
   },
 });

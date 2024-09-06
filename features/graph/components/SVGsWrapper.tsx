@@ -1,5 +1,6 @@
 import { Canvas, Fill, Group } from "@shopify/react-native-skia";
 import { useMemo } from "react";
+import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -21,10 +22,11 @@ import { useAppDispatch } from "@/store/reduxHooks";
 
 import { setTestInitialState } from "../redux/graphSlice";
 
-import NewGroup from "./Group";
+import NewGroup from "./NewGroup";
+import NewLink from "./NewLink";
 import NewPerson from "./NewPerson";
-import { View, StyleSheet } from "react-native";
 import PressablesWrapper from "./PressablesWrapper";
+import TreeLink from "./TreeLink";
 
 interface SVGsWrapperProps {
   windowSize: WindowSize;
@@ -138,6 +140,9 @@ export default function SVGsWrapper({ windowSize }: SVGsWrapperProps) {
         >
           <Fill color="#092730" />
           <Group transform={transform}>
+            {links.map((link) => {
+              return <NewLink key={link.id} link={link} />;
+            })}
             {groups.map((group) => {
               return <NewGroup key={group.id} group={group} />;
             })}

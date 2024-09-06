@@ -40,8 +40,8 @@ export const links: NLink[] = [
   { id: 1, source_id: 1, target_id: 2, relation_type: "friend" },
   { id: 2, source_id: 1, target_id: 3, relation_type: "colleague" },
   { id: 3, source_id: 1, target_id: 4, relation_type: "child_parent" },
-  { id: 3, source_id: 1, target_id: 5, relation_type: "classmate" },
-  { id: 3, source_id: 1, target_id: 6, relation_type: "virtual" },
+  { id: 4, source_id: 1, target_id: 5, relation_type: "classmate" },
+  { id: 5, source_id: 1, target_id: 6, relation_type: "virtual" },
 ];
 
 export const groups: NGroup[] = [
