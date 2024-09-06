@@ -55,6 +55,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: SURELY you don't need to gesture handlers RIGHT?
+
 // !TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
 // !TODO: "determineOptions" REALLY needs a refactor
 // !TODO: Do we really need "centerNode" function in useArrowData? How is it different from the other two centering functions?

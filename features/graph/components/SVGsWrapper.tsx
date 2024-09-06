@@ -1,7 +1,8 @@
 import { Canvas, Fill, Group } from "@shopify/react-native-skia";
 import { useMemo } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import {
+import Animated, {
+  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withDecay,
@@ -22,6 +23,8 @@ import { setTestInitialState } from "../redux/graphSlice";
 
 import NewGroup from "./Group";
 import NewPerson from "./NewPerson";
+import { View, StyleSheet } from "react-native";
+import PressablesWrapper from "./PressablesWrapper";
 
 interface SVGsWrapperProps {
   windowSize: WindowSize;
@@ -115,92 +118,49 @@ export default function SVGsWrapper({ windowSize }: SVGsWrapperProps) {
     [pan, pinch],
   );
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { scale: scale.value },
+      ],
+    };
+  });
+
   return (
     <GestureDetector gesture={composed}>
-      <Canvas
-        style={{
-          flex: 1,
-        }}
-      >
-        <Fill color="#092730" />
-        <Group transform={transform}>
-          {groups.map((group) => {
-            return <NewGroup key={group.id} group={group} />;
-          })}
-          {people.map((person) => {
-            return <NewPerson key={person.id} person={person} />;
-          })}
-        </Group>
-      </Canvas>
+      <View style={{ flex: 1 }}>
+        <Canvas
+          style={{
+            flex: 1,
+          }}
+        >
+          <Fill color="#092730" />
+          <Group transform={transform}>
+            {groups.map((group) => {
+              return <NewGroup key={group.id} group={group} />;
+            })}
+            {people.map((person) => {
+              return <NewPerson key={person.id} person={person} />;
+            })}
+          </Group>
+        </Canvas>
+        <Animated.View style={[styles.wrapper, animatedStyle]}>
+          <PressablesWrapper />
+        </Animated.View>
+      </View>
     </GestureDetector>
   );
 }
 
-const byId = {
-  "1": {
-    depth: 1,
-    group_id: null,
-    id: 1,
-    isCurrentRoot: true,
-    isShown: true,
-    name: "Root",
-    node_status: "active",
-    x: 196.5,
-    y: 386.5,
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    transformOrigin: "left top",
+    // pointerEvents: "box-none",
   },
-  "2": {
-    depth: 2,
-    group_id: 1,
-    id: 2,
-    isCurrentRoot: false,
-    isShown: true,
-    name: "Aaron",
-    node_status: "inactive",
-    x: 196.5,
-    y: 179.29999999999998,
-  },
-  "3": {
-    depth: 2,
-    group_id: 2,
-    id: 3,
-    isCurrentRoot: false,
-    isShown: true,
-    name: "Beth",
-    node_status: "inactive",
-    x: 393.5589101763558,
-    y: 322.4716787655109,
-  },
-  "4": {
-    depth: 3,
-    group_id: 3,
-    id: 4,
-    isCurrentRoot: false,
-    isShown: true,
-    name: "Carol",
-    node_status: "inactive",
-    x: 318.28910427500045,
-    y: 554.128321234489,
-  },
-  "5": {
-    depth: 3,
-    group_id: 4,
-    id: 5,
-    isCurrentRoot: false,
-    isShown: true,
-    name: "Diana",
-    node_status: "inactive",
-    x: 74.71089572499959,
-    y: 554.1283212344891,
-  },
-  "6": {
-    depth: 3,
-    group_id: 5,
-    id: 6,
-    isCurrentRoot: false,
-    isShown: true,
-    name: "Ethan",
-    node_status: "inactive",
-    x: -0.5589101763558517,
-    y: 322.47167876551094,
-  },
-};
+});

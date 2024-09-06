@@ -62,5 +62,6 @@ const styles = StyleSheet.create({
     height: dimensions,
     width: dimensions,
     borderRadius: 100,
+    opacity: 0,
   },
 });
