@@ -133,30 +133,27 @@ const NewArchitectureSlice = createSlice({
           state.groups.allIds.push(group.id);
         }
       });
-
-      // console.log("GROUPS:", state.groups);
-      console.log(state.links);
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {
       console.log("toggleNode");
-      // const nodeId = action.payload;
+      const nodeId = action.payload;
 
-      // // because you have 3 statuses, you need to slightly complicate logic
-      // if (state.nodes.byId[nodeId]) {
-      //   const status = state.nodes.byId[nodeId].node_status;
+      // because you have 3 statuses, you need to slightly complicate logic
+      if (state.nodes.byId[nodeId]) {
+        const status = state.nodes.byId[nodeId].node_status;
 
-      //   // make node active if it's "parent_active" or "inactive" when clicked
-      //   if (status !== "active") {
-      //     state.nodes.byId[nodeId].node_status = "active";
-      //     // !TODO: handle case of node click when active AND parent IS active
-      //   } else if (false) {
-      //     state.nodes.byId[nodeId].node_status = "parent_active";
-      //     // handle case of node click while active AND parent is NOT active
-      //   } else {
-      //     state.nodes.byId[nodeId].node_status = "inactive";
-      //   }
-      // }
+        // make node active if it's "parent_active" or "inactive" when clicked
+        if (status !== "active") {
+          state.nodes.byId[nodeId].node_status = "active";
+          // !TODO: handle case of node click when active AND parent IS active
+        } else if (false) {
+          state.nodes.byId[nodeId].node_status = "parent_active";
+          // handle case of node click while active AND parent is NOT active
+        } else {
+          state.nodes.byId[nodeId].node_status = "inactive";
+        }
+      }
     },
     swapRootNode: (
       state,

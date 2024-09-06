@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { Dimensions } from "react-native";
 import {
   Easing,
+  useAnimatedProps,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -38,13 +39,39 @@ const font = matchFont({
   fontWeight: "400",
 });
 
+// REMOVE: Or move these constants to the them
+const depth1Bg = "rgba(11, 59, 83, 1)"; // blue (Root is depth 1)
+const depth2Bg = "rgba(83, 64, 14, 1)"; // yellow
+const depth3Bg = "rgba(80, 25, 21, 1)"; // red
+const depth4Bg = "rgba(21, 80, 39, 1)"; // green
+const depth5Bg = "rgba(30, 33, 82, 1)"; // purple
+
 export default function NodeSvg({ id }: NodeSvgProps) {
   const node = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[id],
   );
 
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
-  const color = node.depth === 1 ? "#fccfff" : "#400601";
+  const inactiveColor = node.depth === 1 ? depth1Bg : depth2Bg;
+  const parentActiveColor = "rgba(144, 120, 25, 1)";
+  const activeColor =
+    node.depth === 1 ? "rgba(15, 175, 255, 1)" : "rgba(255, 190, 25, 1)";
+
+  const color = node.node_status === "active" ? activeColor : inactiveColor;
+
+  const trans = useSharedValue({
+    rotate: 0,
+    x: centerX,
+    y: centerY,
+  });
+  const transform = useDerivedValue(() => {
+    return [
+      { rotate: trans.value.rotate },
+      { translateX: trans.value.x },
+      { translateY: trans.value.y },
+    ];
+  });
+  const { xOffset, yOffset } = getFontSize(node.name);
 
   function getFontSize(text: string): { xOffset: number; yOffset: number } {
     const fontSize = font.measureText(text);
@@ -55,28 +82,12 @@ export default function NodeSvg({ id }: NodeSvgProps) {
     return { xOffset, yOffset };
   }
 
-  const trans = useSharedValue({
-    rotate: 0,
-    x: centerX,
-    y: centerY,
-  });
-
   useEffect(() => {
     trans.value = withTiming(
       { rotate: 0, x: node.x, y: node.y },
       { duration: 500, easing: Easing.inOut(Easing.cubic) },
     );
   }, [node.x, node.y, trans]);
-
-  const transform = useDerivedValue(() => {
-    return [
-      { rotate: trans.value.rotate },
-      { translateX: trans.value.x },
-      { translateY: trans.value.y },
-    ];
-  });
-
-  const { xOffset, yOffset } = getFontSize(node.name);
 
   if (!node) return null;
 

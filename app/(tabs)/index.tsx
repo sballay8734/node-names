@@ -34,11 +34,9 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: You might not be able to use useAppSelector within a Canvas so you'll have to brainstorm a workaround
+// !TODO: Don't forget to handle long press and don't fire off the action if a user hold down
 
 // !TODO: You actually need to render links TO the groups THEN FROM the groups and to the nodes (REFACTOR EVERYTHING FIRST THOUGH)
-
-// !TODO: You REALLY need to make sure you optimize the rendering of every node and link using "byId" field if possible since you're sort of "forced" to render them both
 
 // !TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
 // !TODO: "determineOptions" REALLY needs a refactor

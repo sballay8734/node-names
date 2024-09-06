@@ -82,7 +82,7 @@ export default function GroupSvg({ id }: GroupSvgProps) {
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={GROUP_NODE_RADIUS}>
-        <Paint color={testFlop ? "#6eff81" : "#400601"} />
+        <Paint color={testFlop ? "#416145" : "#400601"} />
         <Paint color="#486c78" style="stroke" strokeWidth={NODE_BORDER_WIDTH} />
       </Circle>
       <Text x={xOffset} y={yOffset} text={group.group_name} font={font} />

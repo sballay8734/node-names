@@ -3,14 +3,16 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 
 import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/lib/constants/styles";
-import { useAppSelector } from "@/store/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { toggleNode } from "../redux/graphSlice";
 
 interface PressableNodeProps {
   node_id: number;
 }
 
 export default function PressableNode({ node_id }: PressableNodeProps) {
+  const dispatch = useAppDispatch();
   const node = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[node_id],
   );
@@ -20,6 +22,9 @@ export default function PressableNode({ node_id }: PressableNodeProps) {
   const tap = Gesture.Tap()
     .onStart(() => {
       console.log("TAPPED", node.name);
+    })
+    .onEnd(() => {
+      dispatch(toggleNode(node_id));
     })
     .runOnJS(true);
 
@@ -44,11 +49,12 @@ export default function PressableNode({ node_id }: PressableNodeProps) {
             ],
             height: dimensions,
             width: dimensions,
-            backgroundColor: node.depth === 1 ? "red" : "blue",
+            // backgroundColor: node.depth === 1 ? depth1Bg : depth2Bg,
+            backgroundColor: "transparent",
           },
         ]}
       >
-        <Animated.Text>{node.name}</Animated.Text>
+        {/* <Animated.Text>{node.name}</Animated.Text> */}
       </Animated.View>
     </GestureDetector>
   );
@@ -61,6 +67,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 100,
-    // opacity: 0,
+    opacity: 0,
   },
 });
