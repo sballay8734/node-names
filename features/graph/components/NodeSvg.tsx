@@ -15,16 +15,15 @@ import {
 } from "react-native-reanimated";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
-import { PositionedPerson } from "@/lib/utils/newNew";
+import { PositionedPerson } from "@/lib/utils/positionGraphEls";
 
-interface NewPersonProps {
+interface NodeSvgProps {
   person: PositionedPerson;
 }
 
 // REMOVE:
 export const HARD_CODE_RADIUS = 20;
 const HARD_CODE_SW = 2;
-const testFlop = false;
 const HARD_CODE_SHIFT_X = -12;
 const HARD_CODE_SHIFT_Y = 3;
 
@@ -39,7 +38,7 @@ const font = matchFont({
   fontWeight: "400",
 });
 
-export default function NewPerson({ person }: NewPersonProps) {
+export default function NodeSvg({ person }: NodeSvgProps) {
   const radius = person.depth === 1 ? 35 : HARD_CODE_RADIUS;
   const color = person.depth === 1 ? "#fccfff" : "#400601";
 

@@ -15,9 +15,9 @@ import {
 } from "react-native-reanimated";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
-import { PositionedGroup } from "@/lib/utils/newNew";
+import { PositionedGroup } from "@/lib/utils/positionGraphEls";
 
-interface NewGroupProps {
+interface GroupSvgProps {
   group: PositionedGroup;
 }
 
@@ -39,7 +39,7 @@ const font = matchFont({
   fontWeight: "400",
 });
 
-export default function NewGroup({ group }: NewGroupProps) {
+export default function NodeGroup({ group }: GroupSvgProps) {
   const trans = useSharedValue({
     rotate: 0,
     x: centerX,

@@ -34,11 +34,11 @@ interface PositionedData {
   links: PositionedLink[];
 }
 
-export function createGraph(
+export function positionGraphEls(
   data: NData,
   windowSize: WindowSize,
   dispatch: Dispatch,
-  setTestInitialState: ActionCreatorWithPayload<{ nodes: TestNode[] }>,
+  setInitialState: ActionCreatorWithPayload<{ nodes: TestNode[] }>,
 ): {
   data: PositionedData;
   groupPositions: Map<number, { x: number; y: number }>;
@@ -110,7 +110,7 @@ export function createGraph(
     };
   });
 
-  dispatch(setTestInitialState({ nodes: positionedPeople }));
+  dispatch(setInitialState({ nodes: positionedPeople }));
 
   return {
     data: {

@@ -1,47 +1,26 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { CustomThemeContext } from "@/components/CustomThemeContext";
-import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
-import PressablesWrapper from "@/features/Graph/components/PressablesWrapper";
-import SVGsWrapper from "@/features/Graph/components/SVGsWrapper";
+import Graph from "@/features/Graph/components/Graph";
+import GraphOverlayButtons from "@/features/Graph/components/GraphOverlay/GraphOverlayButtons";
 import useDbData from "@/lib/hooks/useDbData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
-import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
 
 const Index = () => {
   const windowSize = useWindowSize();
-  const theme = useContext(CustomThemeContext);
-  const { dataIsLoading, error } = useDbData(windowSize);
-
-  const nodes = useAppSelector((state: RootState) => state.graphData.nodes);
-  const edges = useAppSelector((state: RootState) => state.graphData.edges);
-
-  // const animatedStyle = useAnimatedStyle(() => {
-  //   return {
-  //     transform: [
-  //       { translateX: translateX.value },
-  //       { translateY: translateY.value },
-  //       { scale: scale.value },
-  //     ],
-  //   };
-  // });
-
-  if (dataIsLoading) {
-    return null;
-  }
-
-  if (error) {
-    console.error("Error getting data!");
-    return null;
-  }
+  // const { dataIsLoading, error } = useDbData(windowSize);
+  // if (dataIsLoading) {
+  //   return null;
+  // }
+  // if (error) {
+  //   console.error("Error getting data!");
+  //   return null;
+  // }
 
   return (
     <View style={[styles.container]}>
-      <SVGsWrapper windowSize={windowSize} />
-      {/* <PressablesWrapper /> */}
-      <GraphButtons />
+      <Graph />
+      <GraphOverlayButtons />
     </View>
   );
 };

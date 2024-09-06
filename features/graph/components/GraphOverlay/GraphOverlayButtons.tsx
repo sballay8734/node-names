@@ -19,7 +19,7 @@ interface Props {
   centerOnRoot: () => void;
 }
 
-const GraphButtons = () => {
+const GraphOverlayButtons = () => {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const { scale, translateX, translateY, lastScale } = useGestures();
   const { arrowData, showArrow, centerOnRoot } = useGraphData({
@@ -46,4 +46,4 @@ const GraphButtons = () => {
   );
 };
 
-export default GraphButtons;
+export default GraphOverlayButtons;

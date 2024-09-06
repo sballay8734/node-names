@@ -3,12 +3,9 @@ import React from "react";
 import { Dimensions } from "react-native";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
-import { PositionedLink } from "@/lib/utils/newNew";
-import { useDerivedValue, useSharedValue } from "react-native-reanimated";
+import { PositionedLink } from "@/lib/utils/positionGraphEls";
 
-// const AnimatedPath = Animated.createAnimatedComponent(Path);
-
-interface Props {
+interface LinkSvgProps {
   link: PositionedLink;
 }
 
@@ -16,21 +13,7 @@ const { width, height } = Dimensions.get("window");
 const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
-export default function NewLink({ link }: Props) {
-  // const trans = useSharedValue({
-  //   rotate: 0,
-  //   x: centerX,
-  //   y: centerY,
-  // });
-
-  // const transform = useDerivedValue(() => {
-  //   return [
-  //     { rotate: trans.value.rotate },
-  //     { translateX: trans.value.x },
-  //     { translateY: trans.value.y },
-  //   ];
-  // });
-
+export default function LinkSvg({ link }: LinkSvgProps) {
   const path = Skia.Path.Make();
   path.moveTo(link.x1, link.y1);
   path.lineTo(link.x2, link.y2);

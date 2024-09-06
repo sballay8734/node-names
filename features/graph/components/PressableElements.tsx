@@ -1,9 +1,9 @@
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import NewNode from "./NewNode";
+import NewNode from "./PressableNode";
 
-export default function PressablesWrapper() {
+export default function PressableElements() {
   const allNodeIds = useAppSelector(
     (state: RootState) => state.graphData.nodes.allIds,
   );

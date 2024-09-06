@@ -1,7 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Edges, Groups, UiNode, NodeStatus, Nodes } from "@/lib/types/graph";
-import { D3Edge, D3Node } from "@/lib/utils/setInitialNodePostions";
+import { Edges, Groups, UiNode, NodeStatus } from "@/lib/types/graph";
 import { RootState } from "@/store/store";
 
 export interface TestNode {
@@ -61,69 +60,6 @@ const NewArchitectureSlice = createSlice({
     setInitialState: (
       state,
       action: PayloadAction<{
-        nodes: D3Node[];
-        edges: D3Edge[];
-      }>,
-    ) => {
-      console.log("OLD");
-      // const { nodes, edges } = action.payload;
-
-      // const nodeStatusMap: {
-      //   [id: number]: { isCurrentRoot: boolean; node_status: string };
-      // } = {};
-
-      // // initialize nodes state
-      // nodes.forEach((node) => {
-      //   if (!state.nodes.byId[node.id]) {
-      //     const newNode = {
-      //       ...node,
-      //       isCurrentRoot: node.is_user,
-      //       node_status: (node.is_user ? "active" : "inactive") as NodeStatus,
-      //       isShown: true,
-      //     };
-      //     state.nodes.byId[node.id] = newNode;
-      //     state.nodes.allIds.push(node.id);
-
-      //     // set active root id to user for initial load
-      //     if (newNode.is_user) {
-      //       state.nodes.activeRootId = newNode.id;
-      //       state.userId = newNode.id;
-      //     }
-
-      //     // store status in temporary map for SAFE look up during edges loop
-      //     nodeStatusMap[node.id] = {
-      //       isCurrentRoot: newNode.isCurrentRoot,
-      //       node_status: newNode.node_status,
-      //     };
-      //   }
-      // });
-
-      // // initialize edges state and use nodetStatusMap
-      // edges.forEach((edge) => {
-      //   if (!state.edges.byId[edge.id]) {
-      //     const node1InMap = nodeStatusMap[edge.node_1_id];
-      //     const node2InMap = nodeStatusMap[edge.node_2_id];
-
-      //     state.edges.byId[edge.id] = {
-      //       ...edge,
-      //       node_1_status: node1InMap
-      //         ? (node1InMap.node_status as NodeStatus)
-      //         : "inactive",
-      //       node_2_status: node2InMap
-      //         ? (node2InMap.node_status as NodeStatus)
-      //         : "inactive",
-      //       edge_status:
-      //         (node1InMap && node1InMap.isCurrentRoot) ||
-      //         (node2InMap && node2InMap.isCurrentRoot)
-      //           ? "active"
-      //           : "inactive",
-      //     };
-      //   }
-      // });
-    },
-    setTestInitialState: (
-      state,
-      action: PayloadAction<{
         nodes: TestNode[];
         // edges: D3Edge[];
       }>,
@@ -161,7 +97,6 @@ const NewArchitectureSlice = createSlice({
           };
         }
       });
-      console.log(state.nodes.byId);
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {
@@ -199,12 +134,8 @@ const NewArchitectureSlice = createSlice({
   },
 });
 
-export const {
-  setInitialState,
-  setTestInitialState,
-  toggleNode,
-  swapRootNode,
-} = NewArchitectureSlice.actions;
+export const { setInitialState, toggleNode, swapRootNode } =
+  NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;
 

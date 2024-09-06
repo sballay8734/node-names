@@ -1,5 +1,5 @@
 import { Canvas, Fill, Group } from "@shopify/react-native-skia";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -16,33 +16,31 @@ import {
   MIN_SCALE,
   SCALE_SENSITIVITY,
 } from "@/lib/hooks/useGestures";
-import { WindowSize } from "@/lib/types/misc";
-import { createGraph } from "@/lib/utils/newNew";
-import { useAppDispatch } from "@/store/reduxHooks";
+import { positionGraphEls } from "@/lib/utils/positionGraphEls";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
-import { setTestInitialState } from "../redux/graphSlice";
+import { setInitialState } from "../redux/graphSlice";
 
-import NewGroup from "./NewGroup";
-import NewLink from "./NewLink";
-import NewPerson from "./NewPerson";
-import PressablesWrapper from "./PressablesWrapper";
-import TreeLink from "./TreeLink";
+import PressableElements from "./PressableElements";
+import SvgElements from "./SvgElements";
 
-interface SVGsWrapperProps {
-  windowSize: WindowSize;
-}
-
-const data = {
+// REMOVE:
+const thisData = {
   groups,
   people,
   links,
 };
 
-export default function SVGsWrapper({ windowSize }: SVGsWrapperProps) {
+export default function Graph() {
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const dispatch = useAppDispatch();
-  const {
-    data: { groups, people, links },
-  } = createGraph(data, windowSize, dispatch, setTestInitialState);
+  const { data, groupPositions } = positionGraphEls(
+    thisData,
+    windowSize,
+    dispatch,
+    setInitialState,
+  );
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -140,19 +138,11 @@ export default function SVGsWrapper({ windowSize }: SVGsWrapperProps) {
         >
           <Fill color="#092730" />
           <Group transform={transform}>
-            {links.map((link) => {
-              return <NewLink key={link.id} link={link} />;
-            })}
-            {groups.map((group) => {
-              return <NewGroup key={group.id} group={group} />;
-            })}
-            {people.map((person) => {
-              return <NewPerson key={person.id} person={person} />;
-            })}
+            <SvgElements data={data} />
           </Group>
         </Canvas>
         <Animated.View style={[styles.wrapper, animatedStyle]}>
-          <PressablesWrapper />
+          <PressableElements />
         </Animated.View>
       </View>
     </GestureDetector>
