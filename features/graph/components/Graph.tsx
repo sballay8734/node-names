@@ -137,9 +137,9 @@ export default function Graph() {
             </Provider>
           </Group>
         </Canvas>
-        {/* <Animated.View style={[styles.wrapper, animatedStyle]}>
+        <Animated.View style={[styles.wrapper, animatedStyle]}>
           <PressableElements />
-        </Animated.View> */}
+        </Animated.View>
       </View>
     </GestureDetector>
   );
