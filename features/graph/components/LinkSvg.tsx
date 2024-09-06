@@ -20,16 +20,32 @@ const { width, height } = Dimensions.get("window");
 const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
+const colorMap: { [key: string]: string } = {
+  active: "#ffffff",
+  parent_active: "#ffffff",
+  inactive: "#4d4d4d",
+};
+
 export default function LinkSvg({ id }: LinkSvgProps) {
   const link = useAppSelector(
     (state: RootState) => state.graphData.links.byId[id],
   );
+  const sourceStatus = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.byId[link.source_id].node_status,
+  );
+
+  if (link.relation_type === "group") {
+    console.log(link);
+  }
+
+  const color = colorMap[sourceStatus];
 
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    progress.value = withTiming(1, { duration: 1000 });
-  }, []);
+    progress.value = withTiming(1, { duration: 500 });
+  }, [progress]);
 
   const startPath = Skia.Path.Make();
   startPath.moveTo(link.x1, link.y1);
@@ -51,7 +67,7 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     <Group origin={{ x: centerX, y: centerY }}>
       <Path
         path={animatedPath}
-        color="#96a9b0"
+        color={color}
         strokeWidth={2}
         strokeJoin="round"
         strokeCap="round"

@@ -12,7 +12,7 @@ import {
 import { WindowSize } from "../types/misc";
 
 export function positionGraphEls(
-  data: { groups: RawGroup[]; people: RawNode[]; links: RawLink[] },
+  data: { groups: RawGroup[]; nodes: RawNode[]; links: RawLink[] },
   windowSize: WindowSize,
 ): {
   data: {
@@ -24,7 +24,7 @@ export function positionGraphEls(
 } {
   const width = windowSize.width;
   const height = windowSize.height;
-  const { groups, people, links } = data;
+  const { groups, nodes, links } = data;
 
   // Calculate the center of the circle
   const centerX = width / 2;
@@ -47,6 +47,7 @@ export function positionGraphEls(
     groupPositions.set(group.id, {
       id: group.id,
       group_name: group.group_name,
+      source_id: group.source_id,
       x,
       y,
       angle,
@@ -56,13 +57,13 @@ export function positionGraphEls(
   });
 
   // Function to get a person's position based on their group
-  const getPersonPosition = (person: RawNode): { x: number; y: number } => {
-    if (person.group_id === null) {
+  const getPersonPosition = (node: RawNode): { x: number; y: number } => {
+    if (node.group_id === null) {
       return { x: centerX, y: centerY }; // Place uRawGrouped people in the center
     }
-    const groupPos = groupPositions.get(person.group_id);
+    const groupPos = groupPositions.get(node.group_id);
     if (!groupPos) {
-      console.warn(`No position found for group ${person.group_id}`);
+      console.warn(`No position found for group ${node.group_id}`);
       return { x: centerX, y: centerY };
     }
     // Position people radially outward from the group's position
@@ -75,12 +76,13 @@ export function positionGraphEls(
   };
 
   // Calculate positions for each person
-  const positionedNodes: PositionedNode[] = people.map((person) => ({
-    ...person,
-    ...getPersonPosition(person),
+  const positionedNodes: PositionedNode[] = nodes.map((node) => ({
+    ...node,
+    ...getPersonPosition(node),
   }));
 
   // Calculate positions for links
+  // !TODO: create map during positionedNodes for faster lookup
   const positionedLinks: PositionedLink[] = links.map((link) => {
     const source = positionedNodes.find((p) => p.id === link.source_id);
     const target = positionedNodes.find((p) => p.id === link.target_id);

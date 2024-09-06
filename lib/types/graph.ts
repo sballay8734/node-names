@@ -9,10 +9,11 @@ export type RelationType =
   | "child_parent"
   | "colleague"
   | "classmate"
-  | "virtual";
+  | "virtual"
+  | "group";
 export type NodeStatus = "active" | "parent_active" | "inactive";
-export type LinkStatus = "active" | "inactive";
-export type GroupStatus = "active" | "inactive";
+export type LinkStatus = "active" | "parent_active" | "inactive";
+export type GroupStatus = "active" | "parent_active" | "inactive";
 
 // RawShape from the database **************************************************
 export interface RawNode {
@@ -23,6 +24,7 @@ export interface RawNode {
 }
 export interface RawGroup {
   id: number;
+  source_id: number;
   group_name: string;
 }
 export interface RawLink {

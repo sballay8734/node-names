@@ -1,6 +1,6 @@
 import { RawGroup, RawLink, RawNode } from "../types/graph";
 
-export const people: RawNode[] = [
+export const nodes: RawNode[] = [
   { id: 1, depth: 1, name: "Root", group_id: null },
   { id: 2, depth: 2, name: "Aaron", group_id: 1 },
   { id: 3, depth: 2, name: "Beth", group_id: 2 },
@@ -18,9 +18,9 @@ export const links: RawLink[] = [
 ];
 
 export const groups: RawGroup[] = [
-  { id: 1, group_name: "friends" },
-  { id: 2, group_name: "work" },
-  { id: 3, group_name: "family" },
-  { id: 4, group_name: "school" },
-  { id: 5, group_name: "online" },
+  { id: 1, source_id: 1, group_name: "friends" },
+  { id: 2, source_id: 1, group_name: "work" },
+  { id: 3, source_id: 1, group_name: "family" },
+  { id: 4, source_id: 1, group_name: "school" },
+  { id: 5, source_id: 1, group_name: "online" },
 ];

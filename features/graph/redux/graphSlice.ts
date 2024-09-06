@@ -27,6 +27,7 @@ interface GraphSliceState {
   };
   groups: {
     byId: PosGroupMap;
+    bySourceId: PosGroupMap;
     allIds: number[];
   };
 }
@@ -45,6 +46,7 @@ const initialState: GraphSliceState = {
   },
   groups: {
     byId: {},
+    bySourceId: {},
     allIds: [],
   },
 };
@@ -133,6 +135,8 @@ const NewArchitectureSlice = createSlice({
           state.groups.allIds.push(group.id);
         }
       });
+
+      console.log(state);
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {

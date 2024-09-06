@@ -19,9 +19,9 @@ import {
   NODE_BORDER_WIDTH,
   TAB_BAR_HEIGHT,
 } from "@/lib/constants/styles";
-import { PositionedGroup } from "@/lib/types/graph";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { NodeStatus } from "@/lib/types/graph";
 
 interface GroupSvgProps {
   id: number;
@@ -32,6 +32,12 @@ const testFlop = true;
 const { width, height } = Dimensions.get("window");
 const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
+
+const colorMap: { [key: string]: string } = {
+  active: "rgba(48, 245, 107, 1)",
+  parent_active: "rgba(55, 163, 88, 1)",
+  inactive: "rgba(21, 80, 39, 1)",
+};
 
 const font = matchFont({
   fontFamily: "Helvetica",
@@ -44,6 +50,12 @@ export default function GroupSvg({ id }: GroupSvgProps) {
   const group = useAppSelector(
     (state: RootState) => state.graphData.groups.byId[id],
   );
+  const sourceStatus = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.byId[group.source_id].node_status,
+  );
+
+  const color = colorMap[sourceStatus];
 
   const trans = useSharedValue({
     rotate: 0,
@@ -82,7 +94,7 @@ export default function GroupSvg({ id }: GroupSvgProps) {
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={GROUP_NODE_RADIUS}>
-        <Paint color={testFlop ? "#416145" : "#400601"} />
+        <Paint color={color} />
         <Paint color="#486c78" style="stroke" strokeWidth={NODE_BORDER_WIDTH} />
       </Circle>
       <Text x={xOffset} y={yOffset} text={group.group_name} font={font} />

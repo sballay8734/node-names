@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: You can now remove all the calls to Dimensions and use the redux value
+
 // !TODO: Don't forget to handle long press and don't fire off the action if a user hold down
 
 // !TODO: You actually need to render links TO the groups THEN FROM the groups and to the nodes (REFACTOR EVERYTHING FIRST THOUGH)

@@ -8,8 +8,9 @@ import Animated, {
   useSharedValue,
   withDecay,
 } from "react-native-reanimated";
+import { Provider } from "react-redux";
 
-import { people, links, groups } from "@/lib/data/new_structure";
+import { nodes, links, groups } from "@/lib/data/new_structure";
 import {
   INITIAL_SCALE,
   MAX_SCALE,
@@ -22,12 +23,11 @@ import { RootState, store } from "@/store/store";
 
 import PressableElements from "./PressableElements";
 import SvgElements from "./SvgElements";
-import { Provider } from "react-redux";
 
 // REMOVE:
 const thisData = {
   groups,
-  people,
+  nodes,
   links,
 };
 
