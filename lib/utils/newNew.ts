@@ -1,12 +1,14 @@
+import { ActionCreatorWithPayload, Dispatch } from "@reduxjs/toolkit";
 import { NGroup, NLink, NPerson } from "../data/new_structure";
 import { WindowSize } from "../types/misc";
+import { TestNode } from "@/features/Graph/redux/graphSlice";
 
 export interface PositionedGroup extends NGroup {
   x: number;
   y: number;
 }
 
-interface PositionedPerson extends NPerson {
+export interface PositionedPerson extends NPerson {
   x: number;
   y: number;
 }
@@ -33,6 +35,8 @@ interface PositionedData {
 export function createGraph(
   data: NData,
   windowSize: WindowSize,
+  dispatch: Dispatch,
+  setTestInitialState: ActionCreatorWithPayload<{ nodes: TestNode[] }>,
 ): {
   data: PositionedData;
   groupPositions: Map<number, { x: number; y: number }>;
@@ -49,7 +53,10 @@ export function createGraph(
   const radius = Math.min(width, height) * 0.4;
 
   // Create a map to store group positions
-  const groupPositions = new Map<number, { x: number; y: number }>();
+  const groupPositions = new Map<
+    number,
+    { x: number; y: number; angle: number }
+  >();
 
   // Calculate positions for each group
   const positionedGroups = groups.map((group, index) => {
@@ -59,8 +66,8 @@ export function createGraph(
       (index / groups.length) * 2 * Math.PI - Math.PI / 2 + angleOffset;
     const x = centerX + radius * Math.cos(angle);
     const y = centerY + radius * Math.sin(angle);
-    groupPositions.set(group.id, { x, y });
-    return { ...group, x, y };
+    groupPositions.set(group.id, { x, y, angle });
+    return { ...group, x, y, angle };
   });
 
   // Function to get a person's position based on their group
@@ -73,11 +80,12 @@ export function createGraph(
       console.warn(`No position found for group ${person.group_id}`);
       return { x: centerX, y: centerY };
     }
-    // Add some random offset within the group
-    const offset = 30; // Adjust this value to control spread within groups
+    // Position people radially outward from the group's position
+    // REMOVE: shouldn't be a hardcoded value here
+    const distanceFromGroup = 50;
     return {
-      x: groupPos.x + (Math.random() - 0.5) * offset,
-      y: groupPos.y + (Math.random() - 0.5) * offset,
+      x: groupPos.x + distanceFromGroup * Math.cos(groupPos.angle),
+      y: groupPos.y + distanceFromGroup * Math.sin(groupPos.angle),
     };
   };
 
@@ -99,6 +107,8 @@ export function createGraph(
       y2: target?.y ?? centerY,
     };
   });
+
+  dispatch(setTestInitialState({ nodes: positionedPeople }));
 
   return {
     data: {

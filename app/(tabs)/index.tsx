@@ -3,11 +3,10 @@ import { StyleSheet, View } from "react-native";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import GraphButtons from "@/features/Graph/components/GraphOverlay/GraphButtons";
-import Groups from "@/features/Graph/components/Groups";
-import TreeWrapper from "@/features/Graph/components/TreeWrapper";
+import PressablesWrapper from "@/features/Graph/components/PressablesWrapper";
+import SVGsWrapper from "@/features/Graph/components/SVGsWrapper";
 import useDbData from "@/lib/hooks/useDbData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
-import { testData } from "@/lib/utils/newTreeGraphStrategy";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -40,8 +39,8 @@ const Index = () => {
 
   return (
     <View style={[styles.container]}>
-      <Groups windowSize={windowSize} />
-      {/* <TreeWrapper data={testData} windowSize={windowSize} /> */}
+      <SVGsWrapper windowSize={windowSize} />
+      {/* <PressablesWrapper /> */}
       <GraphButtons />
     </View>
   );
@@ -50,8 +49,6 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "rgba(120, 32, 18, 0.6)", // Made semi-transparent
   },
 });

@@ -16,10 +16,14 @@ import {
 } from "@/lib/hooks/useGestures";
 import { WindowSize } from "@/lib/types/misc";
 import { createGraph } from "@/lib/utils/newNew";
+import { useAppDispatch } from "@/store/reduxHooks";
+
+import { setTestInitialState } from "../redux/graphSlice";
 
 import NewGroup from "./Group";
+import NewPerson from "./NewPerson";
 
-interface GroupsProps {
+interface SVGsWrapperProps {
   windowSize: WindowSize;
 }
 
@@ -29,18 +33,17 @@ const data = {
   links,
 };
 
-export default function Groups({ windowSize }: GroupsProps) {
+export default function SVGsWrapper({ windowSize }: SVGsWrapperProps) {
+  const dispatch = useAppDispatch();
   const {
-    data: { groups },
-  } = createGraph(data, windowSize);
+    data: { groups, people, links },
+  } = createGraph(data, windowSize, dispatch, setTestInitialState);
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
   const initialFocalX = useSharedValue(0);
   const initialFocalY = useSharedValue(0);
-
-  console.log(groups);
 
   const pinch = useMemo(
     () =>
@@ -124,16 +127,80 @@ export default function Groups({ windowSize }: GroupsProps) {
           {groups.map((group) => {
             return <NewGroup key={group.id} group={group} />;
           })}
+          {people.map((person) => {
+            return <NewPerson key={person.id} person={person} />;
+          })}
         </Group>
       </Canvas>
     </GestureDetector>
   );
 }
 
-const testGroups = [
-  { group_name: "friends", id: 1, x: 373.35, y: 386.5 },
-  { group_name: "work", id: 2, x: 251.14965545520946, y: 554.6943449067979 },
-  { group_name: "family", id: 3, x: 53.42534454479056, y: 490.4498218679239 },
-  { group_name: "school", id: 4, x: 53.42534454479056, y: 282.55017813207616 },
-  { group_name: "online", id: 5, x: 251.14965545520943, y: 218.3056550932021 },
-];
+const byId = {
+  "1": {
+    depth: 1,
+    group_id: null,
+    id: 1,
+    isCurrentRoot: true,
+    isShown: true,
+    name: "Root",
+    node_status: "active",
+    x: 196.5,
+    y: 386.5,
+  },
+  "2": {
+    depth: 2,
+    group_id: 1,
+    id: 2,
+    isCurrentRoot: false,
+    isShown: true,
+    name: "Aaron",
+    node_status: "inactive",
+    x: 196.5,
+    y: 179.29999999999998,
+  },
+  "3": {
+    depth: 2,
+    group_id: 2,
+    id: 3,
+    isCurrentRoot: false,
+    isShown: true,
+    name: "Beth",
+    node_status: "inactive",
+    x: 393.5589101763558,
+    y: 322.4716787655109,
+  },
+  "4": {
+    depth: 3,
+    group_id: 3,
+    id: 4,
+    isCurrentRoot: false,
+    isShown: true,
+    name: "Carol",
+    node_status: "inactive",
+    x: 318.28910427500045,
+    y: 554.128321234489,
+  },
+  "5": {
+    depth: 3,
+    group_id: 4,
+    id: 5,
+    isCurrentRoot: false,
+    isShown: true,
+    name: "Diana",
+    node_status: "inactive",
+    x: 74.71089572499959,
+    y: 554.1283212344891,
+  },
+  "6": {
+    depth: 3,
+    group_id: 5,
+    id: 6,
+    isCurrentRoot: false,
+    isShown: true,
+    name: "Ethan",
+    node_status: "inactive",
+    x: -0.5589101763558517,
+    y: 322.47167876551094,
+  },
+};
