@@ -46,12 +46,25 @@ const depth4Bg = "rgba(21, 80, 39, 1)"; // green
 const depth5Bg = "rgba(30, 33, 82, 1)"; // purple
 
 export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
+  // !TODO: Need to animate colors in and out
   const radius = GROUP_NODE_RADIUS;
-  const inactiveColor = depth4Bg;
-  const parentActiveColor = "rgba(144, 120, 25, 1)";
+  const inactiveColor = "#13301c";
+  const activeBorderColor = "white";
   const activeColor = "#2ff56a";
 
-  const color = node.node_status === "active" ? activeColor : inactiveColor;
+  const borderColor =
+    node.node_status === "active"
+      ? activeBorderColor
+      : node.node_status === "parent_active"
+      ? activeBorderColor
+      : inactiveColor;
+
+  const color =
+    node.node_status === "active"
+      ? activeColor
+      : node.node_status === "parent_active"
+      ? inactiveColor
+      : inactiveColor;
 
   const trans = useSharedValue({
     rotate: 0,
@@ -61,8 +74,8 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
   const transform = useDerivedValue(() => {
     return [
       { rotate: trans.value.rotate },
-      { translateX: trans.value.x },
-      { translateY: trans.value.y },
+      { translateX: node.x },
+      { translateY: node.y },
     ];
   });
   const { xOffset, yOffset } = getFontSize(node.name);
@@ -76,12 +89,13 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     return { xOffset, yOffset };
   }
 
-  useEffect(() => {
-    trans.value = withTiming(
-      { rotate: 0, x: node.x, y: node.y },
-      { duration: 500, easing: Easing.inOut(Easing.cubic) },
-    );
-  }, [node.x, node.y, trans]);
+  // this will animate the nodes on mount if you replace translateX and translateY in transform with node.x and node.y
+  // useEffect(() => {
+  //   trans.value = withTiming(
+  //     { rotate: 0, x: node.x, y: node.y },
+  //     { duration: 500, easing: Easing.inOut(Easing.cubic) },
+  //   );
+  // }, [node.x, node.y, trans]);
 
   if (!node) return null;
 
@@ -89,7 +103,11 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={radius}>
         <Paint color={color} />
-        <Paint color="#486c78" style="stroke" strokeWidth={NODE_BORDER_WIDTH} />
+        <Paint
+          color={borderColor}
+          style="stroke"
+          strokeWidth={NODE_BORDER_WIDTH}
+        />
       </Circle>
       {/* <Text x={xOffset} y={yOffset} text={node.name} font={font} /> */}
       <Text x={xOffset} y={yOffset} text={node.name} font={font} />

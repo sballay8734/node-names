@@ -34,7 +34,13 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: Might need to add "mixed" source_type for each node if you allow a node to have a group AND another node as a source (think siblings maybe?)
+// !TODO: initial state set doesn't activate borders on rootGroupNodes
+
+// !TODO: A nodes status should NOT be changed to inactive if the parent is active (see the handle case else if (false))
+
+// !TODO: Need to optimized link/node updating inside toggleNode
+
+// !TODO: update link based on if source AND target are active
 
 // !TODO: You can now remove all the calls to Dimensions and use the redux value
 

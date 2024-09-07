@@ -126,7 +126,6 @@ const NewArchitectureSlice = createSlice({
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {
-      console.log("toggleNode");
       const nodeId = action.payload;
 
       // because you have 3 statuses, you need to slightly complicate logic
@@ -136,12 +135,25 @@ const NewArchitectureSlice = createSlice({
         // make node active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
           state.nodes.byId[nodeId].node_status = "active";
+          state.links.allIds.forEach((id) => {
+            const link = state.links.byId[id];
+            if (link && link.source_id === nodeId) {
+              state.nodes.byId[link.target_id].node_status = "parent_active";
+            }
+          });
+          console.log(state.nodes.byId[nodeId]);
           // !TODO: handle case of node click when active AND parent IS active
         } else if (false) {
           state.nodes.byId[nodeId].node_status = "parent_active";
           // handle case of node click while active AND parent is NOT active
         } else {
           state.nodes.byId[nodeId].node_status = "inactive";
+          state.links.allIds.forEach((id) => {
+            const link = state.links.byId[id];
+            if (link && link.source_id === nodeId) {
+              state.nodes.byId[link.target_id].node_status = "inactive";
+            }
+          });
         }
       }
     },
