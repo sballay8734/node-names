@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: YOU HAVE A MEMORY LEAK SOMEWHERE (It's small but as you press nodes it creeps up)
+
 // !TODO: How are you going to handle the press styles if you're showing svgs?
 
 // !TODO: Find a way to bold the group names but NOT the node names nicely

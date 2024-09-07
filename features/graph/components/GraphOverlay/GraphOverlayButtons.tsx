@@ -5,17 +5,19 @@ import BackToUserBtn from "@/features/Graph/components/GraphOverlay/BackToUserBt
 import InspectBtn from "@/features/Graph/components/GraphOverlay/InspectBtn";
 import RecenterBtn from "@/features/Graph/components/GraphOverlay/RecenterBtn";
 import SearchBar from "@/features/Graph/components/GraphOverlay/SearchBar";
-import { useGraphData } from "@/lib/hooks/useGraphData";
 import { WindowSize } from "@/lib/types/misc";
 
 import DeselectAllBtn from "./DeselectAllBtn";
 import Popover from "./Popover";
 
-interface Props {
+interface GraphOverlayButtonsProps {
   scale: SharedValue<number>;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   lastScale: SharedValue<number>;
+  initialFocalX: SharedValue<number>;
+  initialFocalY: SharedValue<number>;
+  scaleDelta: SharedValue<number>;
   windowSize: WindowSize;
 }
 
@@ -24,27 +26,27 @@ const GraphOverlayButtons = ({
   translateX,
   translateY,
   lastScale,
+  initialFocalX,
+  initialFocalY,
+  scaleDelta,
   windowSize,
-}: Props) => {
-  const { arrowData, showArrow, centerOnRoot } = useGraphData({
-    scale,
-    translateX,
-    translateY,
-    windowSize,
-    lastScale,
-  });
-
+}: GraphOverlayButtonsProps) => {
   return (
     <>
       <Popover />
       <SearchBar />
       <RecenterBtn
-        centerOnRoot={centerOnRoot}
-        arrowData={arrowData}
-        showArrow={showArrow}
+        scale={scale}
+        translateX={translateX}
+        translateY={translateY}
+        lastScale={lastScale}
+        initialFocalX={initialFocalX}
+        initialFocalY={initialFocalY}
+        scaleDelta={scaleDelta}
+        windowSize={windowSize}
       />
       <DeselectAllBtn />
-      <InspectBtn centerOnRoot={centerOnRoot} />
+      <InspectBtn />
       <BackToUserBtn />
     </>
   );

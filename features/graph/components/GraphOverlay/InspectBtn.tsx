@@ -24,7 +24,7 @@ interface Props {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
 
-export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
+export default function InspectBtn() {
   const dispatch = useAppDispatch();
 
   const isPressed = useSharedValue(false);
@@ -70,7 +70,7 @@ export default function InspectBtn({ centerOnRoot }: Props): React.JSX.Element {
           oldRootId: activeRootNodeId,
         }),
       );
-      centerOnRoot();
+      // centerOnRoot();
     } else {
       console.error(`Node not found`);
     }
@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     bottom: 10,
     right: 10,
-    // height: ARROW_BTN_RADIUS * 2,
-    // width: ARROW_BTN_RADIUS * 2,
+    // height: ARROW_BTN_DIM * 2,
+    // width: ARROW_BTN_DIM * 2,
     padding: 10,
     borderRadius: 100,
     borderColor: "#232a2b",

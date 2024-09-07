@@ -2,29 +2,80 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
-  DerivedValue,
+  SharedValue,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-import { ARROW_BTN_RADIUS } from "@/lib/constants/styles";
-import { supabase } from "@/supabase";
+import {
+  ARROW_BTN_DIM,
+  ARROW_BTN_RADIUS,
+  TAB_BAR_HEIGHT,
+} from "@/lib/constants/styles";
+import { WindowSize } from "@/lib/types/misc";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-interface Props {
-  centerOnRoot: () => void;
-  arrowData: DerivedValue<{ transform: { rotate: string }[] }>;
-  showArrow: DerivedValue<boolean>;
+interface RecenterBtnProps {
+  scale: SharedValue<number>;
+  translateX: SharedValue<number>;
+  translateY: SharedValue<number>;
+  lastScale: SharedValue<number>;
+  initialFocalX: SharedValue<number>;
+  initialFocalY: SharedValue<number>;
+  scaleDelta: SharedValue<number>;
+  windowSize: WindowSize;
 }
 
 const RecenterBtn = ({
-  centerOnRoot,
-  arrowData,
-  showArrow,
-}: Props): React.JSX.Element => {
+  scale,
+  translateX,
+  translateY,
+  lastScale,
+  initialFocalX,
+  initialFocalY,
+  scaleDelta,
+  windowSize,
+}: RecenterBtnProps): React.JSX.Element => {
   const isPressed = useSharedValue<boolean>(false);
+  const { width, height, windowCenterX, windowCenterY } = windowSize;
+
+  const initTargetX = windowCenterX - ARROW_BTN_RADIUS;
+  const initTargetY = windowCenterY - ARROW_BTN_RADIUS;
+  // position CENTER POINT of button
+  const padding = 10;
+  const buttonX = initTargetX - width / 2 + ARROW_BTN_RADIUS + padding;
+  const buttonY = initTargetY + height / 2 - ARROW_BTN_RADIUS - padding;
+
+  const targetX = useDerivedValue(() => {
+    return (initTargetX + translateX.value) * scale.value;
+  });
+  const targetY = useDerivedValue(() => {
+    return (initTargetY + translateY.value) * scale.value;
+  });
+
+  // const rotate = useDerivedValue(() => {
+  //   // Calculate the vector from the button to the transformed center
+  //   const deltaX = targetX.value - buttonX;
+  //   const deltaY = targetY.value - buttonY;
+  //   console.log(initialFocalX.value, initialFocalY.value);
+  //   // Calculate the angle
+  //   const angleInRads = Math.atan2(deltaY, deltaX);
+  //   const newAngle = angleInRads * (180 / Math.PI);
+
+  //   // Return the angle as a string for use in rotation
+  //   return `${newAngle}deg`;
+  // });
+
+  // const animatedArrow = useAnimatedStyle(() => ({
+  //   transform: [
+  //     {
+  //       rotate: rotate.value,
+  //     },
+  //   ],
+  // }));
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#060d0f" : "#091417", {
@@ -32,7 +83,7 @@ const RecenterBtn = ({
     }),
   }));
 
-  const arrowRotate = useAnimatedStyle(() => arrowData.value);
+  // const arrowRotate = useAnimatedStyle(() => arrowData.value);
   const arrowOpacity = useAnimatedStyle(() => ({
     // opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
     // REMOVE: Add above back after testing
@@ -41,7 +92,8 @@ const RecenterBtn = ({
 
   const handlePressIn = () => {
     isPressed.value = true;
-    centerOnRoot();
+    console.log("Pressed ReCenter...");
+    // centerOnRoot();
   };
 
   const handlePressOut = () => {
@@ -54,42 +106,50 @@ const RecenterBtn = ({
     <AnimatedPressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[styles.recenterButton, animatedStyles, arrowOpacity]}
+      style={[
+        styles.btnWrapper,
+        {
+          transform: [
+            { translateX: buttonX },
+            { translateY: buttonY },
+            // This rotate is needed to normalize starting point of arrow's orientation
+            { rotate: "45deg" },
+          ],
+        },
+        animatedStyles,
+        arrowOpacity,
+      ]}
     >
-      <View style={styles.buttonContent}>
-        <Animated.View style={[styles.arrow, arrowRotate]}>
+      <Animated.View style={[styles.arrowContainer]}>
+        {/* <Animated.View style={[styles.arrow, arrowRotate]}> */}
+        <Animated.View style={[styles.arrow]}>
           <FontAwesome6 name="location-arrow" size={24} color="#fc4956" />
         </Animated.View>
-      </View>
+      </Animated.View>
     </AnimatedPressable>
   );
 };
 
 const styles = StyleSheet.create({
-  recenterButton: {
+  btnWrapper: {
     position: "absolute",
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    bottom: 10,
-    left: 10,
-    height: ARROW_BTN_RADIUS * 2,
-    width: ARROW_BTN_RADIUS * 2,
+    height: ARROW_BTN_DIM,
+    width: ARROW_BTN_DIM,
     borderRadius: 100,
     borderColor: "#232a2b",
     borderWidth: 1,
-    backgroundColor: "transparent",
-    transform: [{ rotate: "46deg" }], // TODO: SHOULD NOT BE HARDCODED: ORIGINAL VALUE vvvv
   },
-  buttonContent: {
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    alignItems: "center",
+  arrowContainer: {
+    // backgroundColor: "red",
+    position: "absolute",
   },
   arrow: {
     width: 20,
     height: 20,
+    marginBottom: 2,
     marginRight: 2,
     justifyContent: "center",
     alignItems: "center",
@@ -97,3 +157,19 @@ const styles = StyleSheet.create({
 });
 
 export default RecenterBtn;
+
+const rtPos = {
+  angle: 0,
+  depth: 1,
+  group_id: null,
+  group_name: "Root",
+  id: 1,
+  isRoot: true,
+  isShown: true,
+  name: "Root",
+  node_status: "active",
+  source_type: null,
+  type: "node",
+  x: 196.5,
+  y: 386.5,
+};

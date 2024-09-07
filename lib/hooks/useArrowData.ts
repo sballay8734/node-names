@@ -1,6 +1,6 @@
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
 
-import { ARROW_BTN_RADIUS } from "@/lib/constants/styles";
+import { ARROW_BTN_DIM } from "@/lib/constants/styles";
 import { RootState } from "@/store/store";
 
 import { useAppSelector } from "../../store/reduxHooks";
@@ -27,8 +27,8 @@ export const useArrowData = ({ translateX, translateY, scale }: Props) => {
   const ARROW_BTN_BTM = 10;
 
   const ARROW_BTN_CENTER = {
-    x: ARROW_BTN_LEFT + ARROW_BTN_RADIUS,
-    y: windowSize.height - ARROW_BTN_BTM - ARROW_BTN_RADIUS,
+    x: ARROW_BTN_LEFT + ARROW_BTN_DIM,
+    y: windowSize.height - ARROW_BTN_BTM - ARROW_BTN_DIM,
   };
 
   const arrowData = useDerivedValue(() => {

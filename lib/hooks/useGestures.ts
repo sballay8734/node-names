@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Gesture } from "react-native-gesture-handler";
 import { useSharedValue, withDecay } from "react-native-reanimated";
 
-export const MIN_SCALE = 0.1;
+export const MIN_SCALE = 0.3;
 export const MAX_SCALE = 4;
 
 export const INITIAL_SCALE = 1;
