@@ -34,6 +34,14 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Links are not animating OUT FROM a node
+
+// !TODO: Make links connect to edges of nodes and not the centers
+
+// !TODO: Store color map in ui state so you don't have to run getNodeStyles constantly
+
+// !TODO: Cap the number of rootGroups to 7 AND the number of groups for non-root-nodes to about 2 or 3
+
 // !TODO: initial state set doesn't activate borders on rootGroupNodes
 
 // !TODO: A nodes status should NOT be changed to inactive if the parent is active (see the handle case else if (false))

@@ -68,38 +68,90 @@ export const nodeBgMap: { [key: number]: string } = {
 
 export default DefTheme;
 
-// STYLING FOR GRAPH ELEMENTS
-export const BASE_COLORS: { [key: number]: string } = {
-  1: "rgba(11, 59, 83, 1)", // blue
-  2: "rgba(83, 64, 14, 1)", // yellow
-  3: "rgba(80, 25, 21, 1)", // red
-  4: "rgba(21, 80, 39, 1)", // green
-  5: "rgba(30, 33, 82, 1)", // purple
+// NEW STUFF BELOW *************************************************************
+
+export const GRAPH_BG_COLOR = "#080a0f";
+
+export interface NormalizedGroupColors {
+  [key: string]: string;
+}
+
+export function normalizeUserGroupColors(
+  userGroups: Record<string, string>,
+): NormalizedGroupColors {
+  return Object.entries(userGroups).reduce((acc, [groupName, color]) => {
+    acc[groupName] = color;
+    return acc;
+  }, {} as NormalizedGroupColors);
+}
+
+// Example usage:
+const userGroupNames = {
+  Root: "rgba(89, 173, 246, 1)", // blue
+
+  Friends: "rgba(248, 243, 141, 1)", // yellow
+  Work: "rgba(255, 180, 128, 1)", // orange
+  School: "rgba(157, 148, 255, 1)", // purple
+  Family: "rgba(199, 128, 232, 1)", // pink
+  Online: "rgba(8, 202, 209, 1)", // teal
+  Group6: "rgba(255, 105, 97, 1)", // red
+  Fallback: "rgba(66, 214, 164, 1)", // green
 };
+
+const normalizedColors = normalizeUserGroupColors(userGroupNames);
 
 export const OPACITY = {
   active: 1,
-  parent_active: 0.75,
-  inactive: 0.5,
+  parent_active: 0.7,
+  inactive: 0.1,
 };
 
-export const TEXT_COLORS = {
-  light: "#FFFFFF", // white
-  dark: "#000000", // black
+export const TEXT_COLOR = "#adafb3";
+export const ROOT_TEXT_COLOR = "#0d0d0d";
+
+export const TEXT_OPACITY = {
+  active: 1,
+  parent_active: 0.5,
+  inactive: 0.1,
+};
+
+export const LINK_OPACITY = {
+  active: 1,
+  parent_active: 0,
+  inactive: 0,
+};
+
+export const LINK_COLORS: { [key: string]: string } = {
+  Root: "rgba(89, 173, 246, 0.3)", // blue
+
+  Friends: "rgba(248, 243, 141, 0.3)", // yellow
+  Work: "rgba(255, 180, 128, 0.3)", // orange
+  School: "rgba(157, 148, 255, 0.3)", // purple
+  Family: "rgba(199, 128, 232, 0.3)", // pink
+  Online: "rgba(8, 202, 209, 0.3)", // teal
+  Group6: "rgba(255, 105, 97, 0.3)", // red
+  Fallback: "rgba(66, 214, 164, 0.3)", // green
 };
 
 type NodeStatus = "active" | "inactive" | "parent_active";
 
-export const getNodeStyles = (nodeStatus: NodeStatus, depth: number) => {
-  const baseColor = BASE_COLORS[depth] || BASE_COLORS[1];
+export const getNodeStyles = (
+  nodeStatus: NodeStatus,
+  groupName: string,
+  isRoot?: boolean,
+) => {
+  const baseColor = normalizedColors[groupName] || normalizedColors["Fallback"];
   const opacity = OPACITY[nodeStatus] || OPACITY.inactive;
 
   const fillColor = `${baseColor.replace(/[^,]+(?=\))/, opacity.toString())}`;
-  const textColor = opacity > 0.5 ? TEXT_COLORS.light : TEXT_COLORS.dark;
+  const textColor =
+    isRoot && nodeStatus === "active" ? ROOT_TEXT_COLOR : TEXT_COLOR;
+  const textOpacity = TEXT_OPACITY[nodeStatus] || TEXT_OPACITY.inactive;
 
   return {
     fillColor,
-    borderColor: fillColor, // Use the same color for border for simplicity
+    borderColor: fillColor,
     textColor,
+    textOpacity,
   };
 };

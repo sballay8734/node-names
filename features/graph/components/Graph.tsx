@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Provider } from "react-redux";
 
+import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
 import { nodes, links } from "@/lib/data/new_structure";
 import {
   INITIAL_SCALE,
@@ -128,7 +129,7 @@ export default function Graph() {
             flex: 1,
           }}
         >
-          <Fill color="#092730" />
+          <Fill color={GRAPH_BG_COLOR} />
           <Group transform={transform}>
             {/* NOTE: Unfortunately, wrapping the children in another provider is currently needed. See (https://shopify.github.io/react-native-skia/docs/canvas/contexts/) */}
             <Provider store={store}>

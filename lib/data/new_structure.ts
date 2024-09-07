@@ -8,6 +8,7 @@ export const nodes: RawNode[] = [
     name: "Root",
     group_id: null,
     type: "node",
+    group_name: "Root",
     source_type: null,
   },
   {
@@ -16,6 +17,7 @@ export const nodes: RawNode[] = [
     name: "Aaron",
     group_id: 7,
     type: "node",
+    group_name: "Friends",
     source_type: "group",
   },
   {
@@ -24,6 +26,7 @@ export const nodes: RawNode[] = [
     name: "Beth",
     group_id: 8,
     type: "node",
+    group_name: "Work",
     source_type: "group",
   },
   {
@@ -32,6 +35,7 @@ export const nodes: RawNode[] = [
     name: "Carol",
     group_id: 9,
     type: "node",
+    group_name: "Family",
     source_type: "group",
   },
   {
@@ -40,6 +44,7 @@ export const nodes: RawNode[] = [
     name: "Diana",
     group_id: 10,
     type: "node",
+    group_name: "School",
     source_type: "group",
   },
   {
@@ -48,6 +53,7 @@ export const nodes: RawNode[] = [
     name: "Ethan",
     group_id: 11,
     type: "node",
+    group_name: "Online",
     source_type: "group",
   },
   {
@@ -56,6 +62,7 @@ export const nodes: RawNode[] = [
     name: "Donnie",
     group_id: 7,
     type: "node",
+    group_name: "Friends",
     source_type: "group",
   },
 
@@ -66,6 +73,7 @@ export const nodes: RawNode[] = [
     name: "Friends",
     group_id: null,
     type: "group",
+    group_name: "Friends",
     source_type: "root",
   },
   {
@@ -74,6 +82,7 @@ export const nodes: RawNode[] = [
     name: "Work",
     group_id: null,
     type: "group",
+    group_name: "Work",
     source_type: "root",
   },
   {
@@ -82,6 +91,7 @@ export const nodes: RawNode[] = [
     name: "Family",
     group_id: null,
     type: "group",
+    group_name: "Family",
     source_type: "root",
   },
   {
@@ -90,6 +100,7 @@ export const nodes: RawNode[] = [
     name: "School",
     group_id: null,
     type: "group",
+    group_name: "School",
     source_type: "root",
   },
   {
@@ -98,6 +109,7 @@ export const nodes: RawNode[] = [
     name: "Online",
     group_id: null,
     type: "group",
+    group_name: "Online",
     source_type: "root",
   },
 ];

@@ -22,6 +22,7 @@ export interface RawNode {
   name: string;
   group_id: number | null;
   type: "node" | "group";
+  group_name: string | null;
   source_type: "node" | "group" | "mixed" | "root" | null;
   // null for free floating nodes
 }

@@ -6,11 +6,17 @@ import {
 } from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
 import {
+  Easing,
   useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
+import {
+  LINK_COLORS,
+  LINK_OPACITY,
+  TEXT_OPACITY,
+} from "@/lib/constants/Colors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -18,19 +24,10 @@ interface LinkSvgProps {
   id: number;
 }
 
-const colorMap: { [key: string]: string } = {
-  active: "rgba(255, 255, 255, 1)",
-  parent_active: "rgba(255, 255, 255, 0.5)",
-  inactive: "rgba(255, 255, 255, 0.3)",
-};
-
 export default function LinkSvg({ id }: LinkSvgProps) {
-  const {
-    width,
-    height,
-    windowCenterX: centerX,
-    windowCenterY: centerY,
-  } = useAppSelector((state: RootState) => state.windowSize);
+  const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
+    (state: RootState) => state.windowSize,
+  );
 
   const link = useAppSelector(
     (state: RootState) => state.graphData.links.byId[id],
@@ -39,25 +36,22 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     (state: RootState) =>
       state.graphData.nodes.byId[link.source_id].node_status,
   );
+  const targetGroup = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId[link.target_id].group_name,
+  );
 
+  const color = targetGroup
+    ? LINK_COLORS[targetGroup]
+    : LINK_COLORS["Fallback"];
   const progress = useSharedValue(0);
-  const opacity = useSharedValue(0);
-  const color = useDerivedValue(() => {
-    return withTiming(
-      sourceStatus === "active" ? colorMap.active : colorMap.inactive,
-      { duration: 200 },
-    );
-  });
 
   useEffect(() => {
     if (sourceStatus === "active") {
-      progress.value = withTiming(1, { duration: 200 });
-      opacity.value = 1;
+      progress.value = withTiming(1, { duration: 300 });
       return;
     }
-    progress.value = withTiming(0, { duration: 200 });
-    opacity.value = withTiming(0, { duration: 100 });
-  }, [sourceStatus, progress, opacity]);
+    progress.value = withTiming(0, { duration: 300 });
+  }, [sourceStatus, progress]);
 
   const startPath = Skia.Path.Make();
   startPath.moveTo(link.x1, link.y1);
@@ -74,15 +68,21 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     [startPath, endPath],
   );
 
+  // console.log(link.source_id, sourceStatus);
+
   const animateOpacity = useDerivedValue(() => {
-    return withTiming(opacity.value, { duration: 300 });
+    return withTiming(LINK_OPACITY[sourceStatus], {
+      duration: 400,
+      easing: Easing.cubic,
+    });
   });
 
   if (!link) return null;
 
   return (
-    <Group opacity={animateOpacity} origin={{ x: centerX, y: centerY }}>
+    <Group origin={{ x: centerX, y: centerY }}>
       <Path
+        opacity={animateOpacity}
         path={animatedPath}
         color={color}
         strokeWidth={2}

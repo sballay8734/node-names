@@ -5,7 +5,11 @@ import {
   Paint,
   Text,
 } from "@shopify/react-native-skia";
-import { useDerivedValue, useSharedValue } from "react-native-reanimated";
+import {
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { getNodeStyles } from "@/lib/constants/Colors";
 import {
@@ -18,6 +22,7 @@ import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { selectNodeStatus } from "../redux/graphSlice";
+import { getFontSize } from "@/lib/utils/getFontSize";
 
 interface GroupNodeSvgProps {
   node: UiNode;
@@ -31,12 +36,9 @@ const font = matchFont({
 });
 
 export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
-  const {
-    width,
-    height,
-    windowCenterX: centerX,
-    windowCenterY: centerY,
-  } = useAppSelector((state: RootState) => state.windowSize);
+  const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
+    (state: RootState) => state.windowSize,
+  );
 
   const nodeStatus = useAppSelector((state: RootState) => {
     if (node.depth === 1) {
@@ -48,13 +50,16 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     }
   });
 
-  const depth = node.depth; // Assuming `node.depth` gives you the depth level
-  const { fillColor, borderColor, textColor } = getNodeStyles(
+  const { fillColor, borderColor, textColor, textOpacity } = getNodeStyles(
     nodeStatus,
-    depth,
+    node.group_name !== null ? node.group_name : "Fallback",
+    node.depth === 1,
   );
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : GROUP_NODE_RADIUS;
 
+  const { xOffset, yOffset } = getFontSize(node.name, font);
+
+  // handle initial positioning **********************************************
   const trans = useSharedValue({
     rotate: 0,
     x: centerX,
@@ -67,24 +72,10 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
       { translateY: node.y },
     ];
   });
-  const { xOffset, yOffset } = getFontSize(node.name);
 
-  function getFontSize(text: string): { xOffset: number; yOffset: number } {
-    const fontSize = font.measureText(text);
-
-    const xOffset = -fontSize.width / 2 - fontSize.x;
-    const yOffset = fontSize.height / 4; // TODO: Not a perfect center
-
-    return { xOffset, yOffset };
-  }
-
-  // this will animate the nodes on mount if you replace translateX and translateY in transform with node.x and node.y
-  // useEffect(() => {
-  //   trans.value = withTiming(
-  //     { rotate: 0, x: node.x, y: node.y },
-  //     { duration: 500, easing: Easing.inOut(Easing.cubic) },
-  //   );
-  // }, [node.x, node.y, trans]);
+  const animatedTextOpacity = useDerivedValue(() => {
+    return withTiming(textOpacity, { duration: 200 });
+  });
 
   if (!node) return null;
 
@@ -100,11 +91,12 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
       </Circle>
       {/* <Text x={xOffset} y={yOffset} text={node.name} font={font} /> */}
       <Text
-        x={xOffset}
+        x={node.depth === 1 ? xOffset : radius + 3}
         y={yOffset}
         text={node.name}
         font={font}
         color={textColor}
+        opacity={animatedTextOpacity}
       />
     </Group>
   );
