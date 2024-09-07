@@ -12,7 +12,11 @@ import {
 } from "react-native-reanimated";
 
 import { getNodeStyles } from "@/lib/constants/Colors";
-import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/lib/constants/styles";
+import {
+  NODE_BORDER_WIDTH,
+  REG_NODE_RADIUS,
+  ROOT_NODE_RADIUS,
+} from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { getFontSize } from "@/lib/utils/getFontSize";
 import { useAppSelector } from "@/store/reduxHooks";
@@ -77,17 +81,21 @@ export default function NodeSvg({ node }: NodeSvgProps) {
     return withTiming(fillColor, { duration: 300 });
   });
 
+  const animatedBorderColor = useDerivedValue(() => {
+    return withTiming(borderColor, { duration: 300 });
+  });
+
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={radius}>
         <Paint color={animatedFillColor} />
-        {/* <Paint
-          color={borderColor}
+        <Paint
+          color={animatedBorderColor}
           style="stroke"
           strokeWidth={NODE_BORDER_WIDTH}
-        /> */}
+        />
       </Circle>
       <Text
         x={node.depth === 1 ? xOffset : radius + 3}

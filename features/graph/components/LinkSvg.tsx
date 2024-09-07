@@ -36,6 +36,10 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     (state: RootState) =>
       state.graphData.nodes.byId[link.source_id].node_status,
   );
+  const targetStatus = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.byId[link.target_id].node_status,
+  );
   const targetGroup = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[link.target_id].group_name,
   );
@@ -68,11 +72,16 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     [startPath, endPath],
   );
 
-  // console.log(link.source_id, sourceStatus);
+  console.log(link.source_id, sourceStatus, targetStatus);
 
   const animateOpacity = useDerivedValue(() => {
-    return withTiming(LINK_OPACITY[sourceStatus], {
-      duration: 400,
+    const newOpacity =
+      sourceStatus === "active" && targetStatus === "active"
+        ? 1
+        : LINK_OPACITY[sourceStatus];
+
+    return withTiming(newOpacity, {
+      duration: 200,
       easing: Easing.cubic,
     });
   });

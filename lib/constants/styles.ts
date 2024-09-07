@@ -8,7 +8,7 @@ export const PRESSABLE_OPACITY = 0;
 
 export const NODE_SPACING_FACTOR = 0.4;
 
-export const NODE_BORDER_WIDTH = 0;
+export const NODE_BORDER_WIDTH = 2;
 export const ROOT_TEXT_SIZE = 40;
 export const REG_TEXT_SIZE = 20;
 

@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: How are you going to handle the press styles if you're showing svgs?
+
 // !TODO: Find a way to bold the group names but NOT the node names nicely
 
 // !TODO: postion group names properly on same angle as nodes from the group

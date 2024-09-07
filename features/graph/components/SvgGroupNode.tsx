@@ -1,9 +1,12 @@
 import {
+  Blend,
   Circle,
   Group,
   matchFont,
   Paint,
+  RadialGradient,
   Text,
+  vec,
 } from "@shopify/react-native-skia";
 import {
   useDerivedValue,
@@ -11,8 +14,12 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-import { getNodeStyles } from "@/lib/constants/Colors";
-import { GROUP_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/lib/constants/styles";
+import { getNodeStyles, GRAPH_BG_COLOR } from "@/lib/constants/Colors";
+import {
+  GROUP_NODE_RADIUS,
+  NODE_BORDER_WIDTH,
+  ROOT_NODE_RADIUS,
+} from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { getFontSize } from "@/lib/utils/getFontSize";
 import { useAppSelector } from "@/store/reduxHooks";
@@ -77,17 +84,28 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     return withTiming(fillColor, { duration: 300 });
   });
 
+  const animatedBorderColor = useDerivedValue(() => {
+    return withTiming(borderColor, { duration: 300 });
+  });
+
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={radius}>
         <Paint color={animatedFillColor} />
-        {/* <Paint
-          color={borderColor}
+        <Paint
+          color={animatedBorderColor}
           style="stroke"
           strokeWidth={NODE_BORDER_WIDTH}
-        /> */}
+        />
+        {/* <Blend mode="srcOut">
+          <RadialGradient
+            r={radius}
+            c={vec(0, 0)}
+            colors={[fillColor, GRAPH_BG_COLOR]}
+          />
+        </Blend> */}
       </Circle>
       <Text
         x={node.depth === 1 ? xOffset : radius + 3}

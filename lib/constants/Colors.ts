@@ -99,9 +99,21 @@ const userGroupNames = {
 
 const normalizedColors = normalizeUserGroupColors(userGroupNames);
 
+export const BORDER_COLORS = {
+  Root: "rgba(89, 173, 246, 1)", // blue
+
+  Friends: "rgba(248, 243, 141, 1)", // yellow
+  Work: "rgba(255, 180, 128, 1)", // orange
+  School: "rgba(157, 148, 255, 1)", // purple
+  Family: "rgba(199, 128, 232, 1)", // pink
+  Online: "rgba(8, 202, 209, 1)", // teal
+  Group6: "rgba(255, 105, 97, 1)", // red
+  Fallback: "rgba(66, 214, 164, 1)", // green
+};
+
 export const OPACITY = {
   active: 1,
-  parent_active: 0.7,
+  parent_active: 0.4,
   inactive: 0.1,
 };
 
@@ -121,21 +133,21 @@ export const TEXT_OPACITY = {
 };
 
 export const LINK_OPACITY = {
-  active: 1,
-  parent_active: 0,
+  active: 0.1, // this is if parent is active
+  parent_active: 0.1,
   inactive: 0,
 };
 
 export const LINK_COLORS: { [key: string]: string } = {
-  Root: "rgba(89, 173, 246, 0.3)", // blue
+  Root: "rgba(89, 173, 246, 1)", // blue
 
-  Friends: "rgba(248, 243, 141, 0.3)", // yellow
-  Work: "rgba(255, 180, 128, 0.3)", // orange
-  School: "rgba(157, 148, 255, 0.3)", // purple
-  Family: "rgba(199, 128, 232, 0.3)", // pink
-  Online: "rgba(8, 202, 209, 0.3)", // teal
-  Group6: "rgba(255, 105, 97, 0.3)", // red
-  Fallback: "rgba(66, 214, 164, 0.3)", // green
+  Friends: "rgba(248, 243, 141, 1)", // yellow
+  Work: "rgba(255, 180, 128, 1)", // orange
+  School: "rgba(157, 148, 255, 1)", // purple
+  Family: "rgba(199, 128, 232, 1)", // pink
+  Online: "rgba(8, 202, 209, 1)", // teal
+  Group6: "rgba(255, 105, 97, 1)", // red
+  Fallback: "rgba(66, 214, 164, 1)", // green
 };
 
 type NodeStatus = "active" | "inactive" | "parent_active";
@@ -155,10 +167,12 @@ export const getNodeStyles = (
     ? normalizedColors[groupName]
     : TEXT_COLOR;
   const textOpacity = TEXT_OPACITY[nodeStatus] || TEXT_OPACITY.inactive;
+  const borderColor =
+    nodeStatus === "parent_active" ? fillColor : "transparent";
 
   return {
     fillColor,
-    borderColor: fillColor,
+    borderColor,
     textColor,
     textOpacity,
   };
