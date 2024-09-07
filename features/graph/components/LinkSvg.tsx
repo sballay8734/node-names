@@ -72,8 +72,6 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     [startPath, endPath],
   );
 
-  console.log(link.source_id, sourceStatus, targetStatus);
-
   const animateOpacity = useDerivedValue(() => {
     const newOpacity =
       sourceStatus === "active" && targetStatus === "active"

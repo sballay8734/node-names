@@ -1,27 +1,31 @@
 import React from "react";
-import { DerivedValue, SharedValue } from "react-native-reanimated";
+import { SharedValue } from "react-native-reanimated";
 
 import BackToUserBtn from "@/features/Graph/components/GraphOverlay/BackToUserBtn";
 import InspectBtn from "@/features/Graph/components/GraphOverlay/InspectBtn";
 import RecenterBtn from "@/features/Graph/components/GraphOverlay/RecenterBtn";
 import SearchBar from "@/features/Graph/components/GraphOverlay/SearchBar";
-import { useGestures } from "@/lib/hooks/useGestures";
 import { useGraphData } from "@/lib/hooks/useGraphData";
-import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import { WindowSize } from "@/lib/types/misc";
 
 import DeselectAllBtn from "./DeselectAllBtn";
 import Popover from "./Popover";
 
 interface Props {
-  arrowData: DerivedValue<{ transform: { rotate: string }[] }>;
-  showArrow: SharedValue<boolean>;
-  centerOnRoot: () => void;
+  scale: SharedValue<number>;
+  translateX: SharedValue<number>;
+  translateY: SharedValue<number>;
+  lastScale: SharedValue<number>;
+  windowSize: WindowSize;
 }
 
-const GraphOverlayButtons = () => {
-  const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const { scale, translateX, translateY, lastScale } = useGestures();
+const GraphOverlayButtons = ({
+  scale,
+  translateX,
+  translateY,
+  lastScale,
+  windowSize,
+}: Props) => {
   const { arrowData, showArrow, centerOnRoot } = useGraphData({
     scale,
     translateX,

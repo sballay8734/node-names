@@ -22,6 +22,7 @@ import { positionGraphEls } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
 
+import GraphOverlayButtons from "./GraphOverlay/GraphOverlayButtons";
 import PressableElements from "./PressableElements";
 import SvgElements from "./SvgElements";
 
@@ -140,6 +141,13 @@ export default function Graph() {
         <Animated.View style={[styles.wrapper, animatedStyle]}>
           <PressableElements />
         </Animated.View>
+        <GraphOverlayButtons
+          scale={scale}
+          translateX={translateX}
+          translateY={translateY}
+          lastScale={lastScale}
+          windowSize={windowSize}
+        />
       </View>
     </GestureDetector>
   );

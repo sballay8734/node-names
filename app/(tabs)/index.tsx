@@ -20,7 +20,7 @@ const Index = () => {
   return (
     <View style={[styles.container]}>
       <Graph />
-      <GraphOverlayButtons />
+      {/* <GraphOverlayButtons /> */}
     </View>
   );
 };
