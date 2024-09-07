@@ -1,10 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import {
-  GroupStatus,
   NodeStatus,
-  PosGroupMap,
-  PositionedGroup,
   PositionedLink,
   PositionedNode,
   PosLinkMap,
@@ -25,11 +22,6 @@ interface GraphSliceState {
     byId: PosLinkMap;
     allIds: number[];
   };
-  // groups: {
-  //   byId: PosGroupMap;
-  //   bySourceId: PosGroupMap;
-  //   allIds: number[];
-  // };
 }
 
 const initialState: GraphSliceState = {
@@ -44,11 +36,6 @@ const initialState: GraphSliceState = {
     byId: {},
     allIds: [],
   },
-  // groups: {
-  //   byId: {},
-  //   bySourceId: {},
-  //   allIds: [],
-  // },
 };
 
 const NewArchitectureSlice = createSlice({
@@ -135,25 +122,12 @@ const NewArchitectureSlice = createSlice({
         // make node active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
           state.nodes.byId[nodeId].node_status = "active";
-          state.links.allIds.forEach((id) => {
-            const link = state.links.byId[id];
-            if (link && link.source_id === nodeId) {
-              state.nodes.byId[link.target_id].node_status = "parent_active";
-            }
-          });
-          console.log(state.nodes.byId[nodeId]);
           // !TODO: handle case of node click when active AND parent IS active
         } else if (false) {
           state.nodes.byId[nodeId].node_status = "parent_active";
           // handle case of node click while active AND parent is NOT active
         } else {
           state.nodes.byId[nodeId].node_status = "inactive";
-          state.links.allIds.forEach((id) => {
-            const link = state.links.byId[id];
-            if (link && link.source_id === nodeId) {
-              state.nodes.byId[link.target_id].node_status = "inactive";
-            }
-          });
         }
       }
     },
@@ -178,6 +152,7 @@ export const { setInitialState, toggleNode, swapRootNode } =
 export default NewArchitectureSlice.reducer;
 
 // SELECTORS ******************************************************************
+// Get all nodes that are currently selected or "active"
 export const getSelectedNodes = createSelector(
   (state: RootState) => state.graphData.nodes.byId,
   (nodes) =>
@@ -186,7 +161,28 @@ export const getSelectedNodes = createSelector(
     ),
 );
 
+// Returns a node if ONLY ONE node is currently selected ("active")
 export const getSoloSelectedNode = createSelector(
   getSelectedNodes,
   (selectedNodes) => (selectedNodes.length === 1 ? selectedNodes[0] : null),
+);
+
+// Get all links where a given node is the target (i.e., its parents)
+const selectNodeParents = createSelector(
+  (state: RootState) => state.graphData.links.byId,
+  (state: RootState, nodeId: number) => nodeId,
+  (links, nodeId) =>
+    Object.values(links).filter((link) => link.target_id === nodeId),
+);
+
+// Derive a node's status based on its parent nodes' statuses
+export const selectNodeStatus = createSelector(
+  [selectNodeParents, (state: RootState) => state.graphData.nodes.byId],
+  (parentLinks, nodes) => {
+    // If any parent node is active, mark this node as `parent_active`
+    const anyParentActive = parentLinks.some(
+      (link) => nodes[link.source_id].node_status === "active",
+    );
+    return anyParentActive ? "parent_active" : "inactive";
+  },
 );

@@ -50,6 +50,14 @@ export const nodes: RawNode[] = [
     type: "node",
     source_type: "group",
   },
+  {
+    id: 12,
+    depth: 2,
+    name: "Donnie",
+    group_id: 7,
+    type: "node",
+    source_type: "group",
+  },
 
   // Root Groups ***************************************************************
   {
@@ -104,6 +112,7 @@ export const links: RawLink[] = [
 
   // Links FROM group TO NODE
   { id: 6, source_id: 7, target_id: 2, relation_type: "friend" },
+  { id: 11, source_id: 7, target_id: 12, relation_type: "friend" },
   { id: 7, source_id: 8, target_id: 3, relation_type: "colleague" },
   { id: 8, source_id: 9, target_id: 4, relation_type: "child_parent" },
   { id: 9, source_id: 10, target_id: 5, relation_type: "classmate" },

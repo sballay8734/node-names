@@ -21,6 +21,8 @@ import {
   TAB_BAR_HEIGHT,
 } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
+import { useAppSelector } from "@/store/reduxHooks";
+import { selectNodeStatus } from "../redux/graphSlice";
 
 interface NodeSvgProps {
   node: UiNode;
@@ -45,6 +47,12 @@ const depth4Bg = "rgba(21, 80, 39, 1)"; // green
 const depth5Bg = "rgba(30, 33, 82, 1)"; // purple
 
 export default function NodeSvg({ node }: NodeSvgProps) {
+  const nodeStatus = useAppSelector((state) =>
+    selectNodeStatus(state, node.id),
+  );
+
+  console.log(node.id, node.name, nodeStatus);
+
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
   const inactiveColor = node.depth === 1 ? depth1Bg : depth2Bg;
   const parentActiveColor = "rgba(144, 120, 25, 1)";

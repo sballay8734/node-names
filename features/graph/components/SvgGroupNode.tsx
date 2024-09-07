@@ -22,6 +22,8 @@ import {
   TAB_BAR_HEIGHT,
 } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
+import { useAppSelector } from "@/store/reduxHooks";
+import { selectNodeStatus } from "../redux/graphSlice";
 
 interface GroupNodeSvgProps {
   node: UiNode;
@@ -46,6 +48,12 @@ const depth4Bg = "rgba(21, 80, 39, 1)"; // green
 const depth5Bg = "rgba(30, 33, 82, 1)"; // purple
 
 export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
+  const nodeStatus = useAppSelector((state) =>
+    selectNodeStatus(state, node.id),
+  );
+
+  console.log(node.id, node.name, nodeStatus);
+
   // !TODO: Need to animate colors in and out
   const radius = GROUP_NODE_RADIUS;
   const inactiveColor = "#13301c";
