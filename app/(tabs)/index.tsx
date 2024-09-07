@@ -34,6 +34,10 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Find a way to bold the group names but NOT the node names nicely
+
+// !TODO: postion group names properly on same angle as nodes from the group
+
 // !TODO: Links are not animating OUT FROM a node
 
 // !TODO: Make links connect to edges of nodes and not the centers
@@ -43,10 +47,6 @@ export default Index;
 // !TODO: Cap the number of rootGroups to 7 AND the number of groups for non-root-nodes to about 2 or 3
 
 // !TODO: initial state set doesn't activate borders on rootGroupNodes
-
-// !TODO: A nodes status should NOT be changed to inactive if the parent is active (see the handle case else if (false))
-
-// !TODO: Need to optimized link/node updating inside toggleNode
 
 // !TODO: update link based on if source AND target are active
 

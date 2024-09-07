@@ -1,7 +1,6 @@
 import { Theme } from "@react-navigation/native";
 
 import { ITheme } from "@/components/CustomThemeContext";
-import { UiNode } from "../types/graph";
 
 export type CustomTheme = ITheme & Partial<Theme>;
 
@@ -109,9 +108,15 @@ export const OPACITY = {
 export const TEXT_COLOR = "#adafb3";
 export const ROOT_TEXT_COLOR = "#0d0d0d";
 
+const ROOT_TEXT_COLORS = {
+  active: "#082945",
+  parent_active: "#082945",
+  inactive: "#1b5687",
+};
+
 export const TEXT_OPACITY = {
   active: 1,
-  parent_active: 0.5,
+  parent_active: 0.3,
   inactive: 0.1,
 };
 
@@ -144,8 +149,11 @@ export const getNodeStyles = (
   const opacity = OPACITY[nodeStatus] || OPACITY.inactive;
 
   const fillColor = `${baseColor.replace(/[^,]+(?=\))/, opacity.toString())}`;
-  const textColor =
-    isRoot && nodeStatus === "active" ? ROOT_TEXT_COLOR : TEXT_COLOR;
+  const textColor = isRoot
+    ? ROOT_TEXT_COLORS[nodeStatus]
+    : nodeStatus === "active"
+    ? normalizedColors[groupName]
+    : TEXT_COLOR;
   const textOpacity = TEXT_OPACITY[nodeStatus] || TEXT_OPACITY.inactive;
 
   return {

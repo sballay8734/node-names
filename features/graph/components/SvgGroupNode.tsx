@@ -12,17 +12,13 @@ import {
 } from "react-native-reanimated";
 
 import { getNodeStyles } from "@/lib/constants/Colors";
-import {
-  GROUP_NODE_RADIUS,
-  NODE_BORDER_WIDTH,
-  ROOT_NODE_RADIUS,
-} from "@/lib/constants/styles";
+import { GROUP_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
+import { getFontSize } from "@/lib/utils/getFontSize";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { selectNodeStatus } from "../redux/graphSlice";
-import { getFontSize } from "@/lib/utils/getFontSize";
 
 interface GroupNodeSvgProps {
   node: UiNode;
@@ -77,19 +73,22 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     return withTiming(textOpacity, { duration: 200 });
   });
 
+  const animatedFillColor = useDerivedValue(() => {
+    return withTiming(fillColor, { duration: 300 });
+  });
+
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={radius}>
-        <Paint color={fillColor} />
-        <Paint
+        <Paint color={animatedFillColor} />
+        {/* <Paint
           color={borderColor}
           style="stroke"
           strokeWidth={NODE_BORDER_WIDTH}
-        />
+        /> */}
       </Circle>
-      {/* <Text x={xOffset} y={yOffset} text={node.name} font={font} /> */}
       <Text
         x={node.depth === 1 ? xOffset : radius + 3}
         y={yOffset}
