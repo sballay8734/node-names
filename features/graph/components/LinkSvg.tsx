@@ -1,29 +1,22 @@
 import {
   Group,
-  interpolateColors,
   Path,
   Skia,
   usePathInterpolation,
 } from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
-import { Dimensions } from "react-native";
 import {
   useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 interface LinkSvgProps {
   id: number;
 }
-
-const { width, height } = Dimensions.get("window");
-const centerX = width / 2;
-const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 const colorMap: { [key: string]: string } = {
   active: "rgba(255, 255, 255, 1)",
@@ -32,6 +25,13 @@ const colorMap: { [key: string]: string } = {
 };
 
 export default function LinkSvg({ id }: LinkSvgProps) {
+  const {
+    width,
+    height,
+    windowCenterX: centerX,
+    windowCenterY: centerY,
+  } = useAppSelector((state: RootState) => state.windowSize);
+
   const link = useAppSelector(
     (state: RootState) => state.graphData.links.byId[id],
   );

@@ -2,12 +2,7 @@ import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 
-import {
-  GROUP_NODE_RADIUS,
-  PRESSABLE_OPACITY,
-  REG_NODE_RADIUS,
-  ROOT_NODE_RADIUS,
-} from "@/lib/constants/styles";
+import { GROUP_NODE_RADIUS, PRESSABLE_OPACITY } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { useAppDispatch } from "@/store/reduxHooks";
 
@@ -24,7 +19,7 @@ export default function PressableGroupNode({ node }: PressableGroupNodeProps) {
 
   const tap = Gesture.Tap()
     .onStart(() => {
-      console.log("TAPPED", node.name);
+      // console.log("TAPPED", node.name);
     })
     .onEnd(() => {
       dispatch(toggleNode(node.id));

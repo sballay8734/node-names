@@ -24,7 +24,7 @@ export default function PressableNode({ node }: PressableNodeProps) {
 
   const tap = Gesture.Tap()
     .onStart(() => {
-      console.log("TAPPED", node.name);
+      // console.log("TAPPED", node.name);
     })
     .onEnd(() => {
       dispatch(toggleNode(node.id));

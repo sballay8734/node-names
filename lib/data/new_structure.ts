@@ -12,7 +12,7 @@ export const nodes: RawNode[] = [
   },
   {
     id: 2,
-    depth: 2,
+    depth: 3,
     name: "Aaron",
     group_id: 7,
     type: "node",
@@ -20,7 +20,7 @@ export const nodes: RawNode[] = [
   },
   {
     id: 3,
-    depth: 2,
+    depth: 3,
     name: "Beth",
     group_id: 8,
     type: "node",
@@ -52,7 +52,7 @@ export const nodes: RawNode[] = [
   },
   {
     id: 12,
-    depth: 2,
+    depth: 3,
     name: "Donnie",
     group_id: 7,
     type: "node",

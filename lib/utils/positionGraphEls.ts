@@ -10,6 +10,7 @@ import {
   RawNode,
 } from "../types/graph";
 import { WindowSize } from "../types/misc";
+import { NODE_SPACING_FACTOR } from "../constants/styles";
 
 // REMOVE: should be passed eventually
 const userId = 1;
@@ -32,7 +33,7 @@ export function positionGraphEls(
   const centerY = height / 2;
 
   // Calculate the radius of the circle (use 90% of the smaller dimension)
-  const radius = Math.min(width, height) * 0.3;
+  const radius = Math.min(width, height) * 0.2;
 
   // ** NEWWWWW ***************************************************************
   // initialize and set nodesMap && linksMap
@@ -112,8 +113,11 @@ export function positionGraphEls(
 
   // !TODO: Here is where you will also calc the positions for non-root groups
 
-  // Calculate position of ONLY the nodes who's source is a rootGroupNode
-  function getPersonPosition(node: RawNode): PositionedNode {
+  function getPersonPosition(
+    node: RawNode,
+    groupSize: number,
+    nodeIndex: number,
+  ): PositionedNode {
     if (node.depth === 1) {
       return { ...node, angle: 0, x: centerX, y: centerY }; // Place userNode in center
     }
@@ -125,27 +129,76 @@ export function positionGraphEls(
       );
       return { ...node, angle: 0, x: centerX, y: centerY };
     }
-    // get position of group in order to position node
+
+    // Get position of the group
     const groupPos = rootGroupPositions[node.group_id];
-    if (!groupPos) {
-      console.log(`No position found for group ${node.group_id}`);
-      return { ...node, angle: 0, x: centerX, y: centerY };
+    if (!groupPos || isNaN(groupPos.x) || isNaN(groupPos.y)) {
+      console.warn(`No valid position found for group ${node.group_id}`);
+      return { ...node, angle: 0, x: centerX, y: centerY }; // Fallback to center position
     }
-    // Position people radially outward from the group's position
-    // REMOVE: shouldn't be a hardcoded value here
+
+    // Ensure groupSize is valid and prevent division by zero
+    if (groupSize <= 0) {
+      console.warn(`Group ${node.group_id} has no valid members or size`);
+      return { ...node, angle: 0, x: groupPos.x, y: groupPos.y }; // Fallback to group position
+    }
+
+    // Calculate the angle of the group's position relative to the root
+    const rootToGroupAngle = Math.atan2(
+      groupPos.y - centerY,
+      groupPos.x - centerX,
+    );
+
+    // Restrict node positions to an arc on the far side of the group
+    const arcSpan = (Math.PI / 3) * NODE_SPACING_FACTOR; // 120 degrees in radians
+
+    let angleOffset;
+
+    if (groupSize % 2 === 0) {
+      // Even number of nodes: distribute symmetrically
+      angleOffset = -arcSpan / 2 + (nodeIndex * arcSpan) / (groupSize - 1); // Prevent division by zero
+    } else {
+      // Odd number of nodes: center the middle node and distribute others around
+      const middleIndex = (groupSize - 1) / 2; // Get the index of the middle node
+      angleOffset = ((nodeIndex - middleIndex) * arcSpan) / groupSize; // Symmetric distribution
+    }
+
+    // Calculate the final angle for this node
+    const nodeAngle = rootToGroupAngle + angleOffset;
+
+    // Set a distance from the group
     const distanceFromGroup = 100;
+
+    // Compute the final position of the node
+    const x = groupPos.x + distanceFromGroup * Math.cos(nodeAngle);
+    const y = groupPos.y + distanceFromGroup * Math.sin(nodeAngle);
+
+    // Ensure x and y are valid numbers
+    if (isNaN(x) || isNaN(y)) {
+      console.error(
+        `Invalid position calculated for node ${node.id}: x=${x}, y=${y}`,
+      );
+      return { ...node, angle: 0, x: centerX, y: centerY }; // Fallback position
+    }
+
     return {
       ...node,
-      angle: groupPos.angle,
-      x: groupPos.x + distanceFromGroup * Math.cos(groupPos.angle),
-      y: groupPos.y + distanceFromGroup * Math.sin(groupPos.angle),
+      angle: nodeAngle,
+      x,
+      y,
     };
   }
 
+  // Map over the non-group nodes with updated logic
   const positionedNonGroupNodes: PositionedNode[] = nonGroupNodes.map(
-    (node) => ({
-      ...getPersonPosition(node),
-    }),
+    (node) => {
+      const nodesInGroup = nonGroupNodes.filter(
+        (n) => n.group_id === node.group_id,
+      );
+      const groupSize = nodesInGroup.length; // Get group size
+      const nodeIndex = nodesInGroup.findIndex((n) => n.id === node.id); // Get node index within group
+      return getPersonPosition(node, groupSize, nodeIndex);
+    },
   );
 
   // Calculate positions for links

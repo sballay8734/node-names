@@ -3,6 +3,7 @@ import { Dimensions } from "react-native";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 
+// !TODO: This call to Dimensions should not happen
 const windowHeight = Dimensions.get("window").height - TAB_BAR_HEIGHT;
 const EXTENSION = 10;
 

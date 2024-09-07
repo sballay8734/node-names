@@ -5,32 +5,23 @@ import {
   Paint,
   Text,
 } from "@shopify/react-native-skia";
-import { useEffect } from "react";
-import { Dimensions } from "react-native";
-import {
-  Easing,
-  useDerivedValue,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import { useDerivedValue, useSharedValue } from "react-native-reanimated";
 
+import { getNodeStyles } from "@/lib/constants/Colors";
 import {
   NODE_BORDER_WIDTH,
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
-  TAB_BAR_HEIGHT,
 } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
+
 import { selectNodeStatus } from "../redux/graphSlice";
 
 interface NodeSvgProps {
   node: UiNode;
 }
-
-const { width, height } = Dimensions.get("window");
-const centerX = width / 2;
-const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 const font = matchFont({
   fontFamily: "Helvetica",
@@ -39,40 +30,32 @@ const font = matchFont({
   fontWeight: "400",
 });
 
-// REMOVE: Or move these constants to the them
-const depth1Bg = "rgba(11, 59, 83, 1)"; // blue (Root is depth 1)
-const depth2Bg = "rgba(83, 64, 14, 1)"; // yellow
-const depth3Bg = "rgba(80, 25, 21, 1)"; // red
-const depth4Bg = "rgba(21, 80, 39, 1)"; // green
-const depth5Bg = "rgba(30, 33, 82, 1)"; // purple
-
 export default function NodeSvg({ node }: NodeSvgProps) {
-  const nodeStatus = useAppSelector((state) =>
-    selectNodeStatus(state, node.id),
+  const {
+    width,
+    height,
+    windowCenterX: centerX,
+    windowCenterY: centerY,
+  } = useAppSelector((state: RootState) => state.windowSize);
+
+  const nodeStatus = useAppSelector((state: RootState) => {
+    if (node.depth === 1) {
+      return state.graphData.nodes.byId[node.id].node_status;
+    } else if (node.node_status === "active") {
+      return node.node_status;
+    } else {
+      return selectNodeStatus(state, node.id);
+    }
+  });
+
+  console.log(node.name, nodeStatus);
+
+  const depth = node.depth;
+  const { fillColor, borderColor, textColor } = getNodeStyles(
+    nodeStatus,
+    depth,
   );
-
-  console.log(node.id, node.name, nodeStatus);
-
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
-  const inactiveColor = node.depth === 1 ? depth1Bg : depth2Bg;
-  const parentActiveColor = "rgba(144, 120, 25, 1)";
-  const activeColor =
-    node.depth === 1 ? "rgba(15, 175, 255, 1)" : "rgba(255, 190, 25, 1)";
-  const activeBorderColor = "#d9bb43";
-
-  const borderColor =
-    node.node_status === "active"
-      ? activeBorderColor
-      : node.node_status === "parent_active"
-      ? activeBorderColor
-      : inactiveColor;
-
-  const color =
-    node.node_status === "active"
-      ? activeColor
-      : node.node_status === "parent_active"
-      ? inactiveColor
-      : inactiveColor;
 
   const trans = useSharedValue({
     rotate: 0,
@@ -110,7 +93,7 @@ export default function NodeSvg({ node }: NodeSvgProps) {
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Circle r={radius}>
-        <Paint color={color} />
+        <Paint color={fillColor} />
         <Paint
           color={borderColor}
           style="stroke"

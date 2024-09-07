@@ -1,6 +1,7 @@
 import { Theme } from "@react-navigation/native";
 
 import { ITheme } from "@/components/CustomThemeContext";
+import { UiNode } from "../types/graph";
 
 export type CustomTheme = ITheme & Partial<Theme>;
 
@@ -66,3 +67,39 @@ export const nodeBgMap: { [key: number]: string } = {
 };
 
 export default DefTheme;
+
+// STYLING FOR GRAPH ELEMENTS
+export const BASE_COLORS: { [key: number]: string } = {
+  1: "rgba(11, 59, 83, 1)", // blue
+  2: "rgba(83, 64, 14, 1)", // yellow
+  3: "rgba(80, 25, 21, 1)", // red
+  4: "rgba(21, 80, 39, 1)", // green
+  5: "rgba(30, 33, 82, 1)", // purple
+};
+
+export const OPACITY = {
+  active: 1,
+  parent_active: 0.75,
+  inactive: 0.5,
+};
+
+export const TEXT_COLORS = {
+  light: "#FFFFFF", // white
+  dark: "#000000", // black
+};
+
+type NodeStatus = "active" | "inactive" | "parent_active";
+
+export const getNodeStyles = (nodeStatus: NodeStatus, depth: number) => {
+  const baseColor = BASE_COLORS[depth] || BASE_COLORS[1];
+  const opacity = OPACITY[nodeStatus] || OPACITY.inactive;
+
+  const fillColor = `${baseColor.replace(/[^,]+(?=\))/, opacity.toString())}`;
+  const textColor = opacity > 0.5 ? TEXT_COLORS.light : TEXT_COLORS.dark;
+
+  return {
+    fillColor,
+    borderColor: fillColor, // Use the same color for border for simplicity
+    textColor,
+  };
+};
