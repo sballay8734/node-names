@@ -3,6 +3,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useDerivedValue } from "react-native-reanimated";
 
 import {
+  GROUP_NODE_RADIUS,
   PRESSABLE_OPACITY,
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
@@ -12,15 +13,14 @@ import { useAppDispatch } from "@/store/reduxHooks";
 
 import { toggleNode } from "../redux/graphSlice";
 
-interface PressableNodeProps {
+interface PressableGroupNodeProps {
   node: UiNode;
 }
 
-export default function PressableNode({ node }: PressableNodeProps) {
+export default function PressableGroupNode({ node }: PressableGroupNodeProps) {
   const dispatch = useAppDispatch();
 
-  const dimensions =
-    node.depth === 1 ? ROOT_NODE_RADIUS * 2 : REG_NODE_RADIUS * 2;
+  const dimensions = GROUP_NODE_RADIUS * 2;
 
   const tap = Gesture.Tap()
     .onStart(() => {
@@ -33,10 +33,8 @@ export default function PressableNode({ node }: PressableNodeProps) {
 
   const position = useDerivedValue(() => {
     return {
-      x:
-        node.depth === 1 ? node.x - ROOT_NODE_RADIUS : node.x - REG_NODE_RADIUS,
-      y:
-        node.depth === 1 ? node.y - ROOT_NODE_RADIUS : node.y - REG_NODE_RADIUS,
+      x: node.x - GROUP_NODE_RADIUS,
+      y: node.y - GROUP_NODE_RADIUS,
     };
   });
 

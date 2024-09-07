@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { Dimensions } from "react-native";
 import {
   Easing,
-  useAnimatedProps,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -21,11 +20,10 @@ import {
   ROOT_NODE_RADIUS,
   TAB_BAR_HEIGHT,
 } from "@/lib/constants/styles";
-import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import { UiNode } from "@/lib/types/graph";
 
 interface NodeSvgProps {
-  id: number;
+  node: UiNode;
 }
 
 const { width, height } = Dimensions.get("window");
@@ -34,7 +32,7 @@ const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 const font = matchFont({
   fontFamily: "Helvetica",
-  fontSize: 12,
+  fontSize: 10,
   fontStyle: "normal",
   fontWeight: "400",
 });
@@ -46,11 +44,7 @@ const depth3Bg = "rgba(80, 25, 21, 1)"; // red
 const depth4Bg = "rgba(21, 80, 39, 1)"; // green
 const depth5Bg = "rgba(30, 33, 82, 1)"; // purple
 
-export default function NodeSvg({ id }: NodeSvgProps) {
-  const node = useAppSelector(
-    (state: RootState) => state.graphData.nodes.byId[id],
-  );
-
+export default function NodeSvg({ node }: NodeSvgProps) {
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
   const inactiveColor = node.depth === 1 ? depth1Bg : depth2Bg;
   const parentActiveColor = "rgba(144, 120, 25, 1)";

@@ -25,11 +25,11 @@ interface GraphSliceState {
     byId: PosLinkMap;
     allIds: number[];
   };
-  groups: {
-    byId: PosGroupMap;
-    bySourceId: PosGroupMap;
-    allIds: number[];
-  };
+  // groups: {
+  //   byId: PosGroupMap;
+  //   bySourceId: PosGroupMap;
+  //   allIds: number[];
+  // };
 }
 
 const initialState: GraphSliceState = {
@@ -44,11 +44,11 @@ const initialState: GraphSliceState = {
     byId: {},
     allIds: [],
   },
-  groups: {
-    byId: {},
-    bySourceId: {},
-    allIds: [],
-  },
+  // groups: {
+  //   byId: {},
+  //   bySourceId: {},
+  //   allIds: [],
+  // },
 };
 
 const NewArchitectureSlice = createSlice({
@@ -61,10 +61,10 @@ const NewArchitectureSlice = createSlice({
       action: PayloadAction<{
         nodes: PositionedNode[];
         links: PositionedLink[];
-        groups: PositionedGroup[];
+        // groups: PositionedGroup[];
       }>,
     ) => {
-      const { nodes, links, groups } = action.payload;
+      const { nodes, links } = action.payload;
 
       // this map is used for quick lookup during links && groups loop
       const nodeStatusMap: {
@@ -123,20 +123,6 @@ const NewArchitectureSlice = createSlice({
           state.links.allIds.push(link.id);
         }
       });
-
-      groups.forEach((group) => {
-        if (!state.groups.byId[group.id]) {
-          const updatedGroup = {
-            ...group,
-            group_status: "active" as GroupStatus,
-            isShown: true,
-          };
-          state.groups.byId[group.id] = updatedGroup;
-          state.groups.allIds.push(group.id);
-        }
-      });
-
-      console.log(state);
     },
 
     toggleNode: (state, action: PayloadAction<number>) => {

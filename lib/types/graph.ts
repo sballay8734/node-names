@@ -21,6 +21,9 @@ export interface RawNode {
   depth: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   name: string;
   group_id: number | null;
+  type: "node" | "group";
+  source_type: "node" | "group" | "mixed" | "root" | null;
+  // null for free floating nodes
 }
 export interface RawGroup {
   id: number;
@@ -31,11 +34,12 @@ export interface RawLink {
   id: number;
   source_id: number;
   target_id: number;
-  relation_type: RelationType;
+  relation_type: RelationType | null;
 }
 
 // Shape after postioning ******************************************************
 export interface PositionedNode extends RawNode {
+  angle: number;
   x: number;
   y: number;
 }

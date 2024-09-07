@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Provider } from "react-redux";
 
-import { nodes, links, groups } from "@/lib/data/new_structure";
+import { nodes, links } from "@/lib/data/new_structure";
 import {
   INITIAL_SCALE,
   MAX_SCALE,
@@ -26,7 +26,6 @@ import SvgElements from "./SvgElements";
 
 // REMOVE:
 const thisData = {
-  groups,
   nodes,
   links,
 };

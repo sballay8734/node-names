@@ -7,7 +7,7 @@ import useDbData from "@/lib/hooks/useDbData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
 
 const Index = () => {
-  const windowSize = useWindowSize();
+  useWindowSize();
   // const { dataIsLoading, error } = useDbData(windowSize);
   // if (dataIsLoading) {
   //   return null;
@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
 });
 
 export default Index;
+
+// !TODO: Might need to add "mixed" source_type for each node if you allow a node to have a group AND another node as a source (think siblings maybe?)
 
 // !TODO: You can now remove all the calls to Dimensions and use the redux value
 

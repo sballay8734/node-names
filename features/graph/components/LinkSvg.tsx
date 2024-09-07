@@ -6,7 +6,12 @@ import {
 } from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
 import { Dimensions } from "react-native";
-import { useSharedValue, withTiming } from "react-native-reanimated";
+import {
+  Easing,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { TAB_BAR_HEIGHT } from "@/lib/constants/styles";
 import { useAppSelector } from "@/store/reduxHooks";
@@ -21,9 +26,9 @@ const centerX = width / 2;
 const centerY = (height - TAB_BAR_HEIGHT) / 2;
 
 const colorMap: { [key: string]: string } = {
-  active: "#ffffff",
-  parent_active: "#ffffff",
-  inactive: "#4d4d4d",
+  active: "rgba(255, 255, 255, 1)",
+  parent_active: "rgba(255, 255, 255, 0.5)",
+  inactive: "rgba(255, 255, 255, 0)",
 };
 
 export default function LinkSvg({ id }: LinkSvgProps) {
@@ -35,17 +40,27 @@ export default function LinkSvg({ id }: LinkSvgProps) {
       state.graphData.nodes.byId[link.source_id].node_status,
   );
 
-  if (link.relation_type === "group") {
-    console.log(link);
-  }
+  console.log(sourceStatus);
 
   const color = colorMap[sourceStatus];
 
-  const progress = useSharedValue(0);
+  const progress = useSharedValue(sourceStatus !== "inactive" ? 1 : 0);
+  const opacity = useSharedValue(sourceStatus !== "inactive" ? 1 : 0);
 
   useEffect(() => {
-    progress.value = withTiming(1, { duration: 500 });
-  }, [progress]);
+    const isActive = sourceStatus !== "inactive";
+    const duration = 500;
+
+    progress.value = withTiming(isActive ? 1 : 0, {
+      duration,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+
+    opacity.value = withTiming(isActive ? 1 : 0, {
+      duration,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  }, [sourceStatus, opacity, progress]);
 
   const startPath = Skia.Path.Make();
   startPath.moveTo(link.x1, link.y1);
@@ -61,10 +76,12 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     [startPath, endPath],
   );
 
+  const animatedOpacity = useDerivedValue(() => opacity.value);
+
   if (!link) return null;
 
   return (
-    <Group origin={{ x: centerX, y: centerY }}>
+    <Group opacity={animatedOpacity} origin={{ x: centerX, y: centerY }}>
       <Path
         path={animatedPath}
         color={color}
