@@ -100,6 +100,9 @@ export default function Graph() {
         .onChange((e) => {
           translateX.value += e.changeX;
           translateY.value += e.changeY;
+
+          // centerShiftX.value += e.changeX;
+          // centerShiftY.value += e.changeY;
         })
         .onEnd((e) => {
           translateX.value = withDecay({
@@ -111,7 +114,7 @@ export default function Graph() {
             deceleration: 0.995,
           });
         }),
-    [translateX, translateY, centerShiftX, centerShiftY],
+    [translateX, translateY],
   );
 
   const transform = useDerivedValue(() => {

@@ -50,8 +50,7 @@ const RecenterBtn = ({
     // Calculate the delta between button and screen center
     const deltaX = windowCenterX + translateX.value - btnX + centerShiftX.value;
     const deltaY = windowCenterY + translateY.value - btnY + centerShiftY.value;
-
-    console.log(deltaY, centerShiftY.value);
+    // !TODO: THIS HAS TO BE CLOSE BECAUSE ARROW IS FIXATED ON THE LAST CENTER LOCATION OF THE SCREEN ON PINCH
 
     // Calculate the angle and convert to degrees
     const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
