@@ -4,16 +4,11 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-import {
-  ARROW_BTN_DIM,
-  ARROW_BTN_RADIUS,
-  TAB_BAR_HEIGHT,
-} from "@/lib/constants/styles";
+import { ARROW_BTN_DIM } from "@/lib/constants/styles";
 import { WindowSize } from "@/lib/types/misc";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -25,9 +20,13 @@ interface RecenterBtnProps {
   lastScale: SharedValue<number>;
   initialFocalX: SharedValue<number>;
   initialFocalY: SharedValue<number>;
-  scaleDelta: SharedValue<number>;
+  centerShiftX: SharedValue<number>;
+  centerShiftY: SharedValue<number>;
   windowSize: WindowSize;
 }
+
+const BTN_DEFAULT_ANGLE = 45;
+const ARROW_PADDING = 10;
 
 const RecenterBtn = ({
   scale,
@@ -36,46 +35,31 @@ const RecenterBtn = ({
   lastScale,
   initialFocalX,
   initialFocalY,
-  scaleDelta,
+  centerShiftX,
+  centerShiftY,
   windowSize,
 }: RecenterBtnProps): React.JSX.Element => {
   const isPressed = useSharedValue<boolean>(false);
   const { width, height, windowCenterX, windowCenterY } = windowSize;
 
-  const initTargetX = windowCenterX - ARROW_BTN_RADIUS;
-  const initTargetY = windowCenterY - ARROW_BTN_RADIUS;
-  // position CENTER POINT of button
-  const padding = 10;
-  const buttonX = initTargetX - width / 2 + ARROW_BTN_RADIUS + padding;
-  const buttonY = initTargetY + height / 2 - ARROW_BTN_RADIUS - padding;
+  const arrowRotationStyle = useAnimatedStyle(() => {
+    // Position of the button (bottom-left corner, translated by translateX, translateY)
+    const btnX = ARROW_BTN_DIM / 2 + ARROW_PADDING;
+    const btnY = height - ARROW_BTN_DIM / 2 - ARROW_PADDING;
 
-  const targetX = useDerivedValue(() => {
-    return (initTargetX + translateX.value) * scale.value;
+    // Calculate the delta between button and screen center
+    const deltaX = windowCenterX + translateX.value - btnX + centerShiftX.value;
+    const deltaY = windowCenterY + translateY.value - btnY + centerShiftY.value;
+
+    console.log(deltaY, centerShiftY.value);
+
+    // Calculate the angle and convert to degrees
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+    return {
+      transform: [{ rotate: `${angle + BTN_DEFAULT_ANGLE}deg` }],
+    };
   });
-  const targetY = useDerivedValue(() => {
-    return (initTargetY + translateY.value) * scale.value;
-  });
-
-  // const rotate = useDerivedValue(() => {
-  //   // Calculate the vector from the button to the transformed center
-  //   const deltaX = targetX.value - buttonX;
-  //   const deltaY = targetY.value - buttonY;
-  //   console.log(initialFocalX.value, initialFocalY.value);
-  //   // Calculate the angle
-  //   const angleInRads = Math.atan2(deltaY, deltaX);
-  //   const newAngle = angleInRads * (180 / Math.PI);
-
-  //   // Return the angle as a string for use in rotation
-  //   return `${newAngle}deg`;
-  // });
-
-  // const animatedArrow = useAnimatedStyle(() => ({
-  //   transform: [
-  //     {
-  //       rotate: rotate.value,
-  //     },
-  //   ],
-  // }));
 
   const animatedStyles = useAnimatedStyle(() => ({
     backgroundColor: withTiming(isPressed.value ? "#060d0f" : "#091417", {
@@ -106,23 +90,11 @@ const RecenterBtn = ({
     <AnimatedPressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[
-        styles.btnWrapper,
-        {
-          transform: [
-            { translateX: buttonX },
-            { translateY: buttonY },
-            // This rotate is needed to normalize starting point of arrow's orientation
-            { rotate: "45deg" },
-          ],
-        },
-        animatedStyles,
-        arrowOpacity,
-      ]}
+      style={[styles.btnWrapper, , animatedStyles, arrowOpacity]}
     >
       <Animated.View style={[styles.arrowContainer]}>
         {/* <Animated.View style={[styles.arrow, arrowRotate]}> */}
-        <Animated.View style={[styles.arrow]}>
+        <Animated.View style={[styles.arrow, arrowRotationStyle]}>
           <FontAwesome6 name="location-arrow" size={24} color="#fc4956" />
         </Animated.View>
       </Animated.View>
@@ -136,6 +108,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    left: ARROW_PADDING,
+    bottom: ARROW_PADDING,
     height: ARROW_BTN_DIM,
     width: ARROW_BTN_DIM,
     borderRadius: 100,
@@ -157,19 +131,3 @@ const styles = StyleSheet.create({
 });
 
 export default RecenterBtn;
-
-const rtPos = {
-  angle: 0,
-  depth: 1,
-  group_id: null,
-  group_name: "Root",
-  id: 1,
-  isRoot: true,
-  isShown: true,
-  name: "Root",
-  node_status: "active",
-  source_type: null,
-  type: "node",
-  x: 196.5,
-  y: 386.5,
-};

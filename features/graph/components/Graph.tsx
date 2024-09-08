@@ -41,7 +41,10 @@ export default function Graph() {
   const lastScale = useSharedValue(INITIAL_SCALE);
   const initialFocalX = useSharedValue(0);
   const initialFocalY = useSharedValue(0);
-  const scaleDelta = useSharedValue(1);
+
+  // Shared values to track how much the center shifts
+  const centerShiftX = useSharedValue(0);
+  const centerShiftY = useSharedValue(0);
 
   const pinch = useMemo(
     () =>
@@ -64,7 +67,6 @@ export default function Graph() {
 
             // Update the scale
             scale.value = newScale;
-            scaleDelta.value = scaleChange;
 
             // Adjust the translation to keep the center point fixed
             const adjustedFocalX = initialFocalX.value - translateX.value;
@@ -72,7 +74,9 @@ export default function Graph() {
 
             translateX.value -= adjustedFocalX * (scaleChange - 1);
             translateY.value -= adjustedFocalY * (scaleChange - 1);
-            // console.log(scale.value);
+
+            centerShiftX.value += adjustedFocalX * (scaleChange - 1);
+            centerShiftY.value += adjustedFocalY * (scaleChange - 1);
           }
         })
         .onEnd((e) => {
@@ -85,7 +89,8 @@ export default function Graph() {
       scale,
       translateX,
       translateY,
-      scaleDelta,
+      centerShiftX,
+      centerShiftY,
     ],
   );
 
@@ -106,7 +111,7 @@ export default function Graph() {
             deceleration: 0.995,
           });
         }),
-    [translateX, translateY],
+    [translateX, translateY, centerShiftX, centerShiftY],
   );
 
   const transform = useDerivedValue(() => {
@@ -159,7 +164,8 @@ export default function Graph() {
           windowSize={windowSize}
           initialFocalX={initialFocalX}
           initialFocalY={initialFocalY}
-          scaleDelta={scaleDelta}
+          centerShiftX={centerShiftX}
+          centerShiftY={centerShiftY}
         />
       </View>
     </GestureDetector>
@@ -176,38 +182,3 @@ const styles = StyleSheet.create({
     // pointerEvents: "box-none",
   },
 });
-
-// CORRECT
-const initialCalc = {
-  deltaX: 151.5,
-  deltaY: -341.5,
-  initialFocalX: 0,
-  initialFocalY: 0,
-  newAngle: -66.07644007196104,
-  scale: 1,
-  translateX: 0,
-  translateY: 0,
-};
-
-// after increasing scale
-const afterTrans = {
-  deltaX: 49.91540898821283,
-  deltaY: -552.4178033765228,
-  initialFocalX: 0,
-  initialFocalY: 0,
-  newAngle: -84.83688478613124,
-  scale: 1,
-  translateX: -101.58459101178717,
-  translateY: -210.91780337652278,
-};
-
-const afterSmallScaleUp = {
-  deltaX: 17.994533353328848,
-  deltaY: -780.7690131178283,
-  initialFocalX: 203.8333282470703,
-  initialFocalY: 670.6666564941406,
-  newAngle: -88.67972690014432,
-  scale: 1.654973687545574,
-  translateX: -133.50546664667115,
-  translateY: -439.26901311782825,
-};

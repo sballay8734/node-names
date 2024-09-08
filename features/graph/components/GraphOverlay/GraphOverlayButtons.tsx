@@ -17,7 +17,8 @@ interface GraphOverlayButtonsProps {
   lastScale: SharedValue<number>;
   initialFocalX: SharedValue<number>;
   initialFocalY: SharedValue<number>;
-  scaleDelta: SharedValue<number>;
+  centerShiftX: SharedValue<number>;
+  centerShiftY: SharedValue<number>;
   windowSize: WindowSize;
 }
 
@@ -28,7 +29,8 @@ const GraphOverlayButtons = ({
   lastScale,
   initialFocalX,
   initialFocalY,
-  scaleDelta,
+  centerShiftX,
+  centerShiftY,
   windowSize,
 }: GraphOverlayButtonsProps) => {
   return (
@@ -42,7 +44,8 @@ const GraphOverlayButtons = ({
         lastScale={lastScale}
         initialFocalX={initialFocalX}
         initialFocalY={initialFocalY}
-        scaleDelta={scaleDelta}
+        centerShiftX={centerShiftX}
+        centerShiftY={centerShiftY}
         windowSize={windowSize}
       />
       <DeselectAllBtn />

@@ -72,7 +72,6 @@ export default function NodeSvg({ node }: NodeSvgProps) {
       { translateY: node.y },
     ];
   });
-
   const animatedTextOpacity = useDerivedValue(() => {
     return withTiming(textOpacity, { duration: 200 });
   });
