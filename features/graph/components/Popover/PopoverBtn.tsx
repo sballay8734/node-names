@@ -1,4 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { ActionFromReducer, Dispatch } from "@reduxjs/toolkit";
 import { memo, useMemo } from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import Animated, {
@@ -9,7 +10,15 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { Rule } from "@/lib/utils/determineOptions";
+import { Rule } from "@/lib/utils/getPopoverBtns";
+import { useAppDispatch } from "@/store/reduxHooks";
+
+import {
+  createNewGroup,
+  createNewNode,
+  createSubGroupFromSelection,
+  moveNode,
+} from "../../redux/graphSlice";
 
 interface Props {
   iconName: string;
@@ -26,7 +35,9 @@ interface Props {
 }
 
 type PopoverActionMap = {
-  [key: string]: () => void;
+  // !TODO: TYPE THIS CORRECTLY
+  [key: string]: (args: any) => any;
+  // [key: string]: () => Dispatch<ActionFromReducer<any>>;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -71,7 +82,7 @@ const determineVis = (
   }
 };
 
-function PopoverActionBtn({
+function PopoverBtn({
   iconName,
   action,
   initialX,
@@ -83,9 +94,8 @@ function PopoverActionBtn({
   animationProgress,
   isRootSelected,
 }: Props): React.JSX.Element {
-  // console.log("Re-rendering BTN");
+  const dispatch = useAppDispatch();
   const isPressed = useSharedValue<boolean>(false);
-
   const isVisible = useMemo(
     () => determineVis(visibilityRule, selectedNodesLength, isRootSelected),
     [visibilityRule, selectedNodesLength, isRootSelected],
@@ -93,14 +103,14 @@ function PopoverActionBtn({
 
   const actionMap: PopoverActionMap = useMemo(
     () => ({
-      createNewNode: () => console.log("Creating new node"),
-      createNewGroup: () => console.log("Create new group"),
-      createSubGroupFromSelection: () =>
-        console.log("Create sub group from selection"),
-      move: () => console.log("Move this node to another group"),
-      error: () => console.log("ERROR"),
+      createNewNode: (source_id: number) => dispatch(createNewNode(source_id)),
+      createNewGroup: (source_id: number) =>
+        dispatch(createNewGroup(source_id)),
+      createSubGroupFromSelection: (ids_to_group: number[]) =>
+        dispatch(createSubGroupFromSelection(ids_to_group)),
+      moveNode: (source_id: number) => dispatch(moveNode(source_id)),
     }),
-    [],
+    [dispatch],
   );
 
   // update position and visibility when `isVisible` changes
@@ -171,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(PopoverActionBtn);
+export default memo(PopoverBtn);

@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Still need to handle logic for cNSGFS
+
 // !TODO: If a node selection results in a child link that goes off the screen, the app should zoom out
 
 // !TODO: Style root node better (should be more obvious)
@@ -66,7 +68,7 @@ export default Index;
 // !TODO: You actually need to render links TO the groups THEN FROM the groups and to the nodes (REFACTOR EVERYTHING FIRST THOUGH)
 
 // !TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
-// !TODO: "determineOptions" REALLY needs a refactor
+// !TODO: "getPopoverBtns" REALLY needs a refactor
 // !TODO: Do we really need "centerNode" function in useArrowData? How is it different from the other two centering functions?
 // !TODO: TESTING STILL NEEDED on ALL action buttons
 // !TODO: Refactor needed in MANY places to styles an logic

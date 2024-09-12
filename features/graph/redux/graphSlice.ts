@@ -1,5 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { REDUX_ACTIONS } from "@/lib/constants/actions";
 import {
   NodeStatus,
   PositionedLink,
@@ -22,6 +23,7 @@ interface GraphSliceState {
     byId: PosLinkMap;
     allIds: number[];
   };
+  actionBtnById: { [key: string]: boolean };
 }
 
 const initialState: GraphSliceState = {
@@ -36,6 +38,13 @@ const initialState: GraphSliceState = {
     byId: {},
     allIds: [],
   },
+  actionBtnById: REDUX_ACTIONS.reduce<{ [key: string]: boolean }>(
+    (acc, current) => {
+      acc[current] = false;
+      return acc;
+    },
+    {},
+  ),
 };
 
 const NewArchitectureSlice = createSlice({
@@ -141,7 +150,9 @@ const NewArchitectureSlice = createSlice({
           }
         }
 
+        updateActionButtonStates(state);
         console.log(state.nodes.selectedNodeIds);
+        // console.log(state.actionBtnById);
       } else {
         console.error("Couldn't find node Id. graphSlice");
       }
@@ -180,11 +191,73 @@ const NewArchitectureSlice = createSlice({
 
       // state.nodes.byId[oldRootId].isCurrentRoot = false;
     },
+    createNewNode: (state) => {
+      const source_id =
+        // get last id in array
+        state.nodes.selectedNodeIds[state.nodes.selectedNodeIds.length - 1];
+
+      if (source_id) {
+        console.log("CREATE NODE");
+      } else {
+        console.log("THERE IS NO VALID SOURCE");
+      }
+    },
+    createNewGroup: (state) => {
+      const source_id =
+        // get last id in array
+        state.nodes.selectedNodeIds[state.nodes.selectedNodeIds.length - 1];
+
+      if (source_id && state.nodes.byId[source_id].type === "node") {
+        console.log("CREATE GROUP");
+      } else {
+        console.log("LAST SELECTED IS NOT VALID OR IS TYPE GROUP");
+      }
+    },
+    createSubGroupFromSelection: (state) => {
+      console.error("NOT CONFIGURED YET");
+    },
+    moveNode: (state) => {
+      const source_id =
+        // get last id in array
+        state.nodes.selectedNodeIds[state.nodes.selectedNodeIds.length - 1];
+
+      if (source_id && state.nodes.byId[source_id].type === "node") {
+        console.log("MOVE NODE");
+      } else {
+        console.log("LAST SELECTED IS NOT VALID OR IS TYPE GROUP");
+      }
+    },
   },
 });
 
-export const { setInitialState, toggleNode, swapRootNode, deselectAllNodes } =
-  NewArchitectureSlice.actions;
+// Helper function to update action button states
+const updateActionButtonStates = (state: GraphSliceState) => {
+  const selectedNodesCount = state.nodes.selectedNodeIds.length;
+  const lastSelectedNode =
+    state.nodes.byId[state.nodes.selectedNodeIds[selectedNodesCount - 1]];
+  const lastIsTypeNode = lastSelectedNode && lastSelectedNode.type === "node";
+
+  // !TODO: DOUBLE CHECK THIS LOGIC: START HERE ****************************************************************
+  // !TODO: ******************************************************************
+  state.actionBtnById["createNewNode"] =
+    selectedNodesCount > 0 && lastIsTypeNode;
+  state.actionBtnById["createNewGroup"] =
+    selectedNodesCount > 0 && lastIsTypeNode;
+  state.actionBtnById["createNewSubGroupFromSelection"] =
+    selectedNodesCount > 1;
+  state.actionBtnById["moveNode"] = selectedNodesCount > 0 && lastIsTypeNode;
+};
+
+export const {
+  setInitialState,
+  toggleNode,
+  swapRootNode,
+  deselectAllNodes,
+  createNewNode,
+  createNewGroup,
+  createSubGroupFromSelection,
+  moveNode,
+} = NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;
 

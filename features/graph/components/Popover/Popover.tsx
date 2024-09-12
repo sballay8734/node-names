@@ -1,74 +1,28 @@
-import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
-import { POPOVER_OPTIONS } from "@/lib/utils/determineOptions";
+import { REDUX_ACTIONS } from "@/lib/constants/actions";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { getSelectedNodes } from "../../redux/graphSlice";
-
-import PopoverActionBtn from "./PopoverActionBtn";
+import Action from "./Action";
 
 export default function Popover(): React.JSX.Element {
-  // console.log("Re-rendering Popover");
-  const isVisible = useAppSelector(
+  const uiVisible = useAppSelector(
     (state: RootState) => state.ui.popoverIsShown,
   );
-
-  // why am i not getting auto complete on node here?
-  const selectedNodes = useAppSelector(getSelectedNodes);
-
-  const activeRootNodeId = useAppSelector(
-    (state: RootState) => state.graphData.nodes.activeRootId,
-  );
-
-  const isRootSelected = useAppSelector(
-    (state: RootState) => state.graphData.userId === activeRootNodeId,
-  );
-
-  const animationProgress = useSharedValue(0);
-
-  // animate progress when visibility changes
-  useEffect(() => {
-    animationProgress.value = withTiming(isVisible ? 1 : 0, { duration: 500 });
-  }, [isVisible, animationProgress]);
-
-  const viewStyles = useAnimatedStyle(() => ({
-    opacity: animationProgress.value,
-  }));
 
   return (
     <Animated.View
       style={[
         {
           ...styles.wrapperStyles,
-          pointerEvents: isVisible ? "box-none" : "none",
+          pointerEvents: uiVisible ? "box-none" : "none",
         },
-        viewStyles,
       ]}
     >
-      {POPOVER_OPTIONS.map((o) => {
-        // DO SOME LOGIC HERE SO THAT PROPS ARE NOT OBJECTS
-        return (
-          <PopoverActionBtn
-            key={o.text}
-            iconName={o.iconName}
-            action={o.action}
-            initialX={o.initialX}
-            initialY={o.initialY}
-            finalX={o.finalX}
-            finalY={o.finalY}
-            visibilityRule={o.visibilityRule}
-            selectedNodesLength={selectedNodes.length}
-            animationProgress={animationProgress}
-            isRootSelected={isRootSelected}
-          />
-        );
+      {REDUX_ACTIONS.map((action) => {
+        return <Action key={action} action={action} />;
       })}
     </Animated.View>
   );
@@ -81,7 +35,6 @@ const styles = StyleSheet.create({
     height: "100%",
     display: "flex",
     alignItems: "center",
-    // justifyContent: "center",
     alignSelf: "center",
     // backgroundColor: "rgba(155, 155, 0, 0.1)",
     backgroundColor: "transparent",

@@ -1,17 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+
+import { REDUX_ACTIONS } from "@/lib/constants/actions";
+
+import { toggleNode } from "./graphSlice";
 
 // Define a type for the slice state
 interface UiSliceState {
   popoverIsShown: boolean;
-  selectedNodes: number[];
 }
 
 // Define the initial state using that type
 const initialState: UiSliceState = {
   popoverIsShown: false,
-  selectedNodes: [],
 };
+
+// CASES:
+// createNewNode: always active unless selectedNodeIds is empty array
+// createNewGroup: always active unless selectedNodeIds is empty array (UNLESS last set to active is of type group [cant add group FROM group])
+// cSGFS: active if more than one node is selected AND root can't be selected AND no nodes with type of group can be selected
+// moveNode: inactive if root is last set to active or if last active type is group
 
 const UiSlice = createSlice({
   name: "uiSlice",
@@ -29,43 +36,9 @@ const UiSlice = createSlice({
     hidePopover: (state) => {
       state.popoverIsShown = false;
     },
-
-    // SELECTION MANAGEMENT ****************************************************
-    handleNodeSelect: (state, action: PayloadAction<number>) => {
-      const clickedNodeId = action.payload;
-      const nodeIndex = state.selectedNodes.indexOf(clickedNodeId);
-
-      if (nodeIndex > -1) {
-        // If the ID is already in the array, remove it
-        state.selectedNodes = state.selectedNodes.filter(
-          (id) => id !== clickedNodeId,
-        );
-      } else {
-        // If the ID is not in the array, add it
-        state.selectedNodes = [...state.selectedNodes, clickedNodeId];
-      }
-    },
-
-    deselectAll: (state) => {
-      state.selectedNodes = [];
-    },
-
-    // LINK MANAGEMENT/CREATION
-
-    // creates a new link & node FROM currently selected node
-    handleConnectToNewNode: (state, action) => {
-      console.log("STARTING");
-    },
   },
 });
 
-export const {
-  handlePopover,
-  showPopover,
-  hidePopover,
-  handleNodeSelect,
-  handleConnectToNewNode,
-  deselectAll,
-} = UiSlice.actions;
+export const { handlePopover, showPopover, hidePopover } = UiSlice.actions;
 
 export default UiSlice.reducer;
