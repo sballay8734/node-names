@@ -16,7 +16,7 @@ interface GraphSliceState {
     byId: PosNodeMap;
     allIds: number[];
     activeRootId: number | null;
-    // activeNodeIds: D3Node[]
+    selectedNodeIds: number[];
   };
   links: {
     byId: PosLinkMap;
@@ -30,7 +30,7 @@ const initialState: GraphSliceState = {
     byId: {},
     allIds: [],
     activeRootId: null,
-    // activeNodeIds: []
+    selectedNodeIds: [],
   },
   links: {
     byId: {},
@@ -72,10 +72,11 @@ const NewArchitectureSlice = createSlice({
           state.nodes.byId[node.id] = newNode;
           state.nodes.allIds.push(node.id);
 
-          // set active root id to user for initial load
+          // set active root id to user_id for initial load and push to selected
           if (newNode.depth === 1) {
             state.nodes.activeRootId = newNode.id;
             state.userId = newNode.id;
+            state.nodes.selectedNodeIds.push(newNode.id);
           }
 
           // store status in temporary map for SAFE look up during links loop
@@ -112,23 +113,58 @@ const NewArchitectureSlice = createSlice({
       });
     },
 
+    // Update nodes' status while also updating parent/children if necessary
     toggleNode: (state, action: PayloadAction<number>) => {
       const nodeId = action.payload;
 
-      // because you have 3 statuses, you need to slightly complicate logic
       if (state.nodes.byId[nodeId]) {
         const status = state.nodes.byId[nodeId].node_status;
 
         // make node active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
           state.nodes.byId[nodeId].node_status = "active";
+          // push id to selected ids if not in there already (it shouldn't be)
+          if (!state.nodes.selectedNodeIds.includes(nodeId)) {
+            state.nodes.selectedNodeIds.push(nodeId);
+          }
           // !TODO: handle case of node click when active AND parent IS active
         } else if (false) {
           state.nodes.byId[nodeId].node_status = "parent_active";
           // handle case of node click while active AND parent is NOT active
         } else {
           state.nodes.byId[nodeId].node_status = "inactive";
+          // remove id from selected ids if in there (it should be)
+          if (state.nodes.selectedNodeIds.includes(nodeId)) {
+            state.nodes.selectedNodeIds = [
+              ...state.nodes.selectedNodeIds.filter((id) => id !== nodeId),
+            ];
+          }
         }
+
+        console.log(state.nodes.selectedNodeIds);
+      } else {
+        console.error("Couldn't find node Id. graphSlice");
+      }
+    },
+    deselectAllNodes: (state) => {
+      // Update thhe statuses of the nodes in the object
+      state.nodes.selectedNodeIds.forEach((id) => {
+        // Set state to inactive unless node is root
+        if (state.nodes.byId[id]) {
+          if (state.nodes.byId[id].depth === 1) return;
+
+          state.nodes.byId[id].node_status = "inactive";
+        } else {
+          console.error(
+            "Unexpected. Ids in array should exist in nodes.byId object. graphSlice",
+          );
+        }
+      });
+
+      if (state.nodes.activeRootId) {
+        state.nodes.selectedNodeIds = [state.nodes.activeRootId];
+      } else {
+        state.nodes.selectedNodeIds = [];
       }
     },
     swapRootNode: (
@@ -146,7 +182,7 @@ const NewArchitectureSlice = createSlice({
   },
 });
 
-export const { setInitialState, toggleNode, swapRootNode } =
+export const { setInitialState, toggleNode, swapRootNode, deselectAllNodes } =
   NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;

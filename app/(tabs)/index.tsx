@@ -2,8 +2,6 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import Graph from "@/features/Graph/components/Graph";
-import GraphOverlayButtons from "@/features/Graph/components/GraphOverlay/GraphOverlayButtons";
-import useDbData from "@/lib/hooks/useDbData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
 
 const Index = () => {
@@ -20,7 +18,6 @@ const Index = () => {
   return (
     <View style={[styles.container]}>
       <Graph />
-      {/* <GraphOverlayButtons /> */}
     </View>
   );
 };
@@ -33,6 +30,8 @@ const styles = StyleSheet.create({
 });
 
 export default Index;
+
+// !TODO: Add support for adding new nodes (Probably use depth)
 
 // !TODO: YOU HAVE A MEMORY LEAK SOMEWHERE (It's small but as you press nodes it creeps up)
 

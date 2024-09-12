@@ -1,4 +1,4 @@
-import { RawGroup, RawLink, RawNode } from "../types/graph";
+import { RawLink, RawNode } from "../types/graph";
 
 export const nodes: RawNode[] = [
   // Nodes ********************************************************************
@@ -65,6 +65,15 @@ export const nodes: RawNode[] = [
     group_name: "Friends",
     source_type: "group",
   },
+  // {
+  //   id: 13,
+  //   depth: 4,
+  //   name: "Don's Friend",
+  //   group_id: 7,
+  //   type: "node",
+  //   group_name: "Friends",
+  //   source_type: "node",
+  // },
 
   // Root Groups ***************************************************************
   {
@@ -130,11 +139,3 @@ export const links: RawLink[] = [
   { id: 9, source_id: 10, target_id: 5, relation_type: "classmate" },
   { id: 10, source_id: 11, target_id: 6, relation_type: "virtual" },
 ];
-
-// export const groups: RawGroup[] = [
-//   { id: 1, source_id: 1, group_name: "friends" },
-//   { id: 2, source_id: 1, group_name: "work" },
-//   { id: 3, source_id: 1, group_name: "family" },
-//   { id: 4, source_id: 1, group_name: "school" },
-//   { id: 5, source_id: 1, group_name: "online" },
-// ];

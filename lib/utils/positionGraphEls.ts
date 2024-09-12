@@ -1,16 +1,14 @@
 import { setInitialState } from "@/features/Graph/redux/graphSlice";
 import { store } from "@/store/store";
 
+import { NODE_SPACING_FACTOR } from "../constants/styles";
 import {
-  PositionedGroup,
   PositionedLink,
   PositionedNode,
-  RawGroup,
   RawLink,
   RawNode,
 } from "../types/graph";
 import { WindowSize } from "../types/misc";
-import { NODE_SPACING_FACTOR } from "../constants/styles";
 
 // REMOVE: should be passed eventually
 const userId = 1;
@@ -32,8 +30,7 @@ export function positionGraphEls(
   const centerX = width / 2;
   const centerY = height / 2;
 
-  // Calculate the radius of the circle (use 90% of the smaller dimension)
-  const radius = Math.min(width, height) * 0.2;
+  const radius = Math.min(width, height) * 0.13;
 
   // ** NEWWWWW ***************************************************************
   // initialize and set nodesMap && linksMap

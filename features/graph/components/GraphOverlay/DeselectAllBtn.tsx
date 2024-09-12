@@ -11,7 +11,7 @@ import Animated, {
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { deselectAll } from "../../redux/uiSlice";
+import { deselectAllNodes } from "../../redux/graphSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialIcons);
@@ -21,9 +21,7 @@ export default function DeselectAllBtn(): React.JSX.Element {
   const isPressed = useSharedValue(false);
   const longPressRef = useRef(false);
   const selectedNodesCount = useAppSelector((state: RootState) => {
-    return Object.values(state.graphData.nodes.byId).filter(
-      (node) => node.node_status === "active",
-    ).length;
+    return Object.values(state.graphData.nodes.selectedNodeIds).length;
   });
 
   const inspectBtnStyles = useAnimatedStyle(() => {
@@ -56,7 +54,8 @@ export default function DeselectAllBtn(): React.JSX.Element {
 
   function handlePressOut() {
     if (!longPressRef.current) {
-      dispatch(deselectAll());
+      console.log("deselecting");
+      dispatch(deselectAllNodes());
       isPressed.value = false;
     }
     isPressed.value = false;
