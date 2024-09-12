@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: If a node selection results in a child link that goes off the screen, the app should zoom out
+
 // !TODO: Style root node better (should be more obvious)
 
 // !TODO: Position group titles better

@@ -5,7 +5,6 @@ import { WindowSize } from "@/lib/types/misc";
 
 import { UiNode } from "../types/graph";
 
-import { useArrowData } from "./useArrowData";
 import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
 
 export interface Props {
@@ -23,12 +22,6 @@ export const useGraphData = ({
   windowSize,
   lastScale,
 }: Props) => {
-  const { arrowData, showArrow } = useArrowData({
-    translateX,
-    translateY,
-    scale,
-  });
-
   const centerOnRoot = useCallback(() => {
     translateX.value = withTiming(0, {
       duration: 500,
@@ -74,5 +67,5 @@ export const useGraphData = ({
     [translateX, translateY, scale, lastScale, windowSize],
   );
 
-  return { centerOnRoot, centerOnNode, arrowData, showArrow };
+  return { centerOnRoot, centerOnNode };
 };
