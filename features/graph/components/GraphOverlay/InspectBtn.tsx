@@ -62,8 +62,6 @@ export default function InspectBtn() {
     }
 
     if (soloSelectedNode) {
-      console.log("SOLO:", soloSelectedNode);
-      console.log("ACTIVE:", activeRootNodeId);
       dispatch(
         swapRootNode({
           newRootId: soloSelectedNode.id,

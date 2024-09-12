@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Style root node better (should be more obvious)
+
+// !TODO: Position group titles better
+
 // !TODO: Add support for adding new nodes (Probably use depth)
 
 // !TODO: YOU HAVE A MEMORY LEAK SOMEWHERE (It's small but as you press nodes it creeps up)

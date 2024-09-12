@@ -171,8 +171,9 @@ const NewArchitectureSlice = createSlice({
       state,
       action: PayloadAction<{ newRootId: number; oldRootId: number }>,
     ) => {
-      console.log("Swap Root");
-      // const { newRootId, oldRootId } = action.payload;
+      const { newRootId, oldRootId } = action.payload;
+
+      console.log("Swap Root", "OLD:", oldRootId, "NEW:", newRootId);
 
       // state.nodes.activeRootId = newRootId;
       // state.nodes.byId[newRootId].isCurrentRoot = true;
