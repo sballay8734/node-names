@@ -7,8 +7,9 @@ import RecenterBtn from "@/features/Graph/components/GraphOverlay/RecenterBtn";
 import SearchBar from "@/features/Graph/components/GraphOverlay/SearchBar";
 import { WindowSize } from "@/lib/types/misc";
 
+import Popover from "../Popover/Popover";
+
 import DeselectAllBtn from "./DeselectAllBtn";
-import Popover from "./Popover";
 
 interface GraphOverlayButtonsProps {
   scale: SharedValue<number>;
