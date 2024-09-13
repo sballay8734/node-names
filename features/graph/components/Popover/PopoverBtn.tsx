@@ -1,5 +1,4 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { ActionFromReducer, Dispatch } from "@reduxjs/toolkit";
 import { memo, useMemo } from "react";
 import { Pressable, View, StyleSheet } from "react-native";
 import Animated, {
@@ -103,12 +102,11 @@ function PopoverBtn({
 
   const actionMap: PopoverActionMap = useMemo(
     () => ({
-      createNewNode: (source_id: number) => dispatch(createNewNode(source_id)),
-      createNewGroup: (source_id: number) =>
-        dispatch(createNewGroup(source_id)),
-      createSubGroupFromSelection: (ids_to_group: number[]) =>
-        dispatch(createSubGroupFromSelection(ids_to_group)),
-      moveNode: (source_id: number) => dispatch(moveNode(source_id)),
+      createNewNode: () => dispatch(createNewNode()),
+      createNewGroup: () => dispatch(createNewGroup()),
+      createSubGroupFromSelection: () =>
+        dispatch(createSubGroupFromSelection()),
+      moveNode: () => dispatch(moveNode()),
     }),
     [dispatch],
   );

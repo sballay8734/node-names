@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
@@ -8,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { actionMap, ActionObj, getPosValues, iconMap } from "./maps";
+import { useRef } from "react";
 
 export type ActionType =
   | "createNewNode"
@@ -25,12 +28,12 @@ const TEMP_USER_NODE_ID = 1;
 
 export default function Action({ action }: ActionProps) {
   const dispatch = useAppDispatch();
+  const isPressed = useSharedValue(false);
+  const longPressRef = useRef(false);
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const isActive = useAppSelector(
     (state: RootState) => state.graphData.actionBtnById[action],
   );
-
-  console.log(isActive, action);
   const uiVisible = useAppSelector(
     (state: RootState) => state.ui.popoverIsShown,
   );
@@ -50,16 +53,44 @@ export default function Action({ action }: ActionProps) {
           }),
         },
       ],
-      opacity: withTiming(uiVisible ? 1 : 0, {
-        duration: 300,
-      }),
+      opacity: withTiming(
+        !isActive
+          ? 0.5
+          : uiVisible && isPressed.value
+          ? 0.5
+          : uiVisible && !isPressed.value
+          ? 1
+          : 0,
+        {
+          duration: 100,
+        },
+      ),
     };
   });
 
+  function handlePressIn() {
+    isPressed.value = true;
+    longPressRef.current = false;
+  }
+
+  function handlePressOut() {
+    isPressed.value = false;
+
+    if (!longPressRef.current) {
+      console.log("PRESSING...", action);
+      dispatch(actionMap[action]);
+    }
+  }
+
+  function handleLongPress() {
+    longPressRef.current = true;
+  }
+
   return (
     <AnimatedPressable
-      onPressIn={() => console.log("PRESSING...", action)}
-      onPressOut={() => dispatch(actionMap[action])}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onLongPress={handleLongPress}
       style={[styles.btnStyles, animatedStyles]}
     >
       {<View style={[styles.iconWrapper]}>{iconMap[action]}</View>}

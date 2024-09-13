@@ -1,5 +1,6 @@
 import {
   Circle,
+  ColorShader,
   Group,
   matchFont,
   Paint,
@@ -81,21 +82,25 @@ export default function NodeSvg({ node }: NodeSvgProps) {
   });
 
   const animatedBorderColor = useDerivedValue(() => {
-    return withTiming(borderColor, { duration: 300 });
+    return withTiming(borderColor, {
+      duration: 300,
+    });
   });
 
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-      <Circle r={radius}>
-        <Paint color={animatedFillColor} />
-        <Paint
+      <Circle color={animatedFillColor} r={radius}>
+        {/* <Paint color={animatedFillColor} /> */}
+        {/* <Paint
           color={animatedBorderColor}
           style="stroke"
           strokeWidth={NODE_BORDER_WIDTH}
-        />
+          blendMode="darken"
+          /> */}
       </Circle>
+      <Circle r={radius - 2} color={animatedBorderColor}></Circle>
       <Text
         x={node.depth === 1 ? xOffset : radius + 3}
         y={yOffset}

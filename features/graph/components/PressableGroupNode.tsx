@@ -18,9 +18,7 @@ export default function PressableGroupNode({ node }: PressableGroupNodeProps) {
   const dimensions = GROUP_NODE_RADIUS * 2;
 
   const tap = Gesture.Tap()
-    .onStart(() => {
-      // console.log("TAPPED", node.name);
-    })
+    .onStart(() => {})
     .onEnd(() => {
       dispatch(toggleNode(node.id));
     })

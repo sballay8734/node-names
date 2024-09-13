@@ -237,8 +237,6 @@ const updateActionButtonStates = (state: GraphSliceState) => {
     state.nodes.byId[state.nodes.selectedNodeIds[selectedNodesCount - 1]];
   const lastIsTypeNode = lastSelectedNode && lastSelectedNode.type === "node";
 
-  // !TODO: DOUBLE CHECK THIS LOGIC: START HERE ****************************************************************
-  // !TODO: ******************************************************************
   state.actionBtnById["createNewNode"] =
     selectedNodesCount > 0 && lastIsTypeNode;
   state.actionBtnById["createNewGroup"] =

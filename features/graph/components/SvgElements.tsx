@@ -15,8 +15,6 @@ export default function SvgElements() {
     (state: RootState) => state.graphData.nodes.allIds,
   );
 
-  console.log("Rendering SvgElements Wrapper");
-
   return (
     <>
       {linkIds.map((id) => {

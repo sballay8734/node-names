@@ -54,7 +54,6 @@ export default function DeselectAllBtn(): React.JSX.Element {
 
   function handlePressOut() {
     if (!longPressRef.current) {
-      console.log("deselecting");
       dispatch(deselectAllNodes());
       isPressed.value = false;
     }

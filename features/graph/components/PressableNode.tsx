@@ -23,9 +23,7 @@ export default function PressableNode({ node }: PressableNodeProps) {
     node.depth === 1 ? ROOT_NODE_RADIUS * 2 : REG_NODE_RADIUS * 2;
 
   const tap = Gesture.Tap()
-    .onStart(() => {
-      // console.log("TAPPED", node.name);
-    })
+    .onStart(() => {})
     .onEnd(() => {
       dispatch(toggleNode(node.id));
     })
