@@ -1,11 +1,4 @@
-import {
-  Circle,
-  ColorShader,
-  Group,
-  matchFont,
-  Paint,
-  Text,
-} from "@shopify/react-native-skia";
+import { Circle, Group, matchFont, Text } from "@shopify/react-native-skia";
 import {
   useDerivedValue,
   useSharedValue,
@@ -13,11 +6,7 @@ import {
 } from "react-native-reanimated";
 
 import { getNodeStyles } from "@/lib/constants/Colors";
-import {
-  NODE_BORDER_WIDTH,
-  REG_NODE_RADIUS,
-  ROOT_NODE_RADIUS,
-} from "@/lib/constants/styles";
+import { REG_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { getFontSize } from "@/lib/utils/getFontSize";
 import { useAppSelector } from "@/store/reduxHooks";
@@ -36,7 +25,7 @@ const font = matchFont({
   fontWeight: "400",
 });
 
-export default function NodeSvg({ node }: NodeSvgProps) {
+export default function SvgNode({ node }: NodeSvgProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );

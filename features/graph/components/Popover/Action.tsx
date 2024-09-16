@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -9,8 +10,7 @@ import Animated, {
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { actionMap, ActionObj, getPosValues, iconMap } from "./maps";
-import { useRef } from "react";
+import { actionMap, getPosValues, iconMap } from "./maps";
 
 export type ActionType =
   | "createNewNode"
@@ -60,7 +60,7 @@ export default function Action({ action }: ActionProps) {
           ? 0.5
           : uiVisible && !isPressed.value
           ? 1
-          : 0,
+          : 1,
         {
           duration: 100,
         },
