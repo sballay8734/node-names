@@ -2,7 +2,7 @@ import { Session } from "@supabase/supabase-js";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
-//
+
 import { supabase } from "@/supabase";
 
 import { AuthForm } from "./LoginForm";
