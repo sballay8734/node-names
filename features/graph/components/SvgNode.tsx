@@ -1,4 +1,11 @@
-import { Circle, Group, matchFont, Text } from "@shopify/react-native-skia";
+import {
+  Circle,
+  Group,
+  matchFont,
+  RadialGradient,
+  Text,
+  vec,
+} from "@shopify/react-native-skia";
 import {
   useDerivedValue,
   useSharedValue,
@@ -76,28 +83,38 @@ export default function SvgNode({ node }: NodeSvgProps) {
     });
   });
 
+  const animatedRadius = useDerivedValue(() => {
+    return withTiming(nodeStatus === "active" ? radius : 0);
+  });
+
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-      <Circle color={animatedFillColor} r={radius}>
-        {/* <Paint color={animatedFillColor} /> */}
-        {/* <Paint
-          color={animatedBorderColor}
-          style="stroke"
-          strokeWidth={NODE_BORDER_WIDTH}
-          blendMode="darken"
-          /> */}
+      {/* <Circle color={animatedFillColor} r={radius}> */}
+      <Circle blendMode={"colorDodge"} r={radius}>
+        <RadialGradient
+          c={vec(0, 0)}
+          r={radius}
+          colors={["gold", "dark gold"]}
+        />
       </Circle>
-      <Circle r={radius - 2} color={animatedBorderColor}></Circle>
-      <Text
+      {/* <Circle color="green" r={radius}></Circle> */}
+      <Circle r={radius / 1.2} blendMode={"colorDodge"}>
+        {/* <RadialGradient
+          c={vec(0, 0)}
+          r={radius}
+          colors={["green", "dark gold"]}
+        /> */}
+      </Circle>
+      {/* <Text
         x={node.depth === 1 ? xOffset : radius + 3}
         y={yOffset}
         text={node.name}
         font={font}
         color={textColor}
         opacity={animatedTextOpacity}
-      />
+      /> */}
     </Group>
   );
 }
