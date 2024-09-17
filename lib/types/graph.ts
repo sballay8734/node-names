@@ -35,6 +35,8 @@ export interface RawLink {
   id: number;
   source_id: number;
   target_id: number;
+  source_type: "group" | "root" | "node";
+  target_type: "group" | "root" | "node";
   relation_type: RelationType | null;
 }
 

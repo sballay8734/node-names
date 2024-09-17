@@ -1,4 +1,5 @@
 import {
+  BlurMask,
   Group,
   Path,
   Skia,
@@ -19,10 +20,17 @@ import {
 } from "@/lib/constants/Colors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import {
+  GROUP_NODE_RADIUS,
+  REG_NODE_RADIUS,
+  ROOT_NODE_RADIUS,
+} from "@/lib/constants/styles";
 
 interface LinkSvgProps {
   id: number;
 }
+
+const TEST_USER_ID = 1;
 
 export default function LinkSvg({ id }: LinkSvgProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
@@ -51,19 +59,67 @@ export default function LinkSvg({ id }: LinkSvgProps) {
 
   useEffect(() => {
     if (sourceStatus === "active") {
-      progress.value = withTiming(1, { duration: 300 });
+      progress.value = withTiming(1, { duration: 200 });
       return;
     }
-    progress.value = withTiming(0, { duration: 300 });
+    progress.value = withTiming(0, { duration: 200 });
   }, [sourceStatus, progress]);
 
+  function calculateIntersection(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    radius: number,
+  ) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const length = Math.sqrt(dx * dx + dy * dy);
+    const unitX = dx / length;
+    const unitY = dy / length;
+
+    return {
+      x: x1 + unitX * radius,
+      y: y1 + unitY * radius,
+    };
+  }
+
+  const sourceRadius =
+    link.source_type === "root"
+      ? ROOT_NODE_RADIUS
+      : link.source_type === "group"
+      ? GROUP_NODE_RADIUS
+      : REG_NODE_RADIUS;
+
+  const targetRadius =
+    link.target_type === "root"
+      ? ROOT_NODE_RADIUS
+      : link.target_type === "group"
+      ? GROUP_NODE_RADIUS
+      : REG_NODE_RADIUS;
+
+  const startPoint = calculateIntersection(
+    link.x1,
+    link.y1,
+    link.x2,
+    link.y2,
+    sourceRadius,
+  );
+  const endPoint = calculateIntersection(
+    link.x2,
+    link.y2,
+    link.x1,
+    link.y1,
+    targetRadius,
+  );
+
   const startPath = Skia.Path.Make();
-  startPath.moveTo(link.x1, link.y1);
-  startPath.lineTo(link.x1, link.y1);
+  startPath.moveTo(startPoint.x, startPoint.y);
+  startPath.lineTo(startPoint.x, startPoint.y);
 
   const endPath = Skia.Path.Make();
-  endPath.moveTo(link.x1, link.y1);
-  endPath.lineTo(link.x2, link.y2);
+  endPath.moveTo(startPoint.x, startPoint.y);
+  endPath.lineTo(endPoint.x, endPoint.y);
 
   // Adjust interpolation range based on current status
   const animatedPath = usePathInterpolation(
@@ -92,11 +148,12 @@ export default function LinkSvg({ id }: LinkSvgProps) {
         opacity={animateOpacity}
         path={animatedPath}
         color={color}
-        strokeWidth={2}
+        strokeWidth={0.5}
         strokeJoin="round"
         strokeCap="round"
         style="stroke"
       />
+      <BlurMask style={"solid"} blur={2} />
     </Group>
   );
 }

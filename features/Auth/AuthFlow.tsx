@@ -8,32 +8,31 @@ import { supabase } from "@/supabase";
 import { AuthForm } from "./LoginForm";
 
 export default function AuthFlow() {
-  // !TODO: ADD ALL this back (below)
-  // const [session, setSession] = useState<Session | null>(null);
-  // const [loading, setLoading] = useState<boolean>(true);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   supabase.auth.getSession().then(({ data: { session } }) => {
-  //     setSession(session);
-  //     setLoading(false);
-  //   });
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
 
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     setSession(session);
-  //   });
-  // }, []);
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
 
-  // if (loading) {
-  //   return (
-  //     <View style={styles.spinner}>
-  //       <ActivityIndicator size="large" />
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <View style={styles.spinner}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
-  // if (!session) {
-  //   return <AuthForm />;
-  // }
+  if (!session) {
+    return <AuthForm />;
+  }
 
   return (
     <View style={styles.container}>

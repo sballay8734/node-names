@@ -1,8 +1,10 @@
 import {
+  BlurMask,
   Circle,
   Group,
   matchFont,
   RadialGradient,
+  Shadow,
   Text,
   vec,
 } from "@shopify/react-native-skia";
@@ -45,6 +47,14 @@ export default function SvgNode({ node }: NodeSvgProps) {
       return selectNodeStatus(state, node.id);
     }
   });
+
+  // !TODO: THIS IS CAUSING NODE TO RENDER TWICE (FIND A BETTER WAY)
+  const isLastActive = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.selectedNodeIds[
+        state.graphData.nodes.selectedNodeIds.length - 1
+      ] === node.id,
+  );
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
 
   const { fillColor, borderColor, textColor, textOpacity } = getNodeStyles(
@@ -73,48 +83,33 @@ export default function SvgNode({ node }: NodeSvgProps) {
     return withTiming(textOpacity, { duration: 200 });
   });
 
+  console.log("RENDERING:", node.name);
+
   const animatedFillColor = useDerivedValue(() => {
-    return withTiming(fillColor, { duration: 300 });
+    return withTiming(fillColor, { duration: 200 });
   });
 
-  const animatedBorderColor = useDerivedValue(() => {
-    return withTiming(borderColor, {
-      duration: 300,
-    });
-  });
-
-  const animatedRadius = useDerivedValue(() => {
-    return withTiming(nodeStatus === "active" ? radius : 0);
+  const blurIntensity = useDerivedValue(() => {
+    return isLastActive
+      ? withTiming(radius, { duration: 200 })
+      : withTiming(0, { duration: 200 });
   });
 
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-      {/* <Circle color={animatedFillColor} r={radius}> */}
-      <Circle blendMode={"colorDodge"} r={radius}>
-        <RadialGradient
-          c={vec(0, 0)}
-          r={radius}
-          colors={["gold", "dark gold"]}
-        />
+      <Circle color={animatedFillColor} r={radius}>
+        <BlurMask style={"solid"} blur={blurIntensity} />
       </Circle>
-      {/* <Circle color="green" r={radius}></Circle> */}
-      <Circle r={radius / 1.2} blendMode={"colorDodge"}>
-        {/* <RadialGradient
-          c={vec(0, 0)}
-          r={radius}
-          colors={["green", "dark gold"]}
-        /> */}
-      </Circle>
-      {/* <Text
+      <Text
         x={node.depth === 1 ? xOffset : radius + 3}
         y={yOffset}
         text={node.name}
         font={font}
         color={textColor}
         opacity={animatedTextOpacity}
-      /> */}
+      />
     </Group>
   );
 }

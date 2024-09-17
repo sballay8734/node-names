@@ -1,12 +1,10 @@
 import {
-  Blend,
+  BlurMask,
   Circle,
   Group,
   matchFont,
   Paint,
-  RadialGradient,
   Text,
-  vec,
 } from "@shopify/react-native-skia";
 import {
   useDerivedValue,
@@ -14,7 +12,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-import { getNodeStyles, GRAPH_BG_COLOR } from "@/lib/constants/Colors";
+import { getNodeStyles } from "@/lib/constants/Colors";
 import {
   GROUP_NODE_RADIUS,
   NODE_BORDER_WIDTH,
@@ -53,6 +51,13 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     }
   });
 
+  const isLastActive = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.selectedNodeIds[
+        state.graphData.nodes.selectedNodeIds.length - 1
+      ] === node.id,
+  );
+
   const { fillColor, borderColor, textColor, textOpacity } = getNodeStyles(
     nodeStatus,
     node.group_name !== null ? node.group_name : "Fallback",
@@ -81,31 +86,25 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
   });
 
   const animatedFillColor = useDerivedValue(() => {
-    return withTiming(fillColor, { duration: 300 });
+    return withTiming(fillColor, { duration: 200 });
   });
 
   const animatedBorderColor = useDerivedValue(() => {
-    return withTiming(borderColor, { duration: 300 });
+    return withTiming(borderColor, { duration: 200 });
+  });
+
+  const blurIntensity = useDerivedValue(() => {
+    return isLastActive
+      ? withTiming(radius, { duration: 200 })
+      : withTiming(0, { duration: 200 });
   });
 
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-      <Circle r={radius}>
-        <Paint color={animatedFillColor} />
-        <Paint
-          color={animatedBorderColor}
-          style="stroke"
-          strokeWidth={NODE_BORDER_WIDTH}
-        />
-        {/* <Blend mode="srcOut">
-          <RadialGradient
-            r={radius}
-            c={vec(0, 0)}
-            colors={[fillColor, GRAPH_BG_COLOR]}
-          />
-        </Blend> */}
+      <Circle color={animatedFillColor} r={radius}>
+        <BlurMask style={"solid"} blur={blurIntensity} />
       </Circle>
       <Text
         x={node.depth === 1 ? xOffset : radius + 3}

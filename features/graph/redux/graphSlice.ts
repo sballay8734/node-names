@@ -152,7 +152,6 @@ const NewArchitectureSlice = createSlice({
 
         updateActionButtonStates(state);
         console.log(state.nodes.selectedNodeIds);
-        // console.log(state.actionBtnById);
       } else {
         console.error("Couldn't find node Id. graphSlice");
       }

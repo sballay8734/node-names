@@ -44,12 +44,12 @@ export default function Action({ action }: ActionProps) {
       transform: [
         {
           translateX: withTiming(uiVisible ? pos.endX : pos.startX, {
-            duration: 300,
+            duration: 200,
           }),
         },
         {
           translateY: withTiming(uiVisible ? pos.endY : pos.startY, {
-            duration: 300,
+            duration: 200,
           }),
         },
       ],
@@ -77,7 +77,6 @@ export default function Action({ action }: ActionProps) {
     isPressed.value = false;
 
     if (!longPressRef.current) {
-      console.log("PRESSING...", action);
       dispatch(actionMap[action]);
     }
   }
