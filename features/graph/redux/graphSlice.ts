@@ -132,6 +132,7 @@ const NewArchitectureSlice = createSlice({
         // make node active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
           state.nodes.byId[nodeId].node_status = "active";
+          console.log("SETTING:", nodeId, "TO ACTIVE");
           // push id to selected ids if not in there already (it shouldn't be)
           if (!state.nodes.selectedNodeIds.includes(nodeId)) {
             state.nodes.selectedNodeIds.push(nodeId);
@@ -142,6 +143,7 @@ const NewArchitectureSlice = createSlice({
           // handle case of node click while active AND parent is NOT active
         } else {
           state.nodes.byId[nodeId].node_status = "inactive";
+          console.log("SETTING:", nodeId, "TO INACTIVE");
           // remove id from selected ids if in there (it should be)
           if (state.nodes.selectedNodeIds.includes(nodeId)) {
             state.nodes.selectedNodeIds = [

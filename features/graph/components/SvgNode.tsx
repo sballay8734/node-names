@@ -83,7 +83,7 @@ export default function SvgNode({ node }: NodeSvgProps) {
     return withTiming(textOpacity, { duration: 200 });
   });
 
-  console.log("RENDERING:", node.name);
+  console.log("RENDERING - NOT GOOD:", node.name);
 
   const animatedFillColor = useDerivedValue(() => {
     return withTiming(fillColor, { duration: 200 });
@@ -95,12 +95,30 @@ export default function SvgNode({ node }: NodeSvgProps) {
       : withTiming(0, { duration: 200 });
   });
 
+  const sunOpacity = useDerivedValue(() => {
+    return node.node_status !== "active"
+      ? withTiming(1, { duration: 200 })
+      : withTiming(0, { duration: 200 });
+  });
+  const nodeOpacity = useDerivedValue(() => {
+    return node.node_status === "active"
+      ? withTiming(1, { duration: 200 })
+      : withTiming(0, { duration: 200 });
+  });
+
   if (!node) return null;
 
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-      <Circle color={animatedFillColor} r={radius}>
+      <Circle opacity={nodeOpacity} color={animatedFillColor} r={radius}>
         <BlurMask style={"solid"} blur={blurIntensity} />
+      </Circle>
+      <Circle opacity={sunOpacity} blendMode={"colorDodge"} r={radius}>
+        <RadialGradient
+          c={vec(0, 0)}
+          r={radius}
+          colors={["gold", "dark gold"]}
+        />
       </Circle>
       <Text
         x={node.depth === 1 ? xOffset : radius + 3}

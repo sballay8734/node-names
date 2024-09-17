@@ -40,6 +40,12 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
+  const isLastActive = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.selectedNodeIds[
+        state.graphData.nodes.selectedNodeIds.length - 1
+      ] === node.id,
+  );
 
   const nodeStatus = useAppSelector((state: RootState) => {
     if (node.depth === 1) {
@@ -50,13 +56,6 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
       return selectNodeStatus(state, node.id);
     }
   });
-
-  const isLastActive = useAppSelector(
-    (state: RootState) =>
-      state.graphData.nodes.selectedNodeIds[
-        state.graphData.nodes.selectedNodeIds.length - 1
-      ] === node.id,
-  );
 
   const { fillColor, borderColor, textColor, textOpacity } = getNodeStyles(
     nodeStatus,
@@ -81,6 +80,7 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     ];
   });
 
+  // !TODO: You probably have too many of these calls to useDerivedValue which is causing the flickering
   const animatedTextOpacity = useDerivedValue(() => {
     return withTiming(textOpacity, { duration: 200 });
   });

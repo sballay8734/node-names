@@ -15,7 +15,7 @@ interface PressableGroupNodeProps {
 export default function PressableGroupNode({ node }: PressableGroupNodeProps) {
   const dispatch = useAppDispatch();
 
-  const dimensions = GROUP_NODE_RADIUS * 2;
+  const dimensions = GROUP_NODE_RADIUS * 4;
 
   const tap = Gesture.Tap()
     .onStart(() => {})
@@ -26,8 +26,8 @@ export default function PressableGroupNode({ node }: PressableGroupNodeProps) {
 
   const position = useDerivedValue(() => {
     return {
-      x: node.x - GROUP_NODE_RADIUS,
-      y: node.y - GROUP_NODE_RADIUS,
+      x: node.x - GROUP_NODE_RADIUS * 2,
+      y: node.y - GROUP_NODE_RADIUS * 2,
     };
   });
 
