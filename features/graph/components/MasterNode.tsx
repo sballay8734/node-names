@@ -10,6 +10,7 @@ import {
 import {
   useAnimatedStyle,
   useDerivedValue,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
@@ -21,6 +22,7 @@ import {
 import { UiNode } from "@/lib/types/graph";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { getColors } from "@/lib/utils/getColors";
 
 interface NodeProps {
   node: UiNode;
@@ -54,35 +56,58 @@ export default function MasterNode({ node }: NodeProps) {
     ? GROUP_NODE_RADIUS
     : REG_NODE_RADIUS;
 
+  // REVIEW: trans && transform
+  const trans = useSharedValue({
+    rotate: 0,
+    x: centerX,
+    y: centerY,
+  });
+
+  const transform = useDerivedValue(() => {
+    return [
+      { rotate: trans.value.rotate },
+      { translateX: node.x },
+      { translateY: node.y },
+    ];
+  });
+
   const blurIntensity = useDerivedValue(() => {
     return withTiming(isFocusedNode ? radius : 0, { duration: 200 });
   });
 
   const sunOpacity = useDerivedValue(() => {
-    return withTiming(node.node_status !== "active" ? 1 : 0.3, {
+    return withTiming(nodeStatus !== "active" ? 1 : 0.3, {
       duration: 200,
     });
   });
 
+  const shade = getColors(node);
+
+  const color = useDerivedValue(() => {
+    const c = shade[nodeStatus];
+    return c;
+  });
+
+  console.log(node.name, nodeStatus, node);
+
   return (
-    // <Group origin={{ x: centerX, y: centerY }} transform={transform}>
-    <Group origin={{ x: centerX, y: centerY }}>
-      <Circle r={radius}>
+    <Group origin={{ x: centerX, y: centerY }} transform={transform}>
+      <Circle r={radius} color={color}>
         <BlurMask style={"solid"} blur={blurIntensity} />
       </Circle>
-      <Circle opacity={sunOpacity} blendMode={"colorDodge"} r={radius}>
+      {/* <Circle opacity={sunOpacity} blendMode={"colorDodge"} r={radius}>
         <RadialGradient
           c={vec(0, 0)}
           r={radius}
           colors={["gold", "dark gold"]}
         />
-      </Circle>
+      </Circle> */}
       <Text
         // x={node.depth === 1 ? xOffset : radius + 3}
         // y={yOffset}
         text={node.name}
         font={font}
-        // color={textColor}
+        color={"white"}
         // opacity={animatedTextOpacity}
       />
     </Group>

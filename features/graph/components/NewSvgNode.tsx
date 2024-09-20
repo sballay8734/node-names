@@ -17,11 +17,11 @@ export default function NewSvgNode({ id }: NewSvgProps) {
   if (!node) return null;
 
   // Uncomment below to test
-  // return <MasterNode key={node.id} node={node} />
+  return <MasterNode key={node.id} node={node} />;
 
-  if (node.type === "node") {
-    return <SvgNode key={node.id} node={node} />;
-  } else if (node.type === "group") {
-    return <GroupNodeSvg key={node.id} node={node} />;
-  }
+  // if (node.type === "node") {
+  //   return <SvgNode key={node.id} node={node} />;
+  // } else if (node.type === "group") {
+  //   return <GroupNodeSvg key={node.id} node={node} />;
+  // }
 }
