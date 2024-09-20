@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import Graph from "@/features/Graph/components/Graph";
+import NewNodeData from "@/features/Graph/components/Sheets/NewNodeData";
 import useWindowSize from "@/lib/hooks/useWindowSize";
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
   return (
     <View style={[styles.container]}>
       <Graph />
+      <NewNodeData />
     </View>
   );
 };
