@@ -1,7 +1,6 @@
 import { GraphSliceState } from "@/features/Graph/redux/graphSlice";
 
 import { RawNode, UiNode } from "../types/graph";
-import { NODE_SPACING_FACTOR } from "../constants/styles";
 
 export interface CreatedNode {
   id: number;
@@ -21,12 +20,17 @@ export function updatePositions(
 ) {
   // get children of that node (USE CHILD MAP MAYBE?)
   const currentTargets =
-    state.links.bySourceId[sourceNode.id] &&
-    state.links.bySourceId[sourceNode.id].map((target_id) => {
-      return state.nodes.byId[target_id];
-    });
+    (state.links.bySourceId[sourceNode.id] &&
+      state.links.bySourceId[sourceNode.id].map((target_id) => {
+        return state.nodes.byId[target_id];
+      })) ||
+    [];
 
-  const currentIds = currentTargets.map((tar) => tar.id);
+  if (!currentTargets || !currentTargets.length) {
+    console.error("You haven't configured adding nodes to nodes");
+  }
+
+  const currentIds = currentTargets && currentTargets.map((tar) => tar.id);
 
   if (sourceNode.depth === 1) {
     console.warn("Cannot add anything to the root at this time");
@@ -67,7 +71,6 @@ function repositionedNode(
   // const { angle, x, y, type, depth, id } = sourceNode;
 
   if (oldIds.includes(targetNode.id)) {
-    console.log("NOT MOVING THIS NODE", targetNode.id);
     return { ...targetNode };
   } else {
     return {

@@ -5,17 +5,32 @@ import {
 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useContext } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { handlePopover } from "@/features/Graph/redux/uiSlice";
-import { useAppDispatch } from "@/store/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
 export default function TabLayout() {
   const theme = useContext(CustomThemeContext);
   const dispatch = useAppDispatch();
+  const sheetIsShown = useAppSelector(
+    (state: RootState) => state.ui.sheetIsShown,
+  );
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(sheetIsShown ? 0 : 1, { duration: 150 }),
+      pointerEvents: sheetIsShown ? "none" : "auto",
+    };
+  });
 
   return (
     <Tabs
@@ -64,7 +79,7 @@ export default function TabLayout() {
           title: "Add",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <View
+            <Animated.View
               style={[
                 {
                   position: "absolute",
@@ -72,11 +87,13 @@ export default function TabLayout() {
                   flex: 1,
                   alignItems: "center",
                   justifyContent: "center",
-                  top: -30,
+                  transform: [{ translateY: -30 }],
+                  // top: -30,
                   borderRadius: 100,
-                  // borderWidth: 10,
+                  // pointerEvents: "none",
+                  borderWidth: 1,
                   // borderColor: theme.primary,
-                  borderColor: theme.bgBaseTest,
+                  borderColor: "red",
                   backgroundColor: theme.btnBaseSelected,
                   padding: 12,
                   // shadowColor: theme.primary,
@@ -89,10 +106,11 @@ export default function TabLayout() {
 
                   // elevation: 24,
                 },
+                animatedStyles,
               ]}
             >
               <PlusIcon color={theme.primary} size={44} />
-            </View>
+            </Animated.View>
           ),
           tabBarButton: (props) => (
             <TouchableOpacity

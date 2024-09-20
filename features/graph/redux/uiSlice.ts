@@ -30,6 +30,7 @@ const UiSlice = createSlice({
     // use this to toggle ******************************************************
     handlePopover: (state) => {
       state.popoverIsShown = !state.popoverIsShown;
+      console.log("TOGGLING....");
     },
     handleSheet: (state) => {
       state.sheetIsShown = !state.sheetIsShown;

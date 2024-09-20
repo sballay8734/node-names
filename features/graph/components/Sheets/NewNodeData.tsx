@@ -18,12 +18,12 @@ export default function NewNodeData() {
   const dispatch = useAppDispatch();
   const isShown = useAppSelector((state: RootState) => state.ui.sheetIsShown);
 
-  // TODO: Translate this UP from bottom also
+  // !TODO: translateY value should NOT be fixed
   const animatedStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(isShown ? 1 : 0, { duration: 150 }),
+      opacity: withTiming(isShown ? 1 : 0, { duration: 200 }),
       transform: [
-        { translateY: withTiming(isShown ? 0 : 300, { duration: 150 }) },
+        { translateY: withTiming(isShown ? 0 : 600, { duration: 200 }) },
       ],
       pointerEvents: isShown ? "auto" : "none",
     };

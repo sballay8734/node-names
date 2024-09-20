@@ -242,10 +242,8 @@ const NewArchitectureSlice = createSlice({
           };
 
           if (state.nodes.byId[node.id]) {
-            console.log("FOUND, UPDATING...", node.id);
             state.nodes.byId[node.id] = updatedNode;
           } else {
-            console.log("NOT FOUND, ADDING...", node.id);
             state.nodes.byId[node.id] = updatedNode;
             state.nodes.allIds.push(node.id);
           }
