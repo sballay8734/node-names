@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { REDUX_ACTIONS } from "@/lib/constants/actions";
-
-import { toggleNode } from "./graphSlice";
-
 // Define a type for the slice state
 interface UiSliceState {
   popoverIsShown: boolean;
@@ -16,12 +12,6 @@ const initialState: UiSliceState = {
   sheetIsShown: false,
 };
 
-// CASES:
-// createNewNode: always active unless selectedNodeIds is empty array
-// createNewGroup: always active unless selectedNodeIds is empty array (UNLESS last set to active is of type group [cant add group FROM group])
-// cSGFS: active if more than one node is selected AND root can't be selected AND no nodes with type of group can be selected
-// moveNode: inactive if root is last set to active or if last active type is group
-
 const UiSlice = createSlice({
   name: "uiSlice",
   // `createSlice` will infer the state type from the `initialState` argument
@@ -30,7 +20,6 @@ const UiSlice = createSlice({
     // use this to toggle ******************************************************
     handlePopover: (state) => {
       state.popoverIsShown = !state.popoverIsShown;
-      console.log("TOGGLING....");
     },
     handleSheet: (state) => {
       state.sheetIsShown = !state.sheetIsShown;

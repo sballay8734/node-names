@@ -13,18 +13,14 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-import {
-  LINK_COLORS,
-  LINK_OPACITY,
-  TEXT_OPACITY,
-} from "@/lib/constants/Colors";
-import { useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import { LINK_COLORS, LINK_OPACITY } from "@/lib/constants/Colors";
 import {
   GROUP_NODE_RADIUS,
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/lib/constants/styles";
+import { useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
 interface LinkSvgProps {
   id: number;

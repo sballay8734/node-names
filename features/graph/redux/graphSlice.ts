@@ -248,6 +248,8 @@ const NewArchitectureSlice = createSlice({
             state.nodes.allIds.push(node.id);
           }
         });
+
+        console.log("NODE CREATED!");
       } else {
         console.log("THERE IS NO VALID SOURCE");
       }

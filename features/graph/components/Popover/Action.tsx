@@ -79,7 +79,7 @@ export default function Action({ action }: ActionProps) {
     isPressed.value = false;
 
     if (!longPressRef.current) {
-      dispatch(actionMap[action]);
+      // dispatch(actionMap[action]);
       dispatch(handleSheet());
     }
   }

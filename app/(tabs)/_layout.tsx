@@ -5,32 +5,15 @@ import {
 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useContext } from "react";
-import { TouchableOpacity } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { handlePopover } from "@/features/Graph/redux/uiSlice";
-import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
-import { RootState } from "@/store/store";
+import AddNewBtn from "@/features/Graph/components/AddNewBtn";
 
 export default function TabLayout() {
   const theme = useContext(CustomThemeContext);
-  const dispatch = useAppDispatch();
-  const sheetIsShown = useAppSelector(
-    (state: RootState) => state.ui.sheetIsShown,
-  );
-
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(sheetIsShown ? 0 : 1, { duration: 150 }),
-      pointerEvents: sheetIsShown ? "none" : "auto",
-    };
-  });
 
   return (
     <Tabs
@@ -106,23 +89,7 @@ export default function TabLayout() {
             </Animated.View>
           ),
 
-          // !TODO: REPLACE THIS WITH AnimatedPressable to FIX ISSUE
-          tabBarButton: (props) => (
-            <TouchableOpacity
-              {...props}
-              activeOpacity={0.8}
-              onPress={() => dispatch(handlePopover())}
-              style={[
-                {
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transform: [{ translateY: -35 }],
-                },
-                animatedStyles,
-              ]}
-            />
-          ),
+          tabBarButton: (props) => <AddNewBtn {...props} />,
         }}
       />
       <Tabs.Screen

@@ -8,7 +8,8 @@ import Animated, {
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { hideSheet } from "../../redux/uiSlice";
+import { handleSheet, hideSheet } from "../../redux/uiSlice";
+import { createNewNode } from "../../redux/graphSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -34,7 +35,8 @@ export default function NewNodeData() {
   }
 
   function handleCreate() {
-    console.log("CREATING...");
+    dispatch(createNewNode());
+    dispatch(handleSheet());
   }
 
   return (

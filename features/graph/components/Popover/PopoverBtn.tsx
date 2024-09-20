@@ -18,6 +18,7 @@ import {
   createSubGroupFromSelection,
   moveNode,
 } from "../../redux/graphSlice";
+import { handleSheet } from "../../redux/uiSlice";
 
 interface Props {
   iconName: string;
@@ -102,11 +103,10 @@ function PopoverBtn({
 
   const actionMap: PopoverActionMap = useMemo(
     () => ({
-      createNewNode: () => dispatch(createNewNode()),
-      createNewGroup: () => dispatch(createNewGroup()),
-      createSubGroupFromSelection: () =>
-        dispatch(createSubGroupFromSelection()),
-      moveNode: () => dispatch(moveNode()),
+      createNewNode: () => dispatch(handleSheet()),
+      createNewGroup: () => dispatch(handleSheet()),
+      createSubGroupFromSelection: () => dispatch(handleSheet()),
+      moveNode: () => dispatch(handleSheet()),
     }),
     [dispatch],
   );
