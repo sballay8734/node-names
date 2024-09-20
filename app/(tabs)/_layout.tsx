@@ -87,13 +87,7 @@ export default function TabLayout() {
                   flex: 1,
                   alignItems: "center",
                   justifyContent: "center",
-                  transform: [{ translateY: -30 }],
-                  // top: -30,
                   borderRadius: 100,
-                  // pointerEvents: "none",
-                  borderWidth: 1,
-                  // borderColor: theme.primary,
-                  borderColor: "red",
                   backgroundColor: theme.btnBaseSelected,
                   padding: 12,
                   // shadowColor: theme.primary,
@@ -106,22 +100,27 @@ export default function TabLayout() {
 
                   // elevation: 24,
                 },
-                animatedStyles,
               ]}
             >
               <PlusIcon color={theme.primary} size={44} />
             </Animated.View>
           ),
+
+          // !TODO: REPLACE THIS WITH AnimatedPressable to FIX ISSUE
           tabBarButton: (props) => (
             <TouchableOpacity
               {...props}
               activeOpacity={0.8}
               onPress={() => dispatch(handlePopover())}
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              style={[
+                {
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transform: [{ translateY: -35 }],
+                },
+                animatedStyles,
+              ]}
             />
           ),
         }}
