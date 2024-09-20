@@ -9,9 +9,10 @@ import {
   PosNodeMap,
   UiNode,
 } from "@/lib/types/graph";
+import { CreatedNode, updatePositions } from "@/lib/utils/repositionGraphEls";
 import { RootState } from "@/store/store";
 
-interface GraphSliceState {
+export interface GraphSliceState {
   userId: number | null;
   nodes: {
     byId: PosNodeMap;
@@ -131,8 +132,6 @@ const NewArchitectureSlice = createSlice({
           state.links.bySourceId[link.source_id].push(link.target_id);
         }
       });
-
-      console.log(state.links.bySourceId);
     },
 
     // Update nodes' status while also updating parent/children if necessary
@@ -209,13 +208,47 @@ const NewArchitectureSlice = createSlice({
       console.log("Swap Root", "OLD:", oldRootId, "NEW:", newRootId);
     },
     createNewNode: (state) => {
-      console.log(state.nodes.byId);
-      // get last id in array
-      const source_id = state.nodes.focusedNodeId;
-      console.log(source_id);
+      if (!state.nodes.focusedNodeId)
+        return console.error("from createNewNode");
 
-      if (source_id) {
-        console.log("CREATE NODE FROM NODE");
+      // get last id in array
+      const source = state.nodes.byId[state.nodes.focusedNodeId];
+
+      if (source) {
+        // REMOVE: FOR TESTING
+        const newNode = {
+          id: 1000,
+          depth: 3,
+          name: "TEST",
+          group_id: 7, // friends
+          type: "node",
+          group_name: "Friends",
+          source_type: "group",
+        };
+        // this function needs to return an array of repositioned nodes
+        const updatedNodes: UiNode[] | undefined = updatePositions(
+          state,
+          source,
+          newNode as CreatedNode,
+        );
+
+        updatedNodes?.forEach((node) => {
+          const updatedNode = {
+            ...node,
+            angle: node.angle,
+            x: node.x,
+            y: node.y,
+          };
+
+          if (state.nodes.byId[node.id]) {
+            console.log("FOUND, UPDATING...", node.id);
+            state.nodes.byId[node.id] = updatedNode;
+          } else {
+            console.log("NOT FOUND, ADDING...", node.id);
+            state.nodes.byId[node.id] = updatedNode;
+            state.nodes.allIds.push(node.id);
+          }
+        });
       } else {
         console.log("THERE IS NO VALID SOURCE");
       }
@@ -270,15 +303,6 @@ const updateActionButtonStates = (state: GraphSliceState) => {
   state.actionBtnById["moveNode"] =
     selectedNodesCount > 0 && focusedIsTypeNode && !focusedIsRoot;
 };
-
-// Helper function to update position of nodes
-export function updatePositions(node: UiNode) {
-  // get source node position && angle from root
-  const { angle, x, y, type, depth, id } = node;
-  // get children of that node (USE CHILD MAP MAYBE?)
-
-  // reposition targets
-}
 
 export const {
   setInitialState,
