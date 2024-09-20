@@ -216,13 +216,14 @@ const NewArchitectureSlice = createSlice({
 
       if (source) {
         // REMOVE: FOR TESTING
+        const currentName = state.nodes.byId[state.nodes.focusedNodeId].name;
         const newNode = {
-          id: 1000,
+          id: Math.floor(Math.random() * 10000),
           depth: 3,
           name: "TEST",
           group_id: 7, // friends
           type: "node",
-          group_name: "Friends",
+          group_name: currentName,
           source_type: "group",
         };
         // this function needs to return an array of repositioned nodes

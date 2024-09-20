@@ -19,8 +19,6 @@ export function updatePositions(
   sourceNode: UiNode,
   newNode: CreatedNode,
 ) {
-  // get source node position && angle from root
-  const { angle, x, y, type, depth, id } = sourceNode;
   // get children of that node (USE CHILD MAP MAYBE?)
   const currentTargets =
     state.links.bySourceId[sourceNode.id] &&
