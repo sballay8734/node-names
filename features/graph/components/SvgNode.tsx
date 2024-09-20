@@ -51,8 +51,6 @@ export default function SvgNode({ node }: NodeSvgProps) {
     (state: RootState) => state.graphData.nodes.focusedNodeId === node.id,
   );
 
-  console.log(isFocusedNode, node.name);
-
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
 
   const { fillColor, borderColor, textColor, textOpacity } = getNodeStyles(
@@ -94,12 +92,12 @@ export default function SvgNode({ node }: NodeSvgProps) {
   const sunOpacity = useDerivedValue(() => {
     return node.node_status !== "active"
       ? withTiming(1, { duration: 200 })
-      : withTiming(0, { duration: 200 });
+      : withTiming(0.3, { duration: 200 });
   });
   const nodeOpacity = useDerivedValue(() => {
     return node.node_status === "active"
       ? withTiming(1, { duration: 200 })
-      : withTiming(0, { duration: 200 });
+      : withTiming(0.3, { duration: 200 });
   });
 
   if (!node) return null;

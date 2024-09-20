@@ -19,7 +19,7 @@ export type ActionObj = {
 
 type PopoverActionMap = {
   // !TODO: TYPE THIS CORRECTLY
-  [key: string]: (args: any) => any;
+  [key: string]: any;
   // [key: string]: () => Dispatch<ActionFromReducer<any>>;
 };
 
@@ -51,10 +51,10 @@ export const iconMap: { [key: string]: React.ReactNode } = {
 };
 // ACTION MAP
 export const actionMap: PopoverActionMap = {
-  createNewNode: () => createNewNode,
-  createNewGroup: () => createNewGroup,
-  createSubGroupFromSelection: () => createSubGroupFromSelection,
-  moveNode: () => moveNode,
+  createNewNode: createNewNode(),
+  createNewGroup: createNewGroup(),
+  createSubGroupFromSelection: createSubGroupFromSelection(),
+  moveNode: moveNode(),
 };
 
 // POSITION MAP

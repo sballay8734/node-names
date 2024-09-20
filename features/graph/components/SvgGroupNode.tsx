@@ -41,7 +41,7 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     (state: RootState) => state.windowSize,
   );
   const isFocusedNode = useAppSelector(
-    (state: RootState) => state.graphData.nodes.focusedNodeId,
+    (state: RootState) => state.graphData.nodes.focusedNodeId === node.id,
   );
 
   const nodeStatus = useAppSelector((state: RootState) => {
@@ -90,6 +90,7 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
     return withTiming(borderColor, { duration: 200 });
   });
 
+  // !TODO: The issue with the flickering is here! I don't think using derived value to control the blur is proper
   const blurIntensity = useDerivedValue(() => {
     return isFocusedNode
       ? withTiming(radius, { duration: 200 })

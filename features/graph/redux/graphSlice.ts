@@ -22,6 +22,7 @@ interface GraphSliceState {
   };
   links: {
     byId: PosLinkMap;
+    bySourceId: { [key: number]: number[] }; // for repositioning
     allIds: number[];
   };
   actionBtnById: { [key: string]: boolean };
@@ -38,6 +39,7 @@ const initialState: GraphSliceState = {
   },
   links: {
     byId: {},
+    bySourceId: {},
     allIds: [],
   },
   actionBtnById: REDUX_ACTIONS.reduce<{ [key: string]: boolean }>(
@@ -122,7 +124,15 @@ const NewArchitectureSlice = createSlice({
 
           state.links.allIds.push(link.id);
         }
+
+        if (!state.links.bySourceId[link.source_id]) {
+          state.links.bySourceId[link.source_id] = [link.target_id];
+        } else {
+          state.links.bySourceId[link.source_id].push(link.target_id);
+        }
       });
+
+      console.log(state.links.bySourceId);
     },
 
     // Update nodes' status while also updating parent/children if necessary
@@ -146,32 +156,28 @@ const NewArchitectureSlice = createSlice({
           // handle case of node click while active AND parent is NOT active
         } else {
           state.nodes.byId[nodeId].node_status = "inactive";
-          console.log("SETTING:", nodeId, "TO INACTIVE");
           // remove id from selected ids AND updated focusedNodeId
           if (state.nodes.selectedNodeIds.includes(nodeId)) {
             // remove node first
             const updatedNodeIds = [
               ...state.nodes.selectedNodeIds.filter((id) => id !== nodeId),
             ];
-            const lastIndex = updatedNodeIds.length - 1;
+            const lastIndex = updatedNodeIds[updatedNodeIds.length - 1];
 
             // if array is not empty, set the last index to the active node id
             if (lastIndex) {
-              state.nodes.focusedNodeId = updatedNodeIds[lastIndex];
+              state.nodes.focusedNodeId = lastIndex;
             }
 
-            // updated the state
+            // update the state
             state.nodes.selectedNodeIds = updatedNodeIds;
           }
         }
 
         updateActionButtonStates(state);
-        console.log(state.nodes.selectedNodeIds);
       } else {
         console.error("Couldn't find node Id. graphSlice");
       }
-
-      console.log(state.nodes.focusedNodeId);
     },
     deselectAllNodes: (state) => {
       // Update thhe statuses of the nodes in the object
@@ -201,19 +207,15 @@ const NewArchitectureSlice = createSlice({
       const { newRootId, oldRootId } = action.payload;
 
       console.log("Swap Root", "OLD:", oldRootId, "NEW:", newRootId);
-
-      // state.nodes.activeRootId = newRootId;
-      // state.nodes.byId[newRootId].isCurrentRoot = true;
-
-      // state.nodes.byId[oldRootId].isCurrentRoot = false;
     },
     createNewNode: (state) => {
-      const source_id =
-        // get last id in array
-        state.nodes.selectedNodeIds[state.nodes.selectedNodeIds.length - 1];
+      console.log(state.nodes.byId);
+      // get last id in array
+      const source_id = state.nodes.focusedNodeId;
+      console.log(source_id);
 
       if (source_id) {
-        console.log("CREATE NODE");
+        console.log("CREATE NODE FROM NODE");
       } else {
         console.log("THERE IS NO VALID SOURCE");
       }
@@ -251,16 +253,32 @@ const updateActionButtonStates = (state: GraphSliceState) => {
   const selectedNodesCount = state.nodes.selectedNodeIds.length;
   const lastSelectedNode =
     state.nodes.byId[state.nodes.selectedNodeIds[selectedNodesCount - 1]];
-  const lastIsTypeNode = lastSelectedNode && lastSelectedNode.type === "node";
+  const focusedIsTypeNode =
+    lastSelectedNode && lastSelectedNode.type === "node";
+  const focusedIsTypeGroup =
+    lastSelectedNode && lastSelectedNode.type === "group";
+  const focusedIsRoot = lastSelectedNode && lastSelectedNode.depth === 1;
 
   state.actionBtnById["createNewNode"] =
-    selectedNodesCount > 0 && lastIsTypeNode;
+    selectedNodesCount > 0 &&
+    (focusedIsTypeNode || focusedIsTypeGroup) &&
+    !focusedIsRoot;
   state.actionBtnById["createNewGroup"] =
-    selectedNodesCount > 0 && lastIsTypeNode;
+    selectedNodesCount > 0 && focusedIsTypeNode;
   state.actionBtnById["createNewSubGroupFromSelection"] =
-    selectedNodesCount > 1;
-  state.actionBtnById["moveNode"] = selectedNodesCount > 0 && lastIsTypeNode;
+    selectedNodesCount > 1 && !focusedIsRoot;
+  state.actionBtnById["moveNode"] =
+    selectedNodesCount > 0 && focusedIsTypeNode && !focusedIsRoot;
 };
+
+// Helper function to update position of nodes
+export function updatePositions(node: UiNode) {
+  // get source node position && angle from root
+  const { angle, x, y, type, depth, id } = node;
+  // get children of that node (USE CHILD MAP MAYBE?)
+
+  // reposition targets
+}
 
 export const {
   setInitialState,

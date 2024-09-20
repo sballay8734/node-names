@@ -65,6 +65,7 @@ export default function Action({ action }: ActionProps) {
           duration: 100,
         },
       ),
+      pointerEvents: isActive ? "auto" : "none",
     };
   });
 
