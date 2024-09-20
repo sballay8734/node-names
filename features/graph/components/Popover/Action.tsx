@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import { actionMap, getPosValues, iconMap } from "./maps";
+import { handleSheet } from "../../redux/uiSlice";
 
 export type ActionType =
   | "createNewNode"
@@ -79,6 +80,7 @@ export default function Action({ action }: ActionProps) {
 
     if (!longPressRef.current) {
       dispatch(actionMap[action]);
+      dispatch(handleSheet());
     }
   }
 

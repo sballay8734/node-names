@@ -7,11 +7,13 @@ import { toggleNode } from "./graphSlice";
 // Define a type for the slice state
 interface UiSliceState {
   popoverIsShown: boolean;
+  sheetIsShown: boolean;
 }
 
 // Define the initial state using that type
 const initialState: UiSliceState = {
   popoverIsShown: false,
+  sheetIsShown: false,
 };
 
 // CASES:
@@ -29,6 +31,9 @@ const UiSlice = createSlice({
     handlePopover: (state) => {
       state.popoverIsShown = !state.popoverIsShown;
     },
+    handleSheet: (state) => {
+      state.sheetIsShown = !state.sheetIsShown;
+    },
     // use these for other actions *********************************************
     showPopover: (state) => {
       state.popoverIsShown = true;
@@ -36,9 +41,23 @@ const UiSlice = createSlice({
     hidePopover: (state) => {
       state.popoverIsShown = false;
     },
+
+    showSheet: (state) => {
+      state.sheetIsShown = true;
+    },
+    hideSheet: (state) => {
+      state.sheetIsShown = false;
+    },
   },
 });
 
-export const { handlePopover, showPopover, hidePopover } = UiSlice.actions;
+export const {
+  handlePopover,
+  handleSheet,
+  showPopover,
+  hidePopover,
+  showSheet,
+  hideSheet,
+} = UiSlice.actions;
 
 export default UiSlice.reducer;
