@@ -3,6 +3,7 @@ import { RootState } from "@/store/store";
 
 import GroupNodeSvg from "./SvgGroupNode";
 import SvgNode from "./SvgNode";
+import MasterNode from "./MasterNode";
 
 interface NewSvgProps {
   id: number;
@@ -14,6 +15,9 @@ export default function NewSvgNode({ id }: NewSvgProps) {
   );
 
   if (!node) return null;
+
+  // Uncomment below to test
+  // return <MasterNode key={node.id} node={node} />
 
   if (node.type === "node") {
     return <SvgNode key={node.id} node={node} />;

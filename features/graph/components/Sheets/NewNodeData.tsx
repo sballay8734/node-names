@@ -8,8 +8,8 @@ import Animated, {
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { handleSheet, hideSheet } from "../../redux/uiSlice";
 import { createNewNode } from "../../redux/graphSlice";
+import { handleSheet, hideSheet } from "../../redux/uiSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

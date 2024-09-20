@@ -33,9 +33,11 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: AFTER ADDING LOGIC FOR POPOVER AND INPUT FOR NEW NODE INFO, CLEAN UP ALL LOGIC RELATED TO ADDING and POSITIONING NEW NODES. IT IS GETTING OUT OF HAND AND IF YOU WAIT ANY LONGER IT WILL GET REALLY HARD TO DEBUG
+// !TODO: FIRST: Move all node rendering logic to a single component (Groups, root, and nodes should all render from the same component) - SVGS will be separate from PRESSABLE OVERLAYS
 
-// !TODO: Alignment of plus icon is weird (There seems to be something in the tab bar that does not move when you translate the button that STILL responds to touch events)
+// !TODO: REFACTOR POSITIONING LOGIC
+
+// !TODO: AFTER ADDING LOGIC FOR POPOVER AND INPUT FOR NEW NODE INFO, CLEAN UP ALL LOGIC RELATED TO ADDING and POSITIONING NEW NODES. IT IS GETTING OUT OF HAND AND IF YOU WAIT ANY LONGER IT WILL GET REALLY HARD TO DEBUG
 
 // TODO: Still need to handle logic for cNSGFS
 
