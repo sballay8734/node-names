@@ -7,6 +7,7 @@ import Animated, {
 export default function NewNodeData() {
   const isShown = false;
 
+  // TODO: Translate this UP from bottom also
   const animatedStyles = useAnimatedStyle(() => {
     return {
       opacity: withTiming(isShown ? 1 : 0, { duration: 150 }),
