@@ -33,102 +33,102 @@ export default Index;
 
 // !TODO: AFTER ADDING LOGIC FOR POPOVER AND INPUT FOR NEW NODE INFO, CLEAN UP ALL LOGIC RELATED TO ADDING and POSITIONING NEW NODES. IT IS GETTING OUT OF HAND AND IF YOU WAIT ANY LONGER IT WILL GET REALLY HARD TO DEBUG
 
-// !TODO: Still need to handle logic for cNSGFS
+// TODO: Still need to handle logic for cNSGFS
 
-// !TODO: If a node selection results in a child link that goes off the screen, the app should zoom out
+// TODO: If a node selection results in a child link that goes off the screen, the app should zoom out
 
-// !TODO: Style root node better (should be more obvious)
+// TODO: Style root node better (should be more obvious)
 
-// !TODO: Position group titles better
+// TODO: Position group titles better
 
-// !TODO: Add support for adding new nodes (Probably use depth)
+// TODO: Add support for adding new nodes (Probably use depth)
 
-// !TODO: YOU HAVE A MEMORY LEAK SOMEWHERE (It's small but as you press nodes it creeps up)
+// TODO: YOU HAVE A MEMORY LEAK SOMEWHERE (It's small but as you press nodes it creeps up)
 
-// !TODO: How are you going to handle the press styles if you're showing svgs?
+// TODO: How are you going to handle the press styles if you're showing svgs?
 
-// !TODO: Find a way to bold the group names but NOT the node names nicely
+// TODO: Find a way to bold the group names but NOT the node names nicely
 
-// !TODO: postion group names properly on same angle as nodes from the group
+// TODO: postion group names properly on same angle as nodes from the group
 
-// !TODO: Links are not animating OUT FROM a node
+// TODO: Links are not animating OUT FROM a node
 
-// !TODO: Make links connect to edges of nodes and not the centers
+// TODO: Make links connect to edges of nodes and not the centers
 
-// !TODO: Store color map in ui state so you don't have to run getNodeStyles constantly
+// TODO: Store color map in ui state so you don't have to run getNodeStyles constantly
 
-// !TODO: Cap the number of rootGroups to 7 AND the number of groups for non-root-nodes to about 2 or 3
+// TODO: Cap the number of rootGroups to 7 AND the number of groups for non-root-nodes to about 2 or 3
 
-// !TODO: initial state set doesn't activate borders on rootGroupNodes
+// TODO: initial state set doesn't activate borders on rootGroupNodes
 
-// !TODO: update link based on if source AND target are active
+// TODO: update link based on if source AND target are active
 
-// !TODO: You can now remove all the calls to Dimensions and use the redux value
+// TODO: You can now remove all the calls to Dimensions and use the redux value
 
-// !TODO: Don't forget to handle long press and don't fire off the action if a user hold down
+// TODO: Don't forget to handle long press and don't fire off the action if a user hold down
 
-// !TODO: You actually need to render links TO the groups THEN FROM the groups and to the nodes (REFACTOR EVERYTHING FIRST THOUGH)
+// TODO: You actually need to render links TO the groups THEN FROM the groups and to the nodes (REFACTOR EVERYTHING FIRST THOUGH)
 
-// !TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
-// !TODO: "getPopoverBtns" REALLY needs a refactor
-// !TODO: Do we really need "centerNode" function in useArrowData? How is it different from the other two centering functions?
-// !TODO: TESTING STILL NEEDED on ALL action buttons
-// !TODO: Refactor needed in MANY places to styles an logic
-// !TODO: FOURTH: move popover stuff in "manageSelections" slice to UI slice
-// !TODO: FIFTH: get centerOnNode OUT of NodeTapDetector. Figure out a way to move it somewhere else!
-// !TODO: Text on node is node transitioned smoothly
+// TODO: Why does root node turn blue if you inspect it? (realistically you should block the inspection of the current root node anyway... since it's already inspected... but it's worth looking into)
+// TODO: "getPopoverBtns" REALLY needs a refactor
+// TODO: Do we really need "centerNode" function in useArrowData? How is it different from the other two centering functions?
+// TODO: TESTING STILL NEEDED on ALL action buttons
+// TODO: Refactor needed in MANY places to styles an logic
+// TODO: FOURTH: move popover stuff in "manageSelections" slice to UI slice
+// TODO: FIFTH: get centerOnNode OUT of NodeTapDetector. Figure out a way to move it somewhere else!
+// TODO: Text on node is node transitioned smoothly
 
-// !TODO: Setting userId should NOT happen inside of graphDataSlice (you just put it there temporarily). It should happen in it's own slice!
+// TODO: Setting userId should NOT happen inside of graphDataSlice (you just put it there temporarily). It should happen in it's own slice!
 
-// !TODO: Fix else if (false) in toggleNode reducer
+// TODO: Fix else if (false) in toggleNode reducer
 
-// !TODO: DOUBLE CHECK THAT YOU'RE TAKING ADVANTAGE OF D3 INDEXING IN YOU setInitialPostions function
+// TODO: DOUBLE CHECK THAT YOU'RE TAKING ADVANTAGE OF D3 INDEXING IN YOU setInitialPostions function
 
-// !TODO: BEFORE YOU DO ANYTHING CHECK TYPE FLOW FROM INITIAL FETCH -> D3 -> Redux
+// TODO: BEFORE YOU DO ANYTHING CHECK TYPE FLOW FROM INITIAL FETCH -> D3 -> Redux
 
-// !TODO: You MUST run d3 positioning logic inside useDbData BEFORE dispatching the data to state
+// TODO: You MUST run d3 positioning logic inside useDbData BEFORE dispatching the data to state
 
-// !TODO: And how will you determine the initial state for isShown? Right now, by default it is true for ALL nodes simply for testing purposes
+// TODO: And how will you determine the initial state for isShown? Right now, by default it is true for ALL nodes simply for testing purposes
 
-// !TODO: Fix white screen flash while sign up request is happening and transitions to graph
+// TODO: Fix white screen flash while sign up request is happening and transitions to graph
 
-// !TODO: remove default value of "male" from node "sex" and profiles "sex" (you did this just to get around dumb error) YOU'LL HAVE TO FIX USER CREATION THOUGH
+// TODO: remove default value of "male" from node "sex" and profiles "sex" (you did this just to get around dumb error) YOU'LL HAVE TO FIX USER CREATION THOUGH
 
-// !TODO: Configure storage and access controls for storage
+// TODO: Configure storage and access controls for storage
 
-// !TODO: You need to turn back on "Confirm "Email" email verification
+// TODO: You need to turn back on "Confirm "Email" email verification
 
-// !TODO: Animate colors and rotation in PlusIcon.tsx
+// TODO: Animate colors and rotation in PlusIcon.tsx
 
-// !TODO: Add "pressed" states to action Btns
+// TODO: Add "pressed" states to action Btns
 
-// !TODO: Replace + border with sudo background so you can't see through
+// TODO: Replace + border with sudo background so you can't see through
 
-// !TODO: MAYBE JUST ALWAYS SHOW ALL OPTIONS AND JUST GREY OUT THE ONES THAT ARE NOT USABLE (CREATE A SORT OF MINI DASHBOARD)
+// TODO: MAYBE JUST ALWAYS SHOW ALL OPTIONS AND JUST GREY OUT THE ONES THAT ARE NOT USABLE (CREATE A SORT OF MINI DASHBOARD)
 
-// !TODO: I really don't like how the popover "right" and + button use hard coded "guestimates" for alignment
+// TODO: I really don't like how the popover "right" and + button use hard coded "guestimates" for alignment
 
-// !TODO: You DEFINITELY have a memory leak somewhere. Your RAM is too high in performance monitor
+// TODO: You DEFINITELY have a memory leak somewhere. Your RAM is too high in performance monitor
 
-// !TODO: REMEMBER to fill in default values for certain PopoverActions (if there are no nodes selected, automatically populate the root as the source of a newNode or Group) -- THERE ARE MORE EXAMPLES OF THIS, BE SMART, DON'T ADD MORE BTNS
+// TODO: REMEMBER to fill in default values for certain PopoverActions (if there are no nodes selected, automatically populate the root as the source of a newNode or Group) -- THERE ARE MORE EXAMPLES OF THIS, BE SMART, DON'T ADD MORE BTNS
 
-// !TODO: You really need to optimize the way the PopoverActionBtns are rendered. Anytime one of them changes, they all re-render NOT GOOD
+// TODO: You really need to optimize the way the PopoverActionBtns are rendered. Anytime one of them changes, they all re-render NOT GOOD
 
-// !TODO: You might need to add options like "uRawGroup"
+// TODO: You might need to add options like "uRawGroup"
 
-// !TODO: BY DEFAULT, if one node is selected, the plus button will default the source to the selected node
+// TODO: BY DEFAULT, if one node is selected, the plus button will default the source to the selected node
 
-// !TODO: BY DEFAULT, if NO node is selected, the plus button will default the source to the current_root_node
+// TODO: BY DEFAULT, if NO node is selected, the plus button will default the source to the current_root_node
 
-// !TODO: Eventually add back "centering" functionality BUT IMPROVE IT
+// TODO: Eventually add back "centering" functionality BUT IMPROVE IT
 
-// !TODO: Spouses should have a sudo node between them where links to children come out of
+// TODO: Spouses should have a sudo node between them where links to children come out of
 
-// !TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
+// TODO: You actually DON'T want to refetch the data when a newRootNode is set. There is no need for that. You should already have all the data you need
 
-// !TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
+// TODO: Make children/spouse nodes smaller also and connect your connection with their spouse
 
-// !TODO: Search bar
+// TODO: Search bar
 
 // OPTIMIZE: OPTIMIZATION Look deeper into initial render. The hooks are causing lots of rerenders
 
