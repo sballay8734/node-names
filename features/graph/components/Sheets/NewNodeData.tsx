@@ -10,6 +10,7 @@ export default function NewNodeData() {
   const animatedStyles = useAnimatedStyle(() => {
     return {
       opacity: withTiming(isShown ? 1 : 0, { duration: 150 }),
+      pointerEvents: isShown ? "auto" : "none",
     };
   });
 
