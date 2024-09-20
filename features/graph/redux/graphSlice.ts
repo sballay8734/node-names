@@ -18,6 +18,7 @@ interface GraphSliceState {
     allIds: number[];
     activeRootId: number | null;
     selectedNodeIds: number[];
+    focusedNodeId: number | null;
   };
   links: {
     byId: PosLinkMap;
@@ -33,6 +34,7 @@ const initialState: GraphSliceState = {
     allIds: [],
     activeRootId: null,
     selectedNodeIds: [],
+    focusedNodeId: null,
   },
   links: {
     byId: {},
@@ -86,6 +88,7 @@ const NewArchitectureSlice = createSlice({
             state.nodes.activeRootId = newNode.id;
             state.userId = newNode.id;
             state.nodes.selectedNodeIds.push(newNode.id);
+            state.nodes.focusedNodeId = newNode.id;
           }
 
           // store status in temporary map for SAFE look up during links loop
@@ -132,7 +135,7 @@ const NewArchitectureSlice = createSlice({
         // make node active if it's "parent_active" or "inactive" when clicked
         if (status !== "active") {
           state.nodes.byId[nodeId].node_status = "active";
-          console.log("SETTING:", nodeId, "TO ACTIVE");
+          state.nodes.focusedNodeId = nodeId;
           // push id to selected ids if not in there already (it shouldn't be)
           if (!state.nodes.selectedNodeIds.includes(nodeId)) {
             state.nodes.selectedNodeIds.push(nodeId);
@@ -144,11 +147,21 @@ const NewArchitectureSlice = createSlice({
         } else {
           state.nodes.byId[nodeId].node_status = "inactive";
           console.log("SETTING:", nodeId, "TO INACTIVE");
-          // remove id from selected ids if in there (it should be)
+          // remove id from selected ids AND updated focusedNodeId
           if (state.nodes.selectedNodeIds.includes(nodeId)) {
-            state.nodes.selectedNodeIds = [
+            // remove node first
+            const updatedNodeIds = [
               ...state.nodes.selectedNodeIds.filter((id) => id !== nodeId),
             ];
+            const lastIndex = updatedNodeIds.length - 1;
+
+            // if array is not empty, set the last index to the active node id
+            if (lastIndex) {
+              state.nodes.focusedNodeId = updatedNodeIds[lastIndex];
+            }
+
+            // updated the state
+            state.nodes.selectedNodeIds = updatedNodeIds;
           }
         }
 
@@ -157,6 +170,8 @@ const NewArchitectureSlice = createSlice({
       } else {
         console.error("Couldn't find node Id. graphSlice");
       }
+
+      console.log(state.nodes.focusedNodeId);
     },
     deselectAllNodes: (state) => {
       // Update thhe statuses of the nodes in the object

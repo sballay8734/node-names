@@ -1,7 +1,7 @@
 export const ARROW_BTN_DIM = 60;
 export const ARROW_BTN_RADIUS = ARROW_BTN_DIM / 2;
 
-export const ROOT_NODE_RADIUS = 25;
+export const ROOT_NODE_RADIUS = 20;
 export const GROUP_NODE_RADIUS = 3;
 export const REG_NODE_RADIUS = 10;
 

@@ -40,11 +40,8 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
-  const isLastActive = useAppSelector(
-    (state: RootState) =>
-      state.graphData.nodes.selectedNodeIds[
-        state.graphData.nodes.selectedNodeIds.length - 1
-      ] === node.id,
+  const isFocusedNode = useAppSelector(
+    (state: RootState) => state.graphData.nodes.focusedNodeId,
   );
 
   const nodeStatus = useAppSelector((state: RootState) => {
@@ -94,7 +91,7 @@ export default function SvgGroupNode({ node }: GroupNodeSvgProps) {
   });
 
   const blurIntensity = useDerivedValue(() => {
-    return isLastActive
+    return isFocusedNode
       ? withTiming(radius, { duration: 200 })
       : withTiming(0, { duration: 200 });
   });

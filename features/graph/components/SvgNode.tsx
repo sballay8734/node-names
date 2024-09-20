@@ -47,14 +47,12 @@ export default function SvgNode({ node }: NodeSvgProps) {
       return selectNodeStatus(state, node.id);
     }
   });
-
-  // !TODO: THIS IS CAUSING NODE TO RENDER TWICE (FIND A BETTER WAY)
-  const isLastActive = useAppSelector(
-    (state: RootState) =>
-      state.graphData.nodes.selectedNodeIds[
-        state.graphData.nodes.selectedNodeIds.length - 1
-      ] === node.id,
+  const isFocusedNode = useAppSelector(
+    (state: RootState) => state.graphData.nodes.focusedNodeId === node.id,
   );
+
+  console.log(isFocusedNode, node.name);
+
   const radius = node.depth === 1 ? ROOT_NODE_RADIUS : REG_NODE_RADIUS;
 
   const { fillColor, borderColor, textColor, textOpacity } = getNodeStyles(
@@ -83,14 +81,12 @@ export default function SvgNode({ node }: NodeSvgProps) {
     return withTiming(textOpacity, { duration: 200 });
   });
 
-  console.log("RENDERING - NOT GOOD:", node.name);
-
   const animatedFillColor = useDerivedValue(() => {
     return withTiming(fillColor, { duration: 200 });
   });
 
   const blurIntensity = useDerivedValue(() => {
-    return isLastActive
+    return isFocusedNode
       ? withTiming(radius, { duration: 200 })
       : withTiming(0, { duration: 200 });
   });
