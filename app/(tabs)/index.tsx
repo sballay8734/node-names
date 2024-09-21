@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: FOR BELOW: You'll likely need to create a group map while looping through the nodes so that when you loop through the nodeGroups, you can easily figure out how many are in each group and how to properly space/place them
+
 // !TODO: Nodes should be placed in the CENTER of the group by default and keep fitting in a row until there is no more room. Then just increase the depth a bit
 
 // !TODO: NEED TO CHECK TYPES OF GROUPS/NODES ETC... OPTIMIZE NEW posFunc!!

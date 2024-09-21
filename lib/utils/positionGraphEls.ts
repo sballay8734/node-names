@@ -21,6 +21,7 @@ const userId = 1;
 const MAX_ROOT_GROUPS = 7;
 const MAX_NODES = 1000;
 const RADIUS_FACTOR = 0.3;
+const PADDING = 5;
 
 export function positionGraphEls(
   data: { nodes: RawNode[]; links: RawLink[] },
