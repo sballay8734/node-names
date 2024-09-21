@@ -139,15 +139,15 @@ export const LINK_OPACITY = {
 };
 
 export const LINK_COLORS: { [key: string]: string } = {
-  Root: "rgba(89, 173, 246, 1)", // blue
+  Root: "#1a3349",
 
-  Friends: "rgba(248, 243, 141, 1)", // yellow
-  Work: "rgba(255, 180, 128, 1)", // orange
-  School: "rgba(157, 148, 255, 1)", // purple
-  Family: "rgba(199, 128, 232, 1)", // pink
-  Online: "rgba(8, 202, 209, 1)", // teal
-  Group6: "rgba(255, 105, 97, 1)", // red
-  Fallback: "rgba(66, 214, 164, 1)", // green
+  Online: "#2f2c4c",
+  Friends: "#3b2645",
+  Work: "#134031",
+  School: "#4a482a",
+  Family: "#4c1f1d",
+  Fallback: "#4c3626",
+  Fallback2: "#023c3e",
 };
 
 type NodeStatus = "active" | "inactive" | "parent_active";

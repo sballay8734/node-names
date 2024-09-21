@@ -5,93 +5,57 @@ export function getColors(node: UiNode) {
   const isGroup = node.type === "group";
   const groupName = node.group_name;
 
-  // setRootNodeColors
-  function getNewRgba(r: number, g: number, b: number, a: number) {
-    const newR = Math.round(255 - a * (255 - r));
-    const newG = Math.round(255 - a * (255 - g));
-    const newB = Math.round(255 - a * (255 - b));
-    return `rgba(${newR}, ${newG}, ${newB}, 1)`;
-  }
-  // FALLBACK COLORS ***********************************************************
-  const fbR = 166;
-  const fbG = 166;
-  const fbB = 166;
-  const fbColors = {
-    active: getNewRgba(fbR, fbG, fbB, 1),
-    parent_active: getNewRgba(fbR, fbG, fbB, 0.8),
-    inactive: getNewRgba(fbR, fbG, fbB, 0.5),
-  };
-
-  // ROOT NODE COLORS **********************************************************
-  const rootR = 247;
-  const rootG = 0;
-  const rootB = 255;
-  const rootColors = {
-    active: getNewRgba(rootR, rootG, rootB, 1),
-    parent_active: getNewRgba(rootR, rootG, rootB, 0.8),
-    inactive: getNewRgba(rootR, rootG, rootB, 0.5),
-  };
-
-  // GROUP 1 *******************************************************************
-  const group1R = 255;
-  const group1G = 190;
-  const group1B = 25;
-  // GROUP 2 *******************************************************************
-  const group2R = 15;
-  const group2G = 175;
-  const group2B = 255;
-  // GROUP 3 *******************************************************************
-  const group3R = 245;
-  const group3G = 61;
-  const group3B = 48;
-  // GROUP 4 *******************************************************************
-  const group4R = 48;
-  const group4G = 245;
-  const group4B = 107;
-  // GROUP 5 *******************************************************************
-  const group5R = 48;
-  const group5G = 245;
-  const group5B = 107;
-
   const groupMap: {
     [key: string]: { active: string; parent_active: string; inactive: string };
   } = {
+    Root: {
+      active: "rgba(89, 173, 246, 1)", // sky blue
+      parent_active: "#356793", // Not possible
+      inactive: "#1a3349",
+    },
     Online: {
-      active: getNewRgba(group1R, group1G, group1B, 1),
-      parent_active: getNewRgba(group1R, group1G, group1B, 0.8),
-      inactive: getNewRgba(group1R, group1G, group1B, 0.5),
+      active: "rgba(157, 148, 255, 1)", // purple
+      parent_active: "#5e5899",
+      inactive: "#2f2c4c",
     },
     Friends: {
-      active: getNewRgba(group2R, group2G, group2B, 1),
-      parent_active: getNewRgba(group2R, group2G, group2B, 0.8),
-      inactive: getNewRgba(group2R, group2G, group2B, 0.5),
+      active: "rgba(199, 128, 232, 1)", // pink
+      parent_active: "#774c8b",
+      inactive: "#3b2645",
     },
     Work: {
-      active: getNewRgba(group3R, group3G, group3B, 1),
-      parent_active: getNewRgba(group3R, group3G, group3B, 0.8),
-      inactive: getNewRgba(group3R, group3G, group3B, 0.5),
+      active: "rgba(66, 214, 164, 1)", // green
+      parent_active: "#278063",
+      inactive: "#134031",
     },
     School: {
-      active: getNewRgba(group4R, group4G, group4B, 1),
-      parent_active: getNewRgba(group4R, group4G, group4B, 0.8),
-      inactive: getNewRgba(group4R, group4G, group4B, 0.5),
+      active: "rgba(248, 243, 141, 1)", // yellow
+      parent_active: "#949154",
+      inactive: "#4a482a",
     },
     Family: {
-      active: getNewRgba(group5R, group5G, group5B, 1),
-      parent_active: getNewRgba(group5R, group5G, group5B, 0.8),
-      inactive: getNewRgba(group5R, group5G, group5B, 0.5),
+      active: "rgba(255, 105, 97, 1)", // red
+      parent_active: "#993f3a",
+      inactive: "#4c1f1d",
     },
     Fallback: {
-      active: getNewRgba(fbR, fbG, fbB, 1),
-      parent_active: getNewRgba(fbR, fbG, fbB, 0.8),
-      inactive: getNewRgba(fbR, fbG, fbB, 0.5),
+      active: "rgba(255, 180, 128, 1)", // orange
+      parent_active: "#996c4c",
+      inactive: "#4c3626",
     },
+    Fallback2: {
+      active: "rgba(8, 202, 209, 1)", // ocean blue
+      parent_active: "#04797d",
+      inactive: "#023c3e",
+    },
+    // Fallback3: {},
   };
 
-  if (isRoot) return rootColors;
+  if (isRoot) return groupMap["Root"];
   if (isGroup && groupName) return groupMap[groupName];
+  if (!isGroup && groupName) return groupMap[groupName];
 
-  return fbColors;
+  return groupMap["Fallback"];
 
   // export const nodeBgMap: { [key: number]: string } = {
   //   // inactive

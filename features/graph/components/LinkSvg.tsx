@@ -144,7 +144,7 @@ export default function LinkSvg({ id }: LinkSvgProps) {
         opacity={animateOpacity}
         path={animatedPath}
         color={color}
-        strokeWidth={0.5}
+        strokeWidth={0.7}
         strokeJoin="round"
         strokeCap="round"
         style="stroke"

@@ -3,7 +3,6 @@ import {
   Circle,
   Group,
   matchFont,
-  Paint,
   Text,
 } from "@shopify/react-native-skia";
 import {
@@ -13,11 +12,7 @@ import {
 } from "react-native-reanimated";
 
 import { getNodeStyles } from "@/lib/constants/Colors";
-import {
-  GROUP_NODE_RADIUS,
-  NODE_BORDER_WIDTH,
-  ROOT_NODE_RADIUS,
-} from "@/lib/constants/styles";
+import { GROUP_NODE_RADIUS, ROOT_NODE_RADIUS } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { getFontSize } from "@/lib/utils/getFontSize";
 import { useAppSelector } from "@/store/reduxHooks";
