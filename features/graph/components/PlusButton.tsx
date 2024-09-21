@@ -10,12 +10,13 @@ import Animated, {
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
-import { handlePopover } from "../redux/uiSlice";
 import { RootState } from "@/store/store";
+
+import { handlePopover } from "../redux/uiSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export default function AddNewBtn() {
+export default function PlusButton() {
   const dispatch = useAppDispatch();
   const sheetIsShown = useAppSelector(
     (state: RootState) => state.ui.sheetIsShown,
@@ -65,7 +66,7 @@ export default function AddNewBtn() {
     >
       <View>
         <Animated.View>
-          <PlusIcon color={theme.primary} size={44} />
+          <PlusIcon color={theme.primary} size={40} />
         </Animated.View>
       </View>
     </AnimatedPressable>
@@ -74,7 +75,9 @@ export default function AddNewBtn() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
+    // flex: 1,
+    height: 75,
+    width: 75,
     alignItems: "center",
     justifyContent: "center",
     transform: [{ translateY: -35 }],

@@ -5,12 +5,10 @@ import {
 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useContext } from "react";
-import Animated from "react-native-reanimated";
 
 import { CustomThemeContext } from "@/components/CustomThemeContext";
-import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import AddNewBtn from "@/features/Graph/components/PlusButton";
+import PlusButton from "@/features/Graph/components/PlusButton";
 
 export default function TabLayout() {
   const theme = useContext(CustomThemeContext);
@@ -61,35 +59,8 @@ export default function TabLayout() {
         options={{
           title: "Add",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Animated.View
-              style={[
-                {
-                  position: "absolute",
-                  display: "flex",
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: 100,
-                  backgroundColor: theme.btnBaseSelected,
-                  padding: 12,
-                  // shadowColor: theme.primary,
-                  // shadowOffset: {
-                  //   width: 0,
-                  //   height: 0,
-                  // },
-                  // shadowOpacity: 0.35,
-                  // shadowRadius: 6.0,
 
-                  // elevation: 24,
-                },
-              ]}
-            >
-              <PlusIcon color={theme.primary} size={44} />
-            </Animated.View>
-          ),
-
-          tabBarButton: (props) => <AddNewBtn {...props} />,
+          tabBarButton: (props) => <PlusButton {...props} />,
         }}
       />
       <Tabs.Screen
