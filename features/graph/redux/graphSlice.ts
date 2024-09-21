@@ -3,6 +3,7 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
 import {
   NodeStatus,
+  PosGroupMap,
   PositionedLink,
   PositionedNode,
   PosLinkMap,
@@ -26,6 +27,10 @@ export interface GraphSliceState {
     bySourceId: { [key: number]: number[] }; // for repositioning
     allIds: number[];
   };
+  groups: {
+    byId: PosNodeMap;
+    allIds: number[];
+  };
   actionBtnById: { [key: string]: boolean };
 }
 
@@ -41,6 +46,10 @@ const initialState: GraphSliceState = {
   links: {
     byId: {},
     bySourceId: {},
+    allIds: [],
+  },
+  groups: {
+    byId: {},
     allIds: [],
   },
   actionBtnById: REDUX_ACTIONS.reduce<{ [key: string]: boolean }>(
@@ -62,10 +71,10 @@ const NewArchitectureSlice = createSlice({
       action: PayloadAction<{
         nodes: PositionedNode[];
         links: PositionedLink[];
-        // groups: PositionedGroup[];
+        groups: PositionedNode[];
       }>,
     ) => {
-      const { nodes, links } = action.payload;
+      const { nodes, links, groups } = action.payload;
 
       // this map is used for quick lookup during links && groups loop
       const nodeStatusMap: {
@@ -99,6 +108,20 @@ const NewArchitectureSlice = createSlice({
             isRoot: newNode.isRoot,
             node_status: newNode.node_status,
           };
+        }
+      });
+
+      groups.forEach((group) => {
+        if (!state.groups.byId[group.id]) {
+          const newGroup = {
+            ...group,
+            isRoot: false,
+            node_status: "parent_active" as NodeStatus,
+            isShown: true,
+          };
+          state.groups.byId[group.id] = newGroup;
+
+          state.groups.allIds.push(group.id);
         }
       });
 

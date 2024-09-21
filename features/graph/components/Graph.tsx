@@ -1,4 +1,4 @@
-import { Canvas, Fill, Group } from "@shopify/react-native-skia";
+import { Canvas, Fill, Group, Path, Skia } from "@shopify/react-native-skia";
 import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -11,20 +11,22 @@ import Animated, {
 import { Provider } from "react-redux";
 
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
-import { nodes, links } from "@/lib/data/new_structure";
+import { nodes, links, testLinks, testNodes } from "@/lib/data/new_structure";
 import {
   INITIAL_SCALE,
   MAX_SCALE,
   MIN_SCALE,
   SCALE_SENSITIVITY,
 } from "@/lib/hooks/useGestures";
-import { positionGraphEls } from "@/lib/utils/positionGraphEls";
+import { newINITPosFunc, positionGraphEls } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
 
 import GraphOverlayButtons from "./GraphOverlay/GraphOverlayButtons";
 import PressableElements from "./PressableElements";
 import SvgElements from "./SvgElements";
+import { PositionedGroup } from "@/lib/types/graph";
+import GroupPaths from "./GroupPath";
 
 // REMOVE:
 const thisData = {
@@ -34,7 +36,10 @@ const thisData = {
 
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const { data } = positionGraphEls(thisData, windowSize);
+
+  // const { data } = positionGraphEls(thisData, windowSize);
+  const finalGroups = newINITPosFunc(testNodes, testLinks, windowSize);
+
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -150,7 +155,6 @@ export default function Graph() {
         >
           <Fill color={GRAPH_BG_COLOR} />
           <Group transform={transform}>
-            {/* NOTE: Unfortunately, wrapping the children in another provider is currently needed. See (https://shopify.github.io/react-native-skia/docs/canvas/contexts/) */}
             <Provider store={store}>
               <SvgElements />
             </Provider>

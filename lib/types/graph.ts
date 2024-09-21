@@ -21,7 +21,7 @@ export interface RawNode {
   depth: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   name: string;
   group_id: number | null;
-  type: "node" | "group";
+  type: "node" | "group" | "root_group" | "root";
   group_name: string | null;
   source_type: "node" | "group" | "mixed" | "root" | null;
   // null for free floating nodes
@@ -40,13 +40,18 @@ export interface RawLink {
   relation_type: RelationType | null;
 }
 
+// !TODO: START and END angle should not be optional. UPDATE AFTER REFACTOR
 // Shape after postioning ******************************************************
 export interface PositionedNode extends RawNode {
+  startAngle?: number;
+  endAngle?: number;
   angle: number;
   x: number;
   y: number;
 }
 export interface PositionedGroup extends RawGroup {
+  startAngle?: number;
+  endAngle?: number;
   angle: number;
   x: number;
   y: number;

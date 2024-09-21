@@ -33,6 +33,10 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Nodes should be placed in the CENTER of the group by default and keep fitting in a row until there is no more room. Then just increase the depth a bit
+
+// !TODO: NEED TO CHECK TYPES OF GROUPS/NODES ETC... OPTIMIZE NEW posFunc!!
+
 // !TODO: Deselect all does not update focusedNodeId
 
 // !TODO: REFACTOR POSITIONING LOGIC

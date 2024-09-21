@@ -47,7 +47,7 @@ export default function MasterSvgNode({ node }: NodeProps) {
   );
 
   const isRoot = node.depth === 1;
-  const isGroup = node.type === "group";
+  const isGroup = node.type === "group" || node.type === "root_group";
   const radius = isRoot
     ? ROOT_NODE_RADIUS
     : isGroup
@@ -104,14 +104,14 @@ export default function MasterSvgNode({ node }: NodeProps) {
           colors={["gold", "dark gold"]}
         />
       </Circle> */}
-      {/* <Text
+      <Text
         // x={node.depth === 1 ? xOffset : radius + 3}
         // y={yOffset}
         text={node.name}
         font={font}
         color={"white"}
         // opacity={animatedTextOpacity}
-      /> */}
+      />
     </Group>
   );
 }

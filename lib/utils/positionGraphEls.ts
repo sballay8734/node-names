@@ -7,11 +7,20 @@ import {
   PositionedNode,
   RawLink,
   RawNode,
+  UiLink,
+  UiNode,
 } from "../types/graph";
 import { WindowSize } from "../types/misc";
 
+interface NodeHash {
+  [key: number]: PositionedNode;
+}
+
 // REMOVE: should be passed eventually
 const userId = 1;
+const MAX_ROOT_GROUPS = 7;
+const MAX_NODES = 1000;
+const RADIUS_FACTOR = 0.3;
 
 export function positionGraphEls(
   data: { nodes: RawNode[]; links: RawLink[] },
@@ -230,191 +239,134 @@ export function positionGraphEls(
     setInitialState({
       nodes: combined,
       links: positionedLinks,
+      groups: [],
     }),
   );
 
   return { data: { nodes: combined, links: positionedLinks } };
 }
 
-const testPreAdd = {
-  "1": {
-    angle: 0,
-    depth: 1,
-    group_id: null,
-    group_name: "Root",
-    id: 1,
-    isRoot: true,
-    isShown: true,
-    name: "Root",
-    node_status: "active",
-    source_type: null,
-    type: "node",
-    x: 196.5,
-    y: 386.5,
-  },
-  "10": {
-    angle: 2.199114857512855,
-    depth: 2,
-    group_id: null,
-    group_name: "School",
-    id: 10,
-    isRoot: false,
-    isShown: true,
-    name: "School",
-    node_status: "inactive",
-    source_type: "root",
-    type: "group",
-    x: 166.47005146037756,
-    y: 427.83267824261605,
-  },
-  "11": {
-    angle: 3.4557519189487724,
-    depth: 2,
-    group_id: null,
-    group_name: "Online",
-    id: 11,
-    isRoot: false,
-    isShown: true,
-    name: "Online",
-    node_status: "active",
-    source_type: "root",
-    type: "group",
-    x: 147.9105225824806,
-    y: 370.71232175738396,
-  },
-  "12": {
-    angle: -1.361356816555577,
-    depth: 3,
-    group_id: 7,
-    group_name: "Friends",
-    id: 12,
-    isRoot: false,
-    isShown: true,
-    name: "Donnie",
-    node_status: "inactive",
-    source_type: "group",
-    type: "node",
-    x: 217.29116908177593,
-    y: 237.5952399266194,
-  },
-  "2": {
-    angle: -1.7802358370342162,
-    depth: 3,
-    group_id: 7,
-    group_name: "Friends",
-    id: 2,
-    isRoot: false,
-    isShown: true,
-    name: "Aaron",
-    node_status: "inactive",
-    source_type: "group",
-    type: "node",
-    x: 175.70883091822407,
-    y: 237.5952399266194,
-  },
-  "3": {
-    angle: -0.31415926535897887,
-    depth: 3,
-    group_id: 8,
-    group_name: "Work",
-    id: 3,
-    isRoot: false,
-    isShown: true,
-    name: "Beth",
-    node_status: "inactive",
-    source_type: "group",
-    type: "node",
-    x: 340.19512904703475,
-    y: 339.81062231988926,
-  },
-  "4": {
-    angle: 0.9424777960769376,
-    depth: 3,
-    group_id: 9,
-    group_name: "Family",
-    id: 4,
-    isRoot: false,
-    isShown: true,
-    name: "Carol",
-    node_status: "inactive",
-    source_type: "group",
-    type: "node",
-    x: 285.3084737688698,
-    y: 508.7343776801108,
-  },
-  "5": {
-    angle: 2.199114857512855,
-    depth: 3,
-    group_id: 10,
-    group_name: "School",
-    id: 5,
-    isRoot: false,
-    isShown: true,
-    name: "Diana",
-    node_status: "inactive",
-    source_type: "group",
-    type: "node",
-    x: 107.69152623113027,
-    y: 508.7343776801108,
-  },
-  "6": {
-    angle: -2.8274333882308142,
-    depth: 3,
-    group_id: 11,
-    group_name: "Online",
-    id: 6,
-    isRoot: false,
-    isShown: true,
-    name: "Ethan",
-    node_status: "inactive",
-    source_type: "group",
-    type: "node",
-    x: 52.804870952965246,
-    y: 339.81062231988926,
-  },
-  "7": {
-    angle: -1.5707963267948966,
-    depth: 2,
-    group_id: null,
-    group_name: "Friends",
-    id: 7,
-    isRoot: false,
-    isShown: true,
-    name: "Friends",
-    node_status: "inactive",
-    source_type: "root",
-    type: "group",
-    x: 196.5,
-    y: 335.40999999999997,
-  },
-  "8": {
-    angle: -0.3141592653589793,
-    depth: 2,
-    group_id: null,
-    group_name: "Work",
-    id: 8,
-    isRoot: false,
-    isShown: true,
-    name: "Work",
-    node_status: "inactive",
-    source_type: "root",
-    type: "group",
-    x: 245.0894774175194,
-    y: 370.71232175738396,
-  },
-  "9": {
-    angle: 0.9424777960769379,
-    depth: 2,
-    group_id: null,
-    group_name: "Family",
-    id: 9,
-    isRoot: false,
-    isShown: true,
-    name: "Family",
-    node_status: "inactive",
-    source_type: "root",
-    type: "group",
-    x: 226.52994853962247,
-    y: 427.83267824261605,
-  },
-};
+export function newINITPosFunc(
+  allNodes: RawNode[],
+  links: RawLink[],
+  windowSize: WindowSize,
+) {
+  // get window dimensions and center point
+  const { width, height } = windowSize;
+  const centerX = width / 2;
+  const centerY = height / 2;
+
+  const nodeHash: NodeHash = {};
+  let rootNode: PositionedNode[] = [];
+  let rootGroups: PositionedNode[] = [];
+  let deepGroups: PositionedNode[] = [];
+  let nodes: PositionedNode[] = [];
+
+  // loop through nodes ONCE and set items instead of filtering 4 times.
+  allNodes.forEach((node) => {
+    const isRoot = node.type === "root";
+    const isRootGroup = node.type === "root_group";
+    const isDeepGroup = node.type === "group";
+    const isPlainNode = node.type === "node";
+
+    const newNode: PositionedNode = {
+      ...node,
+      x: isRoot ? centerX : 0,
+      y: isRoot ? centerY : 0,
+      angle: 0,
+    };
+
+    // set root and push nodes to appropriate arrays
+    if (isRoot) {
+      rootNode.push(newNode);
+    } else if (isRootGroup) {
+      rootGroups.push(newNode);
+    } else if (isDeepGroup) {
+      deepGroups.push(newNode);
+    } else if (isPlainNode) {
+      nodes.push(newNode);
+    } else {
+      console.error("UNINTENDED - NODE MATCHES ZERO CATEGORIES (initPosFunc)");
+    }
+
+    // add node to hash
+    if (!nodeHash[node.id]) {
+      nodeHash[node.id] = newNode;
+    }
+  });
+
+  // validation ***************************************************************
+  if (!rootNode || rootNode.length !== 1) {
+    console.error("UNINTENDED - NO ROOT OR TOO MANY ROOTS (initPosFunc)");
+    return;
+  }
+  if (!rootGroups || rootGroups.length === 0) {
+    console.error("UNINTENDED - NO ROOT GROUPS FOUND (initPosFunc)");
+    return rootNode; // new accounts will have a rootNode still
+  }
+  if (rootGroups.length > MAX_ROOT_GROUPS) {
+    console.error("UNINTENDED - TOO MANY ROOT GROUPS (initPosFunc)");
+    return rootNode; // new accounts will have a rootNode still
+  }
+  if (!nodes || nodes.length === 0) {
+    console.error("USER HAS NOT ADDED NODES YET (initPosFunc)");
+    return rootNode; // new accounts will have a rootNode still
+  }
+  if (nodes.length > MAX_NODES) {
+    console.error("TOO MANY NODES (initPosFunc)");
+    return rootNode; // new accounts will have a rootNode still
+  }
+  // ***************************************************************************
+
+  // Calculate angles for groups
+  const numGroups = rootGroups.length;
+  const angleStep = (2 * Math.PI) / numGroups;
+
+  // Position root groups in a circle around root node
+  rootGroups.forEach((group, index) => {
+    const angle = index * angleStep - Math.PI / 2;
+    const radius = Math.min(width, height) * RADIUS_FACTOR;
+    group.x = centerX + radius * Math.cos(angle);
+    group.y = centerY + radius * Math.sin(angle);
+    group.startAngle = angle;
+    group.endAngle = angle + angleStep;
+  });
+
+  // Position nodes within their respective groups
+  nodes.forEach((node) => {
+    const group = rootGroups.find((g) => g.id === node.group_id);
+    if (
+      group &&
+      typeof group.startAngle === "number" &&
+      typeof group.endAngle === "number"
+    ) {
+      const randomAngle =
+        group.startAngle + Math.random() * (group.endAngle - group.startAngle);
+      const randomRadius = RADIUS_FACTOR * Math.min(width, height);
+      node.x = centerX + randomRadius * Math.cos(randomAngle);
+      node.y = centerY + randomRadius * Math.sin(randomAngle);
+    }
+  });
+
+  const finalNodes = [...rootNode, ...nodes];
+  const finalGroups = [...rootGroups, ...deepGroups];
+
+  store.dispatch(
+    setInitialState({
+      nodes: finalNodes,
+      links: [],
+      groups: finalGroups,
+    }),
+  );
+
+  return finalGroups;
+}
+
+export function updatePosFunc(
+  windowSize: WindowSize,
+  nodes: UiNode[],
+  links: UiLink[],
+  newNode: RawNode,
+) {
+  return null;
+}
