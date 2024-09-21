@@ -90,6 +90,7 @@ export default function MasterNode({ node }: NodeProps) {
     console.log("RENDERING...", node.name);
   }
 
+  // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       {/* Glow Layer */}

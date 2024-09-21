@@ -39,6 +39,8 @@ export default Index;
 
 // !TODO: Root node still glows after being the only node active and then deselected
 
+// !TODO: Fix arrow and gesture tracking
+
 // !TODO: AFTER ADDING LOGIC FOR POPOVER AND INPUT FOR NEW NODE INFO, CLEAN UP ALL LOGIC RELATED TO ADDING and POSITIONING NEW NODES. IT IS GETTING OUT OF HAND AND IF YOU WAIT ANY LONGER IT WILL GET REALLY HARD TO DEBUG
 
 // TODO: Still need to handle logic for cNSGFS

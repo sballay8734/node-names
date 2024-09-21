@@ -166,6 +166,8 @@ const NewArchitectureSlice = createSlice({
             // if array is not empty, set the last index to the active node id
             if (lastIndex) {
               state.nodes.focusedNodeId = lastIndex;
+            } else {
+              state.nodes.focusedNodeId = null;
             }
 
             // update the state
