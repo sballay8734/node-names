@@ -1,4 +1,4 @@
-import { Canvas, Fill, Group, Path, Skia } from "@shopify/react-native-skia";
+import { Canvas, Fill, Group } from "@shopify/react-native-skia";
 import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -11,34 +11,25 @@ import Animated, {
 import { Provider } from "react-redux";
 
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
-import { nodes, links, testLinks, testNodes } from "@/lib/data/new_structure";
+import { testLinks, testNodes } from "@/lib/data/new_structure";
 import {
   INITIAL_SCALE,
   MAX_SCALE,
   MIN_SCALE,
   SCALE_SENSITIVITY,
 } from "@/lib/hooks/useGestures";
-import { newINITPosFunc, positionGraphEls } from "@/lib/utils/positionGraphEls";
+import { newINITPosFunc } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
 
 import GraphOverlayButtons from "./GraphOverlay/GraphOverlayButtons";
 import PressableElements from "./PressableElements";
 import SvgElements from "./SvgElements";
-import { PositionedGroup } from "@/lib/types/graph";
-import GroupPaths from "./GroupPath";
-
-// REMOVE:
-const thisData = {
-  nodes,
-  links,
-};
 
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
-  // const { data } = positionGraphEls(thisData, windowSize);
-  const finalGroups = newINITPosFunc(testNodes, testLinks, windowSize);
+  newINITPosFunc(testNodes, testLinks, windowSize);
 
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);

@@ -1,7 +1,7 @@
 import { setInitialState } from "@/features/Graph/redux/graphSlice";
 import { store } from "@/store/store";
 
-import { NODE_SPACING_FACTOR } from "../constants/styles";
+import { NODE_SPACING_FACTOR, REG_NODE_RADIUS } from "../constants/styles";
 import {
   PositionedLink,
   PositionedNode,
@@ -16,12 +16,15 @@ interface NodeHash {
   [key: number]: PositionedNode;
 }
 
+type mapKey = "root" | "root_group" | "group" | "node";
+
 // REMOVE: should be passed eventually
 const userId = 1;
 const MAX_ROOT_GROUPS = 7;
 const MAX_NODES = 1000;
 const RADIUS_FACTOR = 0.3;
 const PADDING = 5;
+const NODE_SPACING = REG_NODE_RADIUS * 2 + PADDING;
 
 export function positionGraphEls(
   data: { nodes: RawNode[]; links: RawLink[] },
@@ -256,118 +259,137 @@ export function newINITPosFunc(
   const { width, height } = windowSize;
   const centerX = width / 2;
   const centerY = height / 2;
+  const radius = Math.min(width, height) * RADIUS_FACTOR;
 
-  const nodeHash: NodeHash = {};
-  let rootNode: PositionedNode[] = [];
-  let rootGroups: PositionedNode[] = [];
-  let deepGroups: PositionedNode[] = [];
-  let nodes: PositionedNode[] = [];
+  const nodesById: NodeHash = {};
+  const groupSizeById: { [key: number]: { count: number; ids: number[] } } = {}; // does not include root
 
   // loop through nodes ONCE and set items instead of filtering 4 times.
-  allNodes.forEach((node) => {
-    const isRoot = node.type === "root";
-    const isRootGroup = node.type === "root_group";
-    const isDeepGroup = node.type === "group";
-    const isPlainNode = node.type === "node";
+  const nodesByType: Record<mapKey, PositionedNode[]> = {
+    root: [],
+    root_group: [],
+    group: [],
+    node: [],
+  };
 
+  allNodes.forEach((node) => {
     const newNode: PositionedNode = {
       ...node,
-      x: isRoot ? centerX : 0,
-      y: isRoot ? centerY : 0,
+      x: node.type === "root" ? centerX : 0,
+      y: node.type === "root" ? centerY : 0,
       angle: 0,
     };
 
-    // set root and push nodes to appropriate arrays
-    if (isRoot) {
-      rootNode.push(newNode);
-    } else if (isRootGroup) {
-      rootGroups.push(newNode);
-    } else if (isDeepGroup) {
-      deepGroups.push(newNode);
-    } else if (isPlainNode) {
-      nodes.push(newNode);
-    } else {
-      console.error("UNINTENDED - NODE MATCHES ZERO CATEGORIES (initPosFunc)");
-    }
+    nodesByType[node.type]?.push(newNode);
+    nodesById[node.id] = newNode;
 
-    // add node to hash
-    if (!nodeHash[node.id]) {
-      nodeHash[node.id] = newNode;
+    if (node.group_id && !groupSizeById[node.group_id]) {
+      groupSizeById[node.group_id] = {
+        count: 1,
+        ids: [node.id],
+      };
+    } else if (node.group_id && groupSizeById[node.group_id]) {
+      groupSizeById[node.group_id].count += 1;
+      groupSizeById[node.group_id].ids.push(node.id);
+    } else if (node.group_id === null) {
+      return;
+    } else {
+      console.error("SOMETHING WENT WRONG IN POSGRAPHELS");
     }
   });
 
   // validation ***************************************************************
-  if (!rootNode || rootNode.length !== 1) {
-    console.error("UNINTENDED - NO ROOT OR TOO MANY ROOTS (initPosFunc)");
-    return;
-  }
-  if (!rootGroups || rootGroups.length === 0) {
-    console.error("UNINTENDED - NO ROOT GROUPS FOUND (initPosFunc)");
-    return rootNode; // new accounts will have a rootNode still
-  }
-  if (rootGroups.length > MAX_ROOT_GROUPS) {
-    console.error("UNINTENDED - TOO MANY ROOT GROUPS (initPosFunc)");
-    return rootNode; // new accounts will have a rootNode still
-  }
-  if (!nodes || nodes.length === 0) {
-    console.error("USER HAS NOT ADDED NODES YET (initPosFunc)");
-    return rootNode; // new accounts will have a rootNode still
-  }
-  if (nodes.length > MAX_NODES) {
-    console.error("TOO MANY NODES (initPosFunc)");
-    return rootNode; // new accounts will have a rootNode still
-  }
+  // if (!rootNode || rootNode.length !== 1) {
+  //   console.error("UNINTENDED - NO ROOT OR TOO MANY ROOTS (initPosFunc)");
+  //   return;
+  // }
+  // if (!rootGroups || rootGroups.length === 0) {
+  //   console.error("UNINTENDED - NO ROOT GROUPS FOUND (initPosFunc)");
+  //   return rootNode; // new accounts will have a rootNode still
+  // }
+  // if (rootGroups.length > MAX_ROOT_GROUPS) {
+  //   console.error("UNINTENDED - TOO MANY ROOT GROUPS (initPosFunc)");
+  //   return rootNode; // new accounts will have a rootNode still
+  // }
+  // if (!nodes || nodes.length === 0) {
+  //   console.error("USER HAS NOT ADDED NODES YET (initPosFunc)");
+  //   return rootNode; // new accounts will have a rootNode still
+  // }
+  // if (nodes.length > MAX_NODES) {
+  //   console.error("TOO MANY NODES (initPosFunc)");
+  //   return rootNode; // new accounts will have a rootNode still
+  // }
   // ***************************************************************************
 
-  // Calculate angles for groups
-  const numGroups = rootGroups.length;
-  const angleStep = (2 * Math.PI) / numGroups;
-
-  // Position root groups in a circle around root node
-  rootGroups.forEach((group, index) => {
+  // Position root groups
+  const angleStep = (2 * Math.PI) / nodesByType.root_group.length;
+  nodesByType.root_group.forEach((group, index) => {
     const angle = index * angleStep - Math.PI / 2;
-    const radius = Math.min(width, height) * RADIUS_FACTOR;
     group.x = centerX + radius * Math.cos(angle);
     group.y = centerY + radius * Math.sin(angle);
     group.startAngle = angle;
     group.endAngle = angle + angleStep;
   });
 
-  // Position nodes within their respective groups
-  nodes.forEach((node) => {
-    const group = rootGroups.find((g) => g.id === node.group_id);
-    if (
-      group &&
-      typeof group.startAngle === "number" &&
-      typeof group.endAngle === "number"
-    ) {
-      const randomAngle =
-        group.startAngle + Math.random() * (group.endAngle - group.startAngle);
-      const randomRadius = RADIUS_FACTOR * Math.min(width, height);
-      node.x = centerX + randomRadius * Math.cos(randomAngle);
-      node.y = centerY + randomRadius * Math.sin(randomAngle);
-    }
+  // Position nodes within groups
+  nodesByType.root_group.forEach((group) => {
+    const groupNodes = nodesByType.node.filter(
+      (node) => node.group_id === group.id,
+    );
+    const groupSize = groupNodes.length;
+
+    if (groupSize === 0) return;
+
+    const groupCenterAngle = (group.startAngle! + group.endAngle!) / 2;
+    const totalGroupWidth = (groupSize - 1) * NODE_SPACING;
+    const startOffset = -totalGroupWidth / 2;
+
+    groupNodes.forEach((node, index) => {
+      const offset = startOffset + index * NODE_SPACING;
+      const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
+
+      node.x = centerX + radius * Math.cos(nodeAngle);
+      node.y = centerY + radius * Math.sin(nodeAngle);
+      node.angle = nodeAngle;
+    });
   });
 
-  const finalNodes = [...rootNode, ...nodes];
-  const finalGroups = [...rootGroups, ...deepGroups];
+  // Calculate positions for links
+  // !TODO: Links from root to root_groups no longer exist
+  const positionedLinks: PositionedLink[] = links.map((link) => {
+    let source;
+    let target;
+
+    // if link goes from root TO group
+    if (link.relation_type === null) {
+      source = nodesByType["root"][0];
+      target = nodesById[link.target_id];
+    } else if (link.relation_type !== null) {
+      // if link goes from group TO node, search nodes for the target
+      source = nodesById[link.source_id];
+      target = nodesById[link.target_id];
+    }
+    return {
+      ...link,
+      x1: source?.x ?? centerX,
+      y1: source?.y ?? centerY,
+      x2: target?.x ?? centerX,
+      y2: target?.y ?? centerY,
+    };
+  });
+
+  console.log(positionedLinks);
+
+  const finalNodes = [...nodesByType["root"], ...nodesByType["node"]];
+  const finalGroups = [...nodesByType["root_group"], ...nodesByType["group"]];
 
   store.dispatch(
     setInitialState({
       nodes: finalNodes,
-      links: [],
+      links: positionedLinks,
       groups: finalGroups,
     }),
   );
 
   return finalGroups;
-}
-
-export function updatePosFunc(
-  windowSize: WindowSize,
-  nodes: UiNode[],
-  links: UiLink[],
-  newNode: RawNode,
-) {
-  return null;
 }

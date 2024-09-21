@@ -116,7 +116,7 @@ const NewArchitectureSlice = createSlice({
           const newGroup = {
             ...group,
             isRoot: false,
-            node_status: "parent_active" as NodeStatus,
+            node_status: "inactive" as NodeStatus,
             isShown: true,
           };
           state.groups.byId[group.id] = newGroup;
@@ -128,32 +128,56 @@ const NewArchitectureSlice = createSlice({
       // initialize edges state and use nodetStatusMap
       links.forEach((link) => {
         if (!state.links.byId[link.id]) {
-          const node1InMap = nodeStatusMap[link.source_id];
-          const node2InMap = nodeStatusMap[link.target_id];
+          const sourceInMap = nodeStatusMap[link.source_id];
+          const targetInMap = nodeStatusMap[link.target_id];
+          const sourceIsRoot = state.nodes.byId[link.source_id].type === "root";
+          console.log(sourceIsRoot, link.id);
 
           state.links.byId[link.id] = {
             ...link,
-            node_1_status: node1InMap
-              ? (node1InMap.node_status as NodeStatus)
-              : "inactive",
-            node_2_status: node2InMap
-              ? (node2InMap.node_status as NodeStatus)
-              : "inactive",
-            link_status:
-              (node1InMap && node1InMap.isRoot) ||
-              (node2InMap && node2InMap.isRoot)
-                ? "active"
-                : "inactive",
+            node_1_status: sourceIsRoot ? "active" : "inactive",
+            node_2_status: sourceIsRoot ? "parent_active" : "inactive",
+            link_status: sourceIsRoot ? "active" : "inactive",
           };
 
           state.links.allIds.push(link.id);
-        }
 
-        if (!state.links.bySourceId[link.source_id]) {
-          state.links.bySourceId[link.source_id] = [link.target_id];
-        } else {
-          state.links.bySourceId[link.source_id].push(link.target_id);
+          if (!state.links.bySourceId[link.source_id]) {
+            state.links.bySourceId[link.source_id] = [link.target_id];
+          } else {
+            state.links.bySourceId[link.source_id].push(link.target_id);
+          }
         }
+        // if (!state.links.byId[link.id]) {
+        //   const node1InMap = nodeStatusMap[link.source_id];
+        //   const node2InMap = nodeStatusMap[link.target_id];
+
+        //   console.log("SOURCE:", state.nodes.byId[link.source_id]);
+        //   console.log("TARGET:", state.nodes.byId[link.target_id]);
+
+        //   state.links.byId[link.id] = {
+        //     ...link,
+        //     node_1_status: node1InMap
+        //       ? (node1InMap.node_status as NodeStatus)
+        //       : "inactive",
+        //     node_2_status: node2InMap
+        //       ? (node2InMap.node_status as NodeStatus)
+        //       : "inactive",
+        //     link_status:
+        //       (node1InMap && node1InMap.isRoot) ||
+        //       (node2InMap && node2InMap.isRoot)
+        //         ? "active"
+        //         : "inactive",
+        //   };
+
+        //   state.links.allIds.push(link.id);
+        // }
+
+        // if (!state.links.bySourceId[link.source_id]) {
+        //   state.links.bySourceId[link.source_id] = [link.target_id];
+        // } else {
+        //   state.links.bySourceId[link.source_id].push(link.target_id);
+        // }
       });
     },
 
