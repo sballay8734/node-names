@@ -70,12 +70,12 @@ export default function MasterNode({ node }: NodeProps) {
   });
 
   const blurIntensity = useDerivedValue(() => {
-    return withTiming(isFocusedNode ? blurVal : 0.1, { duration: 200 });
+    return withTiming(isFocusedNode ? blurVal : 0.1, { duration: 150 });
   });
 
   const sunOpacity = useDerivedValue(() => {
     return withTiming(nodeStatus !== "active" ? 1 : 0.3, {
-      duration: 200,
+      duration: 150,
     });
   });
 
@@ -83,7 +83,7 @@ export default function MasterNode({ node }: NodeProps) {
 
   const color = useDerivedValue(() => {
     const c = shade[nodeStatus];
-    return c;
+    return withTiming(c, { duration: 150 });
   });
 
   if (node.type === "group") {
