@@ -2,8 +2,10 @@ import {
   BlurMask,
   Circle,
   Group,
+  RadialGradient,
   Text,
   matchFont,
+  vec,
 } from "@shopify/react-native-skia";
 import {
   useDerivedValue,
@@ -18,7 +20,7 @@ import {
 } from "@/lib/constants/styles";
 import { UiNode } from "@/lib/types/graph";
 import { getColors } from "@/lib/utils/getColors";
-import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
+import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 interface NodeProps {
@@ -32,12 +34,11 @@ const font = matchFont({
   fontWeight: "400",
 });
 
-export default function MasterNode({ node }: NodeProps) {
+export default function MasterSvgNode({ node }: NodeProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
 
-  const dispatch = useAppDispatch();
   const nodeStatus = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[node.id].node_status,
   );
@@ -73,11 +74,11 @@ export default function MasterNode({ node }: NodeProps) {
     return withTiming(isFocusedNode ? blurVal : 0.1, { duration: 150 });
   });
 
-  const sunOpacity = useDerivedValue(() => {
-    return withTiming(nodeStatus !== "active" ? 1 : 0.3, {
-      duration: 150,
-    });
-  });
+  // const sunOpacity = useDerivedValue(() => {
+  //   return withTiming(isFocusedNode ? 0.3 : 0.05, {
+  //     duration: 150,
+  //   });
+  // });
 
   const shade = getColors(node);
 
@@ -85,10 +86,6 @@ export default function MasterNode({ node }: NodeProps) {
     const c = shade[nodeStatus];
     return withTiming(c, { duration: 150 });
   });
-
-  if (node.type === "group") {
-    console.log("RENDERING...", node.name);
-  }
 
   // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (

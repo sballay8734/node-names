@@ -2,7 +2,7 @@ import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import LinkSvg from "./LinkSvg";
-import NewSvgNode from "./NewSvgNode";
+import RenderSvgNode from "./RenderSvgNode";
 
 export default function SvgElements() {
   const linkIds = useAppSelector(
@@ -24,7 +24,7 @@ export default function SvgElements() {
         return <GroupSvg key={id} id={id} />;
       })} */}
       {nodeIds.map((id) => {
-        return <NewSvgNode key={id} id={id} />;
+        return <RenderSvgNode key={id} id={id} />;
       })}
     </>
   );

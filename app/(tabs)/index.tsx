@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 
 export default Index;
 
-// !TODO: FIRST: Move all node rendering logic to a single component (Groups, root, and nodes should all render from the same component) - SVGS will be separate from PRESSABLE OVERLAYS
+// !TODO: FIRST: Move all PRESSABLES rendering logic to a single component (Groups, root, and nodes should all render from the same component)
 
 // !TODO: REFACTOR POSITIONING LOGIC
 
