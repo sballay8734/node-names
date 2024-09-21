@@ -2,7 +2,7 @@ import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import LinkSvg from "./LinkSvg";
-import RenderSvgNode from "./RenderSvgNode";
+import RenderSvgNode from "./Nodes/RenderSvgNode";
 
 export default function SvgElements() {
   const linkIds = useAppSelector(

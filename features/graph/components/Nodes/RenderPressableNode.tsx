@@ -1,8 +1,7 @@
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import PressableGroupNode from "./PressableGroupNode";
-import PressableNode from "./PressableNode";
+import MasterPressableNode from "./MasterPressableNode";
 
 interface NewNodeProps {
   node_id: number;
@@ -15,9 +14,5 @@ export default function NewPressableNode({ node_id }: NewNodeProps) {
 
   if (!node) return null;
 
-  if (node.type === "node") {
-    return <PressableNode key={node_id} node={node} />;
-  } else if (node.type === "group") {
-    return <PressableGroupNode key={node_id} node={node} />;
-  }
+  return <MasterPressableNode key={node_id} node={node} />;
 }

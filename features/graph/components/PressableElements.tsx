@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import NewPressableNode from "./NewPressableNode";
+import RenderPressableNode from "./Nodes/RenderPressableNode";
 
 export default function PressableElements() {
   const allNodeIds = useAppSelector(
@@ -13,7 +13,7 @@ export default function PressableElements() {
   return (
     <>
       {allNodeIds.map((id) => (
-        <NewPressableNode key={id} node_id={id} />
+        <RenderPressableNode key={id} node_id={id} />
       ))}
     </>
   );

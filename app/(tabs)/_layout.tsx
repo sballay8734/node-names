@@ -10,7 +10,7 @@ import Animated from "react-native-reanimated";
 import { CustomThemeContext } from "@/components/CustomThemeContext";
 import PlusIcon from "@/components/PlusIcon";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import AddNewBtn from "@/features/Graph/components/AddNewBtn";
+import AddNewBtn from "@/features/Graph/components/PlusButton";
 
 export default function TabLayout() {
   const theme = useContext(CustomThemeContext);
