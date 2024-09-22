@@ -21,6 +21,7 @@ import {
 } from "@/lib/constants/styles";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { groupMap } from "@/lib/utils/getColors";
 
 interface LinkSvgProps {
   id: number;
@@ -33,24 +34,29 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     (state: RootState) => state.windowSize,
   );
 
+  // !TODO: THIS NEEDS TO BE RETHOUGHT - CONDITIONALS IN SELECTORS ARE NOT IDEAL. YOU NEED TO DECIDE ON A BETTER WAY TO DO THIS (SEE GRAPH SLICE)
   const link = useAppSelector(
     (state: RootState) => state.graphData.links.byId[id],
   );
-  const sourceStatus = useAppSelector(
-    (state: RootState) =>
-      state.graphData.nodes.byId[link.source_id].node_status,
+  // console.log(id, link);
+  const sourceStatus = useAppSelector((state: RootState) =>
+    link.source_type === "node" || link.source_type === "root"
+      ? state.graphData.nodes.byId[link.source_id].node_status
+      : state.graphData.groups.byId[link.source_id].node_status,
   );
-  const targetStatus = useAppSelector(
-    (state: RootState) =>
-      state.graphData.nodes.byId[link.target_id].node_status,
+  const targetStatus = useAppSelector((state: RootState) =>
+    link.target_type === "node" || link.target_type === "root"
+      ? state.graphData.nodes.byId[link.target_id].node_status
+      : state.graphData.groups.byId[link.target_id].node_status,
   );
-  const targetGroup = useAppSelector(
-    (state: RootState) => state.graphData.nodes.byId[link.target_id].group_name,
+  const targetGroup = useAppSelector((state: RootState) =>
+    link.target_type === "node" || link.target_type === "root"
+      ? state.graphData.nodes.byId[link.target_id].group_name
+      : state.graphData.groups.byId[link.target_id].group_name,
   );
 
-  const color = targetGroup
-    ? LINK_COLORS[targetGroup]
-    : LINK_COLORS["Fallback"];
+  // !TODO: Link status is not being updated/managed right now
+  const color = targetGroup ? groupMap[targetGroup].inactive : "red";
   const progress = useSharedValue(0);
 
   useEffect(() => {
@@ -81,7 +87,7 @@ export default function LinkSvg({ id }: LinkSvgProps) {
   }
 
   const sourceRadius =
-    link.source_type === "root"
+    link.source_type === "root" || link.source_type === "root_group"
       ? ROOT_NODE_RADIUS
       : link.source_type === "group"
       ? GROUP_NODE_RADIUS
@@ -111,18 +117,17 @@ export default function LinkSvg({ id }: LinkSvgProps) {
 
   const startPath = Skia.Path.Make();
   startPath.moveTo(startPoint.x, startPoint.y);
-  startPath.lineTo(startPoint.x, startPoint.y);
+  startPath.lineTo(endPoint.x, endPoint.y);
 
-  const endPath = Skia.Path.Make();
-  endPath.moveTo(startPoint.x, startPoint.y);
-  endPath.lineTo(endPoint.x, endPoint.y);
+  // const endPath = Skia.Path.Make();
+  // startPath.moveTo(link.x1, link.y1);
+  // startPath.lineTo(link.x2, link.y2);
 
-  // Adjust interpolation range based on current status
-  const animatedPath = usePathInterpolation(
-    progress,
-    [0, 1], // This still goes between 0 and 1
-    [startPath, endPath],
-  );
+  // const animatedPath = usePathInterpolation(
+  //   progress,
+  //   [0, 1], // This still goes between 0 and 1
+  //   [startPath, endPath],
+  // );
 
   const animateOpacity = useDerivedValue(() => {
     const newOpacity =
@@ -141,15 +146,15 @@ export default function LinkSvg({ id }: LinkSvgProps) {
   return (
     <Group origin={{ x: centerX, y: centerY }}>
       <Path
-        opacity={animateOpacity}
-        path={animatedPath}
+        // opacity={animateOpacity}
+        path={startPath}
         color={color}
-        strokeWidth={0.7}
+        strokeWidth={0.5}
         strokeJoin="round"
         strokeCap="round"
         style="stroke"
       />
-      <BlurMask style={"solid"} blur={2} />
+      {/* <BlurMask style={"solid"} blur={2} /> */}
     </Group>
   );
 }

@@ -33,6 +33,16 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Overlay group_name on graph
+
+// !TODO: Animate links again AFTER refactoring all that shit and redoing LinkSvg.tsx and changing the way you track statuses of links, nodes, etcs
+
+// !TODO: The way that links, groups, and nodes interact needs to be redone. It's not ideal right now to have groups separate from nodes if you have to constantly check what type the node is before you look something up. See graphSlice
+
+// !TODO: COMPLETELY REDO LinkSvg.tsx   ********************!!!!!!!!!!!!!!!!!
+
+// !TODO: If a node is active when clicked, it should be made the focusedNode and NOT deselected. It should only be deselected if it's clicked twice?
+
 // !TODO: FOR BELOW: You'll likely need to create a group map while looping through the nodes so that when you loop through the nodeGroups, you can easily figure out how many are in each group and how to properly space/place them
 
 // !TODO: Nodes should be placed in the CENTER of the group by default and keep fitting in a row until there is no more room. Then just increase the depth a bit

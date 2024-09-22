@@ -54,9 +54,10 @@ export default function GroupPath({ id }: Props) {
       <Path path={path} color={color.active} opacity={0.05}>
         <Paint
           style={"stroke"}
-          color={color.active}
-          strokeWidth={1}
-          opacity={0.2}
+          // color={color.active}
+          color="black"
+          strokeWidth={2}
+          opacity={0.3}
         />
       </Path>
     </Group>

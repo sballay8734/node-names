@@ -1,5 +1,5 @@
 import { Canvas, Fill, Group } from "@shopify/react-native-skia";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -29,7 +29,10 @@ import SvgElements from "./SvgElements";
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
 
-  newINITPosFunc(testNodes, testLinks, windowSize);
+  // !TODO: This will be changed
+  useEffect(() => {
+    newINITPosFunc(testNodes, testLinks, windowSize);
+  }, [windowSize]);
 
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
@@ -180,3 +183,5 @@ const styles = StyleSheet.create({
     // pointerEvents: "box-none",
   },
 });
+
+//

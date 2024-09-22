@@ -20,42 +20,44 @@ export interface RawNode {
   id: number;
   depth: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   name: string;
-  group_id: number | null;
+  group_id: number | null; // id of group the node is a part of
   type: "node" | "group" | "root_group" | "root";
+  source_id: number | null; // ONLY groups will have a source_id
   group_name: string | null;
   source_type: "node" | "group" | "mixed" | "root" | null;
-  // null for free floating nodes
 }
-export interface RawGroup {
-  id: number;
-  source_id: number;
-  group_name: string;
-}
+
+// export interface RawGroup {
+//   id: number;
+//   source_id: number;
+//   group_name: string;
+// }
+
 export interface RawLink {
   id: number;
   source_id: number;
   target_id: number;
-  source_type: "group" | "root" | "node";
-  target_type: "group" | "root" | "node";
+  source_type: "group" | "root" | "node" | "root_group";
+  target_type: "group" | "root" | "node" | "root_group";
   relation_type: RelationType | null;
 }
 
 // !TODO: START and END angle should not be optional. UPDATE AFTER REFACTOR
 // Shape after postioning ******************************************************
 export interface PositionedNode extends RawNode {
-  startAngle?: number;
-  endAngle?: number;
-  angle: number;
+  startAngle: number;
+  endAngle: number;
+  // angle: number;
   x: number;
   y: number;
 }
-export interface PositionedGroup extends RawGroup {
-  startAngle?: number;
-  endAngle?: number;
-  angle: number;
-  x: number;
-  y: number;
-}
+// export interface PositionedGroup extends RawGroup {
+//   startAngle?: number;
+//   endAngle?: number;
+//   // angle: number;
+//   x: number;
+//   y: number;
+// }
 export interface PositionedLink extends RawLink {
   x1: number;
   y1: number;
@@ -69,13 +71,13 @@ export interface UiNode extends PositionedNode {
   node_status: NodeStatus;
   isShown: boolean;
 }
-export interface UiGroup extends PositionedGroup {
-  group_status: GroupStatus;
-  isShown: boolean;
-}
+// export interface UiGroup extends PositionedGroup {
+//   group_status: GroupStatus;
+//   isShown: boolean;
+// }
 export interface UiLink extends PositionedLink {
-  node_1_status: NodeStatus;
-  node_2_status: NodeStatus;
+  source_status: NodeStatus;
+  target_status: NodeStatus;
   link_status: LinkStatus;
 }
 
@@ -85,6 +87,6 @@ export interface PosNodeMap {
 export interface PosLinkMap {
   [id: number]: UiLink;
 }
-export interface PosGroupMap {
-  [id: number]: UiGroup;
-}
+// export interface PosGroupMap {
+//   [id: number]: UiGroup;
+// }

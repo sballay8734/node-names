@@ -3,7 +3,6 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
 import {
   NodeStatus,
-  PosGroupMap,
   PositionedLink,
   PositionedNode,
   PosLinkMap,
@@ -69,39 +68,74 @@ const NewArchitectureSlice = createSlice({
     setInitialState: (
       state,
       action: PayloadAction<{
+        root: PositionedNode;
         nodes: PositionedNode[];
         links: PositionedLink[];
         groups: PositionedNode[];
       }>,
     ) => {
-      const { nodes, links, groups } = action.payload;
+      const { root, nodes, links, groups } = action.payload;
 
       // this map is used for quick lookup during links && groups loop
       const nodeStatusMap: {
         [id: number]: { isRoot: boolean; node_status: string };
       } = {};
 
+      // Set root node
+      const rootNode: UiNode = {
+        ...root,
+        isRoot: true,
+        node_status: "active",
+        isShown: true,
+      };
+
+      if (!state.nodes.byId[rootNode.id]) {
+        // set root node stuff
+        state.nodes.activeRootId = rootNode.id;
+        state.userId = rootNode.id;
+        state.nodes.selectedNodeIds.push(rootNode.id);
+        state.nodes.focusedNodeId = rootNode.id;
+        state.nodes.byId[rootNode.id] = rootNode;
+        state.nodes.allIds.push(rootNode.id);
+
+        nodeStatusMap[rootNode.id] = {
+          isRoot: rootNode.isRoot,
+          node_status: rootNode.node_status,
+        };
+      }
+
+      // initialize groups
+      groups.forEach((group) => {
+        if (!state.groups.byId[group.id]) {
+          const isRootGroup = group.type === "root_group";
+          const newGroup: UiNode = {
+            ...group,
+            isRoot: false,
+            node_status: isRootGroup ? "parent_active" : "inactive",
+            isShown: true,
+          };
+
+          state.groups.byId[group.id] = newGroup;
+          state.groups.allIds.push(group.id);
+
+          nodeStatusMap[group.id] = {
+            isRoot: newGroup.isRoot,
+            node_status: newGroup.node_status,
+          };
+        }
+      });
+
       // initialize nodes state (byId, allIds, & activeRootId)
       nodes.forEach((node) => {
         if (!state.nodes.byId[node.id]) {
-          const newNode = {
+          const newNode: UiNode = {
             ...node,
-            isRoot: node.depth === 1,
-            node_status: (node.depth === 1
-              ? "active"
-              : "inactive") as NodeStatus,
+            isRoot: false,
+            node_status: "inactive",
             isShown: true,
           };
           state.nodes.byId[node.id] = newNode;
           state.nodes.allIds.push(node.id);
-
-          // set active root id to user_id for initial load and push to selected
-          if (newNode.depth === 1) {
-            state.nodes.activeRootId = newNode.id;
-            state.userId = newNode.id;
-            state.nodes.selectedNodeIds.push(newNode.id);
-            state.nodes.focusedNodeId = newNode.id;
-          }
 
           // store status in temporary map for SAFE look up during links loop
           nodeStatusMap[node.id] = {
@@ -111,33 +145,16 @@ const NewArchitectureSlice = createSlice({
         }
       });
 
-      groups.forEach((group) => {
-        if (!state.groups.byId[group.id]) {
-          const newGroup = {
-            ...group,
-            isRoot: false,
-            node_status: "inactive" as NodeStatus,
-            isShown: true,
-          };
-          state.groups.byId[group.id] = newGroup;
-
-          state.groups.allIds.push(group.id);
-        }
-      });
-
       // initialize edges state and use nodetStatusMap
       links.forEach((link) => {
         if (!state.links.byId[link.id]) {
-          const sourceInMap = nodeStatusMap[link.source_id];
-          const targetInMap = nodeStatusMap[link.target_id];
-          const sourceIsRoot = state.nodes.byId[link.source_id].type === "root";
-          console.log(sourceIsRoot, link.id);
+          const sourceIsRoot = link.source_type === "root";
 
           state.links.byId[link.id] = {
             ...link,
-            node_1_status: sourceIsRoot ? "active" : "inactive",
-            node_2_status: sourceIsRoot ? "parent_active" : "inactive",
-            link_status: sourceIsRoot ? "active" : "inactive",
+            source_status: sourceIsRoot ? "active" : "inactive",
+            target_status: sourceIsRoot ? "parent_active" : "inactive",
+            link_status: "active",
           };
 
           state.links.allIds.push(link.id);
@@ -148,36 +165,6 @@ const NewArchitectureSlice = createSlice({
             state.links.bySourceId[link.source_id].push(link.target_id);
           }
         }
-        // if (!state.links.byId[link.id]) {
-        //   const node1InMap = nodeStatusMap[link.source_id];
-        //   const node2InMap = nodeStatusMap[link.target_id];
-
-        //   console.log("SOURCE:", state.nodes.byId[link.source_id]);
-        //   console.log("TARGET:", state.nodes.byId[link.target_id]);
-
-        //   state.links.byId[link.id] = {
-        //     ...link,
-        //     node_1_status: node1InMap
-        //       ? (node1InMap.node_status as NodeStatus)
-        //       : "inactive",
-        //     node_2_status: node2InMap
-        //       ? (node2InMap.node_status as NodeStatus)
-        //       : "inactive",
-        //     link_status:
-        //       (node1InMap && node1InMap.isRoot) ||
-        //       (node2InMap && node2InMap.isRoot)
-        //         ? "active"
-        //         : "inactive",
-        //   };
-
-        //   state.links.allIds.push(link.id);
-        // }
-
-        // if (!state.links.bySourceId[link.source_id]) {
-        //   state.links.bySourceId[link.source_id] = [link.target_id];
-        // } else {
-        //   state.links.bySourceId[link.source_id].push(link.target_id);
-        // }
       });
     },
 
@@ -285,7 +272,6 @@ const NewArchitectureSlice = createSlice({
         updatedNodes?.forEach((node) => {
           const updatedNode = {
             ...node,
-            angle: node.angle,
             x: node.x,
             y: node.y,
           };
