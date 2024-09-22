@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: ADDING NODES NO LONGER WORKS (this is expected though since you changed how they are rendered/positioned)
+
 // !TODO: Overlay group_name on graph
 
 // !TODO: Animate links again AFTER refactoring all that shit and redoing LinkSvg.tsx and changing the way you track statuses of links, nodes, etcs
