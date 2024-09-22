@@ -1,4 +1,11 @@
-import { Group, Paint, Path, Skia } from "@shopify/react-native-skia";
+import {
+  Group,
+  matchFont,
+  Paint,
+  Path,
+  Skia,
+  Text,
+} from "@shopify/react-native-skia";
 
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
@@ -9,6 +16,13 @@ interface Props {
 }
 
 const RADIUS = 1800;
+
+const font = matchFont({
+  fontFamily: "Helvetica",
+  fontSize: 10,
+  fontStyle: "normal",
+  fontWeight: "400",
+});
 
 export default function GroupPath({ id }: Props) {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
@@ -60,6 +74,14 @@ export default function GroupPath({ id }: Props) {
           opacity={0.3}
         />
       </Path>
+      <Text
+        x={centerX + 50}
+        y={centerY + group.endAngle * 10}
+        text={group.name}
+        font={font}
+        color={"white"}
+        // opacity={animatedTextOpacity}
+      />
     </Group>
   );
 }
