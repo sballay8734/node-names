@@ -7,9 +7,9 @@ import {
   Text,
 } from "@shopify/react-native-skia";
 
+import { getColors } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { getColors } from "@/lib/utils/getColors";
 
 interface Props {
   id: number;
