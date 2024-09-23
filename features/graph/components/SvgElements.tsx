@@ -9,8 +9,8 @@ export default function SvgElements() {
   const linkIds = useAppSelector(
     (state: RootState) => state.graphData.links.allIds,
   );
-  const groupIds = useAppSelector(
-    (state: RootState) => state.graphData.groups.allIds,
+  const rootGroupIds = useAppSelector(
+    (state: RootState) => state.graphData.rootGroups.allIds,
   );
   const nodeIds = useAppSelector(
     (state: RootState) => state.graphData.nodes.allIds,
@@ -21,7 +21,7 @@ export default function SvgElements() {
       {linkIds.map((id) => {
         return <LinkSvg key={id} id={id} />;
       })}
-      {groupIds.map((id) => {
+      {rootGroupIds.map((id) => {
         return <GroupPath key={id} id={id} />;
       })}
       {nodeIds.map((id) => {

@@ -12,7 +12,7 @@ export default function RenderSvgNode({ id }: NewSvgProps) {
     (state: RootState) => state.graphData.nodes.byId[id],
   );
 
-  if (!node) return null;
+  if (!node || node.type === "root_group") return null;
 
   return <MasterNode key={node.id} node={node} />;
 }

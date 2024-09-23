@@ -29,7 +29,7 @@ export default function GroupPath({ id }: Props) {
   // const radius = Math.min(windowSize.width / 2, windowSize.height / 2);
   const radius = RADIUS;
   const group = useAppSelector(
-    (state: RootState) => state.graphData.groups.byId[id],
+    (state: RootState) => state.graphData.nodes.byId[id],
   );
 
   if (group.startAngle === undefined || group.endAngle === undefined)

@@ -2,13 +2,13 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
 import {
-  NodeStatus,
   PositionedLink,
   PositionedNode,
   PosLinkMap,
   PosNodeMap,
   UiNode,
 } from "@/lib/types/graph";
+import { LinkHash, NodeHash, SourceHash } from "@/lib/utils/positionGraphEls";
 import { CreatedNode, updatePositions } from "@/lib/utils/repositionGraphEls";
 import { RootState } from "@/store/store";
 
@@ -30,6 +30,10 @@ export interface GraphSliceState {
     byId: PosNodeMap;
     allIds: number[];
   };
+  rootGroups: {
+    byId: PosNodeMap;
+    allIds: number[];
+  };
   actionBtnById: { [key: string]: boolean };
 }
 
@@ -48,6 +52,10 @@ const initialState: GraphSliceState = {
     allIds: [],
   },
   groups: {
+    byId: {},
+    allIds: [],
+  },
+  rootGroups: {
     byId: {},
     allIds: [],
   },
@@ -166,6 +174,25 @@ const NewArchitectureSlice = createSlice({
           }
         }
       });
+    },
+    newSetInitialState: (
+      state,
+      action: PayloadAction<{
+        nodesById: NodeHash;
+        nodeIds: number[];
+        rootGroupIds: number[];
+        linksById: LinkHash;
+        linksBySourceId: SourceHash;
+      }>,
+    ) => {
+      const { nodesById, nodeIds, linksById, linksBySourceId, rootGroupIds } =
+        action.payload;
+
+      state.nodes.byId = { ...nodesById };
+      state.nodes.allIds = [...nodeIds];
+      state.links.byId = { ...linksById };
+      state.links.bySourceId = { ...linksBySourceId };
+      state.rootGroups.allIds = [...rootGroupIds];
     },
 
     // Update nodes' status while also updating parent/children if necessary
@@ -347,6 +374,7 @@ export const {
   deselectAllNodes,
   createNewNode,
   createNewGroup,
+  newSetInitialState,
   createSubGroupFromSelection,
   moveNode,
 } = NewArchitectureSlice.actions;
