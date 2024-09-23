@@ -14,6 +14,9 @@ import { WindowSize } from "../types/misc";
 interface NodeHash {
   [key: number]: PositionedNode;
 }
+interface LinkHash {
+  [key: number]: PositionedLink;
+}
 
 interface SourceData {
   size: number;
@@ -208,6 +211,7 @@ export function newNewPosFunc(
   // hashes
   const nodesById: NodeHash = {};
   const sourceById: SourceHash = {};
+  const linksById: LinkHash = {};
 
   // id arrays
   const nodeIds: number[] = [];
@@ -250,6 +254,16 @@ export function newNewPosFunc(
     if (!targetIds.includes(link.target_id)) {
       targetIds.push(link.target_id);
     }
+
+    if (!linksById[link.id]) {
+      linksById[link.id] = {
+        ...link,
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 0,
+      };
+    }
   }
 
   function positionRootGroupsAndNodes(nodesHash: NodeHash) {
@@ -260,39 +274,61 @@ export function newNewPosFunc(
 
     rootGroups.forEach((root_group: PositionedNode, index: number) => {
       const angle = index * angleStep - Math.PI / 2;
-      nodesById[root_group.id].x = centerX + radius * Math.cos(angle);
-      nodesById[root_group.id].y = centerY + radius * Math.sin(angle);
-      nodesById[root_group.id].startAngle = angle;
-      nodesById[root_group.id].endAngle = angle + angleStep;
+      root_group.x = centerX + radius * Math.cos(angle);
+      root_group.y = centerY + radius * Math.sin(angle);
+      root_group.startAngle = angle;
+      root_group.endAngle = angle + angleStep;
 
       positionNodesInGroup(root_group);
     });
   }
 
   function positionNodesInGroup(root_group: PositionedNode) {
-    const nodesInGroup = Object.values(sourceById[root_group.id]);
+    const nodesInGroup: PositionedNode[] = Object.values(
+      sourceById[root_group.id],
+    );
+    if (!nodesInGroup || nodesInGroup.length === 0) return;
+
     const groupSize = sourceById[root_group.id].size;
     const groupCenterAngle = (root_group.startAngle + root_group.endAngle) / 2;
     const totalGroupWidth = (groupSize - 1) * NODE_SPACING;
     const startOffset = -totalGroupWidth / 2;
 
-    nodesInGroup.forEach((node, index) => {
+    nodesInGroup.forEach((node: PositionedNode, index) => {
       const offset = startOffset + index * NODE_SPACING;
       const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
 
-      nodesById[node.id].x = centerX + radius * Math.cos(nodeAngle);
-      nodesById[node.id].y = centerY + radius * Math.sin(nodeAngle);
-      nodesById[node.id].startAngle = nodesById[root_group.id].startAngle;
-      nodesById[node.id].endAngle = nodesById[root_group.id].endAngle;
+      node.x = centerX + radius * Math.cos(nodeAngle);
+      node.y = centerY + radius * Math.sin(nodeAngle);
+      node.startAngle = root_group.startAngle;
+      node.endAngle = root_group.endAngle;
+
+      nodesById[node.id] = node;
     });
+
+    nodesById[root_group.id] = root_group;
+  }
+
+  function positionLink(link_id: number) {
+    const link = linksById[link_id];
+    const updatedLink: PositionedLink = {
+      ...link,
+      x1: nodesById[link.source_id].x,
+      y1: nodesById[link.source_id].y,
+      x2: nodesById[link.target_id].x,
+      y2: nodesById[link.target_id].y,
+    };
+
+    linksById[link_id] = updatedLink;
   }
 
   // loop through nodes and links and add them to hash for easy access
   allNodes.forEach((node) => addNodeToHash(node));
   allLinks.forEach((link) => addSourceToHash(link));
-  console.log("BEFORE:", nodesById);
   positionRootGroupsAndNodes(nodesById);
-  console.log("AFTER:", nodesById);
+  console.log("LINKS BEFORE:", linksById);
+  linkIds.forEach((id) => positionLink(id));
+  console.log("LINKS AFTER:", linksById);
 
   // console.log("NODES:", nodesById);
   // console.log("SOURCES:", sourceById);
