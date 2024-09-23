@@ -18,7 +18,7 @@ import {
   MIN_SCALE,
   SCALE_SENSITIVITY,
 } from "@/lib/hooks/useGestures";
-import { newINITPosFunc } from "@/lib/utils/positionGraphEls";
+import { newINITPosFunc, newNewPosFunc } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
 
@@ -32,6 +32,7 @@ export default function Graph() {
   // !TODO: This will be changed
   useEffect(() => {
     newINITPosFunc(testNodes, testLinks, windowSize);
+    newNewPosFunc(testNodes, testLinks, windowSize);
   }, [windowSize]);
 
   const scale = useSharedValue(INITIAL_SCALE);

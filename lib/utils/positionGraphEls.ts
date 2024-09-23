@@ -3,6 +3,7 @@ import { store } from "@/store/store";
 
 import { REG_NODE_RADIUS } from "../constants/styles";
 import {
+  NodeType,
   PositionedLink,
   PositionedNode,
   RawLink,
@@ -13,6 +14,13 @@ import { WindowSize } from "../types/misc";
 interface NodeHash {
   [key: number]: PositionedNode;
 }
+
+interface SourceData {
+  size: number;
+  [key: number]: PositionedNode;
+}
+
+type SourceHash = Record<number, SourceData>;
 
 type mapKey = "root" | "root_group" | "group" | "node";
 
@@ -186,5 +194,72 @@ export function newINITPosFunc(
   return finalGroups;
 }
 
-// should maybe use depth to handle this (new node is depth of parent + 1)
-export function handleAddNode(source_id: number) {}
+export function newNewPosFunc(
+  allNodes: RawNode[],
+  allLinks: RawLink[],
+  windowSize: WindowSize,
+) {
+  // get window dimensions and center point
+  const { width, height } = windowSize;
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = Math.min(width, height) * RADIUS_FACTOR;
+
+  // hashes
+  const nodesById: NodeHash = {};
+  const sourceById: SourceHash = {};
+
+  // id arrays
+  const nodeIds: number[] = [];
+  const linkIds: number[] = [];
+  const sourceIds: number[] = []; // REVIEW: Might not need this
+  const targetIds: number[] = []; // REVIEW: Might not need this
+
+  function addNodeToHash(node: RawNode) {
+    if (!nodesById[node.id]) {
+      const newNode: PositionedNode = {
+        ...node,
+        startAngle: 0,
+        endAngle: 0,
+        x: centerX,
+        y: centerY,
+      };
+      nodesById[node.id] = newNode;
+      nodeIds.push(node.id);
+    }
+  }
+
+  function addSourceToHash(link: RawLink) {
+    const newEntry = { [link.target_id]: nodesById[link.target_id] };
+
+    if (!sourceById[link.source_id]) {
+      sourceById[link.source_id] = { size: 1, ...newEntry };
+    } else {
+      sourceById[link.source_id] = {
+        ...sourceById[link.source_id],
+        ...newEntry,
+      };
+      sourceById[link.source_id].size += 1;
+    }
+
+    linkIds.push(link.id);
+
+    if (!sourceIds.includes(link.source_id)) {
+      sourceIds.push(link.source_id);
+    }
+    if (!targetIds.includes(link.target_id)) {
+      targetIds.push(link.target_id);
+    }
+  }
+
+  // loop through nodes and links and add them to hash for easy access
+  allNodes.forEach((node) => addNodeToHash(node));
+  allLinks.forEach((link) => addSourceToHash(link));
+
+  // console.log("NODES:", nodesById);
+  console.log("SOURCES:", sourceById);
+  // console.log("linkIds:", linkIds);
+  // console.log("sourceIds:", sourceIds);
+  // console.log("targetIds:", targetIds);
+  // console.log("nodeIds:", nodeIds);
+}
