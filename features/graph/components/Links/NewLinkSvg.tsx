@@ -1,4 +1,5 @@
 import {
+  BlurMask,
   Group,
   Path,
   Skia,
@@ -9,6 +10,7 @@ import { useSharedValue, withTiming } from "react-native-reanimated";
 
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { groupMap } from "@/lib/utils/getColors";
 
 interface LinkSvgProps {
   link_id: number;
@@ -30,8 +32,10 @@ export default function NewLinkSvg({ link_id }: LinkSvgProps) {
       rootNodeId &&
       state.graphData.nodes.byId[rootNodeId].node_status,
   );
-
-  console.log("Rendering...");
+  const targetGroup = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId[link.target_id].group_name,
+  );
+  const color = targetGroup ? groupMap[targetGroup].inactive : "red";
 
   const progress = useSharedValue(0);
 
@@ -54,7 +58,7 @@ export default function NewLinkSvg({ link_id }: LinkSvgProps) {
       <Path
         // opacity={animateOpacity}
         path={animatedPath}
-        color={"red"}
+        color={color}
         strokeWidth={0.5}
         strokeJoin="round"
         strokeCap="round"
