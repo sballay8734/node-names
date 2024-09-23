@@ -203,8 +203,6 @@ export function newNewPosFunc(
   positionRootGroupsAndNodes(nodesById);
   linkIds.forEach((id) => positionLink(id));
 
-  console.log(linksByTargetId);
-
   store.dispatch(
     newSetInitialState({
       nodesById,

@@ -213,53 +213,49 @@ const NewArchitectureSlice = createSlice({
       state.nodes.focusedNodeId = initActiveRootId;
     },
     newToggleNode: (state, action: PayloadAction<number>) => {
-      const clickedNode = state.nodes.byId[action.payload];
-    },
+      const clickedNodeId = action.payload;
+      const clickedStatus = state.nodes.byId[clickedNodeId].node_status;
 
-    // Update nodes' status while also updating parent/children if necessary
-    toggleNode: (state, action: PayloadAction<number>) => {
-      const nodeId = action.payload;
+      // if node is focused and active
+      if (
+        state.nodes.focusedNodeId === clickedNodeId &&
+        clickedStatus === true
+      ) {
+        // deactivate node
+        state.nodes.byId[clickedNodeId].node_status = false;
+        // update selectedNodeIds
+        const updatedNodesIds = [
+          ...state.nodes.selectedNodeIds.filter((id) => id !== clickedNodeId),
+        ];
+        // get index of last item in selectedNodeIds
+        const lastIndex = updatedNodesIds[updatedNodesIds.length - 1];
 
-      if (state.nodes.byId[nodeId]) {
-        const status = state.nodes.byId[nodeId].node_status;
-
-        // make node active if it's "parent_active" or "inactive" when clicked
-        if (status !== true) {
-          state.nodes.byId[nodeId].node_status = true;
-          state.nodes.focusedNodeId = nodeId;
-          // push id to selected ids if not in there already (it shouldn't be)
-          if (!state.nodes.selectedNodeIds.includes(nodeId)) {
-            state.nodes.selectedNodeIds.push(nodeId);
-          }
-          // !TODO: handle case of node click when active AND parent IS active
-        } else if (false) {
-          state.nodes.byId[nodeId].node_status = false;
-          // handle case of node click while active AND parent is NOT active
+        // if lastIndex, set the focusedNodeId to the lastIndex (id)
+        if (lastIndex) {
+          state.nodes.focusedNodeId = lastIndex;
         } else {
-          state.nodes.byId[nodeId].node_status = false;
-          // remove id from selected ids AND updated focusedNodeId
-          if (state.nodes.selectedNodeIds.includes(nodeId)) {
-            // remove node first
-            const updatedNodeIds = [
-              ...state.nodes.selectedNodeIds.filter((id) => id !== nodeId),
-            ];
-            const lastIndex = updatedNodeIds[updatedNodeIds.length - 1];
-
-            // if array is not empty, set the last index to the active node id
-            if (lastIndex) {
-              state.nodes.focusedNodeId = lastIndex;
-            } else {
-              state.nodes.focusedNodeId = null;
-            }
-
-            // update the state
-            state.nodes.selectedNodeIds = updatedNodeIds;
-          }
+          state.nodes.focusedNodeId = null;
         }
 
-        updateActionButtonStates(state);
+        state.nodes.selectedNodeIds = [...updatedNodesIds];
+      } else if (state.nodes.focusedNodeId !== clickedNodeId && clickedStatus) {
+        // if node is active && NOT focused (make it focused)
+        state.nodes.focusedNodeId = clickedNodeId;
+
+        if (!state.nodes.selectedNodeIds.includes(clickedNodeId)) {
+          state.nodes.selectedNodeIds.push(clickedNodeId);
+        }
+      } else if (!clickedStatus) {
+        // if node is inactive (make it active and focus it)
+        state.nodes.focusedNodeId = clickedNodeId;
+
+        if (!state.nodes.selectedNodeIds.includes(clickedNodeId)) {
+          state.nodes.selectedNodeIds.push(clickedNodeId);
+        }
+
+        state.nodes.byId[clickedNodeId].node_status = true;
       } else {
-        console.error("Couldn't find node Id. graphSlice");
+        console.log("No condition hit");
       }
     },
     deselectAllNodes: (state) => {
@@ -391,6 +387,7 @@ const updateActionButtonStates = (state: GraphSliceState) => {
 export const {
   // setInitialState,
   toggleNode,
+  newToggleNode,
   swapRootNode,
   deselectAllNodes,
   createNewNode,

@@ -11,7 +11,7 @@ import {
 import { UiNode } from "@/lib/types/graph";
 import { useAppDispatch } from "@/store/reduxHooks";
 
-import { toggleNode } from "../../redux/graphSlice";
+import { newToggleNode, toggleNode } from "../../redux/graphSlice";
 
 interface PressableNodeProps {
   node: UiNode;
@@ -31,7 +31,7 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
   const tap = Gesture.Tap()
     .onStart(() => {})
     .onEnd(() => {
-      dispatch(toggleNode(node.id));
+      dispatch(newToggleNode(node.id));
     })
     .runOnJS(true);
 
