@@ -180,21 +180,36 @@ export function newNewPosFunc(
   function positionLink(link_id: number) {
     const link = linksById[link_id];
     const sourceStatus: LinkStatus = nodesById[link.source_id].node_status;
-    const targetStatus: LinkStatus = nodesById[link.target_id].node_status;
+
     const linkStatus: LinkStatus = sourceStatus === true ? true : false;
 
-    const updatedLink: UiLink = {
-      ...link,
-      x1: nodesById[link.source_id].x,
-      y1: nodesById[link.source_id].y,
-      x2: nodesById[link.target_id].x,
-      y2: nodesById[link.target_id].y,
-      // source_status: sourceStatus,
-      // target_status: targetStatus,
-      link_status: linkStatus,
-    };
+    if (link.source_type === "root") return null;
 
-    linksById[link_id] = updatedLink;
+    // modify source of nodes in root groups (connect them to the root)
+    if (link.source_type === "root_group" && initActiveRootId) {
+      const updatedLink: UiLink = {
+        ...link,
+        x1: nodesById[initActiveRootId].x,
+        y1: nodesById[initActiveRootId].y,
+        x2: nodesById[link.target_id].x,
+        y2: nodesById[link.target_id].y,
+        link_status: true,
+      };
+
+      linksById[link_id] = updatedLink;
+    } else {
+      // otherwise, the source should not change
+      const updatedLink: UiLink = {
+        ...link,
+        x1: nodesById[link.source_id].x,
+        y1: nodesById[link.source_id].y,
+        x2: nodesById[link.target_id].x,
+        y2: nodesById[link.target_id].y,
+        link_status: linkStatus,
+      };
+
+      linksById[link_id] = updatedLink;
+    }
   }
 
   // loop through nodes and links and add them to hash for easy access
@@ -207,10 +222,11 @@ export function newNewPosFunc(
     newSetInitialState({
       nodesById,
       nodeIds,
+      linkIds,
       linksById,
       linksBySourceId,
-      rootGroupIds,
       linksByTargetId,
+      rootGroupIds,
       initActiveRootId,
     }),
   );

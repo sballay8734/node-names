@@ -1,13 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
-import {
-  PositionedLink,
-  PositionedNode,
-  PosLinkMap,
-  PosNodeMap,
-  UiNode,
-} from "@/lib/types/graph";
+import { PosLinkMap, PosNodeMap, UiNode } from "@/lib/types/graph";
 import { LinkHash, NodeHash, SourceHash } from "@/lib/utils/positionGraphEls";
 import { CreatedNode, updatePositions } from "@/lib/utils/repositionGraphEls";
 import { RootState } from "@/store/store";
@@ -182,16 +176,18 @@ const NewArchitectureSlice = createSlice({
       action: PayloadAction<{
         nodesById: NodeHash;
         nodeIds: number[];
-        rootGroupIds: number[];
+        linkIds: number[];
         linksById: LinkHash;
         linksBySourceId: SourceHash;
         linksByTargetId: SourceHash;
+        rootGroupIds: number[];
         initActiveRootId: number | null;
       }>,
     ) => {
       const {
         nodesById,
         nodeIds,
+        linkIds,
         linksById,
         linksBySourceId,
         linksByTargetId,
@@ -199,11 +195,14 @@ const NewArchitectureSlice = createSlice({
         initActiveRootId,
       } = action.payload;
 
+      console.log("RUNNING");
+
       state.nodes.byId = { ...nodesById };
       state.nodes.allIds = [...nodeIds];
       state.links.byId = { ...linksById };
       state.links.bySourceId = { ...linksBySourceId };
       state.rootGroups.allIds = [...rootGroupIds];
+      state.links.allIds = [...linkIds];
 
       if (initActiveRootId) {
         state.nodes.selectedNodeIds.push(initActiveRootId);
@@ -223,6 +222,12 @@ const NewArchitectureSlice = createSlice({
       ) {
         // deactivate node
         state.nodes.byId[clickedNodeId].node_status = false;
+        // // deactivate all links where this node is the source
+        // state.links.allIds.forEach((id) => {
+        //   if (state.links.byId[id].link_status === true) {
+        //     state.links.byId[id].link_status = false;
+        //   }
+        // });
         // update selectedNodeIds
         const updatedNodesIds = [
           ...state.nodes.selectedNodeIds.filter((id) => id !== clickedNodeId),
@@ -385,8 +390,6 @@ const updateActionButtonStates = (state: GraphSliceState) => {
 };
 
 export const {
-  // setInitialState,
-  toggleNode,
   newToggleNode,
   swapRootNode,
   deselectAllNodes,
@@ -434,3 +437,149 @@ export const selectNodeStatus = createSelector(
     return anyParentActive ? "parent_active" : "inactive";
   },
 );
+
+const linksBy = {
+  "1": {
+    id: 1,
+    link_status: false,
+    relation_type: null,
+    source_id: 1,
+    source_type: "root",
+    target_id: 7,
+    target_type: "group",
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0,
+  },
+  "10": {
+    id: 10,
+    link_status: false,
+    relation_type: "virtual",
+    source_id: 11,
+    source_type: "root_group",
+    target_id: 6,
+    target_type: "node",
+    x1: 196.5,
+    x2: 127.20011875471741,
+    y1: 386.5,
+    y2: 291.11689636319375,
+  },
+  "11": {
+    id: 11,
+    link_status: false,
+    relation_type: "friend",
+    source_id: 7,
+    source_type: "root_group",
+    target_id: 12,
+    target_type: "node",
+    x1: 196.5,
+    x2: 275.4699959192102,
+    y1: 386.5,
+    y2: 298.9548702410013,
+  },
+  "2": {
+    id: 2,
+    link_status: false,
+    relation_type: null,
+    source_id: 1,
+    source_type: "root",
+    target_id: 8,
+    target_type: "group",
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0,
+  },
+  "3": {
+    id: 3,
+    link_status: false,
+    relation_type: null,
+    source_id: 1,
+    source_type: "root",
+    target_id: 9,
+    target_type: "group",
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0,
+  },
+  "4": {
+    id: 4,
+    link_status: false,
+    relation_type: null,
+    source_id: 1,
+    source_type: "root",
+    target_id: 10,
+    target_type: "group",
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0,
+  },
+  "5": {
+    id: 5,
+    link_status: false,
+    relation_type: null,
+    source_id: 1,
+    source_type: "root",
+    target_id: 11,
+    target_type: "group",
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0,
+  },
+  "6": {
+    id: 6,
+    link_status: false,
+    relation_type: "friend",
+    source_id: 7,
+    source_type: "root_group",
+    target_id: 2,
+    target_type: "node",
+    x1: 196.5,
+    x2: 255.3572953424443,
+    y1: 386.5,
+    y2: 284.3421379189429,
+  },
+  "7": {
+    id: 7,
+    link_status: false,
+    relation_type: "colleague",
+    source_id: 8,
+    source_type: "root_group",
+    target_id: 3,
+    target_type: "node",
+    x1: 196.5,
+    x2: 308.6295632711986,
+    y1: 386.5,
+    y2: 422.9331036368063,
+  },
+  "8": {
+    id: 8,
+    link_status: false,
+    relation_type: "child_parent",
+    source_id: 9,
+    source_type: "root_group",
+    target_id: 4,
+    target_type: "node",
+    x1: 196.5,
+    x2: 196.5,
+    y1: 386.5,
+    y2: 504.4,
+  },
+  "9": {
+    id: 9,
+    link_status: false,
+    relation_type: "classmate",
+    source_id: 10,
+    source_type: "root_group",
+    target_id: 5,
+    target_type: "node",
+    x1: 196.5,
+    x2: 84.37043672880141,
+    y1: 386.5,
+    y2: 422.9331036368063,
+  },
+};

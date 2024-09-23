@@ -51,7 +51,7 @@ const GraphOverlayButtons = ({
       />
       <DeselectAllBtn />
       <InspectBtn />
-      <BackToUserBtn />
+      {/* <BackToUserBtn /> */}
     </>
   );
 };

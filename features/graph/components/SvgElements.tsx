@@ -2,6 +2,7 @@ import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 import GroupPath from "./GroupPath";
+import NewLinkSvg from "./Links/NewLinkSvg";
 import LinkSvg from "./LinkSvg";
 import RenderSvgNode from "./Nodes/RenderSvgNode";
 
@@ -16,10 +17,13 @@ export default function SvgElements() {
     (state: RootState) => state.graphData.nodes.allIds,
   );
 
+  // console.log(linkIds);
+
   return (
     <>
       {linkIds.map((id) => {
-        return <LinkSvg key={id} id={id} />;
+        return <NewLinkSvg key={id} link_id={id} />;
+        // return <LinkSvg key={id} id={id} />;
       })}
       {rootGroupIds.map((id) => {
         return <GroupPath key={id} id={id} />;

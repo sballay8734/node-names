@@ -11,7 +11,7 @@ import {
 import { UiNode } from "@/lib/types/graph";
 import { useAppDispatch } from "@/store/reduxHooks";
 
-import { newToggleNode, toggleNode } from "../../redux/graphSlice";
+import { newToggleNode } from "../../redux/graphSlice";
 
 interface PressableNodeProps {
   node: UiNode;

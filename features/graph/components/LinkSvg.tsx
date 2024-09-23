@@ -34,7 +34,6 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     (state: RootState) => state.windowSize,
   );
 
-  // !TODO: THIS NEEDS TO BE RETHOUGHT - CONDITIONALS IN SELECTORS ARE NOT IDEAL. YOU NEED TO DECIDE ON A BETTER WAY TO DO THIS (SEE GRAPH SLICE)
   const link = useAppSelector(
     (state: RootState) => state.graphData.links.byId[id],
   );
@@ -43,11 +42,6 @@ export default function LinkSvg({ id }: LinkSvgProps) {
     link.source_type === "node" || link.source_type === "root"
       ? state.graphData.nodes.byId[link.source_id].node_status
       : state.graphData.groups.byId[link.source_id].node_status,
-  );
-  const targetStatus = useAppSelector((state: RootState) =>
-    link.target_type === "node" || link.target_type === "root"
-      ? state.graphData.nodes.byId[link.target_id].node_status
-      : state.graphData.groups.byId[link.target_id].node_status,
   );
   const targetGroup = useAppSelector((state: RootState) =>
     link.target_type === "node" || link.target_type === "root"
