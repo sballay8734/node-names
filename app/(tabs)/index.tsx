@@ -33,6 +33,10 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: Names should disappear while groups get larger and bolder as you zoom out
+
+// !TODO: You can pretty much pan forever. NOT GOOD. Set a cap on how far you can pan the screen
+
 // !TODO: ADDING NODES NO LONGER WORKS (this is expected though since you changed how they are rendered/positioned)
 
 // !TODO: Overlay group_name on graph

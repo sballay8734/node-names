@@ -19,14 +19,13 @@ const RADIUS = 1800;
 
 const font = matchFont({
   fontFamily: "Helvetica",
-  fontSize: 10,
+  fontSize: 50,
   fontStyle: "normal",
   fontWeight: "400",
 });
 
 export default function GroupPath({ id }: Props) {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  // const radius = Math.min(windowSize.width / 2, windowSize.height / 2);
   const radius = RADIUS;
   const group = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[id],
@@ -63,6 +62,25 @@ export default function GroupPath({ id }: Props) {
 
   const color = getColors(group);
 
+  // Calculate midpoint angle for label
+  const midAngle = (startAngle + endAngle) / 2;
+
+  // Measure text
+  const textMeasurements =
+    group.group_name && font.measureText(group.group_name);
+
+  const textWidth = textMeasurements && textMeasurements.width;
+  const textHeight = textMeasurements && textMeasurements.height;
+
+  // Calculate position of label
+  const labelRadius = radius * 0.2;
+  const rawLabelX = centerX + labelRadius * Math.cos(midAngle);
+  const rawLabelY = centerY + labelRadius * Math.sin(midAngle);
+
+  // Adjust label position based on text size
+  const adjustedLabelX = textWidth && rawLabelX - textWidth / 2;
+  const adjustedLabelY = textHeight && rawLabelY - textHeight / 4;
+
   return (
     <Group origin={{ x: centerX, y: centerY }}>
       <Path path={path} color={color.active} opacity={0.05}>
@@ -75,11 +93,12 @@ export default function GroupPath({ id }: Props) {
         />
       </Path>
       <Text
-        x={centerX + 50}
-        y={centerY + group.endAngle * 10}
+        opacity={0.2}
+        x={adjustedLabelX ? adjustedLabelX : 0}
+        y={adjustedLabelY ? adjustedLabelY : 0}
         text={group.name}
         font={font}
-        color={"white"}
+        color={color.active}
         // opacity={animatedTextOpacity}
       />
     </Group>

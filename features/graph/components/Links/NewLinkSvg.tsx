@@ -8,9 +8,9 @@ import {
 import { useEffect } from "react";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 
+import { groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { groupMap } from "@/lib/utils/getColors";
 
 interface LinkSvgProps {
   link_id: number;
