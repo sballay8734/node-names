@@ -83,7 +83,7 @@ export default function MasterSvgNode({ node }: NodeProps) {
   const shade = getColors(node);
 
   const color = useDerivedValue(() => {
-    const c = shade[nodeStatus];
+    const c = shade[nodeStatus ? "active" : "inactive"];
     return withTiming(c, { duration: 150 });
   });
 

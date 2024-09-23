@@ -9,9 +9,9 @@ export type RelationType =
   | "classmate"
   | "virtual"
   | "group";
-export type NodeStatus = "active" | "parent_active" | "inactive";
-export type LinkStatus = "active" | "parent_active" | "inactive";
-export type GroupStatus = "active" | "parent_active" | "inactive";
+export type NodeStatus = boolean;
+export type LinkStatus = boolean;
+export type GroupStatus = boolean;
 export type NodeType = "node" | "group" | "root_group" | "root";
 
 // RawShape from the database **************************************************
@@ -58,8 +58,6 @@ export interface UiNode extends PositionedNode {
   isShown: boolean;
 }
 export interface UiLink extends PositionedLink {
-  source_status: NodeStatus;
-  target_status: NodeStatus;
   link_status: LinkStatus;
 }
 

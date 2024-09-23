@@ -24,6 +24,7 @@ export interface GraphSliceState {
   links: {
     byId: PosLinkMap;
     bySourceId: { [key: number]: number[] }; // for repositioning
+    byTargetId: { [key: number]: number[] }; // for statuses
     allIds: number[];
   };
   groups: {
@@ -49,6 +50,7 @@ const initialState: GraphSliceState = {
   links: {
     byId: {},
     bySourceId: {},
+    byTargetId: {},
     allIds: [],
   },
   groups: {
@@ -73,108 +75,108 @@ const NewArchitectureSlice = createSlice({
   initialState,
   reducers: {
     // THIS is where to add additional fields like "status" && "is_current_root"
-    setInitialState: (
-      state,
-      action: PayloadAction<{
-        root: PositionedNode;
-        nodes: PositionedNode[];
-        links: PositionedLink[];
-        groups: PositionedNode[];
-      }>,
-    ) => {
-      const { root, nodes, links, groups } = action.payload;
+    // setInitialState: (
+    //   state,
+    //   action: PayloadAction<{
+    //     root: PositionedNode;
+    //     nodes: PositionedNode[];
+    //     links: PositionedLink[];
+    //     groups: PositionedNode[];
+    //   }>,
+    // ) => {
+    //   const { root, nodes, links, groups } = action.payload;
 
-      // this map is used for quick lookup during links && groups loop
-      const nodeStatusMap: {
-        [id: number]: { isRoot: boolean; node_status: string };
-      } = {};
+    //   // this map is used for quick lookup during links && groups loop
+    //   const nodeStatusMap: {
+    //     [id: number]: { isRoot: boolean; node_status: string };
+    //   } = {};
 
-      // Set root node
-      const rootNode: UiNode = {
-        ...root,
-        isRoot: true,
-        node_status: "active",
-        isShown: true,
-      };
+    //   // Set root node
+    //   const rootNode: UiNode = {
+    //     ...root,
+    //     isRoot: true,
+    //     node_status: "active",
+    //     isShown: true,
+    //   };
 
-      if (!state.nodes.byId[rootNode.id]) {
-        // set root node stuff
-        state.nodes.activeRootId = rootNode.id;
-        state.userId = rootNode.id;
-        state.nodes.selectedNodeIds.push(rootNode.id);
-        state.nodes.focusedNodeId = rootNode.id;
-        state.nodes.byId[rootNode.id] = rootNode;
-        state.nodes.allIds.push(rootNode.id);
+    //   if (!state.nodes.byId[rootNode.id]) {
+    //     // set root node stuff
+    //     state.nodes.activeRootId = rootNode.id;
+    //     state.userId = rootNode.id;
+    //     state.nodes.selectedNodeIds.push(rootNode.id);
+    //     state.nodes.focusedNodeId = rootNode.id;
+    //     state.nodes.byId[rootNode.id] = rootNode;
+    //     state.nodes.allIds.push(rootNode.id);
 
-        nodeStatusMap[rootNode.id] = {
-          isRoot: rootNode.isRoot,
-          node_status: rootNode.node_status,
-        };
-      }
+    //     nodeStatusMap[rootNode.id] = {
+    //       isRoot: rootNode.isRoot,
+    //       node_status: rootNode.node_status,
+    //     };
+    //   }
 
-      // initialize groups
-      groups.forEach((group) => {
-        if (!state.groups.byId[group.id]) {
-          const isRootGroup = group.type === "root_group";
-          const newGroup: UiNode = {
-            ...group,
-            isRoot: false,
-            node_status: isRootGroup ? "parent_active" : "inactive",
-            isShown: true,
-          };
+    //   // initialize groups
+    //   groups.forEach((group) => {
+    //     if (!state.groups.byId[group.id]) {
+    //       const isRootGroup = group.type === "root_group";
+    //       const newGroup: UiNode = {
+    //         ...group,
+    //         isRoot: false,
+    //         node_status: isRootGroup ? "parent_active" : "inactive",
+    //         isShown: true,
+    //       };
 
-          state.groups.byId[group.id] = newGroup;
-          state.groups.allIds.push(group.id);
+    //       state.groups.byId[group.id] = newGroup;
+    //       state.groups.allIds.push(group.id);
 
-          nodeStatusMap[group.id] = {
-            isRoot: newGroup.isRoot,
-            node_status: newGroup.node_status,
-          };
-        }
-      });
+    //       nodeStatusMap[group.id] = {
+    //         isRoot: newGroup.isRoot,
+    //         node_status: newGroup.node_status,
+    //       };
+    //     }
+    //   });
 
-      // initialize nodes state (byId, allIds, & activeRootId)
-      nodes.forEach((node) => {
-        if (!state.nodes.byId[node.id]) {
-          const newNode: UiNode = {
-            ...node,
-            isRoot: false,
-            node_status: "inactive",
-            isShown: true,
-          };
-          state.nodes.byId[node.id] = newNode;
-          state.nodes.allIds.push(node.id);
+    //   // initialize nodes state (byId, allIds, & activeRootId)
+    //   nodes.forEach((node) => {
+    //     if (!state.nodes.byId[node.id]) {
+    //       const newNode: UiNode = {
+    //         ...node,
+    //         isRoot: false,
+    //         node_status: "inactive",
+    //         isShown: true,
+    //       };
+    //       state.nodes.byId[node.id] = newNode;
+    //       state.nodes.allIds.push(node.id);
 
-          // store status in temporary map for SAFE look up during links loop
-          nodeStatusMap[node.id] = {
-            isRoot: newNode.isRoot,
-            node_status: newNode.node_status,
-          };
-        }
-      });
+    //       // store status in temporary map for SAFE look up during links loop
+    //       nodeStatusMap[node.id] = {
+    //         isRoot: newNode.isRoot,
+    //         node_status: newNode.node_status,
+    //       };
+    //     }
+    //   });
 
-      // initialize edges state and use nodetStatusMap
-      links.forEach((link) => {
-        if (!state.links.byId[link.id]) {
-          const sourceIsRoot = link.source_type === "root";
+    //   // initialize edges state and use nodetStatusMap
+    //   links.forEach((link) => {
+    //     if (!state.links.byId[link.id]) {
+    //       const sourceIsRoot = link.source_type === "root";
 
-          state.links.byId[link.id] = {
-            ...link,
-            source_status: sourceIsRoot ? "active" : "inactive",
-            target_status: sourceIsRoot ? "parent_active" : "inactive",
-            link_status: "active",
-          };
+    //       state.links.byId[link.id] = {
+    //         ...link,
+    //         source_status: sourceIsRoot ? "active" : "inactive",
+    //         target_status: sourceIsRoot ? "parent_active" : "inactive",
+    //         link_status: "active",
+    //       };
 
-          state.links.allIds.push(link.id);
+    //       state.links.allIds.push(link.id);
 
-          if (!state.links.bySourceId[link.source_id]) {
-            state.links.bySourceId[link.source_id] = [link.target_id];
-          } else {
-            state.links.bySourceId[link.source_id].push(link.target_id);
-          }
-        }
-      });
-    },
+    //       if (!state.links.bySourceId[link.source_id]) {
+    //         state.links.bySourceId[link.source_id] = [link.target_id];
+    //       } else {
+    //         state.links.bySourceId[link.source_id].push(link.target_id);
+    //       }
+    //     }
+    //   });
+    // },
     newSetInitialState: (
       state,
       action: PayloadAction<{
@@ -183,16 +185,35 @@ const NewArchitectureSlice = createSlice({
         rootGroupIds: number[];
         linksById: LinkHash;
         linksBySourceId: SourceHash;
+        linksByTargetId: SourceHash;
+        initActiveRootId: number | null;
       }>,
     ) => {
-      const { nodesById, nodeIds, linksById, linksBySourceId, rootGroupIds } =
-        action.payload;
+      const {
+        nodesById,
+        nodeIds,
+        linksById,
+        linksBySourceId,
+        linksByTargetId,
+        rootGroupIds,
+        initActiveRootId,
+      } = action.payload;
 
       state.nodes.byId = { ...nodesById };
       state.nodes.allIds = [...nodeIds];
       state.links.byId = { ...linksById };
       state.links.bySourceId = { ...linksBySourceId };
       state.rootGroups.allIds = [...rootGroupIds];
+
+      if (initActiveRootId) {
+        state.nodes.selectedNodeIds.push(initActiveRootId);
+      }
+
+      state.nodes.activeRootId = initActiveRootId;
+      state.nodes.focusedNodeId = initActiveRootId;
+    },
+    newToggleNode: (state, action: PayloadAction<number>) => {
+      const clickedNode = state.nodes.byId[action.payload];
     },
 
     // Update nodes' status while also updating parent/children if necessary
@@ -203,8 +224,8 @@ const NewArchitectureSlice = createSlice({
         const status = state.nodes.byId[nodeId].node_status;
 
         // make node active if it's "parent_active" or "inactive" when clicked
-        if (status !== "active") {
-          state.nodes.byId[nodeId].node_status = "active";
+        if (status !== true) {
+          state.nodes.byId[nodeId].node_status = true;
           state.nodes.focusedNodeId = nodeId;
           // push id to selected ids if not in there already (it shouldn't be)
           if (!state.nodes.selectedNodeIds.includes(nodeId)) {
@@ -212,10 +233,10 @@ const NewArchitectureSlice = createSlice({
           }
           // !TODO: handle case of node click when active AND parent IS active
         } else if (false) {
-          state.nodes.byId[nodeId].node_status = "parent_active";
+          state.nodes.byId[nodeId].node_status = false;
           // handle case of node click while active AND parent is NOT active
         } else {
-          state.nodes.byId[nodeId].node_status = "inactive";
+          state.nodes.byId[nodeId].node_status = false;
           // remove id from selected ids AND updated focusedNodeId
           if (state.nodes.selectedNodeIds.includes(nodeId)) {
             // remove node first
@@ -248,7 +269,7 @@ const NewArchitectureSlice = createSlice({
         if (state.nodes.byId[id]) {
           if (state.nodes.byId[id].depth === 1) return;
 
-          state.nodes.byId[id].node_status = "inactive";
+          state.nodes.byId[id].node_status = false;
         } else {
           console.error(
             "Unexpected. Ids in array should exist in nodes.byId object. graphSlice",
@@ -368,7 +389,7 @@ const updateActionButtonStates = (state: GraphSliceState) => {
 };
 
 export const {
-  setInitialState,
+  // setInitialState,
   toggleNode,
   swapRootNode,
   deselectAllNodes,
@@ -411,7 +432,7 @@ export const selectNodeStatus = createSelector(
   (parentLinks, nodes) => {
     // If any parent node is active, mark this node as `parent_active`
     const anyParentActive = parentLinks.some(
-      (link) => nodes[link.source_id].node_status === "active",
+      (link) => nodes[link.source_id].node_status === true,
     );
     return anyParentActive ? "parent_active" : "inactive";
   },

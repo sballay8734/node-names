@@ -19,9 +19,9 @@ import {
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/lib/constants/styles";
+import { groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { groupMap } from "@/lib/utils/getColors";
 
 interface LinkSvgProps {
   id: number;
@@ -60,7 +60,7 @@ export default function LinkSvg({ id }: LinkSvgProps) {
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    if (sourceStatus === "active") {
+    if (sourceStatus === true) {
       progress.value = withTiming(1, { duration: 200 });
       return;
     }
@@ -130,10 +130,7 @@ export default function LinkSvg({ id }: LinkSvgProps) {
   // );
 
   const animateOpacity = useDerivedValue(() => {
-    const newOpacity =
-      sourceStatus === "active" && targetStatus === "active"
-        ? 1
-        : LINK_OPACITY[sourceStatus];
+    const newOpacity = true ? 1 : 0;
 
     return withTiming(newOpacity, {
       duration: 200,
