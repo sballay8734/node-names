@@ -252,12 +252,50 @@ export function newNewPosFunc(
     }
   }
 
+  function positionRootGroupsAndNodes(nodesHash: NodeHash) {
+    const rootGroups = Object.values(nodesHash).filter(
+      (node: PositionedNode) => node.type === "root_group",
+    );
+    const angleStep = (2 * Math.PI) / rootGroups.length;
+
+    rootGroups.forEach((root_group: PositionedNode, index: number) => {
+      const angle = index * angleStep - Math.PI / 2;
+      nodesById[root_group.id].x = centerX + radius * Math.cos(angle);
+      nodesById[root_group.id].y = centerY + radius * Math.sin(angle);
+      nodesById[root_group.id].startAngle = angle;
+      nodesById[root_group.id].endAngle = angle + angleStep;
+
+      positionNodesInGroup(root_group);
+    });
+  }
+
+  function positionNodesInGroup(root_group: PositionedNode) {
+    const nodesInGroup = Object.values(sourceById[root_group.id]);
+    const groupSize = sourceById[root_group.id].size;
+    const groupCenterAngle = (root_group.startAngle + root_group.endAngle) / 2;
+    const totalGroupWidth = (groupSize - 1) * NODE_SPACING;
+    const startOffset = -totalGroupWidth / 2;
+
+    nodesInGroup.forEach((node, index) => {
+      const offset = startOffset + index * NODE_SPACING;
+      const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
+
+      nodesById[node.id].x = centerX + radius * Math.cos(nodeAngle);
+      nodesById[node.id].y = centerY + radius * Math.sin(nodeAngle);
+      nodesById[node.id].startAngle = nodesById[root_group.id].startAngle;
+      nodesById[node.id].endAngle = nodesById[root_group.id].endAngle;
+    });
+  }
+
   // loop through nodes and links and add them to hash for easy access
   allNodes.forEach((node) => addNodeToHash(node));
   allLinks.forEach((link) => addSourceToHash(link));
+  console.log("BEFORE:", nodesById);
+  positionRootGroupsAndNodes(nodesById);
+  console.log("AFTER:", nodesById);
 
   // console.log("NODES:", nodesById);
-  console.log("SOURCES:", sourceById);
+  // console.log("SOURCES:", sourceById);
   // console.log("linkIds:", linkIds);
   // console.log("sourceIds:", sourceIds);
   // console.log("targetIds:", targetIds);
