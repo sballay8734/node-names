@@ -30,6 +30,7 @@ const MAX_NODES = 1000;
 const RADIUS_FACTOR = 0.3;
 const PADDING = 5;
 const NODE_SPACING = REG_NODE_RADIUS * 2 + PADDING;
+export const CIRCLE_RADIUS = 150;
 
 export function newNewPosFunc(
   allNodes: RawNode[],
@@ -40,7 +41,7 @@ export function newNewPosFunc(
   const { width, height } = windowSize;
   const centerX = width / 2;
   const centerY = height / 2;
-  const radius = Math.min(width, height) * RADIUS_FACTOR;
+  const radius = 150;
 
   // hashes
   const nodesById: NodeHash = {};

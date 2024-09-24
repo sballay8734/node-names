@@ -3,7 +3,6 @@ import { RootState } from "@/store/store";
 
 import GroupPath from "./GroupPath";
 import NewLinkSvg from "./Links/NewLinkSvg";
-import LinkSvg from "./LinkSvg";
 import RenderSvgNode from "./Nodes/RenderSvgNode";
 
 export default function SvgElements() {

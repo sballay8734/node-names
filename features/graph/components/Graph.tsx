@@ -1,4 +1,4 @@
-import { Canvas, Fill, Group } from "@shopify/react-native-skia";
+import { Canvas, Circle, Fill, Group } from "@shopify/react-native-skia";
 import React, { useEffect, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -18,7 +18,7 @@ import {
   MIN_SCALE,
   SCALE_SENSITIVITY,
 } from "@/lib/hooks/useGestures";
-import { newNewPosFunc } from "@/lib/utils/positionGraphEls";
+import { CIRCLE_RADIUS, newNewPosFunc } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
 
@@ -150,6 +150,14 @@ export default function Graph() {
         >
           <Fill color={GRAPH_BG_COLOR} />
           <Group transform={transform}>
+            <Circle
+              color={"white"}
+              r={CIRCLE_RADIUS}
+              style={"stroke"}
+              strokeWidth={1}
+              cx={windowSize.windowCenterX}
+              cy={windowSize.windowCenterY}
+            />
             <Provider store={store}>
               <SvgElements />
             </Provider>
