@@ -195,7 +195,7 @@ const NewArchitectureSlice = createSlice({
         initActiveRootId,
       } = action.payload;
 
-      console.log("RUNNING");
+      console.log(linksById);
 
       state.nodes.byId = { ...nodesById };
       state.nodes.allIds = [...nodeIds];
@@ -222,12 +222,6 @@ const NewArchitectureSlice = createSlice({
       ) {
         // deactivate node
         state.nodes.byId[clickedNodeId].node_status = false;
-        // // deactivate all links where this node is the source
-        // state.links.allIds.forEach((id) => {
-        //   if (state.links.byId[id].link_status === true) {
-        //     state.links.byId[id].link_status = false;
-        //   }
-        // });
         // update selectedNodeIds
         const updatedNodesIds = [
           ...state.nodes.selectedNodeIds.filter((id) => id !== clickedNodeId),

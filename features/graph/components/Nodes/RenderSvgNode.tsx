@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import MasterNode from "./MasterSvgNode";
+import MasterSvgNode from "./MasterSvgNode";
 
 interface NewSvgProps {
   id: number;
@@ -12,7 +12,7 @@ export default function RenderSvgNode({ id }: NewSvgProps) {
     (state: RootState) => state.graphData.nodes.byId[id],
   );
 
-  if (!node || node.type === "root_group") return null;
+  if (!node) return null;
 
-  return <MasterNode key={node.id} node={node} />;
+  return <MasterSvgNode key={node.id} node={node} />;
 }

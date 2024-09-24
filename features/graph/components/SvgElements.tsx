@@ -25,8 +25,11 @@ export default function SvgElements() {
         // return <LinkSvg key={id} id={id} />;
       })}
       {rootGroupIds.map((id) => {
-        return <GroupPath key={id} id={id} />;
+        return <RenderSvgNode key={id} id={id} />;
       })}
+      {/* {rootGroupIds.map((id) => {
+        return <GroupPath key={id} id={id} />;
+      })} */}
       {nodeIds.map((id) => {
         return <RenderSvgNode key={id} id={id} />;
       })}

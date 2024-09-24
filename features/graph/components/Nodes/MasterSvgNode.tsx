@@ -87,6 +87,25 @@ export default function MasterSvgNode({ node }: NodeProps) {
     return withTiming(c, { duration: 150 });
   });
 
+  // Calculate midpoint angle for label
+  const midAngle = (node.startAngle + node.endAngle) / 2;
+
+  const textMeasurements = node.name && font.measureText(node.name);
+
+  const textWidth = textMeasurements && textMeasurements.width;
+  const textHeight = textMeasurements && textMeasurements.height;
+
+  // Calculate position of label
+  const labelRadius = radius * 2;
+  const rawLabelX = labelRadius * Math.cos(midAngle);
+  const rawLabelY = labelRadius * Math.sin(midAngle);
+
+  // Adjust label position based on text size
+  // const adjustedLabelX = typeof textWidth === "number" && 0 - textWidth / 2 + 1;
+  // const adjustedLabelY = typeof textHeight === "number" && 0 + textHeight / 4;
+  const adjustedLabelX = typeof textWidth === "number" && 0 - textWidth / 2 + 1;
+  const adjustedLabelY = typeof textHeight === "number" && 0 - textHeight / 2;
+
   // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (
     <Group origin={{ x: centerX, y: centerY }} transform={transform}>
@@ -105,11 +124,11 @@ export default function MasterSvgNode({ node }: NodeProps) {
         />
       </Circle> */}
       <Text
-        // x={node.depth === 1 ? xOffset : radius + 3}
-        // y={yOffset}
-        text={node.name}
+        x={adjustedLabelX || 0}
+        y={adjustedLabelY || 0}
+        text={node.depth === 1 ? " ME" : node.name}
         font={font}
-        color={"white"}
+        color={node.depth === 1 ? "white" : color}
         // opacity={animatedTextOpacity}
       />
     </Group>

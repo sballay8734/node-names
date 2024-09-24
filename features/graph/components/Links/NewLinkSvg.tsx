@@ -28,9 +28,7 @@ export default function NewLinkSvg({ link_id }: LinkSvgProps) {
   );
   const sourceStatus = useAppSelector(
     (state: RootState) =>
-      link.source_type === "root_group" &&
-      rootNodeId &&
-      state.graphData.nodes.byId[rootNodeId].node_status,
+      state.graphData.nodes.byId[link.source_id].node_status,
   );
   const targetGroup = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[link.target_id].group_name,

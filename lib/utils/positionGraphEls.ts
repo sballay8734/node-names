@@ -21,16 +21,14 @@ export interface LinkHash {
 
 export type SourceHash = Record<number, number[]>;
 
-type mapKey = "root" | "root_group" | "group" | "node";
-
 // REMOVE: should be passed eventually
 const userId = 1;
 const MAX_ROOT_GROUPS = 7;
 const MAX_NODES = 1000;
 const RADIUS_FACTOR = 0.3;
 const PADDING = 5;
-const NODE_SPACING = REG_NODE_RADIUS * 2 + PADDING;
-export const CIRCLE_RADIUS = 150;
+const NODE_SPACING = REG_NODE_RADIUS;
+export const CIRCLE_RADIUS = 60;
 
 export function newNewPosFunc(
   allNodes: RawNode[],
@@ -41,7 +39,8 @@ export function newNewPosFunc(
   const { width, height } = windowSize;
   const centerX = width / 2;
   const centerY = height / 2;
-  const radius = 150;
+  // const radius = Math.min(width, height);
+  const radius = CIRCLE_RADIUS;
 
   // hashes
   const nodesById: NodeHash = {};
@@ -126,11 +125,17 @@ export function newNewPosFunc(
     const angleStep = (2 * Math.PI) / rootGroups.length;
 
     rootGroups.forEach((root_group: UiNode, index: number) => {
-      const angle = index * angleStep - Math.PI / 2;
-      root_group.x = centerX + radius * Math.cos(angle);
-      root_group.y = centerY + radius * Math.sin(angle);
-      root_group.startAngle = angle;
-      root_group.endAngle = angle + angleStep;
+      const startAngle = index * angleStep - Math.PI / 2;
+      const endAngle = startAngle + angleStep;
+      const centerAngle = (startAngle + endAngle) / 2;
+
+      // Calculate the center of the group
+      root_group.x =
+        centerX + radius * (root_group.depth - 1) * Math.cos(centerAngle);
+      root_group.y =
+        centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
+      root_group.startAngle = startAngle;
+      root_group.endAngle = endAngle;
 
       positionNodesInGroup(root_group);
     });
@@ -153,8 +158,8 @@ export function newNewPosFunc(
       const offset = startOffset + index * NODE_SPACING;
       const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
 
-      node.x = centerX + radius * Math.cos(nodeAngle);
-      node.y = centerY + radius * Math.sin(nodeAngle);
+      node.x = centerX + radius * node.depth * Math.cos(nodeAngle);
+      node.y = centerY + radius * node.depth * Math.sin(nodeAngle);
       node.startAngle = root_group.startAngle;
       node.endAngle = root_group.endAngle;
 
@@ -184,33 +189,16 @@ export function newNewPosFunc(
 
     const linkStatus: LinkStatus = sourceStatus === true ? true : false;
 
-    if (link.source_type === "root") return null;
+    const updatedLink: UiLink = {
+      ...link,
+      x1: nodesById[link.source_id].x,
+      y1: nodesById[link.source_id].y,
+      x2: nodesById[link.target_id].x,
+      y2: nodesById[link.target_id].y,
+      link_status: linkStatus,
+    };
 
-    // modify source of nodes in root groups (connect them to the root)
-    if (link.source_type === "root_group" && initActiveRootId) {
-      const updatedLink: UiLink = {
-        ...link,
-        x1: nodesById[initActiveRootId].x,
-        y1: nodesById[initActiveRootId].y,
-        x2: nodesById[link.target_id].x,
-        y2: nodesById[link.target_id].y,
-        link_status: true,
-      };
-
-      linksById[link_id] = updatedLink;
-    } else {
-      // otherwise, the source should not change
-      const updatedLink: UiLink = {
-        ...link,
-        x1: nodesById[link.source_id].x,
-        y1: nodesById[link.source_id].y,
-        x2: nodesById[link.target_id].x,
-        y2: nodesById[link.target_id].y,
-        link_status: linkStatus,
-      };
-
-      linksById[link_id] = updatedLink;
-    }
+    linksById[link_id] = updatedLink;
   }
 
   // loop through nodes and links and add them to hash for easy access

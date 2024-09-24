@@ -151,10 +151,18 @@ export default function Graph() {
           <Fill color={GRAPH_BG_COLOR} />
           <Group transform={transform}>
             <Circle
-              color={"white"}
+              color={"#242d45"}
               r={CIRCLE_RADIUS}
               style={"stroke"}
-              strokeWidth={1}
+              strokeWidth={0.1}
+              cx={windowSize.windowCenterX}
+              cy={windowSize.windowCenterY}
+            />
+            <Circle
+              color={"#242d45"}
+              r={CIRCLE_RADIUS * 3}
+              style={"stroke"}
+              strokeWidth={0.3}
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />
