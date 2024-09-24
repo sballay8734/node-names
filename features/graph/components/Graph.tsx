@@ -166,6 +166,22 @@ export default function Graph() {
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />
+            <Circle
+              color={"#242d45"}
+              r={CIRCLE_RADIUS * 4}
+              style={"stroke"}
+              strokeWidth={0.3}
+              cx={windowSize.windowCenterX}
+              cy={windowSize.windowCenterY}
+            />
+            <Circle
+              color={"#242d45"}
+              r={CIRCLE_RADIUS * 5}
+              style={"stroke"}
+              strokeWidth={0.3}
+              cx={windowSize.windowCenterX}
+              cy={windowSize.windowCenterY}
+            />
             <Provider store={store}>
               <SvgElements />
             </Provider>

@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
 
 export default Index;
 
+// !TODO: TWO THINGS (1. When a node is deselected, all of it's children should also cascade and be deselected) (2. do you really NEED to be able to select the root node? I don't think so. It's kinda pointless and having the links go from the root to the root groups doesn't look good)
+
 // !TODO: Names should disappear while groups get larger and bolder as you zoom out
 
 // !TODO: You can pretty much pan forever. NOT GOOD. Set a cap on how far you can pan the screen
