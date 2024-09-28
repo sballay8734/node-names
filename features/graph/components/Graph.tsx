@@ -1,23 +1,16 @@
 import { Canvas, Circle, Fill, Group } from "@shopify/react-native-skia";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
-  useSharedValue,
-  withDecay,
 } from "react-native-reanimated";
 import { Provider } from "react-redux";
 
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
 import { testLinks, testNodes } from "@/lib/data/new_structure";
-import {
-  INITIAL_SCALE,
-  MAX_SCALE,
-  MIN_SCALE,
-  SCALE_SENSITIVITY,
-} from "@/lib/hooks/useGestures";
+import { useGestures } from "@/lib/hooks/useGestures";
 import { CIRCLE_RADIUS, newNewPosFunc } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
@@ -35,87 +28,17 @@ export default function Graph() {
     newNewPosFunc(testNodes, testLinks, windowSize);
   }, [windowSize]);
 
-  const scale = useSharedValue(INITIAL_SCALE);
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const lastScale = useSharedValue(INITIAL_SCALE);
-  const initialFocalX = useSharedValue(0);
-  const initialFocalY = useSharedValue(0);
-
-  // Shared values to track how much the center shifts
-  const centerShiftX = useSharedValue(0);
-  const centerShiftY = useSharedValue(0);
-
-  const pinch = useMemo(
-    () =>
-      Gesture.Pinch()
-        .onStart((e) => {
-          initialFocalX.value = e.focalX;
-          initialFocalY.value = e.focalY;
-        })
-        .onChange((e) => {
-          const scaleFactor = 1 + (e.scale - 1) * SCALE_SENSITIVITY;
-          const newScale = Math.min(
-            Math.max(lastScale.value * scaleFactor, MIN_SCALE),
-            MAX_SCALE,
-          );
-
-          // only apply translation if the scale is actually changing
-          if (newScale !== scale.value) {
-            // Calculate the change in scale
-            const scaleChange = newScale / scale.value;
-
-            // Update the scale
-            scale.value = newScale;
-
-            // Adjust the translation to keep the center point fixed
-            const adjustedFocalX = initialFocalX.value - translateX.value;
-            const adjustedFocalY = initialFocalY.value - translateY.value;
-
-            translateX.value -= adjustedFocalX * (scaleChange - 1);
-            translateY.value -= adjustedFocalY * (scaleChange - 1);
-
-            centerShiftX.value += adjustedFocalX * (scaleChange - 1);
-            centerShiftY.value += adjustedFocalY * (scaleChange - 1);
-          }
-        })
-        .onEnd((e) => {
-          lastScale.value = scale.value;
-        }),
-    [
-      initialFocalX,
-      initialFocalY,
-      lastScale,
-      scale,
-      translateX,
-      translateY,
-      centerShiftX,
-      centerShiftY,
-    ],
-  );
-
-  const pan = useMemo(
-    () =>
-      Gesture.Pan()
-        .onChange((e) => {
-          translateX.value += e.changeX;
-          translateY.value += e.changeY;
-
-          // centerShiftX.value += e.changeX;
-          // centerShiftY.value += e.changeY;
-        })
-        .onEnd((e) => {
-          translateX.value = withDecay({
-            velocity: e.velocityX,
-            deceleration: 0.995,
-          });
-          translateY.value = withDecay({
-            velocity: e.velocityY,
-            deceleration: 0.995,
-          });
-        }),
-    [translateX, translateY],
-  );
+  const {
+    scale,
+    translateX,
+    translateY,
+    composed,
+    lastScale,
+    initialFocalX,
+    initialFocalY,
+    centerShiftX,
+    centerShiftY,
+  } = useGestures();
 
   const transform = useDerivedValue(() => {
     return [
@@ -124,11 +47,6 @@ export default function Graph() {
       { scale: scale.value },
     ];
   });
-
-  const composed = useMemo(
-    () => Gesture.Simultaneous(pan, pinch),
-    [pan, pinch],
-  );
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -162,7 +80,7 @@ export default function Graph() {
               color={"#242d45"}
               r={CIRCLE_RADIUS * 3}
               style={"stroke"}
-              strokeWidth={0.3}
+              strokeWidth={0.1}
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />
@@ -170,7 +88,7 @@ export default function Graph() {
               color={"#242d45"}
               r={CIRCLE_RADIUS * 4}
               style={"stroke"}
-              strokeWidth={0.3}
+              strokeWidth={0.1}
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />
@@ -178,7 +96,7 @@ export default function Graph() {
               color={"#242d45"}
               r={CIRCLE_RADIUS * 5}
               style={"stroke"}
-              strokeWidth={0.3}
+              strokeWidth={0.1}
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />

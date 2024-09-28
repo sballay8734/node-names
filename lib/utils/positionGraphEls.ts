@@ -136,6 +136,7 @@ export function newNewPosFunc(
         centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
       root_group.startAngle = startAngle;
       root_group.endAngle = endAngle;
+      root_group.node_status = true;
 
       positionNodesInGroup(root_group);
     });
@@ -167,7 +168,8 @@ export function newNewPosFunc(
         ...node,
         isRoot: false,
         isShown: true,
-        node_status: root_group.node_status ? true : false,
+        // node_status: root_group.node_status ? true : false,
+        node_status: true,
       };
     });
 
@@ -185,9 +187,10 @@ export function newNewPosFunc(
 
   function positionLink(link_id: number) {
     const link = linksById[link_id];
-    const sourceStatus: LinkStatus = nodesById[link.source_id].node_status;
+    // const sourceStatus: LinkStatus = nodesById[link.source_id].node_status;
 
-    const linkStatus: LinkStatus = sourceStatus === true ? true : false;
+    // const linkStatus: LinkStatus = sourceStatus === true ? true : false;
+    const linkStatus: LinkStatus = true;
 
     const updatedLink: UiLink = {
       ...link,

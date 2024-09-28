@@ -195,8 +195,6 @@ const NewArchitectureSlice = createSlice({
         initActiveRootId,
       } = action.payload;
 
-      console.log(linksById);
-
       state.nodes.byId = { ...nodesById };
       state.nodes.allIds = [...nodeIds];
       state.links.byId = { ...linksById };

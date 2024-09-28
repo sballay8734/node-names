@@ -8,6 +8,8 @@ import {
   vec,
 } from "@shopify/react-native-skia";
 import {
+  interpolate,
+  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -22,6 +24,7 @@ import { UiNode } from "@/lib/types/graph";
 import { getColors } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { useGestures } from "@/lib/hooks/useGestures";
 
 interface NodeProps {
   node: UiNode;
@@ -35,6 +38,8 @@ const font = matchFont({
 });
 
 export default function MasterSvgNode({ node }: NodeProps) {
+  const { scale, translateX, translateY } = useGestures();
+  console.log(scale.value);
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
@@ -72,6 +77,10 @@ export default function MasterSvgNode({ node }: NodeProps) {
 
   const blurIntensity = useDerivedValue(() => {
     return withTiming(isFocusedNode ? blurVal : 0.1, { duration: 150 });
+  });
+
+  const labelOpacity = useDerivedValue(() => {
+    return scale.value;
   });
 
   // const sunOpacity = useDerivedValue(() => {
@@ -113,7 +122,6 @@ export default function MasterSvgNode({ node }: NodeProps) {
       <Circle r={radius} color={color}>
         <BlurMask style={"solid"} blur={blurIntensity} />
       </Circle>
-
       {/* Main node */}
       <Circle r={radius} color={color} />
       {/* <Circle opacity={sunOpacity} blendMode={"colorDodge"} r={radius}>
@@ -129,7 +137,7 @@ export default function MasterSvgNode({ node }: NodeProps) {
         text={node.depth === 1 ? " ME" : node.name}
         font={font}
         color={node.depth === 1 ? "white" : color}
-        // opacity={animatedTextOpacity}
+        // opacity={labelOpacity}
       />
     </Group>
   );

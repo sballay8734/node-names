@@ -15,31 +15,12 @@ export const useGestures = () => {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
-
-  const focalX = useSharedValue(0);
-  const focalY = useSharedValue(0);
   const initialFocalX = useSharedValue(0);
   const initialFocalY = useSharedValue(0);
 
-  const pan = useMemo(
-    () =>
-      Gesture.Pan()
-        .onChange((e) => {
-          translateX.value += e.changeX;
-          translateY.value += e.changeY;
-        })
-        .onEnd((e) => {
-          translateX.value = withDecay({
-            velocity: e.velocityX,
-            deceleration: 0.995,
-          });
-          translateY.value = withDecay({
-            velocity: e.velocityY,
-            deceleration: 0.995,
-          });
-        }),
-    [translateX, translateY],
-  );
+  // Shared values to track how much the center shifts
+  const centerShiftX = useSharedValue(0);
+  const centerShiftY = useSharedValue(0);
 
   const pinch = useMemo(
     () =>
@@ -64,15 +45,54 @@ export const useGestures = () => {
             scale.value = newScale;
 
             // Adjust the translation to keep the center point fixed
-            translateX.value = translateX.value * scaleChange;
-            translateY.value = translateY.value * scaleChange;
-            // console.log(scale.value);
+            const adjustedFocalX = initialFocalX.value - translateX.value;
+            const adjustedFocalY = initialFocalY.value - translateY.value;
+
+            translateX.value -= adjustedFocalX * (scaleChange - 1);
+            translateY.value -= adjustedFocalY * (scaleChange - 1);
+
+            centerShiftX.value += adjustedFocalX * (scaleChange - 1);
+            centerShiftY.value += adjustedFocalY * (scaleChange - 1);
           }
+
+          // console.log(scale.value);
         })
         .onEnd((e) => {
           lastScale.value = scale.value;
         }),
-    [initialFocalX, initialFocalY, lastScale, scale, translateX, translateY],
+    [
+      initialFocalX,
+      initialFocalY,
+      lastScale,
+      scale,
+      translateX,
+      translateY,
+      centerShiftX,
+      centerShiftY,
+    ],
+  );
+
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .onChange((e) => {
+          translateX.value += e.changeX;
+          translateY.value += e.changeY;
+
+          // centerShiftX.value += e.changeX;
+          // centerShiftY.value += e.changeY;
+        })
+        .onEnd((e) => {
+          translateX.value = withDecay({
+            velocity: e.velocityX,
+            deceleration: 0.995,
+          });
+          translateY.value = withDecay({
+            velocity: e.velocityY,
+            deceleration: 0.995,
+          });
+        }),
+    [translateX, translateY],
   );
 
   const composed = useMemo(
@@ -86,7 +106,9 @@ export const useGestures = () => {
     translateX,
     translateY,
     lastScale,
-    focalX,
-    focalY,
+    initialFocalX,
+    initialFocalY,
+    centerShiftX,
+    centerShiftY,
   };
 };
