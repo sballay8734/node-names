@@ -2,14 +2,11 @@ import {
   BlurMask,
   Circle,
   Group,
-  RadialGradient,
   Text,
   matchFont,
-  vec,
 } from "@shopify/react-native-skia";
 import {
   interpolate,
-  useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -20,11 +17,11 @@ import {
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/lib/constants/styles";
+import { useGestureContext } from "@/lib/hooks/useGestureContext";
 import { UiNode } from "@/lib/types/graph";
 import { getColors } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { useGestures } from "@/lib/hooks/useGestures";
 
 interface NodeProps {
   node: UiNode;
@@ -35,11 +32,17 @@ const font = matchFont({
   fontSize: 10,
   fontStyle: "normal",
   fontWeight: "400",
-});
+}); //
 
 export default function MasterSvgNode({ node }: NodeProps) {
-  const { scale, translateX, translateY } = useGestures();
-  console.log(scale.value);
+  const scale = useGestureContext().scale;
+
+  console.log("FROM NODE: ", scale.value);
+
+  const labelOpacity = useDerivedValue(() => {
+    return interpolate(scale.value, [0.4, 1.2], [0, 1]);
+  });
+
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
@@ -77,10 +80,6 @@ export default function MasterSvgNode({ node }: NodeProps) {
 
   const blurIntensity = useDerivedValue(() => {
     return withTiming(isFocusedNode ? blurVal : 0.1, { duration: 150 });
-  });
-
-  const labelOpacity = useDerivedValue(() => {
-    return scale.value;
   });
 
   // const sunOpacity = useDerivedValue(() => {
@@ -137,7 +136,7 @@ export default function MasterSvgNode({ node }: NodeProps) {
         text={node.depth === 1 ? " ME" : node.name}
         font={font}
         color={node.depth === 1 ? "white" : color}
-        // opacity={labelOpacity}
+        opacity={labelOpacity}
       />
     </Group>
   );

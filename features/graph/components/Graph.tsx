@@ -9,8 +9,9 @@ import Animated, {
 import { Provider } from "react-redux";
 
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
+import { GestureProvider } from "@/lib/context/gestures";
 import { testLinks, testNodes } from "@/lib/data/new_structure";
-import { useGestures } from "@/lib/hooks/useGestures";
+import { useGestureContext } from "@/lib/hooks/useGestureContext";
 import { CIRCLE_RADIUS, newNewPosFunc } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
@@ -21,24 +22,23 @@ import SvgElements from "./SvgElements";
 
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
+  const {
+    composed,
+    scale,
+    translateX,
+    translateY,
+    lastScale,
+    initialFocalX,
+    initialFocalY,
+    centerShiftX,
+    centerShiftY,
+  } = useGestureContext();
 
   // !TODO: This will be changed
   useEffect(() => {
     // newINITPosFunc(testNodes, testLinks, windowSize);
     newNewPosFunc(testNodes, testLinks, windowSize);
   }, [windowSize]);
-
-  const {
-    scale,
-    translateX,
-    translateY,
-    composed,
-    lastScale,
-    initialFocalX,
-    initialFocalY,
-    centerShiftX,
-    centerShiftY,
-  } = useGestures();
 
   const transform = useDerivedValue(() => {
     return [
@@ -100,9 +100,11 @@ export default function Graph() {
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />
-            <Provider store={store}>
-              <SvgElements />
-            </Provider>
+            <GestureProvider>
+              <Provider store={store}>
+                <SvgElements />
+              </Provider>
+            </GestureProvider>
           </Group>
         </Canvas>
         <Animated.View style={[styles.wrapper, animatedStyle]}>

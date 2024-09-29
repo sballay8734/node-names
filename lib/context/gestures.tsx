@@ -1,6 +1,11 @@
-import { useMemo } from "react";
+import React, { createContext, useMemo, ReactNode, useState } from "react";
 import { Gesture } from "react-native-gesture-handler";
-import { useSharedValue, withDecay } from "react-native-reanimated";
+import { SimultaneousGesture } from "react-native-gesture-handler/lib/typescript/handlers/gestures/gestureComposition";
+import {
+  SharedValue,
+  useSharedValue,
+  withDecay,
+} from "react-native-reanimated";
 
 export const MIN_SCALE = 0.3;
 export const MAX_SCALE = 4;
@@ -9,19 +14,33 @@ export const INITIAL_SCALE = 1;
 export const CENTER_ON_SCALE = 0.4;
 export const SCALE_SENSITIVITY = 1.2;
 
-export const useGestures = () => {
-  // console.log(`[${new Date().toISOString()}] Running useGestures`);
+export interface ContextType {
+  composed: SimultaneousGesture;
+  scale: SharedValue<number>;
+  translateX: SharedValue<number>;
+  translateY: SharedValue<number>;
+  lastScale: SharedValue<number>;
+  initialFocalX: SharedValue<number>;
+  initialFocalY: SharedValue<number>;
+  centerShiftX: SharedValue<number>;
+  centerShiftY: SharedValue<number>;
+  labelOpacity: SharedValue<number>;
+}
+
+export const GestureContext = createContext<ContextType | null>(null);
+
+export const GestureProvider = ({ children }: { children: ReactNode }) => {
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const lastScale = useSharedValue(INITIAL_SCALE);
   const initialFocalX = useSharedValue(0);
   const initialFocalY = useSharedValue(0);
-
-  // Shared values to track how much the center shifts
   const centerShiftX = useSharedValue(0);
   const centerShiftY = useSharedValue(0);
+  const labelOpacity = useSharedValue(0);
 
+  // Pinch gesture
   const pinch = useMemo(
     () =>
       Gesture.Pinch()
@@ -36,15 +55,10 @@ export const useGestures = () => {
             MAX_SCALE,
           );
 
-          // only apply translation if the scale is actually changing
           if (newScale !== scale.value) {
-            // Calculate the change in scale
             const scaleChange = newScale / scale.value;
-
-            // Update the scale
             scale.value = newScale;
 
-            // Adjust the translation to keep the center point fixed
             const adjustedFocalX = initialFocalX.value - translateX.value;
             const adjustedFocalY = initialFocalY.value - translateY.value;
 
@@ -53,11 +67,11 @@ export const useGestures = () => {
 
             centerShiftX.value += adjustedFocalX * (scaleChange - 1);
             centerShiftY.value += adjustedFocalY * (scaleChange - 1);
-          }
 
-          // console.log(scale.value);
+            labelOpacity.value = newScale >= 1 ? 1 : newScale;
+          }
         })
-        .onEnd((e) => {
+        .onEnd(() => {
           lastScale.value = scale.value;
         }),
     [
@@ -69,18 +83,17 @@ export const useGestures = () => {
       translateY,
       centerShiftX,
       centerShiftY,
+      labelOpacity,
     ],
   );
 
+  // Pan gesture
   const pan = useMemo(
     () =>
       Gesture.Pan()
         .onChange((e) => {
           translateX.value += e.changeX;
           translateY.value += e.changeY;
-
-          // centerShiftX.value += e.changeX;
-          // centerShiftY.value += e.changeY;
         })
         .onEnd((e) => {
           translateX.value = withDecay({
@@ -100,7 +113,7 @@ export const useGestures = () => {
     [pan, pinch],
   );
 
-  return {
+  const gestures = {
     composed,
     scale,
     translateX,
@@ -110,5 +123,25 @@ export const useGestures = () => {
     initialFocalY,
     centerShiftX,
     centerShiftY,
+    labelOpacity,
   };
+
+  return (
+    <GestureContext.Provider
+      value={{
+        composed,
+        scale,
+        translateX,
+        translateY,
+        lastScale,
+        initialFocalX,
+        initialFocalY,
+        centerShiftX,
+        centerShiftY,
+        labelOpacity,
+      }}
+    >
+      {children}
+    </GestureContext.Provider>
+  );
 };

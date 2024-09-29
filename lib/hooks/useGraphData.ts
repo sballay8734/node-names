@@ -4,8 +4,7 @@ import { Easing, SharedValue, withTiming } from "react-native-reanimated";
 import { WindowSize } from "@/lib/types/misc";
 
 import { UiNode } from "../types/graph";
-
-import { CENTER_ON_SCALE, INITIAL_SCALE } from "./useGestures";
+import { CENTER_ON_SCALE, INITIAL_SCALE } from "../context/gestures";
 
 export interface Props {
   scale: SharedValue<number>;

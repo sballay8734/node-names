@@ -3,23 +3,18 @@ import { StyleSheet, View } from "react-native";
 
 import Graph from "@/features/Graph/components/Graph";
 import NewNodeData from "@/features/Graph/components/Sheets/NewNodeData";
+import { GestureProvider } from "@/lib/context/gestures";
 import useWindowSize from "@/lib/hooks/useWindowSize";
 
 const Index = () => {
   useWindowSize();
-  // const { dataIsLoading, error } = useDbData(windowSize);
-  // if (dataIsLoading) {
-  //   return null;
-  // }
-  // if (error) {
-  //   console.error("Error getting data!");
-  //   return null;
-  // }
 
   return (
     <View style={[styles.container]}>
-      <Graph />
-      <NewNodeData />
+      <GestureProvider>
+        <Graph />
+        <NewNodeData />
+      </GestureProvider>
     </View>
   );
 };
