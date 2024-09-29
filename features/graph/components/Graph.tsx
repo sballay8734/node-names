@@ -9,7 +9,6 @@ import Animated, {
 import { Provider } from "react-redux";
 
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
-import { GestureProvider } from "@/lib/context/gestures";
 import { testLinks, testNodes } from "@/lib/data/new_structure";
 import { useGestureContext } from "@/lib/hooks/useGestureContext";
 import { CIRCLE_RADIUS, newNewPosFunc } from "@/lib/utils/positionGraphEls";
@@ -22,17 +21,7 @@ import SvgElements from "./SvgElements";
 
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
-  const {
-    composed,
-    scale,
-    translateX,
-    translateY,
-    lastScale,
-    initialFocalX,
-    initialFocalY,
-    centerShiftX,
-    centerShiftY,
-  } = useGestureContext();
+  const gestures = useGestureContext();
 
   // !TODO: This will be changed
   useEffect(() => {
@@ -42,24 +31,24 @@ export default function Graph() {
 
   const transform = useDerivedValue(() => {
     return [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: scale.value },
+      { translateX: gestures.translateX.value },
+      { translateY: gestures.translateY.value },
+      { scale: gestures.scale.value },
     ];
   });
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: scale.value },
+        { translateX: gestures.translateX.value },
+        { translateY: gestures.translateY.value },
+        { scale: gestures.scale.value },
       ],
     };
   });
 
   return (
-    <GestureDetector gesture={composed}>
+    <GestureDetector gesture={gestures.composed}>
       <View style={{ flex: 1 }}>
         <Canvas
           style={{
@@ -100,27 +89,17 @@ export default function Graph() {
               cx={windowSize.windowCenterX}
               cy={windowSize.windowCenterY}
             />
-            <GestureProvider>
-              <Provider store={store}>
-                <SvgElements />
-              </Provider>
-            </GestureProvider>
+            {/* <GestureProvider> */}
+            <Provider store={store}>
+              <SvgElements gestures={gestures} />
+            </Provider>
+            {/* </GestureProvider> */}
           </Group>
         </Canvas>
         <Animated.View style={[styles.wrapper, animatedStyle]}>
           <PressableElements />
         </Animated.View>
-        <GraphOverlayButtons
-          scale={scale}
-          translateX={translateX}
-          translateY={translateY}
-          lastScale={lastScale}
-          windowSize={windowSize}
-          initialFocalX={initialFocalX}
-          initialFocalY={initialFocalY}
-          centerShiftX={centerShiftX}
-          centerShiftY={centerShiftY}
-        />
+        <GraphOverlayButtons gestures={gestures} windowSize={windowSize} />
       </View>
     </GestureDetector>
   );

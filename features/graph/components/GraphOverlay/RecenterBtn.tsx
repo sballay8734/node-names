@@ -14,14 +14,16 @@ import { WindowSize } from "@/lib/types/misc";
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface RecenterBtnProps {
-  scale: SharedValue<number>;
-  translateX: SharedValue<number>;
-  translateY: SharedValue<number>;
-  lastScale: SharedValue<number>;
-  initialFocalX: SharedValue<number>;
-  initialFocalY: SharedValue<number>;
-  centerShiftX: SharedValue<number>;
-  centerShiftY: SharedValue<number>;
+  gestures: {
+    scale: SharedValue<number>;
+    translateX: SharedValue<number>;
+    translateY: SharedValue<number>;
+    lastScale: SharedValue<number>;
+    initialFocalX: SharedValue<number>;
+    initialFocalY: SharedValue<number>;
+    centerShiftX: SharedValue<number>;
+    centerShiftY: SharedValue<number>;
+  };
   windowSize: WindowSize;
 }
 
@@ -29,14 +31,7 @@ const BTN_DEFAULT_ANGLE = 45;
 const ARROW_PADDING = 10;
 
 const RecenterBtn = ({
-  scale,
-  translateX,
-  translateY,
-  lastScale,
-  initialFocalX,
-  initialFocalY,
-  centerShiftX,
-  centerShiftY,
+  gestures,
   windowSize,
 }: RecenterBtnProps): React.JSX.Element => {
   const isPressed = useSharedValue<boolean>(false);
@@ -48,8 +43,16 @@ const RecenterBtn = ({
     const btnY = height - ARROW_BTN_DIM / 2 - ARROW_PADDING;
 
     // Calculate the delta between button and screen center
-    const deltaX = windowCenterX + translateX.value - btnX + centerShiftX.value;
-    const deltaY = windowCenterY + translateY.value - btnY + centerShiftY.value;
+    const deltaX =
+      windowCenterX +
+      gestures.translateX.value -
+      btnX +
+      gestures.centerShiftX.value;
+    const deltaY =
+      windowCenterY +
+      gestures.translateY.value -
+      btnY +
+      gestures.centerShiftY.value;
     // !TODO: THIS HAS TO BE CLOSE BECAUSE ARROW IS FIXATED ON THE LAST CENTER LOCATION OF THE SCREEN ON PINCH
 
     // Calculate the angle and convert to degrees

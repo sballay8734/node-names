@@ -12,43 +12,28 @@ import Popover from "../Popover/Popover";
 import DeselectAllBtn from "./DeselectAllBtn";
 
 interface GraphOverlayButtonsProps {
-  scale: SharedValue<number>;
-  translateX: SharedValue<number>;
-  translateY: SharedValue<number>;
-  lastScale: SharedValue<number>;
-  initialFocalX: SharedValue<number>;
-  initialFocalY: SharedValue<number>;
-  centerShiftX: SharedValue<number>;
-  centerShiftY: SharedValue<number>;
+  gestures: {
+    scale: SharedValue<number>;
+    translateX: SharedValue<number>;
+    translateY: SharedValue<number>;
+    lastScale: SharedValue<number>;
+    initialFocalX: SharedValue<number>;
+    initialFocalY: SharedValue<number>;
+    centerShiftX: SharedValue<number>;
+    centerShiftY: SharedValue<number>;
+  };
   windowSize: WindowSize;
 }
 
 const GraphOverlayButtons = ({
-  scale,
-  translateX,
-  translateY,
-  lastScale,
-  initialFocalX,
-  initialFocalY,
-  centerShiftX,
-  centerShiftY,
+  gestures,
   windowSize,
 }: GraphOverlayButtonsProps) => {
   return (
     <>
       <Popover />
       <SearchBar />
-      <RecenterBtn
-        scale={scale}
-        translateX={translateX}
-        translateY={translateY}
-        lastScale={lastScale}
-        initialFocalX={initialFocalX}
-        initialFocalY={initialFocalY}
-        centerShiftX={centerShiftX}
-        centerShiftY={centerShiftY}
-        windowSize={windowSize}
-      />
+      <RecenterBtn gestures={gestures} windowSize={windowSize} />
       <DeselectAllBtn />
       <InspectBtn />
       {/* <BackToUserBtn /> */}

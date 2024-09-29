@@ -14,7 +14,7 @@ export const INITIAL_SCALE = 1;
 export const CENTER_ON_SCALE = 0.4;
 export const SCALE_SENSITIVITY = 1.2;
 
-export interface ContextType {
+export interface GestureContextType {
   composed: SimultaneousGesture;
   scale: SharedValue<number>;
   translateX: SharedValue<number>;
@@ -27,7 +27,7 @@ export interface ContextType {
   labelOpacity: SharedValue<number>;
 }
 
-export const GestureContext = createContext<ContextType | null>(null);
+export const GestureContext = createContext<GestureContextType | null>(null);
 
 export const GestureProvider = ({ children }: { children: ReactNode }) => {
   const scale = useSharedValue(INITIAL_SCALE);
@@ -127,20 +127,7 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <GestureContext.Provider
-      value={{
-        composed,
-        scale,
-        translateX,
-        translateY,
-        lastScale,
-        initialFocalX,
-        initialFocalY,
-        centerShiftX,
-        centerShiftY,
-        labelOpacity,
-      }}
-    >
+    <GestureContext.Provider value={gestures}>
       {children}
     </GestureContext.Provider>
   );

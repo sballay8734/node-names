@@ -22,9 +22,11 @@ import { UiNode } from "@/lib/types/graph";
 import { getColors } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { GestureContextType } from "@/lib/context/gestures";
 
 interface NodeProps {
   node: UiNode;
+  gestures: GestureContextType;
 }
 
 const font = matchFont({
@@ -34,13 +36,9 @@ const font = matchFont({
   fontWeight: "400",
 }); //
 
-export default function MasterSvgNode({ node }: NodeProps) {
-  const scale = useGestureContext().scale;
-
-  console.log("FROM NODE: ", scale.value);
-
+export default function MasterSvgNode({ node, gestures }: NodeProps) {
   const labelOpacity = useDerivedValue(() => {
-    return interpolate(scale.value, [0.4, 1.2], [0, 1]);
+    return interpolate(gestures.scale.value, [0.4, 1.2], [0, 1]);
   });
 
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
