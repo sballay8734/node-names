@@ -181,7 +181,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
       <Text
         x={adjustedLabelX || 0}
         y={adjustedLabelY || 0}
-        text={node.depth === 1 ? " ME" : node.name}
+        text={node.depth === 1 ? "YOU CAN GO SUDO 3D WITH THIS!!!!" : node.name}
         font={font}
         color={node.depth === 1 ? "white" : color}
         opacity={labelOpacity}
