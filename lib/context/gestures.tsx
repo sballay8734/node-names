@@ -69,6 +69,7 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
             centerShiftY.value += adjustedFocalY * (scaleChange - 1);
 
             labelOpacity.value = newScale >= 1 ? 1 : newScale;
+            // console.log(scale.value);
           }
         })
         .onEnd(() => {

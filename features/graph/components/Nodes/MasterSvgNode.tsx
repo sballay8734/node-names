@@ -6,6 +6,7 @@ import {
   matchFont,
 } from "@shopify/react-native-skia";
 import {
+  Extrapolation,
   interpolate,
   useDerivedValue,
   useSharedValue,
@@ -17,12 +18,11 @@ import {
   REG_NODE_RADIUS,
   ROOT_NODE_RADIUS,
 } from "@/lib/constants/styles";
-import { useGestureContext } from "@/lib/hooks/useGestureContext";
+import { GestureContextType } from "@/lib/context/gestures";
 import { UiNode } from "@/lib/types/graph";
 import { getColors } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { GestureContextType } from "@/lib/context/gestures";
 
 interface NodeProps {
   node: UiNode;
@@ -34,11 +34,61 @@ const font = matchFont({
   fontSize: 10,
   fontStyle: "normal",
   fontWeight: "400",
-}); //
+});
+
+// 0.3 is really zoomed OUT
+// 4 is really zoomed IN
 
 export default function MasterSvgNode({ node, gestures }: NodeProps) {
   const labelOpacity = useDerivedValue(() => {
-    return interpolate(gestures.scale.value, [0.4, 1.2], [0, 1]);
+    let inputRange, outputRange;
+
+    switch (node.type) {
+      case "root":
+        inputRange = [4, 2.2, 1.8];
+        outputRange = [0, 1, 1];
+        break;
+      case "root_group":
+        inputRange = [1, 3];
+        outputRange = [1, 0];
+        break;
+      case "node":
+        inputRange = [1.8, 2];
+        outputRange = [0, 1];
+        break;
+      default:
+        inputRange = [0.3, 4];
+        outputRange = [0, 1];
+    }
+
+    return interpolate(
+      gestures.scale.value,
+      inputRange,
+      outputRange,
+      Extrapolation.CLAMP,
+    );
+  });
+
+  // !TODO: SHOULD START AT 2 size and just fade opacity in
+  const textScale = useDerivedValue(() => {
+    if (node.type === "root") {
+      return interpolate(gestures.scale.value, [0.3, 4], [4, 1]);
+    } else if (node.type === "node") {
+      return interpolate(gestures.scale.value, [0.3, 4], [1, 0.5]);
+    } else if (node.type === "root_group") {
+      return interpolate(
+        gestures.scale.value,
+        [0.3, 0.4, 1, 2.5],
+        [0, 2, 1.5, 0.9],
+      );
+    }
+    {
+      return 1;
+    }
+  });
+
+  const textTransform = useDerivedValue(() => {
+    return [{ scale: textScale.value }];
   });
 
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
@@ -135,6 +185,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
         font={font}
         color={node.depth === 1 ? "white" : color}
         opacity={labelOpacity}
+        transform={textTransform}
       />
     </Group>
   );
