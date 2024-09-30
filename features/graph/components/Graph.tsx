@@ -1,4 +1,10 @@
-import { Canvas, Circle, Fill, Group } from "@shopify/react-native-skia";
+import {
+  Canvas,
+  Circle,
+  Fill,
+  Group,
+  translate,
+} from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";

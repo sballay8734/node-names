@@ -22,7 +22,7 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(120, 32, 18, 0.6)", // Made semi-transparent
+    // backgroundColor: "red",
   },
 });
 

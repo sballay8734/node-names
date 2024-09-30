@@ -59,6 +59,11 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
             const scaleChange = newScale / scale.value;
             scale.value = newScale;
 
+            // console.log("TRANSX:", translateX.value);
+            // console.log("TRANSX COMP:", translateX.value * scale.value);
+            console.log("TRANSY:", translateY.value);
+            console.log("TRANSY COMP:", translateY.value * scale.value);
+
             const adjustedFocalX = initialFocalX.value - translateX.value;
             const adjustedFocalY = initialFocalY.value - translateY.value;
 
@@ -69,7 +74,6 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
             centerShiftY.value += adjustedFocalY * (scaleChange - 1);
 
             labelOpacity.value = newScale >= 1 ? 1 : newScale;
-            // console.log(scale.value);
           }
         })
         .onEnd(() => {
@@ -95,6 +99,9 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
         .onChange((e) => {
           translateX.value += e.changeX;
           translateY.value += e.changeY;
+
+          // console.log("PAN - X:", translateX.value);
+          // console.log("PAN - Y:", translateY.value);
         })
         .onEnd((e) => {
           translateX.value = withDecay({

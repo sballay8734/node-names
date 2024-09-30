@@ -7,8 +7,9 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { Path, Svg } from "react-native-svg";
 
-import { ARROW_BTN_DIM } from "@/lib/constants/styles";
+import { ARROW_BTN_DIM, ARROW_BTN_RADIUS } from "@/lib/constants/styles";
 import { WindowSize } from "@/lib/types/misc";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -27,7 +28,6 @@ interface RecenterBtnProps {
   windowSize: WindowSize;
 }
 
-const BTN_DEFAULT_ANGLE = 45;
 const ARROW_PADDING = 10;
 
 const RecenterBtn = ({
@@ -44,22 +44,22 @@ const RecenterBtn = ({
 
     // Calculate the delta between button and screen center
     const deltaX =
-      windowCenterX +
-      gestures.translateX.value -
-      btnX +
-      gestures.centerShiftX.value;
+      gestures.translateX.value + windowCenterX * gestures.scale.value - btnX;
     const deltaY =
-      windowCenterY +
-      gestures.translateY.value -
-      btnY +
-      gestures.centerShiftY.value;
+      gestures.translateY.value + windowCenterY * gestures.scale.value - btnY;
     // !TODO: THIS HAS TO BE CLOSE BECAUSE ARROW IS FIXATED ON THE LAST CENTER LOCATION OF THE SCREEN ON PINCH
 
+    // console.log("BTNX:", btnX);
+    // console.log("BTNY:", btnY);
+    // console.log("CHANGE FROM ARROW X:", deltaX);
+    // console.log("CHANGE FROM ARROW Y:", deltaY);
+
     // Calculate the angle and convert to degrees
-    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) + 90;
+    console.log("ANGLE: ", angle);
 
     return {
-      transform: [{ rotate: `${angle + BTN_DEFAULT_ANGLE}deg` }],
+      transform: [{ rotate: `${angle}deg` }],
     };
   });
 
@@ -97,7 +97,13 @@ const RecenterBtn = ({
       <Animated.View style={[styles.arrowContainer]}>
         {/* <Animated.View style={[styles.arrow, arrowRotate]}> */}
         <Animated.View style={[styles.arrow, arrowRotationStyle]}>
-          <FontAwesome6 name="location-arrow" size={24} color="#fc4956" />
+          <Svg height={30} width={40} viewBox="0 0 100 100">
+            <Path
+              d="M50.03 5a2.516 2.516 0 0 0-2.43 1.76L34.493 48.548a2.51 2.51 0 0 0-.372 1.454c-.026.51.104 1.017.372 1.452l13.105 41.782c.737 2.352 4.065 2.352 4.802 0l13.105-41.785c.27-.436.399-.945.372-1.456a2.513 2.513 0 0 0-.372-1.45L52.401 6.76A2.513 2.513 0 0 0 50.03 5zM39.403 50.288h6.205c.152 2.306 2.048 4.134 4.392 4.134c2.344 0 4.24-1.828 4.392-4.134h6.461L50 84.078z"
+              fill="#fc4956"
+            />
+          </Svg>
+          {/* <FontAwesome6 name="location-arrow" size={24} color="#fc4956" /> */}
         </Animated.View>
       </Animated.View>
     </AnimatedPressable>
@@ -125,8 +131,8 @@ const styles = StyleSheet.create({
   arrow: {
     width: 20,
     height: 20,
-    marginBottom: 2,
-    marginRight: 2,
+    // marginBottom: 2,
+    // marginRight: 2,
     justifyContent: "center",
     alignItems: "center",
   },
