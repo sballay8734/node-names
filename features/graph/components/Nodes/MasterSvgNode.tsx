@@ -156,9 +156,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
   const rawLabelX = labelRadius * Math.cos(midAngle);
   const rawLabelY = labelRadius * Math.sin(midAngle);
 
-  // Adjust label position based on text size
-  // const adjustedLabelX = typeof textWidth === "number" && 0 - textWidth / 2 + 1;
-  // const adjustedLabelY = typeof textHeight === "number" && 0 + textHeight / 4;
+  // Adjust label position based on text size (NOT DONE)
   const adjustedLabelX = typeof textWidth === "number" && 0 - textWidth / 2 + 1;
   const adjustedLabelY = typeof textHeight === "number" && 0 - textHeight / 2;
 
