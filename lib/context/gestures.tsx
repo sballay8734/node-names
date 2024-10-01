@@ -59,11 +59,6 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
             const scaleChange = newScale / scale.value;
             scale.value = newScale;
 
-            // console.log("TRANSX:", translateX.value);
-            // console.log("TRANSX COMP:", translateX.value * scale.value);
-            console.log("TRANSY:", translateY.value);
-            console.log("TRANSY COMP:", translateY.value * scale.value);
-
             const adjustedFocalX = initialFocalX.value - translateX.value;
             const adjustedFocalY = initialFocalY.value - translateY.value;
 
