@@ -1,6 +1,5 @@
-import { FontAwesome6 } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
@@ -9,7 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Path, Svg } from "react-native-svg";
 
-import { ARROW_BTN_DIM, ARROW_BTN_RADIUS } from "@/lib/constants/styles";
+import { ARROW_BTN_DIM } from "@/lib/constants/styles";
 import { WindowSize } from "@/lib/types/misc";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -24,6 +23,7 @@ interface RecenterBtnProps {
     initialFocalY: SharedValue<number>;
     centerShiftX: SharedValue<number>;
     centerShiftY: SharedValue<number>;
+    center: () => void;
   };
   windowSize: WindowSize;
 }
@@ -47,16 +47,9 @@ const RecenterBtn = ({
       gestures.translateX.value + windowCenterX * gestures.scale.value - btnX;
     const deltaY =
       gestures.translateY.value + windowCenterY * gestures.scale.value - btnY;
-    // !TODO: THIS HAS TO BE CLOSE BECAUSE ARROW IS FIXATED ON THE LAST CENTER LOCATION OF THE SCREEN ON PINCH
-
-    // console.log("BTNX:", btnX);
-    // console.log("BTNY:", btnY);
-    // console.log("CHANGE FROM ARROW X:", deltaX);
-    // console.log("CHANGE FROM ARROW Y:", deltaY);
 
     // Calculate the angle and convert to degrees
     const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) + 90;
-    console.log("ANGLE: ", angle);
 
     return {
       transform: [{ rotate: `${angle}deg` }],
@@ -69,7 +62,7 @@ const RecenterBtn = ({
     }),
   }));
 
-  // const arrowRotate = useAnimatedStyle(() => arrowData.value);
+  // const arrowRotate = useAnimatedStyle(() => arrowData.value);//
   const arrowOpacity = useAnimatedStyle(() => ({
     // opacity: withTiming(showArrow.value ? 1 : 0, { duration: 500 }),
     // REMOVE: Add above back after testing
@@ -79,13 +72,11 @@ const RecenterBtn = ({
   const handlePressIn = () => {
     isPressed.value = true;
     console.log("Pressed ReCenter...");
-    // centerOnRoot();
+    gestures.center();
   };
 
   const handlePressOut = () => {
     isPressed.value = false;
-    // REMOVE: Temp for easy sign out
-    // supabase.auth.signOut();
   };
 
   return (

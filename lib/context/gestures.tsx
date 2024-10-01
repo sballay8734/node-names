@@ -5,6 +5,7 @@ import {
   SharedValue,
   useSharedValue,
   withDecay,
+  withTiming,
 } from "react-native-reanimated";
 
 export const MIN_SCALE = 0.3;
@@ -24,7 +25,7 @@ export interface GestureContextType {
   initialFocalY: SharedValue<number>;
   centerShiftX: SharedValue<number>;
   centerShiftY: SharedValue<number>;
-  labelOpacity: SharedValue<number>;
+  center: () => void;
 }
 
 export const GestureContext = createContext<GestureContextType | null>(null);
@@ -38,7 +39,6 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
   const initialFocalY = useSharedValue(0);
   const centerShiftX = useSharedValue(0);
   const centerShiftY = useSharedValue(0);
-  const labelOpacity = useSharedValue(0);
 
   // Pinch gesture
   const pinch = useMemo(
@@ -72,8 +72,6 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
 
             centerShiftX.value += adjustedFocalX * (scaleChange - 1);
             centerShiftY.value += adjustedFocalY * (scaleChange - 1);
-
-            labelOpacity.value = newScale >= 1 ? 1 : newScale;
           }
         })
         .onEnd(() => {
@@ -88,7 +86,6 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
       translateY,
       centerShiftX,
       centerShiftY,
-      labelOpacity,
     ],
   );
 
@@ -121,6 +118,21 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
     [pan, pinch],
   );
 
+  function center() {
+    // TODO: Not sure you should use withTiming outside of styles but it works
+    scale.value = withTiming(INITIAL_SCALE, { duration: 200 });
+    translateX.value = withTiming(0, { duration: 500 });
+    translateY.value = withTiming(0, { duration: 500 });
+    // scale.value = INITIAL_SCALE;
+    // translateX.value = 0;
+    // translateY.value = 0;
+    lastScale.value = INITIAL_SCALE;
+    initialFocalX.value = 0;
+    initialFocalY.value = 0;
+    centerShiftX.value = 0;
+    centerShiftY.value = 0;
+  }
+
   const gestures = {
     composed,
     scale,
@@ -131,7 +143,7 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
     initialFocalY,
     centerShiftX,
     centerShiftY,
-    labelOpacity,
+    center,
   };
 
   return (

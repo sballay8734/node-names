@@ -13,7 +13,6 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-import { LINK_COLORS, LINK_OPACITY } from "@/lib/constants/Colors";
 import {
   GROUP_NODE_RADIUS,
   REG_NODE_RADIUS,
