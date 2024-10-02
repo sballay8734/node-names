@@ -14,6 +14,7 @@ export interface GraphSliceState {
     activeRootId: number | null;
     selectedNodeIds: number[];
     focusedNodeId: number | null;
+    activeRootGroupId: number | null;
   };
   links: {
     byId: PosLinkMap;
@@ -40,6 +41,7 @@ const initialState: GraphSliceState = {
     activeRootId: null,
     selectedNodeIds: [],
     focusedNodeId: null,
+    activeRootGroupId: null,
   },
   links: {
     byId: {},
@@ -68,109 +70,6 @@ const NewArchitectureSlice = createSlice({
   name: "newArchitecture",
   initialState,
   reducers: {
-    // THIS is where to add additional fields like "status" && "is_current_root"
-    // setInitialState: (
-    //   state,
-    //   action: PayloadAction<{
-    //     root: PositionedNode;
-    //     nodes: PositionedNode[];
-    //     links: PositionedLink[];
-    //     groups: PositionedNode[];
-    //   }>,
-    // ) => {
-    //   const { root, nodes, links, groups } = action.payload;
-
-    //   // this map is used for quick lookup during links && groups loop
-    //   const nodeStatusMap: {
-    //     [id: number]: { isRoot: boolean; node_status: string };
-    //   } = {};
-
-    //   // Set root node
-    //   const rootNode: UiNode = {
-    //     ...root,
-    //     isRoot: true,
-    //     node_status: "active",
-    //     isShown: true,
-    //   };
-
-    //   if (!state.nodes.byId[rootNode.id]) {
-    //     // set root node stuff
-    //     state.nodes.activeRootId = rootNode.id;
-    //     state.userId = rootNode.id;
-    //     state.nodes.selectedNodeIds.push(rootNode.id);
-    //     state.nodes.focusedNodeId = rootNode.id;
-    //     state.nodes.byId[rootNode.id] = rootNode;
-    //     state.nodes.allIds.push(rootNode.id);
-
-    //     nodeStatusMap[rootNode.id] = {
-    //       isRoot: rootNode.isRoot,
-    //       node_status: rootNode.node_status,
-    //     };
-    //   }
-
-    //   // initialize groups
-    //   groups.forEach((group) => {
-    //     if (!state.groups.byId[group.id]) {
-    //       const isRootGroup = group.type === "root_group";
-    //       const newGroup: UiNode = {
-    //         ...group,
-    //         isRoot: false,
-    //         node_status: isRootGroup ? "parent_active" : "inactive",
-    //         isShown: true,
-    //       };
-
-    //       state.groups.byId[group.id] = newGroup;
-    //       state.groups.allIds.push(group.id);
-
-    //       nodeStatusMap[group.id] = {
-    //         isRoot: newGroup.isRoot,
-    //         node_status: newGroup.node_status,
-    //       };
-    //     }
-    //   });
-
-    //   // initialize nodes state (byId, allIds, & activeRootId)
-    //   nodes.forEach((node) => {
-    //     if (!state.nodes.byId[node.id]) {
-    //       const newNode: UiNode = {
-    //         ...node,
-    //         isRoot: false,
-    //         node_status: "inactive",
-    //         isShown: true,
-    //       };
-    //       state.nodes.byId[node.id] = newNode;
-    //       state.nodes.allIds.push(node.id);
-
-    //       // store status in temporary map for SAFE look up during links loop
-    //       nodeStatusMap[node.id] = {
-    //         isRoot: newNode.isRoot,
-    //         node_status: newNode.node_status,
-    //       };
-    //     }
-    //   });
-
-    //   // initialize edges state and use nodetStatusMap
-    //   links.forEach((link) => {
-    //     if (!state.links.byId[link.id]) {
-    //       const sourceIsRoot = link.source_type === "root";
-
-    //       state.links.byId[link.id] = {
-    //         ...link,
-    //         source_status: sourceIsRoot ? "active" : "inactive",
-    //         target_status: sourceIsRoot ? "parent_active" : "inactive",
-    //         link_status: "active",
-    //       };
-
-    //       state.links.allIds.push(link.id);
-
-    //       if (!state.links.bySourceId[link.source_id]) {
-    //         state.links.bySourceId[link.source_id] = [link.target_id];
-    //       } else {
-    //         state.links.bySourceId[link.source_id].push(link.target_id);
-    //       }
-    //     }
-    //   });
-    // },
     newSetInitialState: (
       state,
       action: PayloadAction<{
@@ -202,16 +101,25 @@ const NewArchitectureSlice = createSlice({
       state.rootGroups.allIds = [...rootGroupIds];
       state.links.allIds = [...linkIds];
 
-      if (initActiveRootId) {
-        state.nodes.selectedNodeIds.push(initActiveRootId);
-      }
+      // if (initActiveRootId) {
+      //   state.nodes.selectedNodeIds.push(initActiveRootId);
+      // }
 
-      state.nodes.activeRootId = initActiveRootId;
-      state.nodes.focusedNodeId = initActiveRootId;
+      // state.nodes.activeRootId = initActiveRootId;
+      // state.nodes.focusedNodeId = initActiveRootId;
     },
     newToggleNode: (state, action: PayloadAction<number>) => {
       const clickedNodeId = action.payload;
       const clickedStatus = state.nodes.byId[clickedNodeId].node_status;
+      const clickedType = state.nodes.byId[clickedNodeId].type;
+
+      if (clickedType === "root_group") {
+        state.nodes.activeRootGroupId = clickedNodeId;
+      }
+
+      const nodeIsRoot = state.nodes.byId[clickedNodeId].type === "root";
+
+      if (nodeIsRoot) return;
 
       // if node is focused and active
       if (
@@ -256,7 +164,7 @@ const NewArchitectureSlice = createSlice({
       }
     },
     deselectAllNodes: (state) => {
-      // Update thhe statuses of the nodes in the object
+      // Update the statuses of the nodes in the object
       state.nodes.selectedNodeIds.forEach((id) => {
         // Set state to inactive unless node is root
         if (state.nodes.byId[id]) {
@@ -430,148 +338,59 @@ export const selectNodeStatus = createSelector(
   },
 );
 
-const linksBy = {
-  "1": {
-    id: 1,
-    link_status: false,
-    relation_type: null,
-    source_id: 1,
-    source_type: "root",
-    target_id: 7,
-    target_type: "group",
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0,
+const fullState = {
+  actionBtnById: {
+    createNewGroup: false,
+    createNewNode: false,
+    createSubGroupFromSelection: false,
+    moveNode: false,
   },
-  "10": {
-    id: 10,
-    link_status: false,
-    relation_type: "virtual",
-    source_id: 11,
-    source_type: "root_group",
-    target_id: 6,
-    target_type: "node",
-    x1: 196.5,
-    x2: 127.20011875471741,
-    y1: 386.5,
-    y2: 291.11689636319375,
+  groups: { allIds: [], byId: {} },
+  links: {
+    allIds: [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10],
+    byId: {
+      "1": [Object],
+      "10": [Object],
+      "11": [Object],
+      "2": [Object],
+      "3": [Object],
+      "4": [Object],
+      "5": [Object],
+      "6": [Object],
+      "7": [Object],
+      "8": [Object],
+      "9": [Object],
+    },
+    bySourceId: {
+      "1": [Array],
+      "10": [Array],
+      "11": [Array],
+      "7": [Array],
+      "8": [Array],
+      "9": [Array],
+    },
+    byTargetId: {},
   },
-  "11": {
-    id: 11,
-    link_status: false,
-    relation_type: "friend",
-    source_id: 7,
-    source_type: "root_group",
-    target_id: 12,
-    target_type: "node",
-    x1: 196.5,
-    x2: 275.4699959192102,
-    y1: 386.5,
-    y2: 298.9548702410013,
+  nodes: {
+    activeRootId: 1,
+    allIds: [1, 2, 3, 4, 5, 6, 12, 7, 8, 9, 10, 11],
+    byId: {
+      "1": [Object],
+      "10": [Object],
+      "11": [Object],
+      "12": [Object],
+      "2": [Object],
+      "3": [Object],
+      "4": [Object],
+      "5": [Object],
+      "6": [Object],
+      "7": [Object],
+      "8": [Object],
+      "9": [Object],
+    },
+    focusedNodeId: 1,
+    selectedNodeIds: [1],
   },
-  "2": {
-    id: 2,
-    link_status: false,
-    relation_type: null,
-    source_id: 1,
-    source_type: "root",
-    target_id: 8,
-    target_type: "group",
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0,
-  },
-  "3": {
-    id: 3,
-    link_status: false,
-    relation_type: null,
-    source_id: 1,
-    source_type: "root",
-    target_id: 9,
-    target_type: "group",
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0,
-  },
-  "4": {
-    id: 4,
-    link_status: false,
-    relation_type: null,
-    source_id: 1,
-    source_type: "root",
-    target_id: 10,
-    target_type: "group",
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0,
-  },
-  "5": {
-    id: 5,
-    link_status: false,
-    relation_type: null,
-    source_id: 1,
-    source_type: "root",
-    target_id: 11,
-    target_type: "group",
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0,
-  },
-  "6": {
-    id: 6,
-    link_status: false,
-    relation_type: "friend",
-    source_id: 7,
-    source_type: "root_group",
-    target_id: 2,
-    target_type: "node",
-    x1: 196.5,
-    x2: 255.3572953424443,
-    y1: 386.5,
-    y2: 284.3421379189429,
-  },
-  "7": {
-    id: 7,
-    link_status: false,
-    relation_type: "colleague",
-    source_id: 8,
-    source_type: "root_group",
-    target_id: 3,
-    target_type: "node",
-    x1: 196.5,
-    x2: 308.6295632711986,
-    y1: 386.5,
-    y2: 422.9331036368063,
-  },
-  "8": {
-    id: 8,
-    link_status: false,
-    relation_type: "child_parent",
-    source_id: 9,
-    source_type: "root_group",
-    target_id: 4,
-    target_type: "node",
-    x1: 196.5,
-    x2: 196.5,
-    y1: 386.5,
-    y2: 504.4,
-  },
-  "9": {
-    id: 9,
-    link_status: false,
-    relation_type: "classmate",
-    source_id: 10,
-    source_type: "root_group",
-    target_id: 5,
-    target_type: "node",
-    x1: 196.5,
-    x2: 84.37043672880141,
-    y1: 386.5,
-    y2: 422.9331036368063,
-  },
+  rootGroups: { allIds: [7, 8, 9, 10, 11], byId: {} },
+  userId: null,
 };

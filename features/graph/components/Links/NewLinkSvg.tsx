@@ -6,34 +6,42 @@ import {
   usePathInterpolation,
 } from "@shopify/react-native-skia";
 import { useEffect } from "react";
-import { useSharedValue, withTiming } from "react-native-reanimated";
+import {
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { GestureContextType } from "@/lib/context/gestures";
 
 interface LinkSvgProps {
   link_id: number;
+  gestures: GestureContextType;
 }
 
-export default function NewLinkSvg({ link_id }: LinkSvgProps) {
+export default function NewLinkSvg({ gestures, link_id }: LinkSvgProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
   const link = useAppSelector(
     (state: RootState) => state.graphData.links.byId[link_id],
   );
-  const rootNodeId = useAppSelector(
-    (state: RootState) => state.graphData.nodes.activeRootId,
-  );
   const sourceStatus = useAppSelector(
     (state: RootState) =>
       state.graphData.nodes.byId[link.source_id].node_status,
   );
+  const sourceIsRoot = useAppSelector(
+    (state: RootState) =>
+      state.graphData.nodes.byId[link.source_id].type === "root",
+  );
+
   const targetGroup = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[link.target_id].group_name,
   );
-  const color = targetGroup ? groupMap[targetGroup].inactive : "red";
+  const color = targetGroup ? groupMap[targetGroup].active : "red";
 
   const progress = useSharedValue(0);
 
@@ -51,8 +59,14 @@ export default function NewLinkSvg({ link_id }: LinkSvgProps) {
 
   const animatedPath = usePathInterpolation(progress, [0, 1], [start, end]);
 
+  const transform = useDerivedValue(() => {
+    return [{ rotate: gestures.rotate.value }];
+  });
+
+  if (sourceIsRoot) return null;
+
   return (
-    <Group origin={{ x: centerX, y: centerY }}>
+    <Group origin={{ x: centerX, y: centerY }} transform={transform}>
       <Path
         // opacity={animateOpacity}
         path={animatedPath}

@@ -23,7 +23,7 @@ interface RecenterBtnProps {
     initialFocalY: SharedValue<number>;
     centerShiftX: SharedValue<number>;
     centerShiftY: SharedValue<number>;
-    center: () => void;
+    centerOnRoot: () => void;
   };
   windowSize: WindowSize;
 }
@@ -71,8 +71,7 @@ const RecenterBtn = ({
 
   const handlePressIn = () => {
     isPressed.value = true;
-    console.log("Pressed ReCenter...");
-    gestures.center();
+    gestures.centerOnRoot();
   };
 
   const handlePressOut = () => {

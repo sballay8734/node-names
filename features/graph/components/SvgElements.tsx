@@ -26,7 +26,7 @@ export default function SvgElements({ gestures }: Props) {
   return (
     <>
       {linkIds.map((id) => {
-        return <NewLinkSvg key={id} link_id={id} />;
+        return <NewLinkSvg gestures={gestures} key={id} link_id={id} />;
         // return <LinkSvg key={id} id={id} />;
       })}
       {rootGroupIds.map((id) => {

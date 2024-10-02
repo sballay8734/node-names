@@ -2,11 +2,18 @@ import React, { createContext, useMemo, ReactNode, useState } from "react";
 import { Gesture } from "react-native-gesture-handler";
 import { SimultaneousGesture } from "react-native-gesture-handler/lib/typescript/handlers/gestures/gestureComposition";
 import {
+  Easing,
+  runOnJS,
+  runOnUI,
   SharedValue,
   useSharedValue,
   withDecay,
+  withDelay,
   withTiming,
 } from "react-native-reanimated";
+
+import { useAppSelector } from "@/store/reduxHooks";
+import { RootState } from "@/store/store";
 
 export const MIN_SCALE = 0.3;
 export const MAX_SCALE = 4;
@@ -14,6 +21,7 @@ export const MAX_SCALE = 4;
 export const INITIAL_SCALE = 1;
 export const CENTER_ON_SCALE = 0.4;
 export const SCALE_SENSITIVITY = 1.2;
+const SPACER = 50;
 
 export interface GestureContextType {
   composed: SimultaneousGesture;
@@ -25,12 +33,21 @@ export interface GestureContextType {
   initialFocalY: SharedValue<number>;
   centerShiftX: SharedValue<number>;
   centerShiftY: SharedValue<number>;
-  center: () => void;
+  rotate: SharedValue<number>;
+  centerOnRoot: () => void;
+  centerOnRootGroup: (
+    group_x: number,
+    group_y: number,
+    groupAngle: number,
+  ) => void;
 }
 
 export const GestureContext = createContext<GestureContextType | null>(null);
 
 export const GestureProvider = ({ children }: { children: ReactNode }) => {
+  const { windowCenterX, windowCenterY, height } = useAppSelector(
+    (state: RootState) => state.windowSize,
+  );
   const scale = useSharedValue(INITIAL_SCALE);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -39,6 +56,7 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
   const initialFocalY = useSharedValue(0);
   const centerShiftX = useSharedValue(0);
   const centerShiftY = useSharedValue(0);
+  const rotate = useSharedValue(0);
 
   // Pinch gesture
   const pinch = useMemo(
@@ -113,19 +131,37 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
     [pan, pinch],
   );
 
-  function center() {
-    // TODO: Not sure you should use withTiming outside of styles but it works
-    scale.value = withTiming(INITIAL_SCALE, { duration: 200 });
-    translateX.value = withTiming(0, { duration: 500 });
-    translateY.value = withTiming(0, { duration: 500 });
-    // scale.value = INITIAL_SCALE;
-    // translateX.value = 0;
-    // translateY.value = 0;
-    lastScale.value = INITIAL_SCALE;
-    initialFocalX.value = 0;
-    initialFocalY.value = 0;
-    centerShiftX.value = 0;
-    centerShiftY.value = 0;
+  function centerOnRoot() {
+    runOnUI(() => {
+      "worklet";
+      const config = {
+        duration: 300,
+        easing: Easing.inOut(Easing.quad),
+      };
+
+      translateX.value = withTiming(0, config);
+      translateY.value = withTiming(0, config);
+      scale.value = withTiming(INITIAL_SCALE, config);
+
+      lastScale.value = INITIAL_SCALE;
+      initialFocalX.value = 0;
+      initialFocalY.value = 0;
+      centerShiftX.value = 0;
+      centerShiftY.value = 0;
+    })();
+  }
+  function centerOnRootGroup(
+    group_x: number,
+    group_y: number,
+    groupAngle: number,
+  ) {
+    // translateX.value = withTiming(windowCenterX - group_x, {
+    //   duration: 400,
+    // });
+    // translateY.value = withTiming(height - group_y - SPACER, {
+    //   duration: 400,
+    // });
+    // rotate.value = withTiming(groupAngle, { duration: 400 });
   }
 
   const gestures = {
@@ -138,7 +174,9 @@ export const GestureProvider = ({ children }: { children: ReactNode }) => {
     initialFocalY,
     centerShiftX,
     centerShiftY,
-    center,
+    rotate,
+    centerOnRoot,
+    centerOnRootGroup,
   };
 
   return (

@@ -136,7 +136,10 @@ export function newNewPosFunc(
         centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
       root_group.startAngle = startAngle;
       root_group.endAngle = endAngle;
-      root_group.node_status = true;
+      root_group.node_status = false;
+
+      // console.log(root_group.x);
+      // console.log(root_group.y);
 
       positionNodesInGroup(root_group);
     });
@@ -147,7 +150,8 @@ export function newNewPosFunc(
     if (!sourceGroup) return;
 
     const nodesInGroup: UiNode[] = Object.values(nodesById).filter(
-      (node: UiNode) => node.group_id === root_group.id,
+      (node: UiNode) =>
+        node.group_id === root_group.id && node.group_id !== node.id,
     );
 
     const groupSize = linksBySourceId[root_group.id].length;
@@ -169,14 +173,14 @@ export function newNewPosFunc(
         isRoot: false,
         isShown: true,
         // node_status: root_group.node_status ? true : false,
-        node_status: true,
+        node_status: node.depth === 1 ? true : false,
       };
     });
 
     nodesById[root_group.id] = root_group;
 
     if (rootGroupIds.length >= 7) {
-      console.error("7 is the maxium amount of root groups");
+      console.error("7 is the maximum amount of root groups");
       return;
     }
 

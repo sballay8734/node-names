@@ -38,12 +38,12 @@ export default function LinkSvg({ id }: LinkSvgProps) {
   );
   // console.log(id, link);
   const sourceStatus = useAppSelector((state: RootState) =>
-    link.source_type === "node" || link.source_type === "root"
+    link.source_type === "node"
       ? state.graphData.nodes.byId[link.source_id].node_status
       : state.graphData.groups.byId[link.source_id].node_status,
   );
   const targetGroup = useAppSelector((state: RootState) =>
-    link.target_type === "node" || link.target_type === "root"
+    link.target_type === "node"
       ? state.graphData.nodes.byId[link.target_id].group_name
       : state.graphData.groups.byId[link.target_id].group_name,
   );
