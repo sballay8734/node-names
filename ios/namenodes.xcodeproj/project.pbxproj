@@ -14,10 +14,10 @@
 		96905EF65AED1B983A6B3ABC /* libPods-namenodes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-namenodes.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		9C13473B8A4E429489ABE2BD /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = E430A63A0C8542D4AB8096AC /* noop-file.swift */; };
-		C9B364E312264D2F8556D72A /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A0097921A1942719AB9E5E1 /* SpaceMono-Regular.ttf */; };
-		2A5133CFE9C0427A8E64642A /* SFNSMono.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6B8C6B704C074655AAC28FBD /* SFNSMono.ttf */; };
-		82295C2326E04B7FAEE72D35 /* SFNSRounded.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 32207185BD3A4D5EB065A180 /* SFNSRounded.ttf */; };
+		68D1976F4805479D9342FB30 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF627E313CE408A95446392 /* noop-file.swift */; };
+		0069D4A67A6248D58F39AC4F /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CC221628C7E4FA5B6E0B8F3 /* SpaceMono-Regular.ttf */; };
+		54369FE0BD8E49ACA814CC1E /* SFNSMono.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 457FF0DE0D094FCB964646C3 /* SFNSMono.ttf */; };
+		9FE2E8B4E9E84649844B4855 /* SFNSRounded.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B42AEE2C7944C6682EF58F1 /* SFNSRounded.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,11 +34,11 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-namenodes/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		E430A63A0C8542D4AB8096AC /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "namenodes/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
-		C66F33964EDF4BDE83044FF6 /* namenodes-Bridging-Header.h */ = {isa = PBXFileReference; name = "namenodes-Bridging-Header.h"; path = "namenodes/namenodes-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		0A0097921A1942719AB9E5E1 /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; name = "SpaceMono-Regular.ttf"; path = "../assets/fonts/SpaceMono-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		6B8C6B704C074655AAC28FBD /* SFNSMono.ttf */ = {isa = PBXFileReference; name = "SFNSMono.ttf"; path = "../assets/fonts/SFNSMono.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		32207185BD3A4D5EB065A180 /* SFNSRounded.ttf */ = {isa = PBXFileReference; name = "SFNSRounded.ttf"; path = "../assets/fonts/SFNSRounded.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0FF627E313CE408A95446392 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "namenodes/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		F35FA340AA8A45BC9E806510 /* namenodes-Bridging-Header.h */ = {isa = PBXFileReference; name = "namenodes-Bridging-Header.h"; path = "namenodes/namenodes-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		2CC221628C7E4FA5B6E0B8F3 /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; name = "SpaceMono-Regular.ttf"; path = "../assets/fonts/SpaceMono-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		457FF0DE0D094FCB964646C3 /* SFNSMono.ttf */ = {isa = PBXFileReference; name = "SFNSMono.ttf"; path = "../assets/fonts/SFNSMono.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0B42AEE2C7944C6682EF58F1 /* SFNSRounded.ttf */ = {isa = PBXFileReference; name = "SFNSRounded.ttf"; path = "../assets/fonts/SFNSRounded.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,8 +63,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				E430A63A0C8542D4AB8096AC /* noop-file.swift */,
-				C66F33964EDF4BDE83044FF6 /* namenodes-Bridging-Header.h */,
+				0FF627E313CE408A95446392 /* noop-file.swift */,
+				F35FA340AA8A45BC9E806510 /* namenodes-Bridging-Header.h */,
 			);
 			name = namenodes;
 			sourceTree = "<group>";
@@ -94,7 +94,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
 				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
-				1EDCE8C9D53D4000AC3BD040 /* Resources */,
+				FD7720D1140747D9A0A1F4D9 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -143,12 +143,12 @@
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
-		1EDCE8C9D53D4000AC3BD040 /* Resources */ = {
+		FD7720D1140747D9A0A1F4D9 /* Resources */ = {
 			isa = "PBXGroup";
 			children = (
-				0A0097921A1942719AB9E5E1 /* SpaceMono-Regular.ttf */,
-				6B8C6B704C074655AAC28FBD /* SFNSMono.ttf */,
-				32207185BD3A4D5EB065A180 /* SFNSRounded.ttf */,
+				2CC221628C7E4FA5B6E0B8F3 /* SpaceMono-Regular.ttf */,
+				457FF0DE0D094FCB964646C3 /* SFNSMono.ttf */,
+				0B42AEE2C7944C6682EF58F1 /* SFNSRounded.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -216,10 +216,10 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				553139B785904E8EA6BD2C32 /* namenodes-Bridging-Header.h in Resources */,
-				C9B364E312264D2F8556D72A /* SpaceMono-Regular.ttf in Resources */,
-				2A5133CFE9C0427A8E64642A /* SFNSMono.ttf in Resources */,
-				82295C2326E04B7FAEE72D35 /* SFNSRounded.ttf in Resources */,
+				C145F040992047C0932B10D5 /* namenodes-Bridging-Header.h in Resources */,
+				0069D4A67A6248D58F39AC4F /* SpaceMono-Regular.ttf in Resources */,
+				54369FE0BD8E49ACA814CC1E /* SFNSMono.ttf in Resources */,
+				9FE2E8B4E9E84649844B4855 /* SFNSRounded.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +295,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				9C13473B8A4E429489ABE2BD /* noop-file.swift in Sources */,
+				68D1976F4805479D9342FB30 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

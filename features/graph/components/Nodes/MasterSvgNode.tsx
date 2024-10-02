@@ -30,8 +30,10 @@ interface NodeProps {
   gestures: GestureContextType;
 }
 
+// !TODO: YOU MUST CREATE BUILD TO USE FONTS
+
 const font = matchFont({
-  fontFamily: "SpaceMono-Regular",
+  fontFamily: "Helvetica",
   fontSize: 24,
   // fontStyle: "normal",
   // fontWeight: "400",
