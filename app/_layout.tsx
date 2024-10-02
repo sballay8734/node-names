@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { CustomThemeProvider } from "@/components/CustomThemeContext";
 import AuthFlow from "@/features/Auth/AuthFlow";
 import { store } from "@/store/store";
+import AppLoading from "@/components/AppLoading";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -25,23 +26,24 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
+    "SpaceMono-Regular": require("../assets/fonts/SpaceMono-Regular.ttf"),
+    // Montserrat: require("../assets/fonts/Montserrat-Regular.ttf"),
+    SFNSMono: require("../assets/fonts/SFNSMono.ttf"),
+    SFNSRounded: require("../assets/fonts/SFNSRounded.ttf"),
+    // ...FontAwesome.font,
   });
+
+  console.log(loaded, error);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
+    if (loaded || error) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, error]);
 
-  if (!loaded) {
-    return null;
+  if (!loaded && !error) {
+    return <AppLoading />;
   }
 
   return <RootLayoutNav />;
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "transparent",
+    fontFamily: "Montserrat",
   },
 });
 

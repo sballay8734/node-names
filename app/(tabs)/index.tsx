@@ -22,6 +22,7 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    fontFamily: "SpaceMono-Regular",
     // backgroundColor: "red",
   },
 });

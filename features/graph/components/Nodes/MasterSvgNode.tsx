@@ -2,6 +2,7 @@ import {
   BlurMask,
   Circle,
   Group,
+  Rect,
   Text,
   matchFont,
 } from "@shopify/react-native-skia";
@@ -30,11 +31,13 @@ interface NodeProps {
 }
 
 const font = matchFont({
-  fontFamily: "Helvetica",
-  fontSize: 10,
-  fontStyle: "normal",
-  fontWeight: "400",
+  fontFamily: "SpaceMono-Regular",
+  fontSize: 24,
+  // fontStyle: "normal",
+  // fontWeight: "400",
 });
+
+// console.log(font.getMetrics());
 
 // 0.3 is really zoomed OUT
 // 4 is really zoomed IN
@@ -137,15 +140,11 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     return withTiming(c, { duration: 150 });
   });
 
-  function getLabelPosition(
-    text: string,
-    node: UiNode,
-    // nodeRadius: number,
-    // nodeAngle: number,
-  ) {
+  function getLabelPosition(text: string, node: UiNode) {
     const textDim = font.measureText(text);
     const textWidth = textDim.width;
     const textHeight = textDim.height;
+    const metrics = font.getMetrics();
     const textX = textDim.x;
     const textY = textDim.y;
 
@@ -154,23 +153,34 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
 
     // LOOKS GOOD (I think these center it on the node)
     let labelX = -(textWidth + textX) / 2;
-    let labelY = radius;
+    let labelY = textHeight / 2;
 
-    // Push label outward from the node along calculated angle
-    const distanceFromCenter = radius + 10;
-    labelX += Math.cos(angle) * distanceFromCenter;
-    labelY += Math.sin(angle) * distanceFromCenter;
+    // **********************************************************************
+    const horizontalPush = textWidth * Math.cos(angle);
+    const verticalPush = textHeight * Math.sin(angle);
 
-    return { labelX, labelY };
+    const offsetX = radius + Math.abs(horizontalPush / 2) + 45;
+    const offsetY = radius + Math.abs(verticalPush / 2) + 45;
+
+    labelX += Math.cos(angle) * offsetX;
+    labelY += Math.sin(angle) * offsetY;
+    // **********************************************************************
+
+    return { labelX, labelY, textHeight, textWidth };
   }
 
-  console.log(node.name, getLabelPosition(node.name, node));
+  // console.log(node.name, getLabelPosition(node.name, node));
 
   const opacity = useDerivedValue(() => {
     return withTiming(rootGroupActive || node.type === "root" ? 1 : 0.2, {
       duration: 200,
     });
   });
+
+  const { labelX, labelY, textHeight, textWidth } = getLabelPosition(
+    node.name,
+    node,
+  );
 
   // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (
@@ -185,13 +195,22 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
       </Circle> */}
       {/* Main node */}
       <Circle r={radius} color={color} />
+      <Rect
+        x={labelX}
+        y={labelY}
+        width={textWidth}
+        height={-textHeight}
+        color="rgba(0, 0, 0, 0.2)" // Semi-transparent box for visibility
+      />
       <Text
-        x={getLabelPosition(node.name, node).labelX}
-        y={getLabelPosition(node.name, node).labelY}
+        x={labelX}
+        y={labelY}
         text={node.depth === 1 ? "3D" : node.name}
+        // text={""}
         font={font}
         color={node.depth === 1 ? "white" : color}
         opacity={labelOpacity}
+        style={"stroke"}
         // transform={textTransform}
       />
     </Group>

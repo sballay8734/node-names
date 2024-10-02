@@ -18,7 +18,7 @@ interface Props {
 const RADIUS = 1800;
 
 const font = matchFont({
-  fontFamily: "Helvetica",
+  // fontFamily: "Helvetica",
   fontSize: 50,
   fontStyle: "normal",
   fontWeight: "400",
