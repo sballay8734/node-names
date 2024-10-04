@@ -3,7 +3,6 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
 import { PosLinkMap, PosNodeMap, UiNode } from "@/lib/types/graph";
 import { LinkHash, NodeHash, SourceHash } from "@/lib/utils/positionGraphEls";
-import { CreatedNode, updatePositions } from "@/lib/utils/repositionGraphEls";
 import { RootState } from "@/store/store";
 
 export interface GraphSliceState {
@@ -13,17 +12,11 @@ export interface GraphSliceState {
     allIds: number[];
     activeRootId: number | null;
     selectedNodeIds: number[];
-    focusedNodeId: number | null;
     activeRootGroupId: number | null;
   };
   links: {
     byId: PosLinkMap;
     bySourceId: { [key: number]: number[] }; // for repositioning
-    byTargetId: { [key: number]: number[] }; // for statuses
-    allIds: number[];
-  };
-  groups: {
-    byId: PosNodeMap;
     allIds: number[];
   };
   rootGroups: {
@@ -40,17 +33,11 @@ const initialState: GraphSliceState = {
     allIds: [],
     activeRootId: null,
     selectedNodeIds: [],
-    focusedNodeId: null,
     activeRootGroupId: null,
   },
   links: {
     byId: {},
     bySourceId: {},
-    byTargetId: {},
-    allIds: [],
-  },
-  groups: {
-    byId: {},
     allIds: [],
   },
   rootGroups: {
@@ -101,12 +88,7 @@ const NewArchitectureSlice = createSlice({
       state.rootGroups.allIds = [...rootGroupIds];
       state.links.allIds = [...linkIds];
 
-      // if (initActiveRootId) {
-      //   state.nodes.selectedNodeIds.push(initActiveRootId);
-      // }
-
-      // state.nodes.activeRootId = initActiveRootId;
-      // state.nodes.focusedNodeId = initActiveRootId;
+      console.log("ON LOAD:", state);
     },
     newToggleNode: (state, action: PayloadAction<number>) => {
       const clickedNodeId = action.payload;
@@ -135,6 +117,8 @@ const NewArchitectureSlice = createSlice({
         // activate node
         state.nodes.byId[clickedNodeId].node_status = true;
       }
+
+      console.log("ON TOGGLE:", state);
     },
     deselectAllNodes: (state) => {
       // Update the statuses of the nodes in the object
@@ -165,52 +149,7 @@ const NewArchitectureSlice = createSlice({
 
       console.log("Swap Root", "OLD:", oldRootId, "NEW:", newRootId);
     },
-    createNewNode: (state) => {
-      if (!state.nodes.focusedNodeId)
-        return console.error("from createNewNode");
-
-      // get last id in array
-      const source = state.nodes.byId[state.nodes.focusedNodeId];
-
-      if (source) {
-        // REMOVE: FOR TESTING
-        const currentName = state.nodes.byId[state.nodes.focusedNodeId].name;
-        const newNode = {
-          id: Math.floor(Math.random() * 10000),
-          depth: 3,
-          name: "TEST",
-          group_id: 7, // friends
-          type: "node",
-          group_name: currentName,
-          source_type: "group",
-        };
-        // this function needs to return an array of repositioned nodes
-        const updatedNodes: UiNode[] | undefined = updatePositions(
-          state,
-          source,
-          newNode as CreatedNode,
-        );
-
-        updatedNodes?.forEach((node) => {
-          const updatedNode = {
-            ...node,
-            x: node.x,
-            y: node.y,
-          };
-
-          if (state.nodes.byId[node.id]) {
-            state.nodes.byId[node.id] = updatedNode;
-          } else {
-            state.nodes.byId[node.id] = updatedNode;
-            state.nodes.allIds.push(node.id);
-          }
-        });
-
-        console.log("NODE CREATED!");
-      } else {
-        console.log("THERE IS NO VALID SOURCE");
-      }
-    },
+    createNewNode: (state) => {},
     createNewGroup: (state) => {
       const source_id =
         // get last id in array
@@ -310,3 +249,61 @@ export const selectNodeStatus = createSelector(
     return anyParentActive ? "parent_active" : "inactive";
   },
 );
+
+const stateOnLoad = {
+  actionBtnById: {
+    createNewGroup: false,
+    createNewNode: false,
+    createSubGroupFromSelection: false,
+    moveNode: false,
+  },
+  groups: { allIds: [], byId: {} },
+  links: {
+    allIds: [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10],
+    byId: {
+      "1": [Object],
+      "10": [Object],
+      "11": [Object],
+      "2": [Object],
+      "3": [Object],
+      "4": [Object],
+      "5": [Object],
+      "6": [Object],
+      "7": [Object],
+      "8": [Object],
+      "9": [Object],
+    },
+    bySourceId: {
+      "1": [Array],
+      "10": [Array],
+      "11": [Array],
+      "7": [Array],
+      "8": [Array],
+      "9": [Array],
+    },
+    byTargetId: {},
+  },
+  nodes: {
+    activeRootGroupId: null,
+    activeRootId: null,
+    allIds: [1, 2, 3, 4, 5, 6, 12, 7, 8, 9, 10, 11],
+    byId: {
+      "1": [Object],
+      "10": [Object],
+      "11": [Object],
+      "12": [Object],
+      "2": [Object],
+      "3": [Object],
+      "4": [Object],
+      "5": [Object],
+      "6": [Object],
+      "7": [Object],
+      "8": [Object],
+      "9": [Object],
+    },
+    focusedNodeId: null,
+    selectedNodeIds: [],
+  },
+  rootGroups: { allIds: [7, 8, 9, 10, 11], byId: {} },
+  userId: null,
+};

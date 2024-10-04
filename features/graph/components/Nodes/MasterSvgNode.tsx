@@ -209,10 +209,6 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
       ? getRootGroupLabelPosition(node.name, node)
       : getNodeLabelPosition(node.name, node);
 
-  if (node.type === "root_group") {
-    console.log(node.name);
-  }
-
   // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (
     <Group
@@ -231,7 +227,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
         y={labelY}
         width={textWidth}
         height={-textHeight}
-        color="rgba(0, 0, 0, 0.2)" // Semi-transparent box for visibility
+        color="rgba(255, 0, 0, 0.2)" // Semi-transparent box for visibility
       /> */}
       <Text
         x={labelX}
