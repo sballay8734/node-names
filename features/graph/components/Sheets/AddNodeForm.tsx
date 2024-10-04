@@ -63,7 +63,7 @@ export default function AddNodeForm() {
       <View style={[styles.formWrapper, { paddingTop: insets.top }]}>
         <View style={styles.formElements}>
           <TextInput placeholder="Name" style={styles.inputWrapper}>
-            RootGroup: {activeRootGroup && activeRootGroup.name}
+            RootGroup: {activeRootGroup ? activeRootGroup.name : "ROOT"}
           </TextInput>
           <TextInput
             placeholder="Birthday"

@@ -96,6 +96,39 @@ const NewArchitectureSlice = createSlice({
       const clickedType = state.nodes.byId[clickedNodeId].type;
       const currentRootGroupId = state.nodes.activeRootGroupId;
 
+      // if an inactive node is clicked, activate both the node and the group
+      if (clickedType === "node" && !clickedStatus) {
+        state.nodes.byId[clickedNodeId].node_status = true;
+
+        // deactivate any other root groups
+        if (currentRootGroupId && currentRootGroupId !== clickedNodeId) {
+          state.nodes.byId[currentRootGroupId].node_status = false;
+        }
+
+        // deactivate any nodes in the old root group
+        state.nodes.allIds.forEach((id) => {
+          const node = state.nodes.byId[id];
+          if (
+            node.type === "node" &&
+            node.node_status &&
+            node.group_id === currentRootGroupId
+          ) {
+            state.nodes.byId[id].node_status = false;
+          }
+        });
+
+        // set the new active root group
+        state.nodes.activeRootGroupId =
+          state.nodes.byId[clickedNodeId].group_id;
+
+        // set the actual nodes itself to active
+        if (state.nodes.byId[clickedNodeId].group_id) {
+          state.nodes.byId[
+            state.nodes.byId[clickedNodeId].group_id
+          ].node_status = true;
+        }
+      }
+
       if (clickedType === "root_group") {
         state.nodes.activeRootGroupId = clickedNodeId;
       }
@@ -108,7 +141,7 @@ const NewArchitectureSlice = createSlice({
         // deactivate node
         state.nodes.byId[clickedNodeId].node_status = false;
 
-        // !TODO: deactivate all nodes in that group also HERE (maybe do this from the node itself by checking the rootGroup status)
+        // !TODO: REFACTOR THIS WHOLE THING --- deactivate any nodes in the old root group
 
         if (clickedType === "root_group") {
           state.nodes.activeRootGroupId = null;
