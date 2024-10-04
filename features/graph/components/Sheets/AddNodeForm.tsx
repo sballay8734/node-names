@@ -62,13 +62,17 @@ export default function AddNodeForm() {
     >
       <View style={[styles.formWrapper, { paddingTop: insets.top }]}>
         <View style={styles.formElements}>
+          {/* NEW NODE SOURCE */}
           <TextInput placeholder="Name" style={styles.inputWrapper}>
-            RootGroup: {activeRootGroup ? activeRootGroup.name : "ROOT"}
+            NEW NODE GROUP: {activeRootGroup ? activeRootGroup.name : "ROOT"}
           </TextInput>
           <TextInput
             placeholder="Birthday"
             style={styles.inputWrapper}
-          ></TextInput>
+            // TODO: Could be ROOT (if it's a new root group) or a ROOT GROUP (if it's a new node) or a NODE / NODE GROUP (if it's a node connected to a node)
+          >
+            NEW NODE SOURCE:{" "}
+          </TextInput>
           <TextInput
             placeholder="Description"
             style={styles.inputWrapper}

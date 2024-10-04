@@ -117,6 +117,7 @@ const NewArchitectureSlice = createSlice({
               state.nodes.byId[id].node_status = false;
             }
           });
+          // !TODO: NEED TO HANDLE CASE WHERE NODE IN ANOTHER GROUP IS SELECTED AND NEED TO REMOVE THE NODEIDS inside selectedNodeIds that are part of the old group....
           // set the new id for the rootGroup
           if (currentRootGroupId) {
             state.nodes.byId[currentRootGroupId].node_status = false;
@@ -169,10 +170,35 @@ const NewArchitectureSlice = createSlice({
       if (clickedNodeIsActive) {
         // 1. deactivate it if it was active.
         state.nodes.byId[clickedNodeId].node_status = false;
+        const updatedSelectedNodes = state.nodes.selectedNodeIds.filter(
+          (id) => id !== clickedNodeId,
+        );
+
+        state.nodes.selectedNodeIds = [...updatedSelectedNodes];
       } else {
         // 2. activate it if it was inactive
         state.nodes.byId[clickedNodeId].node_status = true;
+
+        if (!state.nodes.selectedNodeIds.includes(clickedNodeId)) {
+          state.nodes.selectedNodeIds.push(clickedNodeId);
+        }
       }
+      // const updatedSelectedNodeIds = state.nodes.selectedNodeIds.filter(
+      //   (id) => {
+      //     const node = state.nodes.byId[id];
+
+      //     // !TODO: This may be causing issues because you updated currentRootGroupId above this (race condition)
+      //     if (node.group_id && node.group_id !== currentRootGroupId) {
+      //       return false;
+      //     } else {
+      //       return true;
+      //     }
+      //   },
+      // );
+
+      // state.nodes.selectedNodeIds = [...updatedSelectedNodeIds];
+
+      console.log(state.nodes.selectedNodeIds);
     },
     deselectAllNodes: (state) => {
       // Update the statuses of the nodes in the object
