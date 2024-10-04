@@ -11,15 +11,19 @@ import {
 } from "@/lib/constants/styles";
 import { useGestureContext } from "@/lib/hooks/useGestureContext";
 import { UiNode } from "@/lib/types/graph";
-import { useAppDispatch } from "@/store/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 
 import { newToggleNode } from "../../redux/graphSlice";
+import { RootState } from "@/store/store";
 
 interface PressableNodeProps {
   node: UiNode;
 }
 
 export default function MasterPressableNode({ node }: PressableNodeProps) {
+  const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
+    (state: RootState) => state.windowSize,
+  );
   const dispatch = useAppDispatch();
   const { centerOnRootGroup } = useGestureContext();
   const isRoot = node.depth === 1;
@@ -31,7 +35,7 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
     : isGroup
     ? GROUP_NODE_RADIUS * 4
     : isRootGroup
-    ? GROUP_NODE_RADIUS * 12
+    ? GROUP_NODE_RADIUS * 32
     : REG_NODE_RADIUS * 2;
 
   const tap = Gesture.Tap()
@@ -51,21 +55,28 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
     .runOnJS(true);
 
   const position = useDerivedValue(() => {
+    const angle = Math.atan2(node.y - centerY, node.x - centerX);
+    const nudgeDistance = 40;
+
+    let nudgeX = 0;
+    let nudgeY = 0;
+
+    if (isRootGroup) {
+      nudgeX = Math.cos(angle) * nudgeDistance;
+      nudgeY = Math.sin(angle) * nudgeDistance;
+    }
+
+    const nodeRadius = isRoot
+      ? ROOT_NODE_RADIUS
+      : isGroup
+      ? GROUP_NODE_RADIUS
+      : isRootGroup
+      ? GROUP_NODE_RADIUS * 16
+      : REG_NODE_RADIUS;
+
     return {
-      x: isRoot
-        ? node.x - ROOT_NODE_RADIUS
-        : isGroup
-        ? node.x - GROUP_NODE_RADIUS
-        : isRootGroup
-        ? node.x - GROUP_NODE_RADIUS * 6
-        : node.x - REG_NODE_RADIUS,
-      y: isRoot
-        ? node.y - ROOT_NODE_RADIUS
-        : isGroup
-        ? node.y - GROUP_NODE_RADIUS
-        : isRootGroup
-        ? node.y - GROUP_NODE_RADIUS * 6
-        : node.y - REG_NODE_RADIUS,
+      x: node.x - nodeRadius + nudgeX,
+      y: node.y - nodeRadius + nudgeY,
     };
   });
 

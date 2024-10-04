@@ -32,18 +32,6 @@ interface NodeProps {
 
 // !TODO: YOU MUST CREATE BUILD TO USE FONTS
 
-const font = matchFont({
-  fontFamily: "Helvetica",
-  fontSize: 24,
-  // fontStyle: "normal",
-  // fontWeight: "400",
-});
-
-// console.log(font.getMetrics());
-
-// 0.3 is really zoomed OUT
-// 4 is really zoomed IN
-
 export default function MasterSvgNode({ node, gestures }: NodeProps) {
   // const labelOpacity = useDerivedValue(() => {
   //   let inputRange, outputRange;
@@ -84,6 +72,13 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
 
   const labelOpacity = useDerivedValue(() => {
     return withTiming(rootGroupActive ? 1 : 0, { duration: 200 });
+  });
+
+  const font = matchFont({
+    fontFamily: "Helvetica",
+    fontSize: node.type === "root_group" ? 22 : 10,
+    // fontStyle: "normal",
+    // fontWeight: "400",
   });
 
   // const textScale = useDerivedValue(() => {
@@ -142,13 +137,14 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     return withTiming(c, { duration: 150 });
   });
 
-  function getLabelPosition(text: string, node: UiNode) {
+  function getRootGroupLabelPosition(text: string, node: UiNode) {
     const textDim = font.measureText(text);
     const textWidth = textDim.width;
     const textHeight = textDim.height;
-    const metrics = font.getMetrics();
     const textX = textDim.x;
     const textY = textDim.y;
+
+    // font.setSize(12);
 
     // Calculate angle between center of screen and node
     const angle = Math.atan2(node.y - centerY, node.x - centerX);
@@ -170,8 +166,37 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
 
     return { labelX, labelY, textHeight, textWidth };
   }
+  function getNodeLabelPosition(text: string, node: UiNode) {
+    const textDim = font.measureText(text);
+    const textWidth = textDim.width;
+    const textHeight = textDim.height;
+    const textX = textDim.x;
+    const textY = textDim.y;
 
-  // console.log(node.name, getLabelPosition(node.name, node));
+    // font.setSize(12);
+
+    // Calculate angle between center of screen and node
+    const angle = Math.atan2(node.y - centerY, node.x - centerX);
+
+    // LOOKS GOOD (I think these center it on the node)
+    let labelX = -(textWidth + textX) / 2;
+    let labelY = textHeight / 2;
+
+    // **********************************************************************
+    const horizontalPush = textWidth * Math.cos(angle);
+    const verticalPush = textHeight * Math.sin(angle);
+
+    const offsetX = radius + Math.abs(horizontalPush / 2);
+    const offsetY = radius + Math.abs(verticalPush / 2);
+
+    labelX += Math.cos(angle) * offsetX;
+    labelY += Math.sin(angle) * offsetY;
+    // **********************************************************************
+
+    return { labelX, labelY, textHeight, textWidth };
+  }
+
+  // console.log(node.name, getRootGroupLabelPosition(node.name, node));
 
   const opacity = useDerivedValue(() => {
     return withTiming(rootGroupActive || node.type === "root" ? 1 : 0.2, {
@@ -179,10 +204,14 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     });
   });
 
-  const { labelX, labelY, textHeight, textWidth } = getLabelPosition(
-    node.name,
-    node,
-  );
+  const { labelX, labelY, textHeight, textWidth } =
+    node.type === "root_group"
+      ? getRootGroupLabelPosition(node.name, node)
+      : getNodeLabelPosition(node.name, node);
+
+  if (node.type === "root_group") {
+    console.log(node.name);
+  }
 
   // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (
@@ -197,13 +226,13 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
       </Circle> */}
       {/* Main node */}
       <Circle r={radius} color={color} />
-      <Rect
+      {/* <Rect
         x={labelX}
         y={labelY}
         width={textWidth}
         height={-textHeight}
         color="rgba(0, 0, 0, 0.2)" // Semi-transparent box for visibility
-      />
+      /> */}
       <Text
         x={labelX}
         y={labelY}
@@ -212,7 +241,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
         font={font}
         color={node.depth === 1 ? "white" : color}
         opacity={labelOpacity}
-        style={"stroke"}
+        style={"fill"}
         // transform={textTransform}
       />
     </Group>

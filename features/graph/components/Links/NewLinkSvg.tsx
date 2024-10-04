@@ -12,10 +12,10 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
+import { GestureContextType } from "@/lib/context/gestures";
 import { groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { GestureContextType } from "@/lib/context/gestures";
 
 interface LinkSvgProps {
   link_id: number;

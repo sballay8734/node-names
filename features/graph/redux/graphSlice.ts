@@ -122,45 +122,18 @@ const NewArchitectureSlice = createSlice({
       if (nodeIsRoot) return;
 
       // if node is focused and active
-      if (
-        state.nodes.focusedNodeId === clickedNodeId &&
-        clickedStatus === true
-      ) {
+      if (clickedStatus === true) {
         // deactivate node
         state.nodes.byId[clickedNodeId].node_status = false;
         // update selectedNodeIds
         const updatedNodesIds = [
           ...state.nodes.selectedNodeIds.filter((id) => id !== clickedNodeId),
         ];
-        // get index of last item in selectedNodeIds
-        const lastIndex = updatedNodesIds[updatedNodesIds.length - 1];
-
-        // if lastIndex, set the focusedNodeId to the lastIndex (id)
-        if (lastIndex) {
-          state.nodes.focusedNodeId = lastIndex;
-        } else {
-          state.nodes.focusedNodeId = null;
-        }
 
         state.nodes.selectedNodeIds = [...updatedNodesIds];
-      } else if (state.nodes.focusedNodeId !== clickedNodeId && clickedStatus) {
-        // if node is active && NOT focused (make it focused)
-        state.nodes.focusedNodeId = clickedNodeId;
-
-        if (!state.nodes.selectedNodeIds.includes(clickedNodeId)) {
-          state.nodes.selectedNodeIds.push(clickedNodeId);
-        }
       } else if (!clickedStatus) {
-        // if node is inactive (make it active and focus it)
-        state.nodes.focusedNodeId = clickedNodeId;
-
-        if (!state.nodes.selectedNodeIds.includes(clickedNodeId)) {
-          state.nodes.selectedNodeIds.push(clickedNodeId);
-        }
-
+        // activate node
         state.nodes.byId[clickedNodeId].node_status = true;
-      } else {
-        console.log("No condition hit");
       }
     },
     deselectAllNodes: (state) => {
