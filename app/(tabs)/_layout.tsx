@@ -50,11 +50,11 @@ export default function TabLayout() {
           title: "Tab Two",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Entypo name="heart-outlined" size={24} color={color} />
+            <Entypo name="key" size={24} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="add"
         options={{
           title: "Add",
@@ -62,14 +62,14 @@ export default function TabLayout() {
 
           tabBarButton: (props) => <PlusButton {...props} />,
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="three"
         options={{
           title: "Tab Three",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Entypo name="heart-outlined" size={24} color={color} />
+            <Entypo name="text" size={24} color={color} />
           ),
         }}
       />

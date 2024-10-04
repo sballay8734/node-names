@@ -9,22 +9,13 @@ import Animated, {
 import { Path, Svg } from "react-native-svg";
 
 import { ARROW_BTN_DIM } from "@/lib/constants/styles";
+import { GestureContextType } from "@/lib/context/gestures";
 import { WindowSize } from "@/lib/types/misc";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface RecenterBtnProps {
-  gestures: {
-    scale: SharedValue<number>;
-    translateX: SharedValue<number>;
-    translateY: SharedValue<number>;
-    lastScale: SharedValue<number>;
-    initialFocalX: SharedValue<number>;
-    initialFocalY: SharedValue<number>;
-    centerShiftX: SharedValue<number>;
-    centerShiftY: SharedValue<number>;
-    centerOnRoot: () => void;
-  };
+  gestures: GestureContextType;
   windowSize: WindowSize;
 }
 

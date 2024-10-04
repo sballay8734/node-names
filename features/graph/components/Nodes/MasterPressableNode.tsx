@@ -12,9 +12,9 @@ import {
 import { useGestureContext } from "@/lib/hooks/useGestureContext";
 import { UiNode } from "@/lib/types/graph";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
-
-import { newToggleNode } from "../../redux/graphSlice";
 import { RootState } from "@/store/store";
+
+import { toggleNode } from "../../redux/graphSlice";
 
 interface PressableNodeProps {
   node: UiNode;
@@ -50,7 +50,7 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
         const finalAngle = node.startAngle - (node.startAngle - centerAngle);
         // centerOnRootGroup(node.x, node.y, finalAngle);
       }
-      dispatch(newToggleNode(node.id));
+      dispatch(toggleNode(node.id));
     })
     .runOnJS(true);
 

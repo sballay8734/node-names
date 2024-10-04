@@ -33,7 +33,7 @@ export default function RootLayout() {
     // ...FontAwesome.font,
   });
 
-  console.log(loaded, error);
+  // console.log(loaded, error);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {

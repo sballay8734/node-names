@@ -88,12 +88,13 @@ const NewArchitectureSlice = createSlice({
       state.rootGroups.allIds = [...rootGroupIds];
       state.links.allIds = [...linkIds];
 
-      console.log("ON LOAD:", state);
+      // console.log("ON LOAD:", state);
     },
-    newToggleNode: (state, action: PayloadAction<number>) => {
+    toggleNode: (state, action: PayloadAction<number>) => {
       const clickedNodeId = action.payload;
       const clickedStatus = state.nodes.byId[clickedNodeId].node_status;
       const clickedType = state.nodes.byId[clickedNodeId].type;
+      const currentRootGroupId = state.nodes.activeRootGroupId;
 
       if (clickedType === "root_group") {
         state.nodes.activeRootGroupId = clickedNodeId;
@@ -107,6 +108,10 @@ const NewArchitectureSlice = createSlice({
       if (clickedStatus === true) {
         // deactivate node
         state.nodes.byId[clickedNodeId].node_status = false;
+
+        if (clickedType === "root_group") {
+          state.nodes.activeRootGroupId = null;
+        }
         // update selectedNodeIds
         const updatedNodesIds = [
           ...state.nodes.selectedNodeIds.filter((id) => id !== clickedNodeId),
@@ -116,9 +121,15 @@ const NewArchitectureSlice = createSlice({
       } else if (!clickedStatus) {
         // activate node
         state.nodes.byId[clickedNodeId].node_status = true;
-      }
 
-      console.log("ON TOGGLE:", state);
+        if (clickedType === "root_group") {
+          // check for a previous RGNode and deactivate it if there is
+          if (currentRootGroupId && currentRootGroupId !== clickedNodeId) {
+            state.nodes.byId[currentRootGroupId].node_status = false;
+          }
+          state.nodes.activeRootGroupId = clickedNodeId;
+        }
+      }
     },
     deselectAllNodes: (state) => {
       // Update the statuses of the nodes in the object
@@ -202,7 +213,7 @@ const updateActionButtonStates = (state: GraphSliceState) => {
 };
 
 export const {
-  newToggleNode,
+  toggleNode,
   swapRootNode,
   deselectAllNodes,
   createNewNode,
@@ -249,61 +260,3 @@ export const selectNodeStatus = createSelector(
     return anyParentActive ? "parent_active" : "inactive";
   },
 );
-
-const stateOnLoad = {
-  actionBtnById: {
-    createNewGroup: false,
-    createNewNode: false,
-    createSubGroupFromSelection: false,
-    moveNode: false,
-  },
-  groups: { allIds: [], byId: {} },
-  links: {
-    allIds: [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10],
-    byId: {
-      "1": [Object],
-      "10": [Object],
-      "11": [Object],
-      "2": [Object],
-      "3": [Object],
-      "4": [Object],
-      "5": [Object],
-      "6": [Object],
-      "7": [Object],
-      "8": [Object],
-      "9": [Object],
-    },
-    bySourceId: {
-      "1": [Array],
-      "10": [Array],
-      "11": [Array],
-      "7": [Array],
-      "8": [Array],
-      "9": [Array],
-    },
-    byTargetId: {},
-  },
-  nodes: {
-    activeRootGroupId: null,
-    activeRootId: null,
-    allIds: [1, 2, 3, 4, 5, 6, 12, 7, 8, 9, 10, 11],
-    byId: {
-      "1": [Object],
-      "10": [Object],
-      "11": [Object],
-      "12": [Object],
-      "2": [Object],
-      "3": [Object],
-      "4": [Object],
-      "5": [Object],
-      "6": [Object],
-      "7": [Object],
-      "8": [Object],
-      "9": [Object],
-    },
-    focusedNodeId: null,
-    selectedNodeIds: [],
-  },
-  rootGroups: { allIds: [7, 8, 9, 10, 11], byId: {} },
-  userId: null,
-};

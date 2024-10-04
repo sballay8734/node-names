@@ -5,23 +5,16 @@ import BackToUserBtn from "@/features/Graph/components/GraphOverlay/BackToUserBt
 import InspectBtn from "@/features/Graph/components/GraphOverlay/InspectBtn";
 import RecenterBtn from "@/features/Graph/components/GraphOverlay/RecenterBtn";
 import SearchBar from "@/features/Graph/components/GraphOverlay/SearchBar";
+import { GestureContextType } from "@/lib/context/gestures";
 import { WindowSize } from "@/lib/types/misc";
 
 import Popover from "../Popover/Popover";
 
 import DeselectAllBtn from "./DeselectAllBtn";
+import AddBtn from "./AddBtn";
 
 interface GraphOverlayButtonsProps {
-  gestures: {
-    scale: SharedValue<number>;
-    translateX: SharedValue<number>;
-    translateY: SharedValue<number>;
-    lastScale: SharedValue<number>;
-    initialFocalX: SharedValue<number>;
-    initialFocalY: SharedValue<number>;
-    centerShiftX: SharedValue<number>;
-    centerShiftY: SharedValue<number>;
-  };
+  gestures: GestureContextType;
   windowSize: WindowSize;
 }
 
@@ -36,6 +29,7 @@ const GraphOverlayButtons = ({
       <RecenterBtn gestures={gestures} windowSize={windowSize} />
       <DeselectAllBtn />
       <InspectBtn />
+      <AddBtn gestures={gestures} windowSize={windowSize} />
       {/* <BackToUserBtn /> */}
     </>
   );
