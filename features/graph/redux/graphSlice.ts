@@ -118,6 +118,12 @@ const NewArchitectureSlice = createSlice({
             }
           });
           // set the new id for the rootGroup
+          if (currentRootGroupId) {
+            state.nodes.byId[currentRootGroupId].node_status = false;
+          }
+          if (clickedNode.group_id) {
+            state.nodes.byId[clickedNode.group_id].node_status = true;
+          }
           state.nodes.activeRootGroupId = clickedNode.group_id;
         }
       }
@@ -136,7 +142,6 @@ const NewArchitectureSlice = createSlice({
             }
           });
 
-          // state.nodes.byId[clickedNode]
           state.nodes.activeRootGroupId = null;
         } else if (clickedNodeId !== currentRootGroupId) {
           // deactivate all nodes with the old group_id
@@ -150,6 +155,9 @@ const NewArchitectureSlice = createSlice({
             }
           });
 
+          if (currentRootGroupId) {
+            state.nodes.byId[currentRootGroupId].node_status = false;
+          }
           state.nodes.activeRootGroupId = clickedNodeId;
         }
       }
