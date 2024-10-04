@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useDerivedValue } from "react-native-reanimated";
@@ -21,10 +20,11 @@ interface PressableNodeProps {
 }
 
 export default function MasterPressableNode({ node }: PressableNodeProps) {
+  const dispatch = useAppDispatch();
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );
-  const dispatch = useAppDispatch();
+
   const { centerOnRootGroup } = useGestureContext();
   const isRoot = node.depth === 1;
   const isGroup = node.type === "group";

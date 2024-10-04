@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import Graph from "@/features/Graph/components/Graph";
-import NewNodeData from "@/features/Graph/components/Sheets/NewNodeData";
+import AddNodeForm from "@/features/Graph/components/Sheets/AddNodeForm";
 import { GestureProvider } from "@/lib/context/gestures";
 import useWindowSize from "@/lib/hooks/useWindowSize";
 
@@ -13,7 +13,7 @@ const Index = () => {
     <View style={[styles.container]}>
       <GestureProvider>
         <Graph />
-        <NewNodeData />
+        <AddNodeForm />
       </GestureProvider>
     </View>
   );

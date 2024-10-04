@@ -1,7 +1,8 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
@@ -12,7 +13,8 @@ import { GestureContextType } from "@/lib/context/gestures";
 import { WindowSize } from "@/lib/types/misc";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { handlePopover, showSheet } from "../../redux/uiSlice";
+
+import { showSheet } from "../../redux/uiSlice";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -25,6 +27,9 @@ export default function AddBtn({
   gestures,
   windowSize,
 }: Props): React.JSX.Element {
+  const canAddGroup = useAppSelector(
+    (state: RootState) => state.graphData.rootGroups.allIds.length < 7,
+  );
   const dispatch = useAppDispatch();
   const isPressed = useSharedValue<boolean>(false);
   const sheetIsShown = useAppSelector(
@@ -32,6 +37,18 @@ export default function AddBtn({
   );
   const theme = useContext(CustomThemeContext);
   const longPressRef = useRef<boolean>(false);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (sheetIsShown || !canAddGroup) {
+      opacity.value = 0;
+      return;
+    }
+
+    if (!sheetIsShown && canAddGroup) {
+      opacity.value = 1;
+    }
+  }, [canAddGroup, sheetIsShown, opacity]);
 
   const handlePressIn = () => {
     isPressed.value = true;
@@ -52,10 +69,10 @@ export default function AddBtn({
 
   const animatedStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(sheetIsShown ? 0 : isPressed.value ? 0.8 : 1, {
+      opacity: withTiming(opacity.value, {
         duration: 100,
       }),
-      pointerEvents: sheetIsShown ? "none" : "auto",
+      pointerEvents: sheetIsShown || !canAddGroup ? "none" : "auto",
     };
   });
 

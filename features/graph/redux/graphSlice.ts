@@ -13,6 +13,7 @@ export interface GraphSliceState {
     activeRootId: number | null;
     selectedNodeIds: number[];
     activeRootGroupId: number | null;
+    totalRootGroups: number;
   };
   links: {
     byId: PosLinkMap;
@@ -34,6 +35,7 @@ const initialState: GraphSliceState = {
     activeRootId: null,
     selectedNodeIds: [],
     activeRootGroupId: null,
+    totalRootGroups: 0,
   },
   links: {
     byId: {},
@@ -87,8 +89,6 @@ const NewArchitectureSlice = createSlice({
       state.links.bySourceId = { ...linksBySourceId };
       state.rootGroups.allIds = [...rootGroupIds];
       state.links.allIds = [...linkIds];
-
-      // console.log("ON LOAD:", state);
     },
     toggleNode: (state, action: PayloadAction<number>) => {
       const clickedNodeId = action.payload;
@@ -104,10 +104,11 @@ const NewArchitectureSlice = createSlice({
 
       if (nodeIsRoot) return;
 
-      // if node is focused and active
       if (clickedStatus === true) {
         // deactivate node
         state.nodes.byId[clickedNodeId].node_status = false;
+
+        // !TODO: deactivate all nodes in that group also HERE (maybe do this from the node itself by checking the rootGroup status)
 
         if (clickedType === "root_group") {
           state.nodes.activeRootGroupId = null;
@@ -186,6 +187,15 @@ const NewArchitectureSlice = createSlice({
         console.log("LAST SELECTED IS NOT VALID OR IS TYPE GROUP");
       }
     },
+    addRootGroup: (state) => {
+      const currentTotal = state.rootGroups.allIds.length;
+
+      if (currentTotal >= 7) {
+        console.log("You already have the maximum number of groups");
+      } else {
+        console.log("ADDING GROUP...");
+      }
+    },
   },
 });
 
@@ -221,6 +231,7 @@ export const {
   newSetInitialState,
   createSubGroupFromSelection,
   moveNode,
+  addRootGroup,
 } = NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;
