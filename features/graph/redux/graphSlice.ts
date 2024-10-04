@@ -96,6 +96,14 @@ const NewArchitectureSlice = createSlice({
       const clickedType = state.nodes.byId[clickedNodeId].type;
       const currentRootGroupId = state.nodes.activeRootGroupId;
 
+      // IF CLICKED TYPE IS NODE
+
+      // IF CLICKED TYPE IS ROOT_GROUP
+
+      // IF CLICKED TYPE IS GROUP (Non root group, node group)
+
+      // THINGS THAT SHOULD ALWAYS BE DONE WHEN A NODE IS CLICKED
+
       // if an inactive node is clicked, activate both the node and the group
       if (clickedType === "node" && !clickedStatus) {
         state.nodes.byId[clickedNodeId].node_status = true;

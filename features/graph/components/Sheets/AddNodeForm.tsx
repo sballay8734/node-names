@@ -35,9 +35,9 @@ export default function AddNodeForm() {
   // !TODO: translateY value should NOT be fixed
   const animatedStyles = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(isShown ? 1 : 0, { duration: 200 }),
+      opacity: withTiming(isShown ? 1 : 0, { duration: 300 }),
       transform: [
-        { translateY: withTiming(isShown ? 0 : -800, { duration: 200 }) },
+        { translateY: withTiming(isShown ? 0 : -800, { duration: 300 }) },
       ],
       pointerEvents: isShown ? "auto" : "none",
     };
