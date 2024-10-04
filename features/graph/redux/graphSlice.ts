@@ -92,85 +92,78 @@ const NewArchitectureSlice = createSlice({
     },
     toggleNode: (state, action: PayloadAction<number>) => {
       const clickedNodeId = action.payload;
-      const clickedStatus = state.nodes.byId[clickedNodeId].node_status;
+      const clickedNodeIsActive = state.nodes.byId[clickedNodeId].node_status;
       const clickedType = state.nodes.byId[clickedNodeId].type;
       const currentRootGroupId = state.nodes.activeRootGroupId;
+      const clickedNode = state.nodes.byId[clickedNodeId];
 
       // IF CLICKED TYPE IS NODE
+      if (clickedType === "node") {
+        // if currentRootGroupId is null, activate the group
+        if (!currentRootGroupId && clickedNode.group_id) {
+          state.nodes.activeRootGroupId = clickedNode.group_id;
+          state.nodes.byId[clickedNode.group_id].node_status = true;
+        } else if (clickedNode.group_id === currentRootGroupId) {
+          // if currentRootGroupId is the same as the clickedNode.group_id
+          // DON'T NEED TO HANDLE (Handled at the end)
+        } else if (clickedNode.group_id !== currentRootGroupId) {
+          // if currentRootGroupId is NOT the same as the clickedNode.group_id
+          // deactivate all nodes in the old group that were active
+          state.nodes.allIds.forEach((id) => {
+            const node = state.nodes.byId[id];
+            const nodeIsInOldGroup =
+              state.nodes.byId[id].group_id === currentRootGroupId;
+            if (node.node_status && nodeIsInOldGroup) {
+              state.nodes.byId[id].node_status = false;
+            }
+          });
+          // set the new id for the rootGroup
+          state.nodes.activeRootGroupId = clickedNode.group_id;
+        }
+      }
 
       // IF CLICKED TYPE IS ROOT_GROUP
-
-      // IF CLICKED TYPE IS GROUP (Non root group, node group)
-
-      // THINGS THAT SHOULD ALWAYS BE DONE WHEN A NODE IS CLICKED
-
-      // if an inactive node is clicked, activate both the node and the group
-      if (clickedType === "node" && !clickedStatus) {
-        state.nodes.byId[clickedNodeId].node_status = true;
-
-        // deactivate any other root groups
-        if (currentRootGroupId && currentRootGroupId !== clickedNodeId) {
-          state.nodes.byId[currentRootGroupId].node_status = false;
-        }
-
-        // deactivate any nodes in the old root group
-        state.nodes.allIds.forEach((id) => {
-          const node = state.nodes.byId[id];
-          if (
-            node.type === "node" &&
-            node.node_status &&
-            node.group_id === currentRootGroupId
-          ) {
-            state.nodes.byId[id].node_status = false;
-          }
-        });
-
-        // set the new active root group
-        state.nodes.activeRootGroupId =
-          state.nodes.byId[clickedNodeId].group_id;
-
-        // set the actual nodes itself to active
-        if (state.nodes.byId[clickedNodeId].group_id) {
-          state.nodes.byId[
-            state.nodes.byId[clickedNodeId].group_id
-          ].node_status = true;
-        }
-      }
-
       if (clickedType === "root_group") {
-        state.nodes.activeRootGroupId = clickedNodeId;
-      }
+        if (clickedNodeId === currentRootGroupId) {
+          // deactivate all nodes with this group_id
+          state.nodes.allIds.forEach((id) => {
+            const node = state.nodes.byId[id];
+            if (node.type !== "node") return;
+            const nodeIsInOldGroup =
+              state.nodes.byId[id].group_id === currentRootGroupId;
+            if (node.node_status && nodeIsInOldGroup) {
+              state.nodes.byId[id].node_status = false;
+            }
+          });
 
-      const nodeIsRoot = state.nodes.byId[clickedNodeId].type === "root";
-
-      if (nodeIsRoot) return;
-
-      if (clickedStatus === true) {
-        // deactivate node
-        state.nodes.byId[clickedNodeId].node_status = false;
-
-        // !TODO: REFACTOR THIS WHOLE THING --- deactivate any nodes in the old root group
-
-        if (clickedType === "root_group") {
+          // state.nodes.byId[clickedNode]
           state.nodes.activeRootGroupId = null;
-        }
-        // update selectedNodeIds
-        const updatedNodesIds = [
-          ...state.nodes.selectedNodeIds.filter((id) => id !== clickedNodeId),
-        ];
+        } else if (clickedNodeId !== currentRootGroupId) {
+          // deactivate all nodes with the old group_id
+          state.nodes.allIds.forEach((id) => {
+            const node = state.nodes.byId[id];
+            if (node.type !== "node") return;
+            const nodeIsInOldGroup =
+              state.nodes.byId[id].group_id === currentRootGroupId;
+            if (node.node_status && nodeIsInOldGroup) {
+              state.nodes.byId[id].node_status = false;
+            }
+          });
 
-        state.nodes.selectedNodeIds = [...updatedNodesIds];
-      } else if (!clickedStatus) {
-        // activate node
-        state.nodes.byId[clickedNodeId].node_status = true;
-
-        if (clickedType === "root_group") {
-          // check for a previous RGNode and deactivate it if there is
-          if (currentRootGroupId && currentRootGroupId !== clickedNodeId) {
-            state.nodes.byId[currentRootGroupId].node_status = false;
-          }
           state.nodes.activeRootGroupId = clickedNodeId;
         }
+      }
+      // IF CLICKED TYPE IS GROUP (Non root group, node group)
+      if (clickedType === "group") {
+        console.warn("UNHANDLED - see toggleNode in graphSlice");
+      }
+      // THINGS THAT SHOULD ALWAYS BE DONE WHEN A NODE IS CLICKED
+      if (clickedNodeIsActive) {
+        // 1. deactivate it if it was active.
+        state.nodes.byId[clickedNodeId].node_status = false;
+      } else {
+        // 2. activate it if it was inactive
+        state.nodes.byId[clickedNodeId].node_status = true;
       }
     },
     deselectAllNodes: (state) => {
