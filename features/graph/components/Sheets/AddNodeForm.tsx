@@ -84,6 +84,7 @@ export default function AddNodeForm() {
             >
               NEW NODE SOURCE:
             </TextInput>
+            {/* !TODO: You don't need this many for the initial add. */}
             <TextInput
               placeholder="First Name"
               style={styles.inputWrapper}
