@@ -91,6 +91,7 @@ const NewArchitectureSlice = createSlice({
       state.links.allIds = [...linkIds];
     },
     toggleNode: (state, action: PayloadAction<number>) => {
+      // OPTIMIZE: This code works but severely needs to be optimized
       const clickedNodeId = action.payload;
       const clickedNodeIsActive = state.nodes.byId[clickedNodeId].node_status;
       const clickedType = state.nodes.byId[clickedNodeId].type;
@@ -103,6 +104,7 @@ const NewArchitectureSlice = createSlice({
         if (!currentRootGroupId && clickedNode.group_id) {
           state.nodes.activeRootGroupId = clickedNode.group_id;
           state.nodes.byId[clickedNode.group_id].node_status = true;
+          state.nodes.selectedNodeIds.push(clickedNode.group_id);
         } else if (clickedNode.group_id === currentRootGroupId) {
           // if currentRootGroupId is the same as the clickedNode.group_id
           // DON'T NEED TO HANDLE (Handled at the end)
@@ -116,14 +118,21 @@ const NewArchitectureSlice = createSlice({
             if (node.node_status && nodeIsInOldGroup) {
               state.nodes.byId[id].node_status = false;
             }
+            if (state.nodes.selectedNodeIds.includes(id)) {
+              const updatedSelectedNodeIds = state.nodes.selectedNodeIds.filter(
+                (nodeId) => nodeId !== id,
+              );
+
+              state.nodes.selectedNodeIds = [...updatedSelectedNodeIds];
+            }
           });
-          // !TODO: NEED TO HANDLE CASE WHERE NODE IN ANOTHER GROUP IS SELECTED AND NEED TO REMOVE THE NODEIDS inside selectedNodeIds that are part of the old group....
           // set the new id for the rootGroup
           if (currentRootGroupId) {
             state.nodes.byId[currentRootGroupId].node_status = false;
           }
           if (clickedNode.group_id) {
             state.nodes.byId[clickedNode.group_id].node_status = true;
+            state.nodes.selectedNodeIds.push(clickedNode.group_id);
           }
           state.nodes.activeRootGroupId = clickedNode.group_id;
         }
@@ -141,6 +150,13 @@ const NewArchitectureSlice = createSlice({
             if (node.node_status && nodeIsInOldGroup) {
               state.nodes.byId[id].node_status = false;
             }
+            if (state.nodes.selectedNodeIds.includes(id)) {
+              const updatedSelectedNodeIds = state.nodes.selectedNodeIds.filter(
+                (nodeId) => nodeId !== id,
+              );
+
+              state.nodes.selectedNodeIds = [...updatedSelectedNodeIds];
+            }
           });
 
           state.nodes.activeRootGroupId = null;
@@ -148,11 +164,18 @@ const NewArchitectureSlice = createSlice({
           // deactivate all nodes with the old group_id
           state.nodes.allIds.forEach((id) => {
             const node = state.nodes.byId[id];
-            if (node.type !== "node") return;
+            if (node.type !== "node" && node.type !== "root_group") return;
             const nodeIsInOldGroup =
               state.nodes.byId[id].group_id === currentRootGroupId;
             if (node.node_status && nodeIsInOldGroup) {
               state.nodes.byId[id].node_status = false;
+            }
+            if (state.nodes.selectedNodeIds.includes(id)) {
+              const updatedSelectedNodeIds = state.nodes.selectedNodeIds.filter(
+                (nodeId) => nodeId !== id,
+              );
+
+              state.nodes.selectedNodeIds = [...updatedSelectedNodeIds];
             }
           });
 
