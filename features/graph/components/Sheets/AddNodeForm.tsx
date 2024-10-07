@@ -41,6 +41,7 @@ export default function AddNodeForm() {
       state.graphData.nodes.activeRootGroupId &&
       state.graphData.nodes.byId[state.graphData.nodes.activeRootGroupId],
   );
+  const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const formState = useAppSelector((state: RootState) => state.ui.formInfo);
 
   // !TODO: Center the node above the form so user can see what's happening
@@ -60,15 +61,15 @@ export default function AddNodeForm() {
 
   function handleCreate() {
     // return;
-    dispatch(addRootGroup({ newGroupName: formState.newGroupName }));
+    dispatch(
+      addRootGroup({ newGroupName: formState.newGroupName, windowSize }),
+    );
     dispatch(handleSheet());
   }
 
   function handleReduxUpdate(key: FormKey, text: string) {
     dispatch(updateInput({ key, value: text }));
   }
-
-  console.log(formState);
 
   return (
     <AnimatedPressable

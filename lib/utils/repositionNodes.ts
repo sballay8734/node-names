@@ -2,37 +2,32 @@ import { newSetInitialState } from "@/features/Graph/redux/graphSlice";
 import { store } from "@/store/store";
 
 import { REG_NODE_RADIUS } from "../constants/styles";
-import {
-  LinkStatus,
-  PositionedNode,
-  RawLink,
-  RawNode,
-  UiLink,
-  UiNode,
-} from "../types/graph";
+import { LinkStatus, RawNode, UiLink, UiNode } from "../types/graph";
 import { WindowSize } from "../types/misc";
 
-export interface NodeHash {
-  [key: number]: UiNode;
-}
-export interface LinkHash {
-  [key: number]: UiLink;
+import {
+  CIRCLE_RADIUS,
+  LinkHash,
+  NodeHash,
+  SourceHash,
+} from "./positionGraphEls";
+
+export interface CreatedNode {
+  id: number;
+  depth: number;
+  name: string;
+  group_id: number | null;
+  type: "node" | "group";
+  group_name: string | null;
+  source_type: "node" | "group" | "root" | null;
 }
 
-export type SourceHash = Record<number, number[]>;
-
-// REMOVE: should be passed eventually
-const userId = 1;
-const MAX_ROOT_GROUPS = 7;
-const MAX_NODES = 1000;
-const RADIUS_FACTOR = 0.3;
-const PADDING = 5;
 const NODE_SPACING = REG_NODE_RADIUS;
-export const CIRCLE_RADIUS = 60;
 
-export function positionNodes(
-  allNodes: RawNode[],
-  allLinks: RawLink[],
+// Helper function to update position of nodes
+export function repositionNodes(
+  allNodes: UiNode[],
+  allLinks: UiLink[],
   windowSize: WindowSize,
 ) {
   // get window dimensions and center point
@@ -80,7 +75,7 @@ export function positionNodes(
     }
   }
 
-  function updateLinkHashes(link: RawLink) {
+  function updateLinkHashes(link: UiLink) {
     // add sources to sources hash
     if (!linksBySourceId[link.source_id]) {
       linksBySourceId[link.source_id] = [link.target_id];
@@ -120,7 +115,7 @@ export function positionNodes(
 
   function positionRootGroupsAndNodes(nodesHash: NodeHash) {
     const rootGroups = Object.values(nodesHash).filter(
-      (node: PositionedNode) => node.type === "root_group",
+      (node: UiNode) => node.type === "root_group",
     );
     const angleStep = (2 * Math.PI) / rootGroups.length;
 
@@ -159,7 +154,7 @@ export function positionNodes(
     const totalGroupWidth = (groupSize - 1) * NODE_SPACING;
     const startOffset = -totalGroupWidth / 2;
 
-    nodesInGroup.forEach((node: PositionedNode, index) => {
+    nodesInGroup.forEach((node: UiNode, index) => {
       const offset = startOffset + index * NODE_SPACING;
       const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
 

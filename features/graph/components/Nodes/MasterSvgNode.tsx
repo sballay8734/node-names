@@ -21,7 +21,7 @@ import {
 } from "@/lib/constants/styles";
 import { GestureContextType } from "@/lib/context/gestures";
 import { UiNode } from "@/lib/types/graph";
-import { getColors } from "@/lib/utils/getColors";
+import { getColors, groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
@@ -130,10 +130,15 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
   const shade = getColors(node);
 
   const color = useDerivedValue(() => {
-    const c =
-      shade[
-        node.type === "root" ? "active" : nodeStatusTrue ? "active" : "inactive"
-      ];
+    const c = shade
+      ? shade[
+          node.type === "root"
+            ? "active"
+            : nodeStatusTrue
+            ? "active"
+            : "inactive"
+        ]
+      : groupMap["Fallback"].active;
     return withTiming(c, { duration: 150 });
   });
 

@@ -1,9 +1,16 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
-import { PosLinkMap, PosNodeMap, RawNode, UiNode } from "@/lib/types/graph";
-import { LinkHash, NodeHash, SourceHash } from "@/lib/utils/positionGraphEls";
-import { RootState } from "@/store/store";
+import { PosLinkMap, PosNodeMap, UiNode } from "@/lib/types/graph";
+import { WindowSize } from "@/lib/types/misc";
+import {
+  CIRCLE_RADIUS,
+  LinkHash,
+  NodeHash,
+  SourceHash,
+} from "@/lib/utils/positionGraphEls";
+import { RootState, store } from "@/store/store";
+import { REG_NODE_RADIUS } from "@/lib/constants/styles";
 
 export interface GraphSliceState {
   userId: number | null;
@@ -264,31 +271,17 @@ const NewArchitectureSlice = createSlice({
         console.log("LAST SELECTED IS NOT VALID OR IS TYPE GROUP");
       }
     },
-    addRootGroup: (state, action: PayloadAction<{ newGroupName: string }>) => {
-      const { newGroupName } = action.payload;
+    addRootGroup: (
+      state,
+      action: PayloadAction<{ newGroupName: string; windowSize: WindowSize }>,
+    ) => {
+      const { newGroupName, windowSize } = action.payload;
       const currentTotal = state.rootGroups.allIds.length;
 
       if (currentTotal >= 7) {
         console.log("You already have the maximum number of groups");
       } else {
-        const test = {
-          depth: 2,
-          endAngle: 2.199114857512855,
-          group_id: 1,
-          group_name: "Family",
-          id: 9,
-          isRoot: false,
-          isShown: true,
-          name: "Family",
-          node_status: false,
-          source_id: 1,
-          source_type: "root",
-          startAngle: 0.9424777960769379,
-          type: "root_group",
-          x: 196.5,
-          y: 446.5,
-        };
-        const randomId = Math.random() * 10000;
+        const randomId = Math.floor(Math.random() * 10000);
         const newNode: UiNode = {
           id: randomId,
           depth: 2,
@@ -301,19 +294,20 @@ const NewArchitectureSlice = createSlice({
           isRoot: false,
           node_status: true,
           isShown: true,
-          startAngle: 0.9424777960769379,
-          endAngle: 2.199114857512855,
-          x: 200,
-          y: 400,
+          startAngle: 0, // We'll calculate this later
+          endAngle: 0, // We'll calculate this later
+          x: 0, // We'll calculate this later
+          y: 0, // We'll calculate this later
         };
 
+        // Add the new root group
         state.nodes.byId[randomId] = newNode;
+        state.nodes.allIds.push(randomId);
+        state.rootGroups.allIds.push(randomId);
       }
-      console.log(state.nodes.byId);
     },
   },
 });
-
 // Helper function to update action button states
 const updateActionButtonStates = (state: GraphSliceState) => {
   const selectedNodesCount = state.nodes.selectedNodeIds.length;

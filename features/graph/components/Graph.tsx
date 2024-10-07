@@ -11,7 +11,7 @@ import { Provider } from "react-redux";
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
 import { testLinks, testNodes } from "@/lib/data/new_structure";
 import { useGestureContext } from "@/lib/hooks/useGestureContext";
-import { CIRCLE_RADIUS, newNewPosFunc } from "@/lib/utils/positionGraphEls";
+import { CIRCLE_RADIUS, positionNodes } from "@/lib/utils/positionGraphEls";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
 
@@ -26,7 +26,7 @@ export default function Graph() {
   // !TODO: This will be changed
   useEffect(() => {
     // newINITPosFunc(testNodes, testLinks, windowSize);
-    newNewPosFunc(testNodes, testLinks, windowSize);
+    positionNodes(testNodes, testLinks, windowSize);
   }, [windowSize]);
 
   const transform = useDerivedValue(() => {

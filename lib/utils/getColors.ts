@@ -48,11 +48,14 @@ export function getColors(node: UiNode) {
       parent_active: "#5e5899",
       inactive: "#2f2c4c",
     },
-    // Fallback3: {},
   };
 
   if (isRoot) return groupMap["Root"];
-  if (isGroup && groupName) return groupMap[groupName];
+  if (isGroup && groupName && groupMap[groupName]) {
+    return groupMap[groupName];
+  } else if (isGroup && groupName && !groupMap[groupName]) {
+    return groupMap["Fallback2"];
+  }
   if (!isGroup && groupName) return groupMap[groupName];
 
   return groupMap["Fallback"];
