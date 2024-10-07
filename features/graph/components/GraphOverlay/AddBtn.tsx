@@ -41,7 +41,7 @@ export default function AddBtn({
 
   useEffect(() => {
     if (sheetIsShown || !canAddGroup) {
-      opacity.value = 0;
+      opacity.value = 0.15;
       return;
     }
 
@@ -88,7 +88,7 @@ export default function AddBtn({
       ]}
     >
       <Animated.View>
-        <PlusIcon color={theme.btnBaseSelected} size={35} />
+        <PlusIcon color={theme.btnBaseSelected} size={30} />
       </Animated.View>
     </AnimatedPressable>
   );

@@ -98,6 +98,8 @@ const NewArchitectureSlice = createSlice({
       const currentRootGroupId = state.nodes.activeRootGroupId;
       const clickedNode = state.nodes.byId[clickedNodeId];
 
+      if (clickedType === "root") return;
+
       // IF CLICKED TYPE IS NODE
       if (clickedType === "node") {
         // if currentRootGroupId is null, activate the group
@@ -206,22 +208,6 @@ const NewArchitectureSlice = createSlice({
           state.nodes.selectedNodeIds.push(clickedNodeId);
         }
       }
-      // const updatedSelectedNodeIds = state.nodes.selectedNodeIds.filter(
-      //   (id) => {
-      //     const node = state.nodes.byId[id];
-
-      //     // !TODO: This may be causing issues because you updated currentRootGroupId above this (race condition)
-      //     if (node.group_id && node.group_id !== currentRootGroupId) {
-      //       return false;
-      //     } else {
-      //       return true;
-      //     }
-      //   },
-      // );
-
-      // state.nodes.selectedNodeIds = [...updatedSelectedNodeIds];
-
-      console.log(state.nodes.selectedNodeIds);
     },
     deselectAllNodes: (state) => {
       // Update the statuses of the nodes in the object

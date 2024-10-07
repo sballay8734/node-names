@@ -69,7 +69,8 @@ export default DefTheme;
 
 // NEW STUFF BELOW *************************************************************
 
-export const GRAPH_BG_COLOR = "#080a0f";
+// export const GRAPH_BG_COLOR = "#080a0f";
+export const GRAPH_BG_COLOR = "#ffffff";
 
 export interface NormalizedGroupColors {
   [key: string]: string;

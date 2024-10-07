@@ -30,7 +30,7 @@ export default function AddNodeForm() {
       state.graphData.nodes.byId[state.graphData.nodes.activeRootGroupId],
   );
 
-  const formHeight = height * 0.75;
+  const formHeight = height * 0.8;
 
   // !TODO: translateY value should NOT be fixed
   const animatedStyles = useAnimatedStyle(() => {

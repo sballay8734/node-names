@@ -232,7 +232,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
       <Text
         x={labelX}
         y={labelY}
-        text={node.depth === 1 ? "3D" : `${node.name} ${node.id}`}
+        text={node.depth === 1 ? "3D" : `${node.name}`}
         font={font}
         color={node.depth === 1 ? "white" : color}
         opacity={labelOpacity}
