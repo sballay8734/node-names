@@ -5,7 +5,7 @@ export const ROOT_NODE_RADIUS = 12;
 export const GROUP_NODE_RADIUS = 3;
 export const REG_NODE_RADIUS = 6;
 
-export const PRESSABLE_OPACITY = 0;
+export const PRESSABLE_OPACITY = 0.4;
 
 export const NODE_SPACING_FACTOR = 0.4;
 

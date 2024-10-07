@@ -1,5 +1,5 @@
 import { Canvas, Circle, Fill, Group } from "@shopify/react-native-skia";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -11,9 +11,15 @@ import { Provider } from "react-redux";
 import { GRAPH_BG_COLOR } from "@/lib/constants/Colors";
 import { testLinks, testNodes } from "@/lib/data/new_structure";
 import { useGestureContext } from "@/lib/hooks/useGestureContext";
-import { CIRCLE_RADIUS, positionNodes } from "@/lib/utils/positionGraphEls";
-import { useAppSelector } from "@/store/reduxHooks";
+import {
+  CIRCLE_RADIUS,
+  positionNodesOnLoad,
+} from "@/lib/utils/positionNodesOnLoad";
+import { repositionNodes } from "@/lib/utils/repositionNodes";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState, store } from "@/store/store";
+
+import { setInitialState, updateNodePositions } from "../redux/graphSlice";
 
 import GraphOverlayButtons from "./GraphOverlay/GraphOverlayButtons";
 import PressableElements from "./PressableElements";
@@ -22,12 +28,34 @@ import SvgElements from "./SvgElements";
 export default function Graph() {
   const windowSize = useAppSelector((state: RootState) => state.windowSize);
   const gestures = useGestureContext();
+  const dispatch = useAppDispatch();
+  const nodeIds = useAppSelector(
+    (state: RootState) => state.graphData.nodes.allIds,
+  );
 
-  // !TODO: This will be changed
+  const isInitialRender = useRef(true);
+
+  // Handle initial positioning
   useEffect(() => {
-    // newINITPosFunc(testNodes, testLinks, windowSize);
-    positionNodes(testNodes, testLinks, windowSize);
-  }, [windowSize]);
+    if (isInitialRender.current && nodeIds.length === 0) {
+      const initialState = positionNodesOnLoad(
+        testNodes,
+        testLinks,
+        windowSize,
+      );
+      console.log("INITIAL RENDER");
+      dispatch(setInitialState(initialState));
+      isInitialRender.current = false;
+    }
+  }, []);
+
+  // Handle repositioning
+  useEffect(() => {
+    if (!isInitialRender.current && nodeIds.length > 0) {
+      console.log("REPOSITIONING", nodeIds);
+      dispatch(updateNodePositions({ nodeIds, windowSize }));
+    }
+  }, [nodeIds, dispatch, windowSize]);
 
   const transform = useDerivedValue(() => {
     return [

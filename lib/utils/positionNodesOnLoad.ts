@@ -1,6 +1,3 @@
-import { newSetInitialState } from "@/features/Graph/redux/graphSlice";
-import { store } from "@/store/store";
-
 import { REG_NODE_RADIUS } from "../constants/styles";
 import {
   LinkStatus,
@@ -30,11 +27,20 @@ const PADDING = 5;
 const NODE_SPACING = REG_NODE_RADIUS;
 export const CIRCLE_RADIUS = 60;
 
-export function positionNodes(
+export function positionNodesOnLoad(
   allNodes: RawNode[],
   allLinks: RawLink[],
   windowSize: WindowSize,
-) {
+): {
+  nodesById: NodeHash;
+  nodeIds: number[];
+  linkIds: number[];
+  linksById: LinkHash;
+  linksBySourceId: SourceHash;
+  linksByTargetId: SourceHash;
+  rootGroupIds: number[];
+  initActiveRootId: number | null;
+} {
   // get window dimensions and center point
   const { width, height } = windowSize;
   const centerX = width / 2;
@@ -214,16 +220,14 @@ export function positionNodes(
   positionRootGroupsAndNodes(nodesById);
   linkIds.forEach((id) => positionLink(id));
 
-  store.dispatch(
-    newSetInitialState({
-      nodesById,
-      nodeIds,
-      linkIds,
-      linksById,
-      linksBySourceId,
-      linksByTargetId,
-      rootGroupIds,
-      initActiveRootId,
-    }),
-  );
+  return {
+    nodesById,
+    nodeIds,
+    linkIds,
+    linksById,
+    linksBySourceId,
+    linksByTargetId,
+    rootGroupIds,
+    initActiveRootId,
+  };
 }

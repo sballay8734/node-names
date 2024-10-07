@@ -24,6 +24,7 @@ import { UiNode } from "@/lib/types/graph";
 import { getColors, groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
+import { useEffect } from "react";
 
 interface NodeProps {
   node: UiNode;
@@ -81,6 +82,14 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     // fontWeight: "400",
   });
 
+  const nodeX = useSharedValue(node.x);
+  const nodeY = useSharedValue(node.y);
+
+  useEffect(() => {
+    nodeX.value = withTiming(node.x, { duration: 200 });
+    nodeY.value = withTiming(node.y, { duration: 200 });
+  }, [node.x, node.y, nodeX.value, nodeY.value, nodeX, nodeY]);
+
   // const textScale = useDerivedValue(() => {
   //   if (node.type === "root") {
   //     return interpolate(gestures.scale.value, [0.3, 4], [2, 1]);
@@ -118,8 +127,8 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
   const transform = useDerivedValue(() => {
     return [
       { rotate: gestures.rotate.value },
-      { translateX: node.x },
-      { translateY: node.y },
+      { translateX: nodeX.value },
+      { translateY: nodeY.value },
     ];
   });
 

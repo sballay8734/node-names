@@ -7,6 +7,11 @@ export default function PressableElements() {
   const allNodeIds = useAppSelector(
     (state: RootState) => state.graphData.nodes.allIds,
   );
+  const rootGroupIds = useAppSelector(
+    (state: RootState) => state.graphData.rootGroups.allIds,
+  );
+
+  console.log(rootGroupIds);
 
   if (!allNodeIds || allNodeIds.length === 0) return null;
 

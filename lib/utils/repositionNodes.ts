@@ -1,6 +1,3 @@
-import { newSetInitialState } from "@/features/Graph/redux/graphSlice";
-import { store } from "@/store/store";
-
 import { REG_NODE_RADIUS } from "../constants/styles";
 import { LinkStatus, RawNode, UiLink, UiNode } from "../types/graph";
 import { WindowSize } from "../types/misc";
@@ -10,7 +7,7 @@ import {
   LinkHash,
   NodeHash,
   SourceHash,
-} from "./positionGraphEls";
+} from "./positionNodesOnLoad";
 
 export interface CreatedNode {
   id: number;
@@ -26,8 +23,10 @@ const NODE_SPACING = REG_NODE_RADIUS;
 
 // Helper function to update position of nodes
 export function repositionNodes(
-  allNodes: UiNode[],
-  allLinks: UiLink[],
+  nodeIds: number[],
+  nodesObj: Record<number, UiNode>,
+  linksIds: number[],
+  linksObj: Record<number, UiLink>,
   windowSize: WindowSize,
 ) {
   // get window dimensions and center point
@@ -45,7 +44,7 @@ export function repositionNodes(
   let initActiveRootId: number | null = null;
 
   // id arrays
-  const nodeIds: number[] = [];
+  const updatedNodeIds: number[] = [];
   const linkIds: number[] = [];
   const deepGroupIds: number[] = [];
   const rootGroupIds: number[] = [];
@@ -67,7 +66,7 @@ export function repositionNodes(
         node_status: node.depth === 1 ? true : false,
       };
       nodesById[node.id] = newNode;
-      nodeIds.push(node.id);
+      updatedNodeIds.push(node.id);
 
       if (node.depth === 1) {
         initActiveRootId = newNode.id;
@@ -204,21 +203,8 @@ export function repositionNodes(
   }
 
   // loop through nodes and links and add them to hash for easy access
-  allNodes.forEach((node) => addNodeToHash(node));
-  allLinks.forEach((link) => updateLinkHashes(link));
+  nodeIds.forEach((id) => addNodeToHash(nodesObj[id]));
+  linkIds.forEach((id) => updateLinkHashes(linksObj[id]));
   positionRootGroupsAndNodes(nodesById);
   linkIds.forEach((id) => positionLink(id));
-
-  store.dispatch(
-    newSetInitialState({
-      nodesById,
-      nodeIds,
-      linkIds,
-      linksById,
-      linksBySourceId,
-      linksByTargetId,
-      rootGroupIds,
-      initActiveRootId,
-    }),
-  );
 }

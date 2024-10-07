@@ -1,16 +1,24 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
-import { PosLinkMap, PosNodeMap, UiNode } from "@/lib/types/graph";
+import { REG_NODE_RADIUS } from "@/lib/constants/styles";
+import {
+  LinkStatus,
+  PosLinkMap,
+  PosNodeMap,
+  UiLink,
+  UiNode,
+} from "@/lib/types/graph";
 import { WindowSize } from "@/lib/types/misc";
 import {
   CIRCLE_RADIUS,
   LinkHash,
   NodeHash,
   SourceHash,
-} from "@/lib/utils/positionGraphEls";
-import { RootState, store } from "@/store/store";
-import { REG_NODE_RADIUS } from "@/lib/constants/styles";
+} from "@/lib/utils/positionNodesOnLoad";
+import { RootState } from "@/store/store";
+
+const NODE_SPACING = REG_NODE_RADIUS;
 
 export interface GraphSliceState {
   userId: number | null;
@@ -66,7 +74,7 @@ const NewArchitectureSlice = createSlice({
   name: "newArchitecture",
   initialState,
   reducers: {
-    newSetInitialState: (
+    setInitialState: (
       state,
       action: PayloadAction<{
         nodesById: NodeHash;
@@ -96,6 +104,119 @@ const NewArchitectureSlice = createSlice({
       state.links.bySourceId = { ...linksBySourceId };
       state.rootGroups.allIds = [...rootGroupIds];
       state.links.allIds = [...linkIds];
+    },
+    updateNodePositions: (
+      state,
+      action: PayloadAction<{ nodeIds: number[]; windowSize: WindowSize }>,
+    ) => {
+      const totalRootGroups = state.rootGroups.allIds.length;
+
+      if (totalRootGroups >= 7) return;
+
+      const { nodeIds, windowSize } = action.payload;
+      const nodesById = state.nodes.byId;
+      const linkIds = state.links.allIds;
+      const linksById = state.links.byId;
+      const linksBySourceId = state.links.bySourceId;
+      const rootGroupIds = state.rootGroups.allIds;
+
+      // get window dimensions and center point
+      const { width, height } = windowSize;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      // const radius = Math.min(width, height);
+      const radius = CIRCLE_RADIUS;
+
+      function positionRootGroupsAndNodes(nodesHash: NodeHash) {
+        const rootGroups = Object.values(nodesHash).filter(
+          (node: UiNode) => node.type === "root_group",
+        );
+        const angleStep = (2 * Math.PI) / rootGroups.length;
+
+        rootGroups.forEach((root_group: UiNode, index: number) => {
+          const startAngle = index * angleStep - Math.PI / 2;
+          const endAngle = startAngle + angleStep;
+          const centerAngle = (startAngle + endAngle) / 2;
+
+          // Calculate the center of the group
+          root_group.x =
+            centerX + radius * (root_group.depth - 1) * Math.cos(centerAngle);
+          root_group.y =
+            centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
+          root_group.startAngle = startAngle;
+          root_group.endAngle = endAngle;
+          root_group.node_status = false;
+
+          // console.log(root_group.x);
+          // console.log(root_group.y);
+
+          positionNodesInGroup(root_group);
+        });
+      }
+
+      function positionNodesInGroup(root_group: UiNode) {
+        const sourceGroup = linksBySourceId[root_group.id];
+        if (!sourceGroup) return;
+
+        const nodes = nodeIds.map((id) => state.nodes.byId[id]);
+
+        const nodesInGroup: UiNode[] = nodes.filter(
+          (node: UiNode) =>
+            node.group_id === root_group.id && node.group_id !== node.id,
+        );
+
+        const groupSize = linksBySourceId[root_group.id].length;
+        const groupCenterAngle =
+          (root_group.startAngle + root_group.endAngle) / 2;
+        const totalGroupWidth = (groupSize - 1) * NODE_SPACING;
+        const startOffset = -totalGroupWidth / 2;
+
+        nodesInGroup.forEach((node: UiNode, index) => {
+          const offset = startOffset + index * NODE_SPACING;
+          const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
+
+          node.x = centerX + radius * node.depth * Math.cos(nodeAngle);
+          node.y = centerY + radius * node.depth * Math.sin(nodeAngle);
+          node.startAngle = root_group.startAngle;
+          node.endAngle = root_group.endAngle;
+
+          nodesById[node.id] = {
+            ...node,
+            isRoot: false,
+            isShown: true,
+            // node_status: root_group.node_status ? true : false,
+            node_status: node.depth === 1 ? true : false,
+          };
+        });
+
+        nodesById[root_group.id] = root_group;
+
+        if (!rootGroupIds.includes(root_group.id)) {
+          rootGroupIds.push(root_group.id);
+        }
+      }
+
+      function positionLink(link_id: number) {
+        const link = linksById[link_id];
+        // const sourceStatus: LinkStatus = nodesById[link.source_id].node_status;
+
+        // const linkStatus: LinkStatus = sourceStatus === true ? true : false;
+        const linkStatus: LinkStatus = true;
+
+        const updatedLink: UiLink = {
+          ...link,
+          x1: nodesById[link.source_id].x,
+          y1: nodesById[link.source_id].y,
+          x2: nodesById[link.target_id].x,
+          y2: nodesById[link.target_id].y,
+          link_status: linkStatus,
+        };
+
+        linksById[link_id] = updatedLink;
+      }
+
+      positionRootGroupsAndNodes(nodesById);
+      linkIds.forEach((id) => positionLink(id));
     },
     toggleNode: (state, action: PayloadAction<number>) => {
       // OPTIMIZE: This code works but severely needs to be optimized
@@ -337,10 +458,11 @@ export const {
   deselectAllNodes,
   createNewNode,
   createNewGroup,
-  newSetInitialState,
+  setInitialState,
   createSubGroupFromSelection,
   moveNode,
   addRootGroup,
+  updateNodePositions,
 } = NewArchitectureSlice.actions;
 
 export default NewArchitectureSlice.reducer;
