@@ -1,7 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { REDUX_ACTIONS } from "@/lib/constants/actions";
-import { PosLinkMap, PosNodeMap, UiNode } from "@/lib/types/graph";
+import { PosLinkMap, PosNodeMap, RawNode, UiNode } from "@/lib/types/graph";
 import { LinkHash, NodeHash, SourceHash } from "@/lib/utils/positionGraphEls";
 import { RootState } from "@/store/store";
 
@@ -264,14 +264,52 @@ const NewArchitectureSlice = createSlice({
         console.log("LAST SELECTED IS NOT VALID OR IS TYPE GROUP");
       }
     },
-    addRootGroup: (state) => {
+    addRootGroup: (state, action: PayloadAction<{ newGroupName: string }>) => {
+      const { newGroupName } = action.payload;
       const currentTotal = state.rootGroups.allIds.length;
 
       if (currentTotal >= 7) {
         console.log("You already have the maximum number of groups");
       } else {
-        console.log("ADDING GROUP...");
+        const test = {
+          depth: 2,
+          endAngle: 2.199114857512855,
+          group_id: 1,
+          group_name: "Family",
+          id: 9,
+          isRoot: false,
+          isShown: true,
+          name: "Family",
+          node_status: false,
+          source_id: 1,
+          source_type: "root",
+          startAngle: 0.9424777960769379,
+          type: "root_group",
+          x: 196.5,
+          y: 446.5,
+        };
+        const randomId = Math.random() * 10000;
+        const newNode: UiNode = {
+          id: randomId,
+          depth: 2,
+          name: newGroupName,
+          group_id: 1,
+          source_id: 1,
+          type: "root_group",
+          group_name: newGroupName,
+          source_type: "root",
+          isRoot: false,
+          node_status: true,
+          isShown: true,
+          startAngle: 0.9424777960769379,
+          endAngle: 2.199114857512855,
+          x: 200,
+          y: 400,
+        };
+
+        state.nodes.byId[randomId] = newNode;
       }
+      console.log(state.nodes.byId);
     },
   },
 });
