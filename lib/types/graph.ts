@@ -41,10 +41,8 @@ export interface PositionedNode extends RawNode {
   startAngle: number;
   endAngle: number;
   // angle: number;
-  initialX: number;
-  initialY: number;
-  currentX: number;
-  currentY: number;
+  x: number;
+  y: number;
 }
 export interface PositionedLink extends RawLink {
   x1: number;

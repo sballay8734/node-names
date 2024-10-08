@@ -136,9 +136,9 @@ const NewArchitectureSlice = createSlice({
           const centerAngle = (startAngle + endAngle) / 2;
 
           // Calculate the center of the group
-          root_group.currentX =
+          root_group.x =
             centerX + radius * (root_group.depth - 1) * Math.cos(centerAngle);
-          root_group.currentY =
+          root_group.y =
             centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
           root_group.startAngle = startAngle;
           root_group.endAngle = endAngle;
@@ -172,8 +172,8 @@ const NewArchitectureSlice = createSlice({
           const offset = startOffset + index * NODE_SPACING;
           const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
 
-          node.currentX = centerX + radius * node.depth * Math.cos(nodeAngle);
-          node.currentY = centerY + radius * node.depth * Math.sin(nodeAngle);
+          node.x = centerX + radius * node.depth * Math.cos(nodeAngle);
+          node.y = centerY + radius * node.depth * Math.sin(nodeAngle);
           node.startAngle = root_group.startAngle;
           node.endAngle = root_group.endAngle;
 
@@ -202,10 +202,10 @@ const NewArchitectureSlice = createSlice({
 
         const updatedLink: UiLink = {
           ...link,
-          x1: nodesById[link.source_id].currentX,
-          y1: nodesById[link.source_id].currentY,
-          x2: nodesById[link.target_id].currentX,
-          y2: nodesById[link.target_id].currentY,
+          x1: nodesById[link.source_id].x,
+          y1: nodesById[link.source_id].y,
+          x2: nodesById[link.target_id].x,
+          y2: nodesById[link.target_id].y,
           link_status: linkStatus,
         };
 
@@ -414,10 +414,8 @@ const NewArchitectureSlice = createSlice({
           isShown: true,
           startAngle: 0, // We'll calculate this later
           endAngle: 0, // We'll calculate this later
-          initialX: 0, // We'll calculate this later
-          initialY: 0, // We'll calculate this later
-          currentX: 0, // We'll calculate this later
-          currentY: 0, // We'll calculate this later
+          x: 0, // We'll calculate this later
+          y: 0, // We'll calculate this later
         };
 
         // Add the new root group

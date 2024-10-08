@@ -1,15 +1,7 @@
-import {
-  BlurMask,
-  Circle,
-  Group,
-  Rect,
-  Text,
-  matchFont,
-} from "@shopify/react-native-skia";
+import { Circle, Group, Text, matchFont } from "@shopify/react-native-skia";
 import { useEffect } from "react";
 import {
-  Extrapolation,
-  interpolate,
+  useAnimatedReaction,
   useDerivedValue,
   useSharedValue,
   withTiming,
@@ -21,19 +13,27 @@ import {
   ROOT_NODE_RADIUS,
 } from "@/lib/constants/styles";
 import { GestureContextType } from "@/lib/context/gestures";
-import { UiNode } from "@/lib/types/graph";
 import { getColors, groupMap } from "@/lib/utils/getColors";
-import { useAppSelector } from "@/store/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
 interface NodeProps {
   id: number;
   gestures: GestureContextType;
+  newestX: number;
+  newestY: number;
+  totalIds: number;
 }
 
 // !TODO: YOU MUST CREATE BUILD TO USE FONTS
 
-export default function MasterSvgNode({ id, gestures }: NodeProps) {
+export default function MasterSvgNode({
+  id,
+  gestures,
+  newestX,
+  newestY,
+  totalIds,
+}: NodeProps) {
   // const labelOpacity = useDerivedValue(() => {
   //   let inputRange, outputRange;
 
@@ -63,6 +63,8 @@ export default function MasterSvgNode({ id, gestures }: NodeProps) {
   //   );
   // });
 
+  console.log(totalIds);
+
   const node = useAppSelector(
     (state: RootState) => state.graphData.nodes.byId[id],
   );
@@ -79,20 +81,91 @@ export default function MasterSvgNode({ id, gestures }: NodeProps) {
     return withTiming(rootGroupActive ? 1 : 0, { duration: 200 });
   });
 
+  const dispatch = useAppDispatch();
+
   const font = matchFont({
     fontFamily: "Helvetica",
     fontSize: node.type === "root_group" ? 22 : 10,
     // fontStyle: "normal",
     // fontWeight: "400",
   });
+  const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
+    (state: RootState) => state.windowSize,
+  );
 
-  const nodeX = useSharedValue(node.initialX);
-  const nodeY = useSharedValue(node.initialY);
+  useEffect(() => {}, [node.x, node.y]);
+
+  const nodeX = useSharedValue(node.x);
+  const nodeY = useSharedValue(node.y);
+
+  const textPosition = useDerivedValue(() => {
+    const x = nodeX.value;
+    const y = nodeY.value;
+
+    if (x === undefined || y === undefined || isNaN(x) || isNaN(y)) {
+      return { labelX: 0, labelY: 0 };
+    }
+    function calculateLabelPosition(
+      text: string,
+      isRootGroup: boolean,
+    ): { labelX: number; labelY: number } {
+      "worklet";
+      const textDim = font.measureText(text);
+      const textWidth = textDim.width;
+      const textHeight = textDim.height;
+      const textX = textDim.x;
+      const textY = textDim.y;
+
+      const radius = isRoot
+        ? ROOT_NODE_RADIUS
+        : isGroup
+        ? GROUP_NODE_RADIUS
+        : REG_NODE_RADIUS / 2;
+
+      const angle = Math.atan2(nodeY.value - centerY, nodeX.value - centerX);
+
+      let labelX: number = -(textWidth + textX) / 2;
+      let labelY: number = textHeight / 2;
+
+      const horizontalPush = textWidth * Math.cos(angle);
+      const verticalPush = textHeight * Math.sin(angle);
+
+      const offsetX = radius + Math.abs(horizontalPush / 2) + 45;
+      const offsetY = radius + Math.abs(verticalPush / 2) + 45;
+
+      labelX += Math.cos(angle) * offsetX;
+      labelY += Math.sin(angle) * offsetY;
+
+      return { labelX, labelY };
+    }
+
+    return calculateLabelPosition(node.name, node.type === "root_group");
+  });
+
+  useAnimatedReaction(
+    () => ({ x: node.x, y: node.y }),
+    (current, previous) => {
+      if (current && previous) {
+        if (current.x !== previous.x) {
+          nodeX.value = withTiming(current.x, { duration: 300 });
+        }
+        if (current.y !== previous.y) {
+          nodeY.value = withTiming(current.y, { duration: 300 });
+        }
+      }
+    },
+  );
+
+  // !TODO: NEW NODEs POSITION IS NOT UPDATING QUICKLY ENOUGH? IT COMES IN AT (0,0). ADDING A COMMENT AND SAVING PUTS THE NODES IN THE CORRECT SPOT
 
   useEffect(() => {
-    nodeX.value = withTiming(node.currentX, { duration: 200 });
-    nodeY.value = withTiming(node.currentY, { duration: 200 });
-  }, [node.currentX, node.currentY, nodeX.value, nodeY.value, nodeX, nodeY]);
+    console.log("Node coordinates:", node.name, node.x, node.y);
+  }, [node.name, node.x, node.y]);
+
+  useEffect(() => {
+    console.log("Shared value nodeX:", nodeX.value);
+    console.log("Shared value nodeY:", nodeY.value);
+  }, [nodeX.value, nodeY.value]);
 
   // const textScale = useDerivedValue(() => {
   //   if (node.type === "root") {
@@ -115,10 +188,6 @@ export default function MasterSvgNode({ id, gestures }: NodeProps) {
   //   return [{ scale: textScale.value }];
   // });
 
-  const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
-    (state: RootState) => state.windowSize,
-  );
-
   const isRoot = node.depth === 1;
   const isGroup = node.type === "group" || node.type === "root_group";
   const radius = isRoot
@@ -126,6 +195,7 @@ export default function MasterSvgNode({ id, gestures }: NodeProps) {
     : isGroup
     ? GROUP_NODE_RADIUS
     : REG_NODE_RADIUS / 2;
+
   const blurVal = isRoot ? radius / 3 : isGroup ? radius : radius / 1.5;
 
   const transform = useDerivedValue(() => {
@@ -155,77 +225,11 @@ export default function MasterSvgNode({ id, gestures }: NodeProps) {
     return withTiming(c, { duration: 150 });
   });
 
-  function getRootGroupLabelPosition(text: string, node: UiNode) {
-    const textDim = font.measureText(text);
-    const textWidth = textDim.width;
-    const textHeight = textDim.height;
-    const textX = textDim.x;
-    const textY = textDim.y;
-
-    // font.setSize(12);
-
-    // Calculate angle between center of screen and node
-    const angle = Math.atan2(node.currentY - centerY, node.currentX - centerX);
-
-    // LOOKS GOOD (I think these center it on the node)
-    let labelX = -(textWidth + textX) / 2;
-    let labelY = textHeight / 2;
-
-    // **********************************************************************
-    const horizontalPush = textWidth * Math.cos(angle);
-    const verticalPush = textHeight * Math.sin(angle);
-
-    const offsetX = radius + Math.abs(horizontalPush / 2) + 45;
-    const offsetY = radius + Math.abs(verticalPush / 2) + 45;
-
-    labelX += Math.cos(angle) * offsetX;
-    labelY += Math.sin(angle) * offsetY;
-    // **********************************************************************
-
-    return { labelX, labelY, textHeight, textWidth };
-  }
-  function getNodeLabelPosition(text: string, node: UiNode) {
-    const textDim = font.measureText(text);
-    const textWidth = textDim.width;
-    const textHeight = textDim.height;
-    const textX = textDim.x;
-    const textY = textDim.y;
-
-    // font.setSize(12);
-
-    // Calculate angle between center of screen and node
-    const angle = Math.atan2(node.currentY - centerY, node.currentX - centerX);
-
-    // LOOKS GOOD (I think these center it on the node)
-    let labelX = -(textWidth + textX) / 2;
-    let labelY = textHeight / 2;
-
-    // **********************************************************************
-    const horizontalPush = textWidth * Math.cos(angle);
-    const verticalPush = textHeight * Math.sin(angle);
-
-    const offsetX = radius + Math.abs(horizontalPush / 2);
-    const offsetY = radius + Math.abs(verticalPush / 2);
-
-    labelX += Math.cos(angle) * offsetX;
-    labelY += Math.sin(angle) * offsetY;
-    // **********************************************************************
-
-    return { labelX, labelY, textHeight, textWidth };
-  }
-
-  // console.log(node.name, getRootGroupLabelPosition(node.name, node));
-
   const opacity = useDerivedValue(() => {
     return withTiming(rootGroupActive || node.type === "root" ? 1 : 0.2, {
       duration: 200,
     });
   });
-
-  const { labelX, labelY, textHeight, textWidth } =
-    node.type === "root_group"
-      ? getRootGroupLabelPosition(node.name, node)
-      : getNodeLabelPosition(node.name, node);
 
   // OPTIMIZE: You're rendering 2 nodes per every node just to handle the blur around the node. There must be a better way
   return (
@@ -248,14 +252,14 @@ export default function MasterSvgNode({ id, gestures }: NodeProps) {
         color="rgba(255, 0, 0, 0.2)" // Semi-transparent box for visibility
       /> */}
       <Text
-        x={labelX}
-        y={labelY}
+        x={textPosition.value.labelX}
+        y={textPosition.value.labelY}
         text={node.depth === 1 ? "3D" : `${node.name}`}
         font={font}
         color={node.depth === 1 ? "white" : color}
         opacity={labelOpacity}
         style={"fill"}
-        // transform={textTransform}
+        // transform={transform}
       />
     </Group>
   );

@@ -67,7 +67,7 @@ export default function MasterPressableNode({
     .runOnJS(true);
 
   const position = useDerivedValue(() => {
-    const angle = Math.atan2(node.currentY - centerY, node.currentX - centerX);
+    const angle = Math.atan2(node.y - centerY, node.x - centerX);
     const nudgeDistance = 40;
 
     let nudgeX = 0;
@@ -87,8 +87,8 @@ export default function MasterPressableNode({
       : REG_NODE_RADIUS;
 
     return {
-      x: node.currentX - nodeRadius + nudgeX,
-      y: node.currentY - nodeRadius + nudgeY,
+      x: node.x - nodeRadius + nudgeX,
+      y: node.y - nodeRadius + nudgeY,
     };
   });
 

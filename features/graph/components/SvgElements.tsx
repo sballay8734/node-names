@@ -19,6 +19,9 @@ export default function SvgElements({ gestures }: Props) {
   const nodeIds = useAppSelector(
     (state: RootState) => state.graphData.nodes.allIds,
   );
+  const nodes = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId,
+  );
 
   return (
     <>
@@ -27,10 +30,30 @@ export default function SvgElements({ gestures }: Props) {
         // return <LinkSvg key={id} id={id} />;
       })}
       {rootGroupIds.map((id) => {
-        return <MasterSvgNode gestures={gestures} key={id} id={id} />;
+        const node = nodes[id];
+        return (
+          <MasterSvgNode
+            gestures={gestures}
+            key={id}
+            id={id} //
+            newestX={node.x}
+            newestY={node.y}
+            totalIds={nodeIds.length}
+          />
+        );
       })}
       {nodeIds.map((id) => {
-        return <MasterSvgNode gestures={gestures} key={id} id={id} />;
+        const node = nodes[id];
+        return (
+          <MasterSvgNode
+            gestures={gestures}
+            key={id}
+            id={id}
+            newestX={node.x}
+            newestY={node.y}
+            totalIds={nodeIds.length}
+          />
+        );
       })}
     </>
   );
