@@ -105,15 +105,12 @@ const NewArchitectureSlice = createSlice({
       state.rootGroups.allIds = [...rootGroupIds];
       state.links.allIds = [...linkIds];
     },
-    updateNodePositions: (
-      state,
-      action: PayloadAction<{ nodeIds: number[]; windowSize: WindowSize }>,
-    ) => {
+    updateNodePositions: (state, action: PayloadAction<WindowSize>) => {
       const totalRootGroups = state.rootGroups.allIds.length;
-
       if (totalRootGroups >= 7) return;
 
-      const { nodeIds, windowSize } = action.payload;
+      const windowSize = action.payload;
+      const nodeIds = state.nodes.allIds;
       const nodesById = state.nodes.byId;
       const linkIds = state.links.allIds;
       const linksById = state.links.byId;
@@ -127,8 +124,8 @@ const NewArchitectureSlice = createSlice({
       // const radius = Math.min(width, height);
       const radius = CIRCLE_RADIUS;
 
-      function positionRootGroupsAndNodes(nodesHash: NodeHash) {
-        const rootGroups = Object.values(nodesHash).filter(
+      function positionRootGroupsAndNodes() {
+        const rootGroups = Object.values(nodesById).filter(
           (node: UiNode) => node.type === "root_group",
         );
         const angleStep = (2 * Math.PI) / rootGroups.length;
@@ -139,9 +136,9 @@ const NewArchitectureSlice = createSlice({
           const centerAngle = (startAngle + endAngle) / 2;
 
           // Calculate the center of the group
-          root_group.x =
+          root_group.currentX =
             centerX + radius * (root_group.depth - 1) * Math.cos(centerAngle);
-          root_group.y =
+          root_group.currentY =
             centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
           root_group.startAngle = startAngle;
           root_group.endAngle = endAngle;
@@ -175,8 +172,8 @@ const NewArchitectureSlice = createSlice({
           const offset = startOffset + index * NODE_SPACING;
           const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
 
-          node.x = centerX + radius * node.depth * Math.cos(nodeAngle);
-          node.y = centerY + radius * node.depth * Math.sin(nodeAngle);
+          node.currentX = centerX + radius * node.depth * Math.cos(nodeAngle);
+          node.currentY = centerY + radius * node.depth * Math.sin(nodeAngle);
           node.startAngle = root_group.startAngle;
           node.endAngle = root_group.endAngle;
 
@@ -205,17 +202,17 @@ const NewArchitectureSlice = createSlice({
 
         const updatedLink: UiLink = {
           ...link,
-          x1: nodesById[link.source_id].x,
-          y1: nodesById[link.source_id].y,
-          x2: nodesById[link.target_id].x,
-          y2: nodesById[link.target_id].y,
+          x1: nodesById[link.source_id].currentX,
+          y1: nodesById[link.source_id].currentY,
+          x2: nodesById[link.target_id].currentX,
+          y2: nodesById[link.target_id].currentY,
           link_status: linkStatus,
         };
 
         linksById[link_id] = updatedLink;
       }
 
-      positionRootGroupsAndNodes(nodesById);
+      positionRootGroupsAndNodes();
       linkIds.forEach((id) => positionLink(id));
     },
     toggleNode: (state, action: PayloadAction<number>) => {
@@ -417,8 +414,10 @@ const NewArchitectureSlice = createSlice({
           isShown: true,
           startAngle: 0, // We'll calculate this later
           endAngle: 0, // We'll calculate this later
-          x: 0, // We'll calculate this later
-          y: 0, // We'll calculate this later
+          initialX: 0, // We'll calculate this later
+          initialY: 0, // We'll calculate this later
+          currentX: 0, // We'll calculate this later
+          currentY: 0, // We'll calculate this later
         };
 
         // Add the new root group
@@ -428,6 +427,7 @@ const NewArchitectureSlice = createSlice({
       }
     },
   },
+  selectors: {},
 });
 // Helper function to update action button states
 const updateActionButtonStates = (state: GraphSliceState) => {

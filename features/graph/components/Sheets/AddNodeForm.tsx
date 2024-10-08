@@ -16,7 +16,7 @@ import { CustomThemeContext } from "@/components/CustomThemeContext";
 import { useAppDispatch, useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import { addRootGroup } from "../../redux/graphSlice";
+import { addRootGroup, updateNodePositions } from "../../redux/graphSlice";
 import {
   FormKey,
   handleSheet,
@@ -64,6 +64,7 @@ export default function AddNodeForm() {
     dispatch(
       addRootGroup({ newGroupName: formState.newGroupName, windowSize }),
     );
+    dispatch(updateNodePositions(windowSize));
     dispatch(handleSheet());
   }
 
@@ -84,7 +85,7 @@ export default function AddNodeForm() {
       <TouchableWithoutFeedback>
         <View style={[styles.formWrapper, { backgroundColor: theme.btnBase }]}>
           <View style={styles.formElements}>
-            <TextInput
+            {/* <TextInput
               placeholder="Relation Type (DROPDOWN)"
               style={styles.inputWrapper}
             ></TextInput>
@@ -97,8 +98,7 @@ export default function AddNodeForm() {
             <TextInput
               placeholder="Source Node (SEARCH/FILTER)"
               style={styles.inputWrapper}
-            ></TextInput>
-            {/* !TODO: You don't need this many for the initial add. */}
+            ></TextInput> */}
             <TextInput
               placeholder="New Group Name"
               style={styles.inputWrapper}

@@ -69,8 +69,10 @@ export function positionNodesOnLoad(
         ...node,
         startAngle: 0,
         endAngle: 0,
-        x: centerX,
-        y: centerY,
+        initialX: centerX,
+        initialY: centerY,
+        currentX: centerX,
+        currentY: centerY,
 
         // REVIEW: these properties are for initial render only
         isRoot: node.depth === 1,
@@ -123,7 +125,6 @@ export function positionNodesOnLoad(
       };
     }
   }
-
   function positionRootGroupsAndNodes(nodesHash: NodeHash) {
     const rootGroups = Object.values(nodesHash).filter(
       (node: PositionedNode) => node.type === "root_group",
@@ -136,9 +137,13 @@ export function positionNodesOnLoad(
       const centerAngle = (startAngle + endAngle) / 2;
 
       // Calculate the center of the group
-      root_group.x =
+      root_group.currentX =
         centerX + radius * (root_group.depth - 1) * Math.cos(centerAngle);
-      root_group.y =
+      root_group.currentY =
+        centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
+      root_group.initialX =
+        centerX + radius * (root_group.depth - 1) * Math.cos(centerAngle);
+      root_group.initialY =
         centerY + radius * (root_group.depth - 1) * Math.sin(centerAngle);
       root_group.startAngle = startAngle;
       root_group.endAngle = endAngle;
@@ -169,8 +174,10 @@ export function positionNodesOnLoad(
       const offset = startOffset + index * NODE_SPACING;
       const nodeAngle = groupCenterAngle + Math.atan2(offset, radius);
 
-      node.x = centerX + radius * node.depth * Math.cos(nodeAngle);
-      node.y = centerY + radius * node.depth * Math.sin(nodeAngle);
+      node.initialX = centerX + radius * node.depth * Math.cos(nodeAngle);
+      node.currentX = centerX + radius * node.depth * Math.cos(nodeAngle);
+      node.initialY = centerY + radius * node.depth * Math.sin(nodeAngle);
+      node.currentY = centerY + radius * node.depth * Math.sin(nodeAngle);
       node.startAngle = root_group.startAngle;
       node.endAngle = root_group.endAngle;
 
@@ -204,10 +211,10 @@ export function positionNodesOnLoad(
 
     const updatedLink: UiLink = {
       ...link,
-      x1: nodesById[link.source_id].x,
-      y1: nodesById[link.source_id].y,
-      x2: nodesById[link.target_id].x,
-      y2: nodesById[link.target_id].y,
+      x1: nodesById[link.source_id].initialX,
+      y1: nodesById[link.source_id].initialY,
+      x2: nodesById[link.target_id].initialX,
+      y2: nodesById[link.target_id].initialY,
       link_status: linkStatus,
     };
 

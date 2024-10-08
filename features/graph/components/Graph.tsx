@@ -49,13 +49,13 @@ export default function Graph() {
     }
   }, []);
 
-  // Handle repositioning
-  useEffect(() => {
-    if (!isInitialRender.current && nodeIds.length > 0) {
-      console.log("REPOSITIONING", nodeIds);
-      dispatch(updateNodePositions({ nodeIds, windowSize }));
-    }
-  }, [nodeIds, dispatch, windowSize]);
+  // // Handle repositioning
+  // useEffect(() => {
+  //   if (!isInitialRender.current && nodeIds.length > 0) {
+  //     console.log("REPOSITIONING", nodeIds);
+  //     dispatch(updateNodePositions({ nodeIds, windowSize }));
+  //   }
+  // }, [nodeIds, dispatch, windowSize]);
 
   const transform = useDerivedValue(() => {
     return [

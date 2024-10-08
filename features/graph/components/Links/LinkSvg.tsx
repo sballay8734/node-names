@@ -22,7 +22,7 @@ interface LinkSvgProps {
   gestures: GestureContextType;
 }
 
-export default function NewLinkSvg({ gestures, link_id }: LinkSvgProps) {
+export default function LinkSvg({ gestures, link_id }: LinkSvgProps) {
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
   );

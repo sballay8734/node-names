@@ -6,6 +6,7 @@ import {
   Text,
   matchFont,
 } from "@shopify/react-native-skia";
+import { useEffect } from "react";
 import {
   Extrapolation,
   interpolate,
@@ -24,16 +25,15 @@ import { UiNode } from "@/lib/types/graph";
 import { getColors, groupMap } from "@/lib/utils/getColors";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
-import { useEffect } from "react";
 
 interface NodeProps {
-  node: UiNode;
+  id: number;
   gestures: GestureContextType;
 }
 
 // !TODO: YOU MUST CREATE BUILD TO USE FONTS
 
-export default function MasterSvgNode({ node, gestures }: NodeProps) {
+export default function MasterSvgNode({ id, gestures }: NodeProps) {
   // const labelOpacity = useDerivedValue(() => {
   //   let inputRange, outputRange;
 
@@ -63,6 +63,10 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
   //   );
   // });
 
+  const node = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId[id],
+  );
+
   const rootGroupActive = useAppSelector(
     (state: RootState) =>
       node.group_id && state.graphData.nodes.byId[node.group_id].node_status,
@@ -82,13 +86,13 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     // fontWeight: "400",
   });
 
-  const nodeX = useSharedValue(node.x);
-  const nodeY = useSharedValue(node.y);
+  const nodeX = useSharedValue(node.initialX);
+  const nodeY = useSharedValue(node.initialY);
 
   useEffect(() => {
-    nodeX.value = withTiming(node.x, { duration: 200 });
-    nodeY.value = withTiming(node.y, { duration: 200 });
-  }, [node.x, node.y, nodeX.value, nodeY.value, nodeX, nodeY]);
+    nodeX.value = withTiming(node.currentX, { duration: 200 });
+    nodeY.value = withTiming(node.currentY, { duration: 200 });
+  }, [node.currentX, node.currentY, nodeX.value, nodeY.value, nodeX, nodeY]);
 
   // const textScale = useDerivedValue(() => {
   //   if (node.type === "root") {
@@ -161,7 +165,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     // font.setSize(12);
 
     // Calculate angle between center of screen and node
-    const angle = Math.atan2(node.y - centerY, node.x - centerX);
+    const angle = Math.atan2(node.currentY - centerY, node.currentX - centerX);
 
     // LOOKS GOOD (I think these center it on the node)
     let labelX = -(textWidth + textX) / 2;
@@ -190,7 +194,7 @@ export default function MasterSvgNode({ node, gestures }: NodeProps) {
     // font.setSize(12);
 
     // Calculate angle between center of screen and node
-    const angle = Math.atan2(node.y - centerY, node.x - centerX);
+    const angle = Math.atan2(node.currentY - centerY, node.currentX - centerX);
 
     // LOOKS GOOD (I think these center it on the node)
     let labelX = -(textWidth + textX) / 2;

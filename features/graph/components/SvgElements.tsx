@@ -2,9 +2,8 @@ import { GestureContextType } from "@/lib/context/gestures";
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import GroupPath from "./GroupPath";
-import NewLinkSvg from "./Links/NewLinkSvg";
-import RenderSvgNode from "./Nodes/RenderSvgNode";
+import LinkSvg from "./Links/LinkSvg";
+import MasterSvgNode from "./Nodes/MasterSvgNode";
 
 interface Props {
   gestures: GestureContextType;
@@ -21,22 +20,17 @@ export default function SvgElements({ gestures }: Props) {
     (state: RootState) => state.graphData.nodes.allIds,
   );
 
-  // console.log(linkIds);
-
   return (
     <>
       {linkIds.map((id) => {
-        return <NewLinkSvg gestures={gestures} key={id} link_id={id} />;
+        return <LinkSvg gestures={gestures} key={id} link_id={id} />;
         // return <LinkSvg key={id} id={id} />;
       })}
       {rootGroupIds.map((id) => {
-        return <RenderSvgNode gestures={gestures} key={id} id={id} />;
+        return <MasterSvgNode gestures={gestures} key={id} id={id} />;
       })}
-      {/* {rootGroupIds.map((id) => {
-        return <GroupPath key={id} id={id} />;
-      })} */}
       {nodeIds.map((id) => {
-        return <RenderSvgNode gestures={gestures} key={id} id={id} />;
+        return <MasterSvgNode gestures={gestures} key={id} id={id} />;
       })}
     </>
   );

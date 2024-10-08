@@ -36,13 +36,15 @@ export interface RawLink {
 }
 
 // !TODO: START and END angle should not be optional. UPDATE AFTER REFACTOR
-// Shape after postioning ******************************************************
+// Shape after positioning *****************************************************
 export interface PositionedNode extends RawNode {
   startAngle: number;
   endAngle: number;
   // angle: number;
-  x: number;
-  y: number;
+  initialX: number;
+  initialY: number;
+  currentX: number;
+  currentY: number;
 }
 export interface PositionedLink extends RawLink {
   x1: number;

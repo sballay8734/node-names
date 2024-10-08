@@ -1,25 +1,18 @@
 import { useAppSelector } from "@/store/reduxHooks";
 import { RootState } from "@/store/store";
 
-import RenderPressableNode from "./Nodes/RenderPressableNode";
+import MasterPressableNode from "./Nodes/MasterPressableNode";
 
 export default function PressableElements() {
   const allNodeIds = useAppSelector(
     (state: RootState) => state.graphData.nodes.allIds,
   );
-  const rootGroupIds = useAppSelector(
-    (state: RootState) => state.graphData.rootGroups.allIds,
-  );
 
-  console.log(rootGroupIds);
+  const renderedPressableNodes = allNodeIds.map((id) => {
+    return <MasterPressableNode id={id} key={id} length={allNodeIds.length} />;
+  });
 
-  if (!allNodeIds || allNodeIds.length === 0) return null;
-
-  return (
-    <>
-      {allNodeIds.map((id) => (
-        <RenderPressableNode key={id} node_id={id} />
-      ))}
-    </>
-  );
+  return <>{renderedPressableNodes}</>;
 }
+
+// selectors

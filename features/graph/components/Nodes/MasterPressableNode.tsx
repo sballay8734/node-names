@@ -1,6 +1,11 @@
 import { StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useDerivedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import {
   GROUP_NODE_RADIUS,
@@ -16,13 +21,20 @@ import { RootState } from "@/store/store";
 import { toggleNode } from "../../redux/graphSlice";
 
 interface PressableNodeProps {
-  node: UiNode;
+  id: number;
+  length: number;
 }
 
-export default function MasterPressableNode({ node }: PressableNodeProps) {
+export default function MasterPressableNode({
+  id,
+  length,
+}: PressableNodeProps) {
   const dispatch = useAppDispatch();
   const { windowCenterX: centerX, windowCenterY: centerY } = useAppSelector(
     (state: RootState) => state.windowSize,
+  );
+  const node = useAppSelector(
+    (state: RootState) => state.graphData.nodes.byId[id],
   );
 
   const { centerOnRootGroup } = useGestureContext();
@@ -55,7 +67,7 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
     .runOnJS(true);
 
   const position = useDerivedValue(() => {
-    const angle = Math.atan2(node.y - centerY, node.x - centerX);
+    const angle = Math.atan2(node.currentY - centerY, node.currentX - centerX);
     const nudgeDistance = 40;
 
     let nudgeX = 0;
@@ -75,8 +87,17 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
       : REG_NODE_RADIUS;
 
     return {
-      x: node.x - nodeRadius + nudgeX,
-      y: node.y - nodeRadius + nudgeY,
+      x: node.currentX - nodeRadius + nudgeX,
+      y: node.currentY - nodeRadius + nudgeY,
+    };
+  });
+
+  const transformStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: position.value.x },
+        { translateY: position.value.y },
+      ],
     };
   });
 
@@ -86,15 +107,12 @@ export default function MasterPressableNode({ node }: PressableNodeProps) {
         style={[
           styles.wrapper,
           {
-            transform: [
-              { translateX: position.value.x },
-              { translateY: position.value.y },
-            ],
             height: dimensions,
             width: dimensions,
             // backgroundColor: node.depth === 1 ? depth1Bg : depth2Bg,
             backgroundColor: "red",
           },
+          { ...transformStyles },
         ]}
       >
         {/* <Animated.Text>{node.name}</Animated.Text> */}
